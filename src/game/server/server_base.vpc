@@ -60,7 +60,7 @@ $Configuration
 
 	$Compiler
 	{
-		$AdditionalIncludeDirectories	"$BASE;.\;$SRCDIR\game\shared;$SRCDIR\utils\common;$SRCDIR\game\shared\econ;$SRCDIR\game\server\NextBot"
+		$AdditionalIncludeDirectories	"$BASE;.\;$SRCDIR\game\shared;$SRCDIR\utils\common;$SRCDIR\game\shared\econ;$SRCDIR\game\server\NextBot;$SRCDIR\game\shared\bdsbase;$SRCDIR\game\server\bdsbase"
 		$PreprocessorDefinitions		"$BASE;GAME_DLL;VECTOR;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE;sprintf=use_Q_snprintf_instead_of_sprintf;strncpy=use_Q_strncpy_instead;_snprintf=use_Q_snprintf_instead"
 		$PreprocessorDefinitions		"$BASE;INCLUDED_STEAM2_USERID_STRUCTS" 
 		$PreprocessorDefinitions		"$BASE;SWDS" [$POSIX]
@@ -734,6 +734,19 @@ $Project
 						$Create/UsePrecompiledHeader	"Create Precompiled Header (/Yc)"
 					}
 				}
+			}
+		}
+		
+		$Folder	"Admin"
+		{
+			$File	"bdsbase\admin\base_serveradmin.cpp"
+			$File	"bdsbase\admin\base_serveradmin.h"
+			$File	"bdsbase\admin\serveradmin_core.h"
+			$File	"bdsbase\admin\serveradmin_register.h"
+			
+			$Folder	"Commands"
+			{
+				$File	"bdsbase\admin\command\serveradmin_command_base.h"
 			}
 		}
 
