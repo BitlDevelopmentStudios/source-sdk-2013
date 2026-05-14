@@ -69,6 +69,7 @@
 #include "dt_utlvector_send.h"
 #include "vote_controller.h"
 #include "ai_speech.h"
+#include "admin/base_serveradmin.h"
 
 #if defined USES_ECON_ITEMS
 #include "econ_wearable.h"
@@ -2089,6 +2090,7 @@ void CBasePlayer::ShowViewPortPanel( const char * name, bool bShow, KeyValues *d
 	MessageEnd();
 }
 
+extern ConVar mp_disable_respawn_times;
 
 void CBasePlayer::PlayerDeathThink(void)
 {
@@ -2152,8 +2154,11 @@ void CBasePlayer::PlayerDeathThink(void)
 	// wait for all buttons released
 	if (m_lifeState == LIFE_DEAD)
 	{
-		if (fAnyButtonDown)
+		if (fAnyButtonDown && (mp_disable_respawn_times.GetBool() || (gpGlobals->curtime > (m_flDeathTime + 5))))
+		{
+			respawn(this, !IsObserver());// don't copy a corpse if we're in deathcam.
 			return;
+		}
 
 		if ( g_pGameRules->FPlayerCanRespawn( this ) )
 		{
@@ -2173,9 +2178,16 @@ void CBasePlayer::PlayerDeathThink(void)
 	}
 	
 // wait for any button down,  or mp_forcerespawn is set and the respawn time is up
-	if (!fAnyButtonDown 
-		&& !( g_pGameRules->IsMultiplayer() && forcerespawn.GetInt() > 0 && (gpGlobals->curtime > (m_flDeathTime + 5))) )
-		return;
+	if (mp_disable_respawn_times.GetBool())
+	{
+		if (!fAnyButtonDown && !g_pGameRules->IsMultiplayer())
+			return;
+	}
+	else
+	{
+		if (!fAnyButtonDown && !(g_pGameRules->IsMultiplayer() && forcerespawn.GetInt() > 0 && (gpGlobals->curtime > (m_flDeathTime + 5))))
+			return;
+	}
 
 	m_nButtons = 0;
 	m_iRespawnFrames = 0;
@@ -8841,6 +8853,19 @@ CBaseEntity *CBasePlayer::DoubleCheckUseNPC( CBaseEntity *pNPC, const Vector &ve
 	return pNPC;
 }
 
+// because IsBot() && IsFakeClient() just don't seem to work with HL2MP bots??
+bool CBasePlayer::IsPlayerBot() const
+{
+	if (IsFakeClient())
+		return true;
+
+	if (IsNextBot())
+		return true;
+
+	const char* steamID = engine->GetPlayerNetworkIDString(edict());
+
+	return (steamID && Q_strcmp(steamID, "BOT") == 0);
+}
 
 bool CBasePlayer::IsBot() const
 {
@@ -9678,4 +9703,26 @@ void* SendProxy_SendNonLocalDataTable( const SendProp *pProp, const void *pStruc
 	return ( void * )pVarData;
 }
 REGISTER_SEND_PROXY_NON_MODIFIED_POINTER( SendProxy_SendNonLocalDataTable );
+
+// Peter: This is here for the server admin stuff. 
+// We are doing this because using a chat command goes through `sa`, then calls `sa slap`, 
+// but between those two calls, the get reply source is reset so it ends up printing 
+// to console rather than to chat when the command is typed in the chat. 
+// Therefore this timer below gives enough time for the chat text to be printed. 
+// There may be a better way, but this will do it for now.
+
+void CBasePlayer::SetChatCommandResetThink()
+{
+	SetContextThink(&CBasePlayer::ChatCommandResetThink, gpGlobals->curtime + 0.05f, "ChatCommandResetThink");
+}
+
+void CBasePlayer::ChatCommandResetThink()
+{
+	SetLastCommandWasFromChat(false);
+}
+
+void CBasePlayer::CheckChatText(char* p, int bufsize)
+{
+	CBase_Admin::CheckChatText(p, bufsize);
+}
 

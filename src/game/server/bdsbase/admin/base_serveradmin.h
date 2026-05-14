@@ -1,8 +1,6 @@
 #ifndef BASE_SERVERADMIN_H
 #define BASE_SERVERADMIN_H
 
-#ifdef BDSBASE
-
 #include "admin\serveradmin_core.h"
 
 #define VERSION				"1.0"
@@ -188,6 +186,5 @@ extern void ToggleModule_ChangeCallback(IConVar* pConVar, char const* pOldString
     {                                                                                                                                                               \
         REGISTER_ADMIN_COMMAND(moduleName, chatName, commandName, usesArguments, consoleText, helpString, flags, func);                                              \
     }}
-#endif
 
 #endif // BASE_SERVERADMIN_H

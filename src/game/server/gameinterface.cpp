@@ -112,6 +112,8 @@ extern ConVar tf_mm_servermode;
 #include "NextBotManager.h"
 #endif
 
+#include "admin/base_serveradmin.h"
+
 #ifdef USES_ECON_ITEMS
 #include "econ_item_system.h"
 #endif // USES_ECON_ITEMS
@@ -967,6 +969,12 @@ bool CServerGameDLL::LevelInit( const char *pMapName, char const *pMapEntities, 
 		pItemSchema->BInitFromDelayedBuffer();
 	}
 #endif // USES_ECON_ITEMS
+
+	// admin system is for MP games only.
+	if (!background && (gpGlobals->maxClients > 1))
+	{
+		CBase_Admin::InitAdminSystem();
+	}
 
 	ResetWindspeed();
 	UpdateChapterRestrictions( pMapName );

@@ -59,7 +59,8 @@ static CViewVectors g_DefaultViewVectors(
 													
 	Vector( 0, 0, 14 )			//VEC_DEAD_VIEWHEIGHT (m_vDeadViewHeight)
 );													
-													
+	
+bool bAdminMapChange = false;
 
 // ------------------------------------------------------------------------------------ //
 // CGameRulesProxy implementation.
@@ -156,6 +157,12 @@ CGameRules::CGameRules() : CAutoGameSystemPerFrame( "CGameRules" )
 	ClearMultiDamage();
 
 	m_flNextVerboseLogOutput = 0.0f;
+
+	bAdminMapChange = false;
+	bMapChangeOnGoing = false;
+	bMapChange = false;
+	m_flMapChangeTime = 0.0f;
+	Q_strncpy(m_scheduledMapName, "", sizeof(m_scheduledMapName));
 }
 
 //-----------------------------------------------------------------------------
@@ -586,6 +593,28 @@ void CGameRules::Think()
 		{
 			ProcessVerboseLogOutput();
 			m_flNextVerboseLogOutput = gpGlobals->curtime + log_verbose_interval.GetFloat();
+		}
+	}
+
+	HandleMapChange();
+}
+
+void CGameRules::HandleMapChange()
+{
+	if (IsMapChangeOnGoing() && IsMapChange())
+	{
+		SetMapChange(false);
+		m_flMapChangeTime = gpGlobals->curtime + 5.0f;
+	}
+
+	if (IsMapChangeOnGoing() && gpGlobals->curtime > m_flMapChangeTime)
+	{
+		SetMapChange(false);
+		SetMapChangeOnGoing(false);
+
+		if (Q_strlen(m_scheduledMapName) > 0)
+		{
+			engine->ServerCommand(UTIL_VarArgs("changelevel %s\n", m_scheduledMapName));
 		}
 	}
 }

@@ -5,7 +5,6 @@
 #include "filesystem.h"
 #include "tf_player.h"
 
-#ifdef BDSBASE
 //-----------------------------------------------------------------------------
 // Purpose: Change a player's class
 //-----------------------------------------------------------------------------
@@ -253,9 +252,6 @@ static void ConditionPlayerCommand(const CCommand& args)
 }
 
 #define TF_COMMAND_MODULE_NAME "Team Fortress 2 Commands"
-#if defined(QUIVER_DLL)
-#define QF_COMMAND_SUB_MODULE_NAME "Quiver Fortress Commands"
-#endif
 
 static void LoadTFCommandModule()
 {
@@ -263,7 +259,5 @@ static void LoadTFCommandModule()
 	REGISTER_ADMIN_COMMAND(TF_COMMAND_MODULE_NAME, "class", true, NULL, "<name|#userID> <class index> -> Move a player to another class", "f", ClassPlayerCommand);
 	REGISTER_ADMIN_COMMAND(TF_COMMAND_MODULE_NAME, "cond", true, NULL, "<name|#userID> <cond ID to add/remove> -> Add or remove a cond on a class.", "f", ConditionPlayerCommand);
 }
-
-#endif
 
 #endif // SERVERADMIN_COMMAND_TF_H

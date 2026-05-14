@@ -9,8 +9,6 @@
 #include "tf_player.h"
 #endif
 
-#ifdef BDSBASE
-
 extern bool bAdminMapChange;
 
 #ifndef Q_max
@@ -2620,7 +2618,5 @@ static void LoadBaseCommandModule()
 	REGISTER_ADMIN_COMMAND(BASE_COMMAND_MODULE_NAME, "help", false, "Check your console for output.\n", "-> Provide instructions on how to use the admin interface", "b", HelpPlayerCommand );
 	REGISTER_ADMIN_COMMAND(BASE_COMMAND_MODULE_NAME, "version", false, "Check your console for output.\n", "-> Display version", "a", VersionCommand );
 }
-
-#endif
 
 #endif // SERVERADMIN_COMMAND_BASE_H

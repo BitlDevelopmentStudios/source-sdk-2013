@@ -13,8 +13,6 @@
 // always comes last
 #include "tier0/memdbgon.h"
 
-#ifdef BDSBASE
-
 CBase_Admin *g_pBaseAdmin = NULL;
 bool g_bAdminSystem = false;
 
@@ -1206,5 +1204,3 @@ static void AdminCommand(const CCommand& args)
 }
 
 ConCommand sa("sa", AdminCommand, "Admin menu.", FCVAR_SERVER_CAN_EXECUTE | FCVAR_CLIENTCMD_CAN_EXECUTE);
-
-#endif

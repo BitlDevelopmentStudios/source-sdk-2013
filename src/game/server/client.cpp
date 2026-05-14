@@ -35,6 +35,7 @@
 #include "datacache/imdlcache.h"
 #include "basemultiplayerplayer.h"
 #include "voice_gamemgr.h"
+#include "tier0/icommandline.h"
 
 #ifdef TF_DLL
 #include "tf_player.h"
@@ -248,6 +249,9 @@ void Host_Say( edict_t *pEdict, const CCommand &args, bool teamonly )
 	{
 		bSenderDead = false;
 	}
+
+	if (pPlayer && pPlayer->IsGagged())
+		return;
 
 	const char *pszFormat = NULL;
 	const char *pszPrefix = NULL;
