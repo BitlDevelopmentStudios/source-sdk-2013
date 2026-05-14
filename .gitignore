@@ -127,13 +127,13 @@ mono_crash.*
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
-x64/
+
 x86/
 [Ww][Ii][Nn]32/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
-[Bb]in/
+
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
@@ -502,5 +502,15 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
 game/*.exe
+game/bin/x64/*.exe
+game/bin/x64/*.dll
 *.lst
+src/lib/public/x64/fgdlib.lib
+src/lib/public/x64/mathlib.lib
+src/lib/public/x64/matsys_controls.lib
+src/lib/public/x64/raytrace.lib
+src/lib/public/x64/tier1.lib
+src/lib/public/x64/vgui_controls.lib
+game_shader_generic_example.dll
