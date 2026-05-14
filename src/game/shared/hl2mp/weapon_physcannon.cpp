@@ -1078,7 +1078,7 @@ bool CWeaponPhysCannon::Deploy( void )
 
 	if ( pOwner )
 	{
-		pOwner->SetNextAttack( gpGlobals->curtime );
+		pOwner->SetNextAttack( gpGlobals->curtime + 0.25f );
 	}
 
 	return bReturn;
