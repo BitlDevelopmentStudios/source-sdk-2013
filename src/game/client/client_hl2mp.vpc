@@ -17,6 +17,12 @@ $Configuration
 		$AdditionalIncludeDirectories		"$BASE;hl2mp\ui,.\hl2mp,$SRCDIR\game\shared\hl2mp,.\hl2,.\hl2\elements,$SRCDIR\game\shared\hl2"
 		$PreprocessorDefinitions			"$BASE;HL2MP;HL2_CLIENT_DLL;NEXT_BOT"
 	}
+	
+	// REQUIRED for serverfinder.
+	$Linker
+	{
+        $AdditionalDependencies			"$BASE wsock32.lib Ws2_32.lib" [$WINDOWS]
+	}
 }
 
 $Project "Client (HL2MP)"
@@ -118,6 +124,21 @@ $Project "Client (HL2MP)"
 			$File	"hl2\hud_zoom.cpp"
 			$File	"hl2\shieldproxy.cpp"
 			$File	"hl2\vgui_rootpanel_hl2.cpp"
+		}
+		
+		$Folder "Common"
+		{
+			$File	"$SRCDIR\common\ServerBrowser\blacklisted_server_manager.h"
+			$File	"$SRCDIR\common\ServerBrowser\blacklisted_server_manager.cpp"
+			{
+				$Configuration
+				{
+					$Compiler
+					{
+						$Create/UsePrecompiledHeader	"Not Using Precompiled Headers"
+					}
+				}
+			}
 		}
 
 		$Folder	"HL2MP"

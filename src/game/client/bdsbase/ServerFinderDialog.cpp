@@ -800,6 +800,7 @@ void CServerFinderDialog::SetParams()
 		m_pOptions->m_iMaxPing = clampToPingNum(atoi(startMaxPing));
 	}
 
+#if defined(TF_CLIENT_DLL)
 	const char* startRandomCrits = m_pSavedData->GetString("RandomCrits", "");
 	if (startRandomCrits[0])
 	{
@@ -811,6 +812,7 @@ void CServerFinderDialog::SetParams()
 	{
 		m_pOptions->m_eDamageSpread = (EGenericInvertedOption)atoi(startDamageSpread);
 	}
+#endif
 
 	const char* startRespawnTimes = m_pSavedData->GetString("RespawnTimes", "");
 	if (startRespawnTimes[0])
@@ -836,7 +838,9 @@ void CServerFinderDialog::GetOptions()
 	Q_snprintf(szCount, sizeof(szCount), "%i", maxPing);
 	m_pMaxPing->SetText(szCount);
 
+#if defined(TF_CLIENT_DLL)
 	m_pRandCrits->ActivateItem((int)m_pOptions->m_eRandomCrits);
 	m_pDmgSpread->ActivateItem((int)m_pOptions->m_eDamageSpread);
+#endif
 	m_pRespawnTimes->ActivateItem((int)m_pOptions->m_eRespawnTimes);
 }

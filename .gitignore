@@ -503,3 +503,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 game/*.exe
+*.lst

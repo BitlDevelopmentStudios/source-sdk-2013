@@ -11,9 +11,13 @@
 #pragma once
 #endif
 
+#include "cbase.h"
 #include <vgui_controls/Frame.h>
-#include "tier1/netadr.h"
+#include "netadr.h"
 #include "ServerBrowser/blacklisted_server_manager.h"
+#ifndef TF_CLIENT_DLL
+#include "clientsteamcontext.h"
+#endif
 
 //TF prefers a higher min player count. cap it to 6 so at least 3v3 is possible.
 #if defined(TF_CLIENT_DLL)
