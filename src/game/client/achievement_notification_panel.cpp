@@ -30,6 +30,8 @@ using namespace vgui;
 
 #define ACHIEVEMENT_NOTIFICATION_DURATION 10.0f
 
+ConVar cl_achievements_theme("cl_achievements_theme", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "0 = light grey, 1 = dark grey, 2+ = light green (original)");
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -87,7 +89,21 @@ void CAchievementNotificationPanel::PerformLayout( void )
 	SetBgColor( Color( 0, 0, 0, 0 ) );
 	m_pLabelHeading->SetBgColor( Color( 0, 0, 0, 0 ) );
 	m_pLabelTitle->SetBgColor( Color( 0, 0, 0, 0 ) );
-	m_pPanelBackground->SetBgColor( Color( 62,70,55, 200 ) );
+	Color defaultColor = Color(62, 70, 55, 200);
+	Color c = defaultColor;
+
+	vgui::IScheme* pSourceScheme = vgui::scheme()->GetIScheme(vgui::scheme()->GetScheme("SourceScheme"));
+	if (pSourceScheme)
+	{
+		if (cl_achievements_theme.GetInt() == 0)
+		{
+			c = pSourceScheme->GetColor("AchievementsLightGrey", defaultColor);
+		}
+		else if (cl_achievements_theme.GetInt() == 1)
+		{
+			c = pSourceScheme->GetColor("AchievementsDarkGrey", defaultColor);
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
