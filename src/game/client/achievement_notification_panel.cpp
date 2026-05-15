@@ -21,6 +21,7 @@
 #include "steam/steam_api.h"
 #include "iachievementmgr.h"
 #include "fmtstr.h"
+#include "baseachievement.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -60,6 +61,7 @@ CAchievementNotificationPanel::CAchievementNotificationPanel( const char *pEleme
 void CAchievementNotificationPanel::Init()
 {
 	ListenForGameEvent( "achievement_event" );
+	ListenForGameEvent("achievement_earned");
 }
 
 //-----------------------------------------------------------------------------
@@ -101,45 +103,49 @@ void CAchievementNotificationPanel::FireGameEvent( IGameEvent * event )
 		int iMax = event->GetInt( "max_val" );
 		wchar_t szLocalizedName[256]=L"";
 
-		if ( IsPC() )
-		{
-			// shouldn't ever get achievement progress if steam not running and user logged in, but check just in case
-			if ( !steamapicontext->SteamUserStats() )
-			{				
-				Msg( "Steam not running, achievement progress notification not displayed\n" );
-			}
-			else 
-			{
-				// use Steam to show achievement progress UI
-				steamapicontext->SteamUserStats()->IndicateAchievementProgress( pchName, iCur, iMax );
-			}
-		}
-		else 
-		{
-			// on X360 we need to show our own achievement progress UI
+		const wchar_t* pchLocalizedName = ACHIEVEMENT_LOCALIZED_NAME_FROM_STR(pchName);
+		Assert(pchLocalizedName);
+		if (!pchLocalizedName || !pchLocalizedName[0])
+			return;
+		Q_wcsncpy(szLocalizedName, pchLocalizedName, sizeof(szLocalizedName));
 
-			const wchar_t *pchLocalizedName = ACHIEVEMENT_LOCALIZED_NAME_FROM_STR( pchName );
-			Assert( pchLocalizedName );
-			if ( !pchLocalizedName || !pchLocalizedName[0] )
-				return;
-			Q_wcsncpy( szLocalizedName, pchLocalizedName, sizeof( szLocalizedName ) );
+		// this is achievement progress, compose the message of form: "<name> (<#>/<max>)"
+		wchar_t szFmt[128] = L"";
+		wchar_t szText[512] = L"";
+		wchar_t szNumFound[16] = L"";
+		wchar_t szNumTotal[16] = L"";
+		_snwprintf(szNumFound, ARRAYSIZE(szNumFound), L"%i", iCur);
+		_snwprintf(szNumTotal, ARRAYSIZE(szNumTotal), L"%i", iMax);
 
-			// this is achievement progress, compose the message of form: "<name> (<#>/<max>)"
-			wchar_t szFmt[128]=L"";
-			wchar_t szText[512]=L"";
-			wchar_t szNumFound[16]=L"";
-			wchar_t szNumTotal[16]=L"";
-			_snwprintf( szNumFound, ARRAYSIZE( szNumFound ), L"%i", iCur );
-			_snwprintf( szNumTotal, ARRAYSIZE( szNumTotal ), L"%i", iMax );
+		const wchar_t* pchFmt = g_pVGuiLocalize->Find("#GameUI_Achievement_Progress_Fmt");
+		if (!pchFmt || !pchFmt[0])
+			return;
+		Q_wcsncpy(szFmt, pchFmt, sizeof(szFmt));
 
-			const wchar_t *pchFmt = g_pVGuiLocalize->Find( "#GameUI_Achievement_Progress_Fmt" );
-			if ( !pchFmt || !pchFmt[0] )
-				return;
-			Q_wcsncpy( szFmt, pchFmt, sizeof( szFmt ) );
+		g_pVGuiLocalize->ConstructString_safe(szText, szFmt, 3, szLocalizedName, szNumFound, szNumTotal);
+		AddNotification(pchName, g_pVGuiLocalize->Find("#GameUI_Achievement_Progress"), szText);
+	}
+	else if (0 == Q_strcmp(name, "achievement_earned"))
+	{
+		int iID = event->GetInt("achievement");
 
-			g_pVGuiLocalize->ConstructString_safe( szText, szFmt, 3, szLocalizedName, szNumFound, szNumTotal );
-			AddNotification( pchName, g_pVGuiLocalize->Find( "#GameUI_Achievement_Progress" ), szText );
-		}
+		IAchievementMgr* pAchievementMgr = engine->GetAchievementMgr();
+		if (!pAchievementMgr)
+			return;
+
+		CBaseAchievement* pAchievement = pAchievementMgr->GetAchievementByID(iID);
+		if (!pAchievement)
+			return;
+
+		wchar_t szLocalizedName[256] = L"";
+
+		const wchar_t* pchLocalizedName = ACHIEVEMENT_LOCALIZED_NAME(pAchievement);
+		Assert(pchLocalizedName);
+		if (!pchLocalizedName || !pchLocalizedName[0])
+			return;
+		Q_wcsncpy(szLocalizedName, pchLocalizedName, sizeof(szLocalizedName));
+
+		AddNotification(pAchievement->GetName(), g_pVGuiLocalize->Find("#GameUI_Achievement_Unlocked"), szLocalizedName);
 	}
 }
 

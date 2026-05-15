@@ -943,18 +943,11 @@ void CAchievementMgr::AwardAchievement( int iAchievementID )
 
 	if ( IsPC() )
 	{		
-#ifndef NO_STEAM
-		if ( steamapicontext->SteamUserStats() )
-		{
-			VPROF_BUDGET( "AwardAchievement", VPROF_BUDGETGROUP_STEAM );
-			// set this achieved in the Steam client
-			bool bRet = steamapicontext->SteamUserStats()->SetAchievement( pAchievement->GetName() );
-			//		Assert( bRet );
-			if ( bRet )
-			{
-				m_AchievementsAwarded.AddToTail( iAchievementID );
-			}
-		}
+#ifndef GAME_DLL
+		//No steam connection? send it ourselves.
+		KeyValues* kv = new KeyValues("AchievementEarned");
+		kv->SetInt("achievementID", pAchievement->GetAchievementID());
+		engine->ServerCmdKeyValues(kv);
 #endif
     }
 	else if ( IsX360() )
