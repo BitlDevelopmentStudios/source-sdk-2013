@@ -19,7 +19,8 @@ LOOKING FOR THE OLD BDS BASE WITH QUIVER FORTRESS' SOURCE CODE? Go here: https:/
 - reset.bat file in each mod folder, used for cleaning up config/temporary files for easy mod distribution.
 - Server Admin tools support (based off #948) with extendable module-based command interface.
 - Animated Avatars support (based off #1380)
-- Serverfinder/Quick Search: A quick and easy way for players to start and join servers. See "BDSBASE_ALLOW_SERVERFINDER" below for more info.
+- Serverfinder/Quick Search: A quick and easy way for players to start and join servers.
+- Supports Xbox 360 achievement notifications.
 
 ## Setup:
 Read Autumn/Misyl's setup guide at README_FROG.md for detailed setup.
