@@ -280,6 +280,10 @@ BEGIN_DATADESC( CBasePlayer )
 	DEFINE_FIELD( m_iDefaultFOV,FIELD_INTEGER ),
 	DEFINE_FIELD( m_flVehicleViewFOV, FIELD_FLOAT ),
 
+#ifdef ANTICITIZEN
+	DEFINE_FIELD(m_bPlayerUsesSPMovement, FIELD_BOOLEAN),
+#endif
+
 	//DEFINE_FIELD( m_fOnTarget, FIELD_BOOLEAN ), // Don't need to restore
 	DEFINE_FIELD( m_iObserverMode, FIELD_INTEGER ),
 	DEFINE_FIELD( m_iObserverLastMode, FIELD_INTEGER ),
@@ -8202,6 +8206,9 @@ void CMovementSpeedMod::InputSpeedMod(inputdata_t &data)
 		SendPropInt		(SENDINFO(m_iFOV), 8, SPROP_UNSIGNED ),
 		SendPropInt		(SENDINFO(m_iFOVStart), 8, SPROP_UNSIGNED ),
 		SendPropFloat	(SENDINFO(m_flFOVTime) ),
+#ifdef ANTICITIZEN
+		SendPropBool	(SENDINFO(m_bPlayerUsesSPMovement)),
+#endif
 		SendPropInt		(SENDINFO(m_iDefaultFOV), 8, SPROP_UNSIGNED ),
 		SendPropEHandle	(SENDINFO(m_hZoomOwner) ),
 		SendPropArray	( SendPropEHandle( SENDINFO_ARRAY( m_hViewModel ) ), m_hViewModel ),

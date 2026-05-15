@@ -36,7 +36,12 @@ void CServerGameClients::GetPlayerLimits( int& minplayers, int& maxplayers, int 
 	else
 		maxplayers = 33;
 #endif
+#ifdef ANTICITIZEN
+	// 6 combine soldiers + freeman.
+	defaultMaxPlayers = 7;
+#else
 	defaultMaxPlayers = 16; // misyl: Was 2... but why would the default be 2?! Is there some very intimate HL2DM going on?
+#endif
 }
 
 // -------------------------------------------------------------------------------------------- //

@@ -396,10 +396,15 @@ CHL2_Player::CHL2_Player()
 //
 #define SUITPOWER_CHARGE_RATE	12.5											// 100 units in 8 seconds
 
+#ifdef ANTICITIZEN
+	// freeman should be the only one that uses the sprint device this way.
+	CSuitPowerDevice SuitDeviceSprint(bits_SUIT_DEVICE_SPRINT, 12.5f);					// 100 units in 8 seconds
+#else
 #ifdef HL2MP
 	CSuitPowerDevice SuitDeviceSprint( bits_SUIT_DEVICE_SPRINT, 25.0f );				// 100 units in 4 seconds
 #else
 	CSuitPowerDevice SuitDeviceSprint( bits_SUIT_DEVICE_SPRINT, 12.5f );				// 100 units in 8 seconds
+#endif
 #endif
 
 #ifdef HL2_EPISODIC
@@ -534,8 +539,9 @@ void CHL2_Player::HandleSpeedChanges( CMoveData *mv )
 		bSprinting = false;
 	}
 
-	bool bWantWalking;
+	bool bWantWalking = false;
 
+#ifndef ANTICITIZEN
 	if ( IsSuitEquipped() )
 	{
 		bWantWalking = ( mv->m_nButtons & IN_WALK ) && !bSprinting && !( mv->m_nButtons & IN_DUCK );
@@ -544,6 +550,7 @@ void CHL2_Player::HandleSpeedChanges( CMoveData *mv )
 	{
 		bWantWalking = true;
 	}
+#endif
 
 	if ( bWantWalking )
 	{
@@ -1993,6 +2000,11 @@ ConVar	sk_battery( "sk_battery","0" );
 
 bool CHL2_Player::ApplyBattery( float powerMultiplier )
 {
+#ifdef ANTICITIZEN
+	if (!IsSuitEquipped())
+		return false;
+#endif
+
 	const float MAX_NORMAL_BATTERY = 100;
 	if ((ArmorValue() < MAX_NORMAL_BATTERY) && IsSuitEquipped())
 	{

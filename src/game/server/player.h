@@ -833,6 +833,11 @@ public:
 	void SetChatCommandResetThink();
 	void ChatCommandResetThink();
 
+#ifdef ANTICITIZEN
+	void SetSPMovement(bool enabled) { m_bPlayerUsesSPMovement = enabled; }
+	bool UsesSPMovement() { return m_bPlayerUsesSPMovement; }
+#endif
+
 private:
 	// How much of a movement time buffer can we process from this user?
 	int				m_nMovementTicksForUserCmdProcessingRemaining;
@@ -853,6 +858,10 @@ private:
 	bool m_bIsGagged;
 	bool m_bIsMuted;
 	bool m_bLastCommandWasFromChat;
+
+#ifdef ANTICITIZEN
+	CNetworkVar(bool, m_bPlayerUsesSPMovement);
+#endif
 
 public:
 	

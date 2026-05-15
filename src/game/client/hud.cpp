@@ -974,9 +974,11 @@ bool CHud::IsHidden( int iHudFlags )
 	if ( ( iHudFlags & HIDEHUD_PLAYERDEAD ) && ( pPlayer->GetHealth() <= 0 && !pPlayer->IsAlive() ) )
 		return true;
 
+#ifndef ANTICITIZEN
 	// Need the HEV suit ( HL2 )
 	if ( ( iHudFlags & HIDEHUD_NEEDSUIT ) && ( !pPlayer->IsSuitEquipped() ) )
 		return true;
+#endif
 
 	// Hide all HUD elements during screenshot if the user's set hud_freezecamhide ( TF2 )
 #if defined( TF_CLIENT_DLL )

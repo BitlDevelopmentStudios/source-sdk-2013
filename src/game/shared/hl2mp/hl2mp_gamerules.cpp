@@ -177,7 +177,11 @@ char *sTeamNames[] =
 	"Unassigned",
 	"Spectator",
 	"Combine",
+#ifdef ANTICITIZEN
+	"Freeman",
+#else
 	"Rebels",
+#endif
 };
 
 CHL2MPRules::CHL2MPRules()
@@ -192,7 +196,12 @@ CHL2MPRules::CHL2MPRules()
 		g_Teams.AddToTail( pTeam );
 	}
 
+#ifdef ANTICITIZEN
+	// Teamplay is enabled for anticitizen
+	m_bTeamPlayEnabled = true;
+#else
 	m_bTeamPlayEnabled = teamplay.GetBool();
+#endif
 	m_flIntermissionEndTime = 0.0f;
 	m_flGameStartTime = 0;
 
