@@ -21,6 +21,9 @@ $Games
 	"PORTAL"
 	"SDK"
 	"TF"
+	//BDS projects
+	"ANTICITIZEN"
+	"SURVIVORII"
 }
 
 $Include "vpc_scripts\projects.vgc"
