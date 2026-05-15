@@ -1,71 +1,27 @@
-# Source SDK 2013
+# Source SDK 2013 (BDS Version)
+<img src="https://github.com/BitlDevelopmentStudios/source-sdk-2013-bds-base/blob/master/bdsbase.png" alt="Logo" width="450" height="450">
 
-Source code for Source SDK 2013.
+This is a Source SDK 2013 fork made for the purpose of giving a reliable mod base for currently updated and future Bitl Development Studio (BDS) mod projects.
+This was based off the TF2/64-bit SDK release, and will be updated as the SDK updates.
 
-Contains the game code for Half-Life 2, HL2: DM and TF2.
+This will feature sources for some currently updated and future Bitl Development Studio (BDS) mod projects. 
+This base is specific to multiplayer mod projects.
 
-**Now including Team Fortress 2! ✨**
+LOOKING FOR THE OLD BDS BASE WITH QUIVER FORTRESS' SOURCE CODE? Go here: https://github.com/BitlDevelopmentStudios/source-sdk-2013-bds-base
 
-## Build instructions
+## Projects using this base:
+- SURVIVOR II (Based on HL2DM, Shelved)
+- ANTICITIZEN ONE (Based on HL2DM, Active Development)
 
-Clone the repository using the following command:
+## Features:
+- Implements various pull requests from the master repo, allowing for a stable and reliable mod base. Each pull request is squished and merged, ensuring credit is given to each author.
+- Implemented Discord RPC support (based off #1803).
+- reset.bat file in each mod folder, used for cleaning up config/temporary files for easy mod distribution.
+- Server Admin tools support (based off #948) with extendable module-based command interface.
+- Animated Avatars support (based off #1380)
+- Serverfinder/Quick Search: A quick and easy way for players to start and join servers. See "BDSBASE_ALLOW_SERVERFINDER" below for more info.
 
-`git clone https://github.com/ValveSoftware/source-sdk-2013`
-
-### Windows
-
-Requirements:
- - Source SDK 2013 Multiplayer installed via Steam
- - Visual Studio 2022 with the following workload and components:
-   - Desktop development with C++:
-     - MSVC v143 - VS 2022 C++ x64/x86 build tools (Latest)
-     - Windows 11 SDK (10.0.22621.0) or Windows 10 SDK (10.0.19041.1)
- - Python 3.13 or later
-
-Inside the cloned directory, navigate to `src`, run:
-```bat
-createallprojects.bat
-```
-This will generate the Visual Studio project `everything.sln` which will be used to build your mod.
-
-Then, on the menu bar, go to `Build > Build Solution`, and wait for everything to build.
-
-You can then select the `Client (Mod Name)` project you wish to run, right click and select `Set as Startup Project` and hit the big green `> Local Windows Debugger` button on the tool bar in order to launch your mod.
-
-The default launch options should be already filled in for the `Release` configuration.
-
-### Linux
-
-Requirements:
- - Source SDK 2013 Multiplayer installed via Steam
- - podman
-
-Inside the cloned directory, navigate to `src`, run:
-```bash
-./buildallprojects
-```
-
-This will build all the projects related to the SDK and your mods automatically against the Steam Runtime.
-
-You can then, in the root of the cloned directory, you can navigate to `game` and run your mod by launching the build launcher for your mod project, eg:
-```bash
-./mod_tf
-```
-
-*Mods that are distributed on Steam MUST be built against the Steam Runtime, which the above steps will automatically do for you.*
-
-## Distributing your Mod
-
-There is guidance on distributing your mod both on and off Steam available at the following link:
-
-https://partner.steamgames.com/doc/sdk/uploading/distributing_source_engine
-
-## Additional Resources
-
-- [Valve Developer Wiki](https://developer.valvesoftware.com/wiki/Source_SDK_2013)
-
-## License
-
-The SDK is licensed to users on a non-commercial basis under the [SOURCE 1 SDK LICENSE](LICENSE), which is contained in the [LICENSE](LICENSE) file in the root of the repository.
-
-For more information, see [Distributing your Mod](#markdown-header-distributing-your-mod).
+## Setup:
+Read Autumn/Misyl's setup guide at README_FROG.md for detailed setup.
+You may also read a more detailed guide here:
+https://developer.valvesoftware.com/wiki/Source_SDK_2013
