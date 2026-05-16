@@ -12,6 +12,20 @@
 #define HL2MP_PUSHAWAY_THINK_INTERVAL		(1.0f / 20.0f)
 #include "studio.h"
 
+const char* pszCombineClasses[] =
+{
+	"metropolice",
+	"combine_soldier",
+	"combine_shotgunner",
+	"combine_elite",
+	NULL
+};
+
+const char* pszFreemanClasses[] =
+{
+	"freeman",
+	NULL
+};
 
 enum
 {
@@ -29,7 +43,6 @@ enum HL2MPPlayerState
 	NUM_PLAYER_STATES
 };
 
-#define PLAYERCLASS_RANDOM		-2
 #define PLAYERCLASS_UNDEFINED	-1
 
 #if defined( CLIENT_DLL )
