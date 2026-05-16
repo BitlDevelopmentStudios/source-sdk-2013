@@ -21,6 +21,7 @@ $Games
 	"PORTAL"
 	"SDK"
 	"TF"
+	"ANTICITIZEN"
 }
 
 $Include "vpc_scripts\projects.vgc"
