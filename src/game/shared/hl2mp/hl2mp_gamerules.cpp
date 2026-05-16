@@ -34,6 +34,7 @@
 	#include "hl2mp_gameinterface.h"
 	#include "hl2mp_cvars.h"
 	#include "player_resource.h"
+	#include "anticitizen_player_resource.h"
 
 extern void respawn(CBaseEntity *pEdict, bool fCopyCorpse);
 
@@ -274,6 +275,13 @@ void CHL2MPRules::PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &inf
 #ifndef CLIENT_DLL
 	if ( IsIntermission() )
 		return;
+
+	CAnticitizen_PlayerResource* pTFResource = g_Anticitizen_PR;
+	if (pTFResource)
+	{
+		Msg("Loaded!\n");
+	}
+
 	BaseClass::PlayerKilled( pVictim, info );
 #endif
 }

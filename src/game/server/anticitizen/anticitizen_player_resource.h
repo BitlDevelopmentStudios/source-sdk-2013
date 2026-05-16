@@ -22,6 +22,7 @@ public:
 	DECLARE_DATADESC();
 
 	CAnticitizen_PlayerResource();
+	~CAnticitizen_PlayerResource();
 
 	virtual void UpdatePlayerData( void );
 	virtual void Spawn( void );
@@ -37,5 +38,7 @@ protected:
 private:
 	CUtlVector < PLAYERCLASS_FILE_INFO_HANDLE >		m_hPlayerClassInfoHandles;
 };
+
+extern CAnticitizen_PlayerResource* g_Anticitizen_PR;
 
 #endif // SDK_PLAYER_RESOURCE_H

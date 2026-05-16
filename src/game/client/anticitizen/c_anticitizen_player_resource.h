@@ -35,6 +35,7 @@ protected:
 private:
 	CUtlVector < PLAYERCLASS_FILE_INFO_HANDLE >		m_hPlayerClassInfoHandles;
 };
-C_Anticitizen_PlayerResource * AnticitizenGameResources( void );
+
+extern C_Anticitizen_PlayerResource* g_Anticitizen_PR;
 
 #endif // C_Anticitizen_PlayerResource_H

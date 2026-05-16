@@ -14,6 +14,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+C_Anticitizen_PlayerResource* g_Anticitizen_PR;
 
 IMPLEMENT_CLIENTCLASS_DT(C_Anticitizen_PlayerResource, DT_Anticitizen_PlayerResource, CAnticitizen_PlayerResource)
 	RecvPropArray3( RECVINFO_ARRAY(m_iPlayerClass), RecvPropInt( RECVINFO(m_iPlayerClass[0]))),
@@ -24,6 +25,7 @@ END_RECV_TABLE()
 //-----------------------------------------------------------------------------
 C_Anticitizen_PlayerResource::C_Anticitizen_PlayerResource()
 {
+	g_Anticitizen_PR = this;
 }
 
 //-----------------------------------------------------------------------------
@@ -31,6 +33,7 @@ C_Anticitizen_PlayerResource::C_Anticitizen_PlayerResource()
 //-----------------------------------------------------------------------------
 C_Anticitizen_PlayerResource::~C_Anticitizen_PlayerResource()
 {
+	g_Anticitizen_PR = NULL;
 }
 
 int C_Anticitizen_PlayerResource::GetPlayerClass( int iIndex )
@@ -71,9 +74,4 @@ const CAnticitizen_FilePlayerClassInfo_t& C_Anticitizen_PlayerResource::GetPlaye
 #endif
 
 	return *pSDKInfo;
-}
-
-C_Anticitizen_PlayerResource * AnticitizenGameResources( void )
-{
-	return dynamic_cast<C_Anticitizen_PlayerResource *>(GameResources());
 }

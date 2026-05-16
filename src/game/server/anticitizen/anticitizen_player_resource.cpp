@@ -14,6 +14,8 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+CAnticitizen_PlayerResource* g_Anticitizen_PR;
+
 // Datatable
 IMPLEMENT_SERVERCLASS_ST(CAnticitizen_PlayerResource, DT_Anticitizen_PlayerResource)
 	SendPropArray3( SENDINFO_ARRAY3(m_iPlayerClass), SendPropInt( SENDINFO_ARRAY(m_iPlayerClass), 4 ) ),
@@ -25,9 +27,20 @@ END_DATADESC()
 
 LINK_ENTITY_TO_CLASS( anticitizen_player_manager, CAnticitizen_PlayerResource );
 
-CAnticitizen_PlayerResource::CAnticitizen_PlayerResource( void )
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+CAnticitizen_PlayerResource::CAnticitizen_PlayerResource()
 {
-	
+	g_Anticitizen_PR = this;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+CAnticitizen_PlayerResource::~CAnticitizen_PlayerResource()
+{
+	g_Anticitizen_PR = NULL;
 }
 
 //-----------------------------------------------------------------------------
