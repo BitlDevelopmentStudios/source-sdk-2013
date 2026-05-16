@@ -794,7 +794,7 @@ static void TeamPlayerCommand(const CCommand& args)
 		teamName = "Spectator";
 	}
 #ifdef HL2MP
-	else if (HL2MPRules()->IsTeamplay())
+	else
 	{
 		if (teamIndex == TEAM_COMBINE)
 			teamName = "Combine";

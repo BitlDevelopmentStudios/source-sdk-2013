@@ -314,15 +314,11 @@ ActionResult< CHL2MPBot >	CHL2MPBotGetHealth::Update( CHL2MPBot *me, float inter
 		return Done( "I've been healed" );
 	}
 
-	if ( HL2MPRules()->IsTeamplay() )
-	{
-		// if the closest player to the item we're after is an enemy, give up
-
-		CClosestHL2MPPlayer close( m_healthKit );
-		ForEachPlayer( close );
-		if ( close.m_closePlayer && me->IsEnemy( close.m_closePlayer ) )
-			return Done( "An enemy is closer to it" );
-	}
+	// if the closest player to the item we're after is an enemy, give up
+	CClosestHL2MPPlayer close(m_healthKit);
+	ForEachPlayer(close);
+	if (close.m_closePlayer && me->IsEnemy(close.m_closePlayer))
+		return Done("An enemy is closer to it");
 
 	if ( m_isGoalCharger )
 	{

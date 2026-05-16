@@ -336,16 +336,10 @@ void CHL2MPClientScoreBoardDialog::InitScoreboardSections()
 	// fill out the structure of the scoreboard
 	AddHeader();
 
-	if ( HL2MPRules()->IsTeamplay() )
-	{
-		// add the team sections
-		AddSection( TYPE_TEAM, TEAM_COMBINE );
-		AddSection( TYPE_TEAM, TEAM_REBELS );
-	}
-	else
-	{
-		AddSection( TYPE_TEAM, TEAM_UNASSIGNED );
-	}
+	// add the team sections
+	AddSection( TYPE_TEAM, TEAM_COMBINE );
+	AddSection( TYPE_TEAM, TEAM_REBELS );
+
 	AddSection( TYPE_TEAM, TEAM_SPECTATOR );
 }
 
@@ -383,59 +377,35 @@ void CHL2MPClientScoreBoardDialog::UpdateTeamInfo()
 			wchar_t string1[1024];
 			wchar_t wNumPlayers[6];
 
-			if ( HL2MPRules()->IsTeamplay() == false )
-			{
-				_snwprintf( wNumPlayers, ARRAYSIZE(wNumPlayers), L"%i", iNumPlayersInGame );
-#ifdef WIN32
-				_snwprintf( name, ARRAYSIZE(name), L"%s", g_pVGuiLocalize->Find("#ScoreBoard_Deathmatch") );
-#else
-				_snwprintf( name, ARRAYSIZE(name), L"%S", g_pVGuiLocalize->Find("#ScoreBoard_Deathmatch") );
-#endif
-				
-				teamName = name;
+			_snwprintf(wNumPlayers, ARRAYSIZE(wNumPlayers), L"%i", team->Get_Number_Players());
 
-				if ( iNumPlayersInGame == 1)
-				{
-					g_pVGuiLocalize->ConstructString( string1, sizeof(string1), g_pVGuiLocalize->Find("#ScoreBoard_Player"), 2, teamName, wNumPlayers );
-				}
-				else
-				{
-					g_pVGuiLocalize->ConstructString( string1, sizeof(string1), g_pVGuiLocalize->Find("#ScoreBoard_Players"), 2, teamName, wNumPlayers );
-				}
+			if (!teamName && team)
+			{
+				g_pVGuiLocalize->ConvertANSIToUnicode(team->Get_Name(), name, sizeof(name));
+				teamName = name;
+			}
+
+			if (team->Get_Number_Players() == 1)
+			{
+				g_pVGuiLocalize->ConstructString(string1, sizeof(string1), g_pVGuiLocalize->Find("#ScoreBoard_Player"), 2, teamName, wNumPlayers);
 			}
 			else
 			{
-				_snwprintf(wNumPlayers, ARRAYSIZE(wNumPlayers), L"%i", team->Get_Number_Players());
+				g_pVGuiLocalize->ConstructString(string1, sizeof(string1), g_pVGuiLocalize->Find("#ScoreBoard_Players"), 2, teamName, wNumPlayers);
+			}
 
-				if (!teamName && team)
-				{
-					g_pVGuiLocalize->ConvertANSIToUnicode(team->Get_Name(), name, sizeof(name));
-					teamName = name;
-				}
-
-				if (team->Get_Number_Players() == 1)
-				{
-					g_pVGuiLocalize->ConstructString( string1, sizeof(string1), g_pVGuiLocalize->Find("#ScoreBoard_Player"), 2, teamName, wNumPlayers );
-				}
-				else
-				{
-					g_pVGuiLocalize->ConstructString( string1, sizeof(string1), g_pVGuiLocalize->Find("#ScoreBoard_Players"), 2, teamName, wNumPlayers );
-				}
-
-				// update stats
-				wchar_t val[6];
-				V_snwprintf(val, ARRAYSIZE(val), L"%d", team->Get_Score());
-				m_pPlayerList->ModifyColumn(sectionID, "frags", val);
-				if (team->Get_Ping() < 1)
-				{
-					m_pPlayerList->ModifyColumn(sectionID, "ping", L"");
-				}
-				else
-				{
-					V_snwprintf(val, ARRAYSIZE(val), L"%d", team->Get_Ping());
-					m_pPlayerList->ModifyColumn(sectionID, "ping", val);
-				}
-
+			// update stats
+			wchar_t val[6];
+			V_snwprintf(val, ARRAYSIZE(val), L"%d", team->Get_Score());
+			m_pPlayerList->ModifyColumn(sectionID, "frags", val);
+			if (team->Get_Ping() < 1)
+			{
+				m_pPlayerList->ModifyColumn(sectionID, "ping", L"");
+			}
+			else
+			{
+				V_snwprintf(val, ARRAYSIZE(val), L"%d", team->Get_Ping());
+				m_pPlayerList->ModifyColumn(sectionID, "ping", val);
 			}
 		
 			m_pPlayerList->ModifyColumn(sectionID, "name", string1);

@@ -55,13 +55,6 @@ extern CBaseEntity	 *g_pLastRebelSpawn;
 REGISTER_GAMERULES_CLASS( CHL2MPRules );
 
 BEGIN_NETWORK_TABLE_NOBASE( CHL2MPRules, DT_HL2MPRules )
-
-	#ifdef CLIENT_DLL
-		RecvPropBool( RECVINFO( m_bTeamPlayEnabled ) ),
-	#else
-		SendPropBool( SENDINFO( m_bTeamPlayEnabled ) ),
-	#endif
-
 END_NETWORK_TABLE()
 
 
@@ -192,7 +185,6 @@ CHL2MPRules::CHL2MPRules()
 		g_Teams.AddToTail( pTeam );
 	}
 
-	m_bTeamPlayEnabled = teamplay.GetBool();
 	m_flIntermissionEndTime = 0.0f;
 	m_flGameStartTime = 0;
 
@@ -320,30 +312,13 @@ void CHL2MPRules::Think( void )
 
 	if ( flFragLimit )
 	{
-		if( IsTeamplay() == true )
-		{
-			CTeam *pCombine = g_Teams[TEAM_COMBINE];
-			CTeam *pRebels = g_Teams[TEAM_REBELS];
+		CTeam* pCombine = g_Teams[TEAM_COMBINE];
+		CTeam* pRebels = g_Teams[TEAM_REBELS];
 
-			if ( pCombine->GetScore() >= flFragLimit || pRebels->GetScore() >= flFragLimit )
-			{
-				GoToIntermission();
-				return;
-			}
-		}
-		else
+		if (pCombine->GetScore() >= flFragLimit || pRebels->GetScore() >= flFragLimit)
 		{
-			// check if any player is over the frag limit
-			for ( int i = 1; i <= gpGlobals->maxClients; i++ )
-			{
-				CBasePlayer *pPlayer = UTIL_PlayerByIndex( i );
-
-				if ( pPlayer && pPlayer->FragCount() >= flFragLimit )
-				{
-					GoToIntermission();
-					return;
-				}
-			}
+			GoToIntermission();
+			return;
 		}
 	}
 
@@ -783,29 +758,16 @@ void CHL2MPRules::ClientSettingsChanged( CBasePlayer *pPlayer )
 			return;
 		}
 
-		if ( HL2MPRules()->IsTeamplay() == false )
+		if (Q_stristr(szModelName, "models/human"))
 		{
-			pHL2Player->SetPlayerModel();
-
-			const char *pszCurrentModelName = modelinfo->GetModelName( pHL2Player->GetModel() );
-
-			char szReturnString[128];
-			Q_snprintf( szReturnString, sizeof( szReturnString ), "Your player model is: %s\n", pszCurrentModelName );
-
-			ClientPrint( pHL2Player, HUD_PRINTTALK, szReturnString );
+			pHL2Player->ChangeTeam(TEAM_REBELS);
 		}
 		else
 		{
-			if ( Q_stristr( szModelName, "models/human") )
-			{
-				pHL2Player->ChangeTeam( TEAM_REBELS );
-			}
-			else
-			{
-				pHL2Player->ChangeTeam( TEAM_COMBINE );
-			}
+			pHL2Player->ChangeTeam(TEAM_COMBINE);
 		}
 	}
+
 	if ( sv_report_client_settings.GetInt() == 1 )
 	{
 		UTIL_LogPrintf( "\"%s\" cl_cmdrate = \"%s\"\n", pHL2Player->GetPlayerName(), engine->GetClientConVarValue( pHL2Player->entindex(), "cl_cmdrate" ));
@@ -821,7 +783,7 @@ int CHL2MPRules::PlayerRelationship( CBaseEntity *pPlayer, CBaseEntity *pTarget 
 #ifndef CLIENT_DLL
 	// half life multiplay has a simple concept of Player Relationships.
 	// you are either on another player's team, or you are not.
-	if ( !pPlayer || !pTarget || !pTarget->IsPlayer() || IsTeamplay() == false )
+	if ( !pPlayer || !pTarget || !pTarget->IsPlayer() )
 		return GR_NOTTEAMMATE;
 
 	if ( (*GetTeamID(pPlayer) != '\0') && (*GetTeamID(pTarget) != '\0') && !stricmp( GetTeamID(pPlayer), GetTeamID(pTarget) ) )
@@ -835,10 +797,7 @@ int CHL2MPRules::PlayerRelationship( CBaseEntity *pPlayer, CBaseEntity *pTarget 
 
 const char *CHL2MPRules::GetGameDescription( void )
 { 
-	if ( IsTeamplay() )
-		return "Team Deathmatch"; 
-
-	return "Deathmatch"; 
+	return "Team Deathmatch";
 } 
 
 bool CHL2MPRules::IsConnectedUserInfoChangeAllowed( CBasePlayer *pPlayer )

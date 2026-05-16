@@ -321,7 +321,7 @@ void CBaseHL2MPBludgeonWeapon::Swing( int bIsSecondary )
 	Vector swingStart = pOwner->Weapon_ShootPosition( );
 	Vector forward;
 	
-	bool bDontHitTeammates = ( HL2MPRules()->IsTeamplay() && !friendlyfire.GetBool() );
+	bool bDontHitTeammates = ( !friendlyfire.GetBool() );
 	CTraceFilterIgnoreTeammates ignoreTeammatesFilter( pOwner, COLLISION_GROUP_NONE, pOwner->GetTeamNumber() );
 
 	pOwner->EyeVectors( &forward, NULL, NULL );

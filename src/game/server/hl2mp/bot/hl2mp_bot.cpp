@@ -285,7 +285,7 @@ CON_COMMAND_F( hl2mp_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 
 	int iTeam = Bot_GetTeamByName( teamname );
 
-	if ( HL2MPRules()->IsTeamplay() && iTeam == TEAM_UNASSIGNED )
+	if ( iTeam == TEAM_UNASSIGNED )
 	{
 		CTeam* pRebels = GetGlobalTeam( TEAM_REBELS );
 		CTeam* pCombine = GetGlobalTeam( TEAM_COMBINE );
@@ -2421,23 +2421,13 @@ bool CHL2MPBot::IsEnemy( const CBaseEntity* them ) const
 			return false;
 	}
 
-	if ( HL2MPRules() && HL2MPRules()->IsTeamplay() )
-	{
-		if ( them->GetTeamNumber() == TEAM_COMBINE && this->GetTeamNumber() == TEAM_REBELS )
-			return true;
+	if (them->GetTeamNumber() == TEAM_COMBINE && this->GetTeamNumber() == TEAM_REBELS)
+		return true;
 
-		if ( them->GetTeamNumber() == TEAM_REBELS && this->GetTeamNumber() == TEAM_COMBINE )
-			return true;
+	if (them->GetTeamNumber() == TEAM_REBELS && this->GetTeamNumber() == TEAM_COMBINE)
+		return true;
 
-		return false;
-	}
-	else
-	{
-		if ( them->GetTeamNumber() == TEAM_UNASSIGNED )
-			return true;
-
-		return false;
-	}
+	return false;
 }
 
 CBaseHL2MPBludgeonWeapon* CHL2MPBot::GetBludgeonWeapon( void )

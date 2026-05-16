@@ -279,47 +279,26 @@ void CHL2MP_Player::PickDefaultSpawnTeam( void )
 {
 	if ( GetTeamNumber() == 0 )
 	{
-		if ( HL2MPRules()->IsTeamplay() == false )
+		CTeam* pCombine = g_Teams[TEAM_COMBINE];
+		CTeam* pRebels = g_Teams[TEAM_REBELS];
+
+		if (pCombine == NULL || pRebels == NULL)
 		{
-			if ( GetModelPtr() == NULL )
-			{
-				const char *szModelName = NULL;
-				szModelName = engine->GetClientConVarValue( engine->IndexOfEdict( edict() ), "cl_playermodel" );
-
-				if ( ValidatePlayerModel( szModelName ) == false )
-				{
-					char szReturnString[512];
-
-					Q_snprintf( szReturnString, sizeof (szReturnString ), "cl_playermodel models/combine_soldier.mdl\n" );
-					engine->ClientCommand ( edict(), szReturnString );
-				}
-
-				ChangeTeam( TEAM_UNASSIGNED );
-			}
+			ChangeTeam(random->RandomInt(TEAM_COMBINE, TEAM_REBELS));
 		}
 		else
 		{
-			CTeam *pCombine = g_Teams[TEAM_COMBINE];
-			CTeam *pRebels = g_Teams[TEAM_REBELS];
-
-			if ( pCombine == NULL || pRebels == NULL )
+			if (pCombine->GetNumPlayers() > pRebels->GetNumPlayers())
 			{
-				ChangeTeam( random->RandomInt( TEAM_COMBINE, TEAM_REBELS ) );
+				ChangeTeam(TEAM_REBELS);
+			}
+			else if (pCombine->GetNumPlayers() < pRebels->GetNumPlayers())
+			{
+				ChangeTeam(TEAM_COMBINE);
 			}
 			else
 			{
-				if ( pCombine->GetNumPlayers() > pRebels->GetNumPlayers() )
-				{
-					ChangeTeam( TEAM_REBELS );
-				}
-				else if ( pCombine->GetNumPlayers() < pRebels->GetNumPlayers() )
-				{
-					ChangeTeam( TEAM_COMBINE );
-				}
-				else
-				{
-					ChangeTeam( random->RandomInt( TEAM_COMBINE, TEAM_REBELS ) );
-				}
+				ChangeTeam(random->RandomInt(TEAM_COMBINE, TEAM_REBELS));
 			}
 		}
 	}
@@ -950,32 +929,16 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 
 	bool bKill = false;
 
-	if ( HL2MPRules()->IsTeamplay() != true && iTeam != TEAM_SPECTATOR )
+	if (iTeam != GetTeamNumber() && GetTeamNumber() != TEAM_UNASSIGNED)
 	{
-		//don't let them try to join combine or rebels during deathmatch.
-		iTeam = TEAM_UNASSIGNED;
-	}
-
-	if ( HL2MPRules()->IsTeamplay() == true )
-	{
-		if ( iTeam != GetTeamNumber() && GetTeamNumber() != TEAM_UNASSIGNED )
-		{
-			bKill = true;
-		}
+		bKill = true;
 	}
 
 	BaseClass::ChangeTeam( iTeam );
 
 	m_flNextTeamChangeTime = gpGlobals->curtime + TEAM_CHANGE_INTERVAL;
 
-	if ( HL2MPRules()->IsTeamplay() == true )
-	{
-		SetPlayerTeamModel();
-	}
-	else
-	{
-		SetPlayerModel();
-	}
+	SetPlayerTeamModel();
 
 	if ( iTeam == TEAM_SPECTATOR )
 	{
@@ -1304,19 +1267,16 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 
 	CBaseEntity *pAttacker = info.GetAttacker();
 
-	if ( HL2MPRules()->IsTeamplay() )
+	// Check for the attacker being in team Unassigned to account
+	// for non-player attackers, which are in this team by default.
+	// In TDM, should only happen with deaths to non-player causes.
+	if (pAttacker && !pAttacker->InSameTeam(this) && pAttacker->GetTeamNumber() != TEAM_UNASSIGNED)
 	{
-		// Check for the attacker being in team Unassigned to account
-		// for non-player attackers, which are in this team by default.
-		// In TDM, should only happen with deaths to non-player causes.
-		if ( pAttacker && !pAttacker->InSameTeam( this ) && pAttacker->GetTeamNumber() != TEAM_UNASSIGNED )
-		{
-			pAttacker->GetTeam()->AddScore( 1 );
-		}
-		else
-		{
-			GetTeam()->AddScore( -1 );
-		}
+		pAttacker->GetTeam()->AddScore(1);
+	}
+	else
+	{
+		GetTeam()->AddScore(-1);
 	}
 
 	FlashlightTurnOff();
@@ -1379,24 +1339,21 @@ CBaseEntity* CHL2MP_Player::EntSelectSpawnPoint( void )
 	edict_t		*player = edict();
 	const char *pSpawnpointName = "info_player_deathmatch";
 
-	if ( HL2MPRules()->IsTeamplay() == true )
+	if (GetTeamNumber() == TEAM_COMBINE)
 	{
-		if ( GetTeamNumber() == TEAM_COMBINE )
-		{
-			pSpawnpointName = "info_player_combine";
-			pLastSpawnPoint = g_pLastCombineSpawn;
-		}
-		else if ( GetTeamNumber() == TEAM_REBELS )
-		{
-			pSpawnpointName = "info_player_rebel";
-			pLastSpawnPoint = g_pLastRebelSpawn;
-		}
+		pSpawnpointName = "info_player_combine";
+		pLastSpawnPoint = g_pLastCombineSpawn;
+	}
+	else if (GetTeamNumber() == TEAM_REBELS)
+	{
+		pSpawnpointName = "info_player_rebel";
+		pLastSpawnPoint = g_pLastRebelSpawn;
+	}
 
-		if ( gEntList.FindEntityByClassname( NULL, pSpawnpointName ) == NULL )
-		{
-			pSpawnpointName = "info_player_deathmatch";
-			pLastSpawnPoint = g_pLastSpawn;
-		}
+	if (gEntList.FindEntityByClassname(NULL, pSpawnpointName) == NULL)
+	{
+		pSpawnpointName = "info_player_deathmatch";
+		pLastSpawnPoint = g_pLastSpawn;
 	}
 
 	pSpot = pLastSpawnPoint;
@@ -1452,16 +1409,13 @@ CBaseEntity* CHL2MP_Player::EntSelectSpawnPoint( void )
 
 ReturnSpot:
 
-	if ( HL2MPRules()->IsTeamplay() == true )
+	if (GetTeamNumber() == TEAM_COMBINE)
 	{
-		if ( GetTeamNumber() == TEAM_COMBINE )
-		{
-			g_pLastCombineSpawn = pSpot;
-		}
-		else if ( GetTeamNumber() == TEAM_REBELS ) 
-		{
-			g_pLastRebelSpawn = pSpot;
-		}
+		g_pLastCombineSpawn = pSpot;
+	}
+	else if (GetTeamNumber() == TEAM_REBELS)
+	{
+		g_pLastRebelSpawn = pSpot;
 	}
 
 	g_pLastSpawn = pSpot;
