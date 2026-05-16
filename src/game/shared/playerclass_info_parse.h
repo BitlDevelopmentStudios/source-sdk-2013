@@ -55,6 +55,10 @@ public:
 bool ReadPlayerClassDataFromFileForSlot( IFileSystem* filesystem, const char *szClassName, 
 	PLAYERCLASS_FILE_INFO_HANDLE *phandle, const unsigned char *pICEKey = NULL );
 
+// The weapon parse function
+bool ReadPlayerClassDataFromFileForSlotEx(IFileSystem* filesystem, const char* szClassName,
+	PLAYERCLASS_FILE_INFO_HANDLE* phandle, const char* pPath = NULL, const unsigned char* pICEKey = NULL);
+
 // If player class info has been loaded for the specified class name, this returns it.
 PLAYERCLASS_FILE_INFO_HANDLE LookupPlayerClassInfoSlot( const char *name );
 

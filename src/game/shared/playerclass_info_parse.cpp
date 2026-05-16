@@ -168,34 +168,43 @@ KeyValues* ReadEncryptedKVPlayerClassFile( IFileSystem *pFilesystem, const char 
 // Output:  true  - if data2 successfully read
 //			false - if data load fails
 //-----------------------------------------------------------------------------
-bool ReadPlayerClassDataFromFileForSlot( IFileSystem* pFilesystem, const char *szPlayerClassName, PLAYERCLASS_FILE_INFO_HANDLE *phandle, const unsigned char *pICEKey )
+bool ReadPlayerClassDataFromFileForSlotEx(IFileSystem* pFilesystem, const char* szPlayerClassName, PLAYERCLASS_FILE_INFO_HANDLE* phandle, const char* pPath, const unsigned char* pICEKey)
 {
-	if ( !phandle )
+	if (!phandle)
 	{
-		Assert( 0 );
+		Assert(0);
 		return false;
 	}
 
-	*phandle = FindPlayerClassInfoSlot( szPlayerClassName );
-	FilePlayerClassInfo_t *pFileInfo = GetFilePlayerClassInfoFromHandle( *phandle );
-	Assert( pFileInfo );
+	*phandle = FindPlayerClassInfoSlot(szPlayerClassName);
+	FilePlayerClassInfo_t* pFileInfo = GetFilePlayerClassInfoFromHandle(*phandle);
+	Assert(pFileInfo);
 
-	if ( pFileInfo->m_bParsedScript )
+	if (pFileInfo->m_bParsedScript)
 		return true;
 
 	char sz[128];
-	Q_snprintf( sz, sizeof( sz ), "scripts/playerclass_%s", szPlayerClassName );
-	KeyValues *pKV = ReadEncryptedKVFile( pFilesystem, sz, pICEKey );
-	if ( !pKV )
+	Q_snprintf(sz, sizeof(sz), pPath, szPlayerClassName);
+	KeyValues* pKV = ReadEncryptedKVFile(pFilesystem, sz, pICEKey);
+	if (!pKV)
 		return false;
 
-	pFileInfo->Parse( pKV, szPlayerClassName );
+	pFileInfo->Parse(pKV, szPlayerClassName);
 
 	pKV->deleteThis();
 
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: Read data on weapon from script file
+// Output:  true  - if data2 successfully read
+//			false - if data load fails
+//-----------------------------------------------------------------------------
+bool ReadPlayerClassDataFromFileForSlot(IFileSystem* pFilesystem, const char* szPlayerClassName, PLAYERCLASS_FILE_INFO_HANDLE* phandle, const unsigned char* pICEKey)
+{
+	return ReadPlayerClassDataFromFileForSlotEx(pFilesystem, szPlayerClassName, phandle, "scripts/playerclass_%s", pICEKey);
+}
 
 //-----------------------------------------------------------------------------
 // FilePlayerClassInfo_t implementation.
