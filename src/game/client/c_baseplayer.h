@@ -382,11 +382,6 @@ public:
 
 	float					GetFOVTime( void ){ return m_flFOVTime; }
 
-#ifdef ANTICITIZEN
-	void SetSPMovement(bool enabled) { m_bPlayerUsesSPMovement = enabled; }
-	bool UsesSPMovement() { return m_bPlayerUsesSPMovement; }
-#endif
-
 	virtual void			OnAchievementAchieved( int iAchievement ) {}
 	
 	bool					ShouldAnnounceAchievement( void ){ return m_flNextAchievementAnnounceTime < gpGlobals->curtime; }
@@ -439,10 +434,6 @@ public:
 	int						m_iDefaultFOV;		// default FOV if no other zooms are occurring
 	EHANDLE					m_hZoomOwner;		// This is a pointer to the entity currently controlling the player's zoom
 												// Only this entity can change the zoom state once it has ownership
-
-#ifdef ANTICITIZEN
-	bool m_bPlayerUsesSPMovement;
-#endif
 
 	// For weapon prediction
 	bool			m_fOnTarget;		//Is the crosshair on a target?

@@ -677,9 +677,7 @@ ConVarRef suitcharger( "sk_suitcharger" );
 		bool		addDefault;
 		CBaseEntity	*pWeaponEntity = NULL;
 
-#ifndef ANTICITIZEN
 		pPlayer->EquipSuit();
-#endif
 		
 		addDefault = true;
 

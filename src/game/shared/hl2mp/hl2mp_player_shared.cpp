@@ -70,15 +70,6 @@ Vector CHL2MP_Player::GetAttackSpread( CBaseCombatWeapon *pWeapon, CBaseEntity *
 //-----------------------------------------------------------------------------
 void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, float fvol, bool force )
 {
-#ifdef ANTICITIZEN
-	// "SP movement" uses the original Source footsteps.
-	if ( UsesSPMovement() )
-	{
-		BaseClass::PlayStepSound( vecOrigin, psurface, fvol, force );
-		return;
-	}
-#endif
-
 	if ( gpGlobals->maxClients > 1 && !sv_footsteps.GetFloat() )
 		return;
 

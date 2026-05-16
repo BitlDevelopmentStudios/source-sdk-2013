@@ -370,10 +370,7 @@ static void HelpPlayerCommand(const CCommand& args)
 			"Special group targets available:\n"
 			"  @all     - All players\n"
 			"  @me      - Yourself\n"
-#ifdef ANTICITIZEN
-			"  @blue    - Combine\n"
-			"  @red     - Freeman\n"
-#elif HL2MP
+#ifdef HL2MP
 			"  @blue    - Combine team\n"
 			"  @red     - Rebels team\n"
 #elif TF_DLL
@@ -796,15 +793,7 @@ static void TeamPlayerCommand(const CCommand& args)
 	{
 		teamName = "Spectator";
 	}
-#ifdef ANTICITIZEN
-	else if (HL2MPRules()->IsTeamplay())
-	{
-		if (teamIndex == TEAM_COMBINE)
-			teamName = "Combine";
-		else if (teamIndex == TEAM_REBELS)
-			teamName = "Freeman";
-	}
-#elif HL2MP
+#ifdef HL2MP
 	else if (HL2MPRules()->IsTeamplay())
 	{
 		if (teamIndex == TEAM_COMBINE)

@@ -2463,34 +2463,7 @@ bool CGameMovement::CheckJumpButton( void )
 	}
 
 	// Add a little forward velocity based on your current forward velocity - if you are not sprinting.
-#if defined( ANTICITIZEN )
-	// Source 2006 bhop.
-	if ( player->UsesSPMovement() )
-	{
-		CHLMoveData *pMoveData = ( CHLMoveData* )mv;
-		Vector vecForward;
-		AngleVectors( mv->m_vecViewAngles, &vecForward );
-		vecForward.z = 0;
-		VectorNormalize( vecForward );
-		if ( !pMoveData->m_bIsSprinting && !player->m_Local.m_bDucked )
-		{
-			for ( int iAxis = 0; iAxis < 2 ; ++iAxis )
-			{
-				vecForward[iAxis] *= ( mv->m_flForwardMove * 0.5f );
-	//			vecForward[iAxis] *= ( mv->m_flForwardMove * jumpforwardscale.GetFloat() );
-			}
-		}
-		else
-		{
-			for ( int iAxis = 0; iAxis < 2 ; ++iAxis )
-			{
-				vecForward[iAxis] *= ( mv->m_flForwardMove * 0.1f );
-	//			vecForward[iAxis] *= ( mv->m_flForwardMove * jumpforwardsprintscale.GetFloat() );
-			}
-		}
-		VectorAdd( vecForward, mv->m_vecVelocity, mv->m_vecVelocity );
-	}
-#elif defined( HL2_DLL ) || defined( HL2_CLIENT_DLL )
+#if defined( HL2_DLL ) || defined( HL2_CLIENT_DLL )
 	if ( gpGlobals->maxClients == 1 )
 	{
 		CHLMoveData *pMoveData = ( CHLMoveData* )mv;

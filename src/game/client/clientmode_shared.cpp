@@ -1125,7 +1125,6 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 			}
 #endif
 
-#ifndef ANTICITIZEN
 			if ( !IsInCommentaryMode() )
 			{
 				wchar_t wszLocalized[100];
@@ -1143,7 +1142,6 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 
 				hudChat->Printf( CHAT_FILTER_TEAMCHANGE, "%s", szLocalized );
 			}
-#endif
 		}
 
 		if ( pPlayer && pPlayer->IsLocalPlayer() )
