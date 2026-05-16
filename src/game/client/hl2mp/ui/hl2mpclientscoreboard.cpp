@@ -338,7 +338,7 @@ void CHL2MPClientScoreBoardDialog::InitScoreboardSections()
 
 	// add the team sections
 	AddSection( TYPE_TEAM, TEAM_COMBINE );
-	AddSection( TYPE_TEAM, TEAM_REBELS );
+	AddSection( TYPE_TEAM, TEAM_FREEMAN );
 
 	AddSection( TYPE_TEAM, TEAM_SPECTATOR );
 }
@@ -477,7 +477,7 @@ int CHL2MPClientScoreBoardDialog::GetSectionFromTeamNumber( int teamNumber )
 	{
 	case TEAM_COMBINE:
 		return SCORESECTION_COMBINE;
-	case TEAM_REBELS:
+	case TEAM_FREEMAN:
 		return SCORESECTION_REBELS;
 	case TEAM_SPECTATOR:
 		return SCORESECTION_SPECTATOR;

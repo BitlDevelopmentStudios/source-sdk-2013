@@ -45,7 +45,7 @@ bool IsTeamName( const char *string )
 	if ( !stricmp( string, "combine" ) )
 		return true;
 
-	if ( !stricmp( string, "rebels" ) )
+	if ( !stricmp( string, "freeman" ) )
 		return true;
 
 	return false;
@@ -57,9 +57,9 @@ bool IsTeamName( const char *string )
 int Bot_GetTeamByName( const char *string )
 {
 	int iTeam = TEAM_UNASSIGNED;
-	if ( !stricmp( string, "rebels" ) )
+	if ( !stricmp( string, "freeman" ) )
 	{
-		iTeam = TEAM_REBELS;
+		iTeam = TEAM_FREEMAN;
 	}
 	else if ( !stricmp( string, "combine" ) )
 	{
@@ -287,10 +287,10 @@ CON_COMMAND_F( hl2mp_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 
 	if ( iTeam == TEAM_UNASSIGNED )
 	{
-		CTeam* pRebels = GetGlobalTeam( TEAM_REBELS );
+		CTeam* pRebels = GetGlobalTeam( TEAM_FREEMAN );
 		CTeam* pCombine = GetGlobalTeam( TEAM_COMBINE );
 
-		iTeam = pRebels->GetNumPlayers() < pCombine->GetNumPlayers() ? TEAM_REBELS : TEAM_COMBINE;
+		iTeam = pRebels->GetNumPlayers() < pCombine->GetNumPlayers() ? TEAM_FREEMAN : TEAM_COMBINE;
 	}
 
 	char name[256];
@@ -381,9 +381,9 @@ CON_COMMAND_F( hl2mp_bot_kick, "Remove a HL2MPBot by name, or all bots (\"all\")
 	for( i=1; i<args.ArgC(); ++i )
 	{
 		// each argument could be a classname, a team, or a count
-		if ( FStrEq( args.Arg(i), "rebels" ) )
+		if ( FStrEq( args.Arg(i), "freeman" ) )
 		{
-			iTeam = TEAM_REBELS;
+			iTeam = TEAM_FREEMAN;
 		}
 		else if ( FStrEq( args.Arg(i), "combine" ) )
 		{
@@ -450,7 +450,7 @@ CON_COMMAND_F( hl2mp_bot_kill, "Kill a HL2MPBot by name, or all bots (\"all\")."
 
 	if ( args.ArgC() < 2 )
 	{
-		DevMsg( "%s <bot name>, \"rebels\", \"combine\", or \"all\"> <optional: \"moveToSpectatorTeam\"> \n", args.Arg(0) );
+		DevMsg( "%s <bot name>, \"freeman\", \"combine\", or \"all\"> <optional: \"moveToSpectatorTeam\"> \n", args.Arg(0) );
 		return;
 	}
 
@@ -460,9 +460,9 @@ CON_COMMAND_F( hl2mp_bot_kill, "Kill a HL2MPBot by name, or all bots (\"all\")."
 	for( i=1; i<args.ArgC(); ++i )
 	{
 		// each argument could be a classname, a team, or a count
-		if ( FStrEq( args.Arg(i), "rebels" ) )
+		if ( FStrEq( args.Arg(i), "freeman" ) )
 		{
-			iTeam = TEAM_REBELS;
+			iTeam = TEAM_FREEMAN;
 		}
 		else if ( FStrEq( args.Arg(i), "combine" ) )
 		{
@@ -1349,7 +1349,7 @@ public:
 // Return a nearby area where we can see a member of the enemy team
 CNavArea *CHL2MPBot::FindVantagePoint( float maxTravelDistance ) const
 {
-	CFindVantagePoint find( GetTeamNumber() == TEAM_COMBINE ? TEAM_REBELS : TEAM_COMBINE );
+	CFindVantagePoint find( GetTeamNumber() == TEAM_COMBINE ? TEAM_FREEMAN : TEAM_COMBINE );
 	SearchSurroundingAreas( GetLastKnownArea(), find, maxTravelDistance );
 	return find.m_vantageArea;
 }
@@ -2421,10 +2421,10 @@ bool CHL2MPBot::IsEnemy( const CBaseEntity* them ) const
 			return false;
 	}
 
-	if (them->GetTeamNumber() == TEAM_COMBINE && this->GetTeamNumber() == TEAM_REBELS)
+	if (them->GetTeamNumber() == TEAM_COMBINE && this->GetTeamNumber() == TEAM_FREEMAN)
 		return true;
 
-	if (them->GetTeamNumber() == TEAM_REBELS && this->GetTeamNumber() == TEAM_COMBINE)
+	if (them->GetTeamNumber() == TEAM_FREEMAN && this->GetTeamNumber() == TEAM_COMBINE)
 		return true;
 
 	return false;

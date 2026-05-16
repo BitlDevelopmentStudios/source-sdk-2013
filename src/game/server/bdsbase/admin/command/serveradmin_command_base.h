@@ -746,7 +746,7 @@ static void BringPlayerCommand(const CCommand& args)
 }
 
 #ifdef HL2MP
-#define LAST_VALID_GAME_TEAM TEAM_REBELS
+#define LAST_VALID_GAME_TEAM TEAM_FREEMAN
 #elif TF_DLL
 #define LAST_VALID_GAME_TEAM TF_TEAM_BLUE
 #else
@@ -798,8 +798,8 @@ static void TeamPlayerCommand(const CCommand& args)
 	{
 		if (teamIndex == TEAM_COMBINE)
 			teamName = "Combine";
-		else if (teamIndex == TEAM_REBELS)
-			teamName = "Rebels";
+		else if (teamIndex == TEAM_FREEMAN)
+			teamName = "Freeman";
 	}
 #elif TF_DLL
 	else

@@ -54,6 +54,8 @@ IMPLEMENT_CLIENTCLASS_DT(C_HL2MP_Player, DT_HL2MP_Player, CHL2MP_Player)
 	RecvPropInt( RECVINFO( m_iSpawnInterpCounter ) ),
 	RecvPropInt( RECVINFO( m_iPlayerSoundType) ),
 
+	RecvPropInt(RECVINFO(m_iPlayerClass)),
+
 	RecvPropBool( RECVINFO( m_fIsWalking ) ),
 END_RECV_TABLE()
 
@@ -781,87 +783,6 @@ Vector C_HL2MP_Player::GetAutoaimVector( float flDelta )
 bool C_HL2MP_Player::CanSprint( void )
 {
 	return ( (!m_Local.m_bDucked && !m_Local.m_bDucking) && (GetWaterLevel() != 3) );
-}
-
-extern ConVar sv_maxspeed;
-
-void C_HL2MP_Player::HandleSpeedChanges( CMoveData *mv )
-{
-	int nChangedButtons = mv->m_nButtons ^ mv->m_nOldButtons;
-
-	bool bJustPressedSpeed = !!( nChangedButtons & IN_SPEED );
-
-	const bool bWantSprint = ( CanSprint() && IsSuitEquipped() && ( mv->m_nButtons & IN_SPEED ) );
-	const bool bWantsToChangeSprinting = ( m_HL2Local.m_bNewSprinting != bWantSprint ) && ( nChangedButtons & IN_SPEED ) != 0;
-
-	bool bSprinting = m_HL2Local.m_bNewSprinting;
-	if ( bWantsToChangeSprinting )
-	{
-		if ( bWantSprint )
-		{
-			if ( m_HL2Local.m_flSuitPower < 10.0f )
-			{
-				if ( bJustPressedSpeed )
-				{
-					CPASAttenuationFilter filter( this );
-					filter.UsePredictionRules();
-					EmitSound( filter, entindex(), "HL2Player.SprintNoPower" );
-				}
-			}
-			else
-			{
-				bSprinting = true;
-			}
-		}
-		else
-		{
-			bSprinting = false;
-		}
-	}
-
-	if ( m_HL2Local.m_flSuitPower < 0.01 )
-	{
-		bSprinting = false;
-	}
-
-	bool bWantWalking;
-
-	if ( IsSuitEquipped() )
-	{
-		bWantWalking = ( mv->m_nButtons & IN_WALK ) && !bSprinting && !( mv->m_nButtons & IN_DUCK );
-	}
-	else
-	{
-		bWantWalking = true;
-	}
-
-	if ( bWantWalking )
-	{
-		bSprinting = false;
-	}
-
-	m_HL2Local.m_bNewSprinting = bSprinting;
-
-	if ( bSprinting )
-	{
-		if ( bJustPressedSpeed )
-		{
-			CPASAttenuationFilter filter( this );
-			filter.UsePredictionRules();
-			EmitSound( filter, entindex(), "HL2Player.SprintStart" );
-		}
-		mv->m_flClientMaxSpeed = HL2_SPRINT_SPEED;
-	}
-	else if ( bWantWalking )
-	{
-		mv->m_flClientMaxSpeed = HL2_WALK_SPEED;
-	}
-	else
-	{
-		mv->m_flClientMaxSpeed = HL2_NORM_SPEED;
-	}
-
-	mv->m_flMaxSpeed = sv_maxspeed.GetFloat();
 }
 
 void C_HL2MP_Player::ReduceTimers( CMoveData* mv )

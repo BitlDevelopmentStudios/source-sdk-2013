@@ -14,7 +14,7 @@ $Configuration
 {
 	$Compiler
 	{
-		$AdditionalIncludeDirectories		"$BASE;hl2mp\ui,.\hl2mp,$SRCDIR\game\shared\hl2mp,.\hl2,.\hl2\elements,$SRCDIR\game\shared\hl2"
+		$AdditionalIncludeDirectories		"$BASE;hl2mp\ui,.\hl2mp,$SRCDIR\game\shared\hl2mp,.\hl2,.\hl2\elements,$SRCDIR\game\shared\hl2,.\anticitizen,$SRCDIR\game\shared\anticitizen"
 		$PreprocessorDefinitions			"$BASE;HL2MP;HL2_CLIENT_DLL;NEXT_BOT;ANTICITIZEN"
 	}
 	
@@ -139,6 +139,16 @@ $Project "Client (ANTICITIZEN)"
 					}
 				}
 			}
+		}
+		
+		$Folder	"ANTICITIZEN"
+		{
+			$File	"anticitizen\c_anticitizen_player_resource.cpp"
+			$File	"anticitizen\c_anticitizen_player_resource.h"
+			$File	"$SRCDIR\game\shared\playerclass_info_parse.cpp"
+			$File	"$SRCDIR\game\shared\playerclass_info_parse.h"
+			$File	"$SRCDIR\game\shared\anticitizen\anticitizen_playerclass_info_parse.cpp"
+			$File	"$SRCDIR\game\shared\anticitizen\anticitizen_playerclass_info_parse.h"
 		}
 
 		$Folder	"HL2MP"

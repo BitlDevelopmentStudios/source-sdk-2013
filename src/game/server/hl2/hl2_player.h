@@ -261,7 +261,7 @@ public:
 	void  HandleAdmireGlovesAnimation( void );
 	void  StartAdmireGlovesAnimation( void );
 	
-	void HandleSpeedChanges( CMoveData *mv );
+	virtual void HandleSpeedChanges( CMoveData *mv );
 	void ReduceTimers( CMoveData* mv );
 
 	void SetControlClass( Class_T controlClass ) { m_nControlClass = controlClass; }
@@ -286,6 +286,11 @@ public:
 	CSoundPatch *m_sndLeeches;
 	CSoundPatch *m_sndWaterSplashes;
 
+public:
+	// This player's HL2 specific data that should only be replicated to 
+	//  the player and not to other players.
+	CNetworkVarEmbedded(CHL2PlayerLocalData, m_HL2Local);
+
 protected:
 	virtual void		PreThink( void );
 	virtual	void		PostThink( void );
@@ -302,9 +307,6 @@ private:
 	void				OnSquadMemberKilled( inputdata_t &data );
 
 	Class_T				m_nControlClass;			// Class when player is controlling another entity
-	// This player's HL2 specific data that should only be replicated to 
-	//  the player and not to other players.
-	CNetworkVarEmbedded( CHL2PlayerLocalData, m_HL2Local );
 
 	bool				m_bSprintEnabled;		// Used to disable sprint temporarily
 	bool				m_bIsAutoSprinting;		// A proxy for holding down the sprint key.

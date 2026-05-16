@@ -79,7 +79,7 @@ ActionResult< CHL2MPBot >	CHL2MPBotMainAction::Update( CHL2MPBot *me, float inte
 	VPROF_BUDGET( "CHL2MPBotMainAction::Update", "NextBot" );
 
 	// TEAM_UNASSIGNED -> deathmatch
-	if ( me->GetTeamNumber() != TEAM_COMBINE && me->GetTeamNumber() != TEAM_REBELS && me->GetTeamNumber() != TEAM_UNASSIGNED )
+	if ( me->GetTeamNumber() != TEAM_COMBINE && me->GetTeamNumber() != TEAM_FREEMAN && me->GetTeamNumber() != TEAM_UNASSIGNED )
 	{
 		// not on a team - do nothing
 		return Done( "Not on a playing team" );

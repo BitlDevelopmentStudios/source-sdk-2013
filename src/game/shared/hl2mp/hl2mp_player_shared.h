@@ -29,6 +29,8 @@ enum HL2MPPlayerState
 	NUM_PLAYER_STATES
 };
 
+#define PLAYERCLASS_RANDOM		-2
+#define PLAYERCLASS_UNDEFINED	-1
 
 #if defined( CLIENT_DLL )
 #define CHL2MP_Player C_HL2MP_Player

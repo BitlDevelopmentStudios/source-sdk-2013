@@ -77,12 +77,13 @@ public:
 	virtual void UpdateOnRemove( void );
 	virtual void DeathSound( const CTakeDamageInfo &info );
 	virtual CBaseEntity* EntSelectSpawnPoint( void );
+
+	virtual void	HandleSpeedChanges(CMoveData* mv) OVERRIDE;
 		
 	int FlashlightIsOn( void );
 	void FlashlightTurnOn( void );
 	void FlashlightTurnOff( void );
 	void	PrecacheFootStepSounds( void );
-	bool	ValidatePlayerModel( const char *pModel );
 
 	QAngle GetAnimEyeAngles( void ) { return m_angEyeAngles.Get(); }
 
@@ -94,8 +95,6 @@ public:
 	void GiveDefaultItems( void );
 
 	void ResetAnimation( void );
-	void SetPlayerModel( void );
-	void SetPlayerTeamModel( void );
 	Activity TranslateTeamActivity( Activity ActToTranslate );
 	
 	float GetNextModelChangeTime( void ) { return m_flNextModelChangeTime; }
@@ -131,6 +130,9 @@ public:
 	virtual bool StartObserverMode( int mode );
 	virtual void StopObserverMode( void );
 
+	//classes
+	void	SetPlayerClass(int playerclass);
+	int		GetPlayerClass(void);
 
 	Vector m_vecTotalBulletForce;	//Accumulator for bullet force in a single frame
 
@@ -145,6 +147,8 @@ private:
 
 	CNetworkQAngle( m_angEyeAngles );
 	CPlayerAnimState   m_PlayerAnimState;
+
+	CNetworkVar(int, m_iPlayerClass);
 
 	int m_iModelType;
 	CNetworkVar( int, m_iSpawnInterpCounter );

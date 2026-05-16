@@ -33,6 +33,7 @@
 	#include "voice_gamemgr.h"
 	#include "hl2mp_gameinterface.h"
 	#include "hl2mp_cvars.h"
+	#include "player_resource.h"
 
 extern void respawn(CBaseEntity *pEdict, bool fCopyCorpse);
 
@@ -86,7 +87,7 @@ static const char *s_PreserveEnts[] =
 	"ai_hint",
 	"hl2mp_gamerules",
 	"team_manager",
-	"player_manager",
+	"anticitizen_player_manager",
 	"env_soundscape",
 	"env_soundscape_proxy",
 	"env_soundscape_triggerable",
@@ -170,7 +171,7 @@ char *sTeamNames[] =
 	"Unassigned",
 	"Spectator",
 	"Combine",
-	"Rebels",
+	"Freeman",
 };
 
 CHL2MPRules::CHL2MPRules()
@@ -223,8 +224,7 @@ void CHL2MPRules::CreateStandardEntities( void )
 
 #ifndef CLIENT_DLL
 	// Create the entity that will send our data to the client.
-
-	BaseClass::CreateStandardEntities();
+	g_pPlayerResource = (CPlayerResource*)CBaseEntity::Create("anticitizen_player_manager", vec3_origin, vec3_angle);
 
 	g_pLastCombineSpawn = NULL;
 	g_pLastRebelSpawn = NULL;
@@ -313,7 +313,7 @@ void CHL2MPRules::Think( void )
 	if ( flFragLimit )
 	{
 		CTeam* pCombine = g_Teams[TEAM_COMBINE];
-		CTeam* pRebels = g_Teams[TEAM_REBELS];
+		CTeam* pRebels = g_Teams[TEAM_FREEMAN];
 
 		if (pCombine->GetScore() >= flFragLimit || pRebels->GetScore() >= flFragLimit)
 		{
@@ -760,7 +760,7 @@ void CHL2MPRules::ClientSettingsChanged( CBasePlayer *pPlayer )
 
 		if (Q_stristr(szModelName, "models/human"))
 		{
-			pHL2Player->ChangeTeam(TEAM_REBELS);
+			pHL2Player->ChangeTeam(TEAM_FREEMAN);
 		}
 		else
 		{
@@ -991,7 +991,7 @@ void CHL2MPRules::RestartGame()
 
 	// Respawn entities (glass, doors, etc..)
 
-	CTeam *pRebels = GetGlobalTeam( TEAM_REBELS );
+	CTeam *pRebels = GetGlobalTeam( TEAM_FREEMAN );
 	CTeam *pCombine = GetGlobalTeam( TEAM_COMBINE );
 
 	if ( pRebels )

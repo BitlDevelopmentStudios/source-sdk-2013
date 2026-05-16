@@ -1,0 +1,14 @@
+PlayerClassDatafile
+{
+	// FilePlayerClassInfo_t members
+	"printname"			"#anticitizen_class_freeman"
+	"playermodel"		"models/player.mdl"
+	"selectcmd"			"class_freeman"
+
+	// CAnticitizen_FilePlayerClassInfo_t members
+	"ClassType"			"4" // 0 = none, 1 = low, 2 = mid, 3 = high, 4 = freeman
+	"AllWeapons"		"1"
+	"SPMovement"		"1"
+	"HEVSuit"			"1"
+	"HEVSuitArmor"		"100"
+}

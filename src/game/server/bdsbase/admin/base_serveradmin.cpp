@@ -469,7 +469,7 @@ void BuildGroupTargetMessage(
 int CBase_Admin::GetRedNumber()
 {
 #ifdef HL2MP
-	return TEAM_REBELS;
+	return TEAM_FREEMAN;
 #elif TF_DLL
 	return TF_TEAM_RED;
 #else

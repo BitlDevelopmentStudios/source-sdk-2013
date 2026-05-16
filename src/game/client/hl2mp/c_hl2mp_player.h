@@ -120,6 +120,10 @@ public:
 
 	virtual void PostThink( void );
 
+	//classes
+	void	SetPlayerClass(int playerclass);
+	int		GetPlayerClass(void);
+
 private:
 	
 	C_HL2MP_Player( const C_HL2MP_Player & );
@@ -138,6 +142,8 @@ private:
 	float m_headYawMax;
 	float m_headPitchMin;
 	float m_headPitchMax;
+
+	CNetworkVar(int, m_iPlayerClass);
 
 	bool m_isInit;
 	Vector m_vLookAtTarget;

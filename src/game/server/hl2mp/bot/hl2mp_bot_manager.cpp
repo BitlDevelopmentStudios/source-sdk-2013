@@ -241,14 +241,14 @@ void CHL2MPBotManager::MaintainBotQuota()
 		if ( pBot && pBot->HasAttribute( CHL2MPBot::QUOTA_MANANGED ) )
 		{
 			nHL2MPBots++;
-			if ( pPlayer->GetTeamNumber() == TEAM_REBELS || pPlayer->GetTeamNumber() == TEAM_COMBINE )
+			if ( pPlayer->GetTeamNumber() == TEAM_FREEMAN || pPlayer->GetTeamNumber() == TEAM_COMBINE )
 			{
 				nHL2MPBotsOnGameTeams++;
 			}
 		}
 		else
 		{
-			if ( pPlayer->GetTeamNumber() == TEAM_REBELS || pPlayer->GetTeamNumber() == TEAM_COMBINE )
+			if ( pPlayer->GetTeamNumber() == TEAM_FREEMAN || pPlayer->GetTeamNumber() == TEAM_COMBINE )
 			{
 				nNonHL2MPBotsOnGameTeams++;
 			}
@@ -309,10 +309,10 @@ void CHL2MPBotManager::MaintainBotQuota()
 
 			if ( iTeam == TEAM_UNASSIGNED )
 			{
-				CTeam* pRebels = GetGlobalTeam( TEAM_REBELS );
+				CTeam* pRebels = GetGlobalTeam( TEAM_FREEMAN );
 				CTeam* pCombine = GetGlobalTeam( TEAM_COMBINE );
 
-				iTeam = pRebels->GetNumPlayers() < pCombine->GetNumPlayers() ? TEAM_REBELS : TEAM_COMBINE;
+				iTeam = pRebels->GetNumPlayers() < pCombine->GetNumPlayers() ? TEAM_FREEMAN : TEAM_COMBINE;
 			}
 
 			const char* pszModel = "";
@@ -349,7 +349,7 @@ void CHL2MPBotManager::MaintainBotQuota()
 
 		int kickTeam;
 
-		CTeam *pRebels = GetGlobalTeam( TEAM_REBELS );
+		CTeam *pRebels = GetGlobalTeam( TEAM_FREEMAN );
 		CTeam *pCombine = GetGlobalTeam( TEAM_COMBINE );
 
 		// remove from the team that has more players
@@ -359,7 +359,7 @@ void CHL2MPBotManager::MaintainBotQuota()
 		}
 		else if ( pCombine->GetNumPlayers() < pRebels->GetNumPlayers() )
 		{
-			kickTeam = TEAM_REBELS;
+			kickTeam = TEAM_FREEMAN;
 		}
 		// remove from the team that's winning
 		else if ( pCombine->GetScore() > pRebels->GetScore() )
@@ -368,12 +368,12 @@ void CHL2MPBotManager::MaintainBotQuota()
 		}
 		else if ( pCombine->GetScore() < pRebels->GetScore() )
 		{
-			kickTeam = TEAM_REBELS;
+			kickTeam = TEAM_FREEMAN;
 		}
 		else
 		{
 			// teams and scores are equal, pick a team at random
-			kickTeam = (RandomInt( 0, 1 ) == 0) ? TEAM_COMBINE : TEAM_REBELS;
+			kickTeam = (RandomInt( 0, 1 ) == 0) ? TEAM_COMBINE : TEAM_FREEMAN;
 		}
 
 		// attempt to kick a bot from the given team
@@ -381,7 +381,7 @@ void CHL2MPBotManager::MaintainBotQuota()
 			return;
 
 		// if there were no bots on the team, kick a bot from the other team
-		UTIL_KickBotFromTeam( kickTeam == TEAM_COMBINE ? TEAM_REBELS : TEAM_COMBINE );
+		UTIL_KickBotFromTeam( kickTeam == TEAM_COMBINE ? TEAM_FREEMAN : TEAM_COMBINE );
 	}
 }
 
