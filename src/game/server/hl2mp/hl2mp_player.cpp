@@ -182,10 +182,8 @@ void CHL2MP_Player::GiveAllWeapons(void)
 	CBasePlayer::GiveAmmo(16, "XBowBolt");
 
 	CBasePlayer::GiveAmmo(1, "grenade");
-	CBasePlayer::GiveAmmo(2, "slam");
 
 	GiveNamedItem("weapon_crowbar");
-	GiveNamedItem("weapon_stunstick");
 	GiveNamedItem("weapon_pistol");
 	GiveNamedItem("weapon_357");
 
@@ -198,8 +196,6 @@ void CHL2MP_Player::GiveAllWeapons(void)
 	GiveNamedItem("weapon_crossbow");
 
 	GiveNamedItem("weapon_rpg");
-
-	GiveNamedItem("weapon_slam");
 
 	GiveNamedItem("weapon_physcannon");
 }

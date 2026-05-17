@@ -1,8 +1,8 @@
 "GameInfo"
 {
 	game	"ANTICITIZEN ONE"
-	title	"HALF+LIFE'"
-	title2	"deathmatch"
+	title	"-'NTICITIZEN -"
+	title2	"ONE"
 	type multiplayer_only
 	nomodels 0
 	nohimodel 1

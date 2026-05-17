@@ -21,6 +21,9 @@
 #include "SoundEmitterSystem/isoundemittersystembase.h"
 #include "in_buttons.h"
 
+// memdbgon must be the last include file in a .cpp file!!!
+#include "tier0/memdbgon.h"
+
 extern ConVar hl2_normspeed;
 extern ConVar hl2_sprintspeed;
 

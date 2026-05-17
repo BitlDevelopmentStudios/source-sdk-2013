@@ -70,9 +70,9 @@ Scheme
 		"Main.Title1.Color"	"255 255 255 255"
 		
 		// Top-left corner of the "DEATHMATCH" on the main screen
-		"Main.Title2.X"		"315"
-		"Main.Title2.Y"		"222"
-		"Main.Title2.Color"	"255 255 255 180"
+		"Main.Title2.X"		"170"
+		"Main.Title2.Y"		"212"
+		"Main.Title2.Color"	"255 176 0 255"
 
 		// Top-left corner of the menu on the main screen
 		"Main.Menu.X"			"76"
@@ -855,8 +855,8 @@ Scheme
 		{
 			"1"
 			{
-				"name"  "HL2MP"
-				"tall"			"46"
+				"name"  "K12HL2"
+				"tall"			"32"
 				"weight" "0"
 				"additive" "0"
 				"antialias" "1"
@@ -1306,6 +1306,7 @@ Scheme
 		"15"	"resource/GorDIN-Light.ttf"
 		
 		"16"	"resource/cstrike.ttf"
+		"17"	"resource/K12HL2.ttf"
 	}
 
 }
