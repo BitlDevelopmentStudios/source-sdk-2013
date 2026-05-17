@@ -849,6 +849,14 @@ bool CHL2MP_Player::ClientCommand( const CCommand &args )
 			Warning("Player sent bad joinclass syntax\n");
 		}
 
+#ifndef DEBUG
+		if (GetPlayerClass() == CLS_FREEMAN)
+		{
+			Warning("Cannot join another class as Freeman.\n");
+			return true;
+		}
+#endif // !DEBUG
+
 		if (ShouldRunRateLimitedCommand(args))
 		{
 			int iClass = atoi(args[1]);
