@@ -812,7 +812,15 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 	}
 #endif // !DEBUG
 
+#ifdef DEBUG
+	if (iclass == CLS_FREEMAN)
+	{
+		ChangeTeam(TEAM_FREEMAN);
+	}
+	else if (GetTeamNumber() != TEAM_COMBINE)
+#else
 	if (GetTeamNumber() != TEAM_COMBINE)
+#endif // !DEBUG
 	{
 		ChangeTeam(TEAM_COMBINE);
 	}
