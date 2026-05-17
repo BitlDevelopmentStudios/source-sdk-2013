@@ -506,7 +506,7 @@ FodyWeavers.xsd
 game/*.exe
 game/bin/x64/*.exe
 game/bin/x64/*.dll
-*.lst
+game/*/downloadlists/*.lst
 src/lib/public/x64/fgdlib.lib
 src/lib/public/x64/mathlib.lib
 src/lib/public/x64/matsys_controls.lib
