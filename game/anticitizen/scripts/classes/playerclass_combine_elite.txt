@@ -2,7 +2,7 @@ PlayerClassDatafile
 {
 	// FilePlayerClassInfo_t members
 	"printname"			"#anticitizen_class_overwatchelite"
-	"playermodel"		"models/combine_soldier.mdl"
+	"playermodel"		"models/combine_super_soldier.mdl"
 	"selectcmd"			"class_overwatchelite"
 
 	// CAnticitizen_FilePlayerClassInfo_t members

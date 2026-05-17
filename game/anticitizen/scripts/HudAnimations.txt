@@ -165,6 +165,32 @@ event SuitAuxPowerThreeItemsActive
 	Animate HudSuitPower Position		"16 350"			Linear 0.0 0.4	[$DECK]
 }
 
+event SuitStaminaMax
+{
+	// hide the suit power
+	Animate HudStamina BgColor		"0 0 0 0"		Linear 0.0 0.4
+	Animate HudStamina StaminaColor	"0 0 0 0"		Linear 0.0 0.4
+}
+
+event SuitStaminaNotMax
+{
+	// show suit power
+	Animate HudStamina BgColor		"BgColor"		Linear 0.0 0.4
+	Animate HudStamina StaminaColor	"255 220 0 220"		Linear 0.0 0.4
+}
+
+event SuitStaminaDecreasedBelow25
+{
+	// make color red
+	Animate HudStamina StaminaColor	"255 0 0 220"		Linear 0.0 0.4
+}
+
+event SuitStaminaIncreasedAbove25
+{
+	// make colr bright
+	Animate HudStamina StaminaColor	"255 220 0 220"		Linear 0.0 0.4
+}
+
 event SuitFlashlightOn
 {
 	Animate HudFlashlight TextColor		"255 220 0 255"	Linear 0.0 0.1

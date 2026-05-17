@@ -2,7 +2,7 @@ PlayerClassDatafile
 {
 	// FilePlayerClassInfo_t members
 	"printname"			"#anticitizen_class_civilprotection"
-	"playermodel"		"models/combine_soldier.mdl"
+	"playermodel"		"models/police.mdl"
 	"selectcmd"			"class_civilprotection"
 
 	// CAnticitizen_FilePlayerClassInfo_t members
