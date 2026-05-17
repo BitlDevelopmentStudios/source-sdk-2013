@@ -387,7 +387,7 @@ public:
 	QAngle					GetIronsightAngleOffset(void) const;
 	float					GetIronsightFOVOffset(void) const;
 
-	virtual bool			HasIronsights(void) { return true; }
+	virtual bool			HasIronsights(void);
 
 	virtual CHudTexture const	*GetSpriteActive( void ) const;
 	virtual CHudTexture const	*GetSpriteInactive( void ) const;

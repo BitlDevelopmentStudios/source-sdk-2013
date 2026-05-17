@@ -392,10 +392,40 @@ void CWeaponShotgun::SecondaryAttack( void )
 //-----------------------------------------------------------------------------
 void CWeaponShotgun::ItemPostFrame( void )
 {
-	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
+	CHL2MP_Player *pOwner = ToHL2MPPlayer( GetOwner() );
 	if (!pOwner)
 	{
 		return;
+	}
+
+	const CAnticitizen_FilePlayerClassInfo_t& info = pOwner->GetPlayerClassInfo();
+
+	if (info.bNoFiringWhileSprinting)
+	{
+		if (!m_bLowered && (pOwner->m_nButtons & IN_SPEED))
+		{
+			m_bLowered = true;
+			SendWeaponAnim(ACT_VM_IDLE_LOWERED);
+			m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
+			m_flNextSecondaryAttack = m_flNextPrimaryAttack;
+		}
+		else if (m_bLowered && !(pOwner->m_nButtons & IN_SPEED))
+		{
+			m_bLowered = false;
+			SendWeaponAnim(ACT_VM_IDLE);
+			m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
+			m_flNextSecondaryAttack = m_flNextPrimaryAttack;
+		}
+
+		if (m_bLowered)
+		{
+			if (gpGlobals->curtime > m_flNextPrimaryAttack)
+			{
+				SendWeaponAnim(ACT_VM_IDLE_LOWERED);
+				m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
+				m_flNextSecondaryAttack = m_flNextPrimaryAttack;
+			}
+		}
 	}
 
 	if ( m_bNeedPump && ( pOwner->m_nButtons & IN_RELOAD ) )

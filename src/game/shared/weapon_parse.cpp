@@ -459,7 +459,7 @@ void FileWeaponInfo_t::Parse( KeyValues *pKeyValuesData, const char *szWeaponNam
 
 		flIronsightFOVOffset = pSights->GetFloat("fov", 0.0f);
 
-		iClassTypeToADS = pSights->GetInt("classtype", 0);
+		iClassTypeToADS = pSights->GetInt("min_classtype", 0);
 
 		m_bHasIronsights = true;
 	}

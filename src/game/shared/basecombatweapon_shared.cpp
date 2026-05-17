@@ -39,7 +39,8 @@
 #ifdef HL2MP
 	#include "hl2mp_gamerules.h"
 #endif
-
+#else
+#include "c_hl2mp_player.h"
 #endif
 
 #include "vprof.h"
@@ -562,14 +563,14 @@ bool CBaseCombatWeapon::HasIronsights(void)
 	CHL2MP_Player* pOwner = ToHL2MPPlayer(GetOwner());
 
 	if (!pOwner)
-		return;
+		return false;
 
 	const CAnticitizen_FilePlayerClassInfo_t& info = pOwner->GetPlayerClassInfo();
 
 	if (!info.bADSWeapons)
 		return false;
 
-	if (GetWpnData().iClassTypeToADS > CLS_TYPE_NONE && GetWpnData().iClassTypeToADS != info.iClassType)
+	if (GetWpnData().iClassTypeToADS > CLS_TYPE_NONE && GetWpnData().iClassTypeToADS < info.iClassType)
 		return false;
 
 	return GetWpnData().m_bHasIronsights;
