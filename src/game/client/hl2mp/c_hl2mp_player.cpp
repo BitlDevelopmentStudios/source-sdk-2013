@@ -14,6 +14,7 @@
 #include "iviewrender_beams.h"			// flashlight beam
 #include "r_efx.h"
 #include "dlight.h"
+#include <game/client/iviewport.h>
 
 // Don't alias here
 #if defined( CHL2MP_Player )
@@ -59,6 +60,8 @@ IMPLEMENT_CLIENTCLASS_DT(C_HL2MP_Player, DT_HL2MP_Player, CHL2MP_Player)
 	RecvPropFloat(RECVINFO(m_flNormalSpeed)),
 	RecvPropFloat(RECVINFO(m_flSprintSpeed)),
 
+	RecvPropFloat(RECVINFO(m_flStamina)),
+
 	RecvPropBool( RECVINFO( m_fIsWalking ) ),
 END_RECV_TABLE()
 
@@ -87,16 +90,27 @@ static ConVar cl_defaultweapon( "cl_defaultweapon", "weapon_physcannon", FCVAR_U
 
 void SpawnBlood (Vector vecSpot, const Vector &vecDir, int bloodColor, float flDamage);
 
+void IN_ClassDown(const CCommand& args)
+{
+	C_HL2MP_Player* pPlayer = (C_HL2MP_Player*)C_BasePlayer::GetLocalPlayer();
+
+	if (pPlayer == NULL)
+		return;
+
+	if (pPlayer->GetPlayerClass() == CLS_FREEMAN)
+		return;
+
+	gViewPortInterface->ShowPanel(PANEL_CLASS, true);
+}
+
+static ConCommand changeclass("changeclass", IN_ClassDown);
+
 //
 // SUIT POWER DEVICES
 //
 #define SUITPOWER_CHARGE_RATE	12.5											// 100 units in 8 seconds
 
-#ifdef HL2MP
-	CSuitPowerDevice SuitDeviceSprint( bits_SUIT_DEVICE_SPRINT, 25.0f );				// 100 units in 4 seconds
-#else
-	CSuitPowerDevice SuitDeviceSprint( bits_SUIT_DEVICE_SPRINT, 12.5f );				// 100 units in 8 seconds
-#endif
+CSuitPowerDevice SuitDeviceSprint( bits_SUIT_DEVICE_SPRINT, 12.5f );				// 100 units in 8 seconds
 
 #ifdef HL2_EPISODIC
 	CSuitPowerDevice SuitDeviceFlashlight( bits_SUIT_DEVICE_FLASHLIGHT, 1.111 );	// 100 units in 90 second
@@ -786,22 +800,6 @@ Vector C_HL2MP_Player::GetAutoaimVector( float flDelta )
 bool C_HL2MP_Player::CanSprint( void )
 {
 	return ( (!m_Local.m_bDucked && !m_Local.m_bDucking) && (GetWaterLevel() != 3) );
-}
-
-void C_HL2MP_Player::ReduceTimers( CMoveData* mv )
-{
-	bool bSprinting = mv->m_flClientMaxSpeed == HL2_SPRINT_SPEED;
-
-	if ( bSprinting )
-	{
-		SuitPower_AddDevice( SuitDeviceSprint );
-	}
-	else
-	{
-		SuitPower_RemoveDevice( SuitDeviceSprint );
-	}
-
-	SuitPower_Update();
 }
 
 //-----------------------------------------------------------------------------

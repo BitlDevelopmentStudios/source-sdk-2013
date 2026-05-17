@@ -21,6 +21,7 @@ CAnticitizen_FilePlayerClassInfo_t::CAnticitizen_FilePlayerClassInfo_t()
 	bSPMovement = false;
 	bSuit = false;
 	bADSWeapons = false;
+	bNoFiringWhileSprinting = false;
 	iClassType = CLS_TYPE_NONE;
 	flNormSpeed = DEFAULT_NORM_SPEED;
 	flSprintSpeed = DEFAULT_SPRINT_SPEED;
@@ -38,6 +39,7 @@ void CAnticitizen_FilePlayerClassInfo_t::Parse(KeyValues* pKeyValuesData, const 
 	bAllWeapons = pKeyValuesData->GetBool("AllWeapons");
 	bSPMovement = pKeyValuesData->GetBool("SPMovement");
 	bSuit = pKeyValuesData->GetBool("HEVSuit");
+	bNoFiringWhileSprinting = pKeyValuesData->GetBool("NoFiringWhileSprinting");
 
 	if (bSuit)
 	{

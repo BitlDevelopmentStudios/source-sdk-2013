@@ -73,7 +73,7 @@ public:
 	virtual bool Weapon_Switch( CBaseCombatWeapon *pWeapon, int viewmodelindex = 0);
 	virtual bool BumpWeapon( CBaseCombatWeapon *pWeapon );
 	virtual void ChangeTeam( int iTeam ) OVERRIDE;
-	void ChangeClass(int iClass);
+	void LoadClass(int iClass);
 	virtual void PickupObject ( CBaseEntity *pObject, bool bLimitMassAndSize );
 	virtual void PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, float fvol, bool force );
 	virtual void Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecTarget = NULL, const Vector *pVelocity = NULL );
@@ -82,6 +82,7 @@ public:
 	virtual CBaseEntity* EntSelectSpawnPoint( void );
 
 	virtual void	HandleSpeedChanges(CMoveData* mv) OVERRIDE;
+	virtual void	ReduceTimers(CMoveData* mv) OVERRIDE;
 		
 	int FlashlightIsOn( void );
 	void FlashlightTurnOn( void );
@@ -140,6 +141,9 @@ public:
 	float	GetNormalSpeed(void) { return m_flNormalSpeed; }
 	float	GetSprintSpeed(void) { return m_flSprintSpeed; }
 
+	void	SetStamina(float stamina);
+	float	GetStamina(void);
+
 	Vector m_vecTotalBulletForce;	//Accumulator for bullet force in a single frame
 
 	// Tracks our ragdoll entity.
@@ -157,6 +161,7 @@ private:
 	CNetworkVar(int, m_iPlayerClass);
 	CNetworkVar(float, m_flNormalSpeed);
 	CNetworkVar(float, m_flSprintSpeed);
+	CNetworkVar(float, m_flStamina);
 
 	int m_iModelType;
 	CNetworkVar( int, m_iSpawnInterpCounter );

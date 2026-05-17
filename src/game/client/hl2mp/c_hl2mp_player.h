@@ -112,6 +112,9 @@ public:
 	void	PrecacheFootStepSounds( void );
 	const char	*GetPlayerModelSoundPrefix( void );
 
+	void	SetStamina(float stamina);
+	float	GetStamina(void);
+
 	HL2MPPlayerState State_Get() const;
 
 	// Walking
@@ -149,6 +152,7 @@ private:
 
 	float m_flNormalSpeed;
 	float m_flSprintSpeed;
+	float m_flStamina;
 
 	bool m_isInit;
 	Vector m_vLookAtTarget;

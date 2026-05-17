@@ -68,6 +68,7 @@ public:
 	bool					bSPMovement;
 	bool					bSuit;
 	bool					bADSWeapons;
+	bool					bNoFiringWhileSprinting;
 
 	float					flNormSpeed;
 	float					flSprintSpeed;

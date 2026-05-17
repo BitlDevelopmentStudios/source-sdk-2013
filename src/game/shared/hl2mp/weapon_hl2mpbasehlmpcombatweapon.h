@@ -37,6 +37,7 @@ public:
 	virtual bool	Deploy( void );
 	virtual bool	Holster( CBaseCombatWeapon *pSwitchingTo );
 	virtual void	WeaponIdle( void );
+	virtual void	ItemPostFrame(void) OVERRIDE;
 
 	virtual void	AddViewmodelBob( CBaseViewModel *viewmodel, Vector &origin, QAngle &angles );
 	virtual	float	CalcViewmodelBob( void );

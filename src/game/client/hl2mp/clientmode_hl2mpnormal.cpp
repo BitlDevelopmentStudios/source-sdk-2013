@@ -18,6 +18,7 @@
 #include "hl2mpclientscoreboard.h"
 #include "hl2mptextwindow.h"
 #include "ienginevgui.h"
+#include "classmenu.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -60,11 +61,19 @@ protected:
 	}
 
 	virtual IViewPortPanel *CreatePanelByName( const char *szPanelName );
+	virtual void CreateDefaultPanels(void);
 };
 
 int ClientModeHL2MPNormal::GetDeathMessageStartHeight( void )
 {
 	return m_pViewport->GetDeathMessageStartHeight();
+}
+
+void CHudViewport::CreateDefaultPanels(void)
+{
+	BaseClass::CreateDefaultPanels();
+
+	AddNewPanel(CreatePanelByName(PANEL_CLASS), "PANEL_CLASS");
 }
 
 IViewPortPanel* CHudViewport::CreatePanelByName( const char *szPanelName )
@@ -86,7 +95,11 @@ IViewPortPanel* CHudViewport::CreatePanelByName( const char *szPanelName )
 		newpanel = new CHL2MPSpectatorGUI( this );	
 		return newpanel;
 	}
-
+	else if (Q_strcmp(PANEL_CLASS, szPanelName) == 0)
+	{
+		newpanel = new CClassMenu(this);
+		return newpanel;
+	}
 	
 	return BaseClass::CreatePanelByName( szPanelName ); 
 }

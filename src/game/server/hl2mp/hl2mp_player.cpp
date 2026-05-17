@@ -95,6 +95,8 @@ IMPLEMENT_SERVERCLASS_ST(CHL2MP_Player, DT_HL2MP_Player)
 
 	SendPropFloat(SENDINFO(m_flNormalSpeed)),
 	SendPropFloat(SENDINFO(m_flSprintSpeed)),
+
+	SendPropFloat(SENDINFO(m_flStamina)),
 	
 	SendPropExclude( "DT_BaseAnimating", "m_flPoseParameter" ),
 	SendPropExclude( "DT_BaseFlex", "m_viewtarget" ),
@@ -210,16 +212,16 @@ void CHL2MP_Player::Spawn(void)
 	m_flNextModelChangeTime = 0.0f;
 	m_flNextTeamChangeTime = 0.0f;
 
+	BaseClass::Spawn();
+
 	if (!m_bChosenClass)
 	{
 		ChangeTeam(TEAM_SPECTATOR);
 	}
 	else
 	{
-		ChangeClass(GetPlayerClass());
+		LoadClass(GetPlayerClass());
 	}
-
-	BaseClass::Spawn();
 	
 	if ( !IsObserver() )
 	{
@@ -234,6 +236,7 @@ void CHL2MP_Player::Spawn(void)
 
 	m_nRenderFX = kRenderNormal;
 
+	m_flStamina = 100.0f;
 	m_Local.m_iHideHUD = 0;
 	
 	AddFlag(FL_ONGROUND); // set the player on the ground at the start of the round.
@@ -687,9 +690,14 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 		RemoveAllItems( true );
 		State_Transition( STATE_OBSERVER_MODE );
 	}
+	else
+	{
+		StopObserverMode();
+		State_Transition(STATE_ACTIVE);
+	}
 }
 
-void CHL2MP_Player::ChangeClass(int iClass)
+void CHL2MP_Player::LoadClass(int iClass)
 {
 	CAnticitizen_FilePlayerClassInfo_t* pPlayerClassInfo = (CAnticitizen_FilePlayerClassInfo_t*)GetFilePlayerClassInfoFromHandle(iClass);
 
@@ -754,8 +762,6 @@ void CHL2MP_Player::ChangeClass(int iClass)
 		{
 			m_flSprintSpeed = pPlayerClassInfo->flSprintSpeed;
 		}
-
-		m_bChosenClass = true;
 	}
 }
 
@@ -792,20 +798,30 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 	if (!g_Anticitizen_PR)
 		return false;
 
-	if (!g_Anticitizen_PR->GetGlobalClass(iclass) || iclass == 0)
+	if (iclass < 0 || iclass >= g_Anticitizen_PR->GetNumPlayerClasses())
 	{
 		Warning("HandleCommand_JoinClass( %d ) - invalid class index.\n", iclass);
 		return false;
 	}
 
-	if (iclass == CLS_TYPE_FREEMAN)
+#ifndef DEBUG
+	if (iclass == CLS_FREEMAN)
 	{
 		Warning("Freeman classes are managed by the game.\n");
 		return false;
 	}
+#endif // !DEBUG
+
+	if (GetTeamNumber() != TEAM_COMBINE)
+	{
+		ChangeTeam(TEAM_COMBINE);
+	}
 
 	// Switch their actual team...
-	ChangeClass(iclass);
+	RemoveAllItems(true);
+	SetPlayerClass(iclass);
+	m_bChosenClass = true;
+	Spawn();
 
 	return true;
 }

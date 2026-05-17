@@ -262,7 +262,7 @@ public:
 	void  StartAdmireGlovesAnimation( void );
 	
 	virtual void HandleSpeedChanges( CMoveData *mv );
-	void ReduceTimers( CMoveData* mv );
+	virtual void ReduceTimers( CMoveData* mv );
 
 	void SetControlClass( Class_T controlClass ) { m_nControlClass = controlClass; }
 	

@@ -8,6 +8,7 @@
 #include "weapon_hl2mpbasehlmpcombatweapon.h"
 
 #include "hl2mp_player_shared.h"
+#include "in_buttons.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -109,6 +110,45 @@ bool CBaseHL2MPCombatWeapon::Ready( void )
 	m_bLowered = false;	
 	m_flRaiseTime = gpGlobals->curtime + 0.5f;
 	return true;
+}
+
+void CBaseHL2MPCombatWeapon::ItemPostFrame(void)
+{
+	CHL2MP_Player* pOwner = assert_cast<CHL2MP_Player*>(GetOwner());
+	if (!pOwner)
+		return;
+
+	const CAnticitizen_FilePlayerClassInfo_t& info = pOwner->GetPlayerClassInfo();
+
+	if (info.bNoFiringWhileSprinting)
+	{
+		if (!m_bLowered && (pOwner->m_nButtons & IN_SPEED))
+		{
+			m_bLowered = true;
+			SendWeaponAnim(ACT_VM_IDLE_LOWERED);
+			m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
+			m_flNextSecondaryAttack = m_flNextPrimaryAttack;
+		}
+		else if (m_bLowered && !(pOwner->m_nButtons & IN_SPEED))
+		{
+			m_bLowered = false;
+			SendWeaponAnim(ACT_VM_IDLE);
+			m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
+			m_flNextSecondaryAttack = m_flNextPrimaryAttack;
+		}
+
+		if (m_bLowered)
+		{
+			if (gpGlobals->curtime > m_flNextPrimaryAttack)
+			{
+				SendWeaponAnim(ACT_VM_IDLE_LOWERED);
+				m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
+				m_flNextSecondaryAttack = m_flNextPrimaryAttack;
+			}
+		}
+	}
+
+	BaseClass::ItemPostFrame();
 }
 
 //-----------------------------------------------------------------------------

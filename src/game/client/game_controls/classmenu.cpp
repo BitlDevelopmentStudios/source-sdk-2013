@@ -42,10 +42,10 @@ using namespace vgui;
 #ifdef TF_CLIENT_DLL
 #define HUD_CLASSAUTOKILL_FLAGS		( FCVAR_CLIENTDLL | FCVAR_ARCHIVE | FCVAR_USERINFO )
 #else
-#define HUD_CLASSAUTOKILL_FLAGS		( FCVAR_CLIENTDLL | FCVAR_ARCHIVE )
+#define HUD_CLASSAUTOKILL_FLAGS		( FCVAR_CLIENTDLL | FCVAR_CHEAT )
 #endif // !TF_CLIENT_DLL
 
-ConVar hud_classautokill( "hud_classautokill", "1", HUD_CLASSAUTOKILL_FLAGS, "Automatically kill player after choosing a new playerclass." );
+ConVar hud_classautokill( "hud_classautokill", "0", HUD_CLASSAUTOKILL_FLAGS, "Automatically kill player after choosing a new playerclass." );
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
@@ -112,7 +112,6 @@ MouseOverPanelButton* CClassMenu::CreateNewMouseOverPanelButton(EditablePanel *p
 { 
 	return new MouseOverPanelButton(this, "MouseOverPanelButton", panel);
 }
-
 
 Panel *CClassMenu::CreateControlByName(const char *controlName)
 {

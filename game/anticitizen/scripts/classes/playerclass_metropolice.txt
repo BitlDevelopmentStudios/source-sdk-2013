@@ -8,12 +8,13 @@ PlayerClassDatafile
 	// CAnticitizen_FilePlayerClassInfo_t members
 	"ClassType"			"1" // 0 = none, 1 = low, 2 = mid, 3 = high, 4 = freeman
 	
-	"PrimaryWeapon"		"weapon_ar2"
+	"PrimaryWeapon"		"weapon_smg1"
 	"SecondaryWeapon"	"weapon_pistol"
 	"MeleeWeapon"		"weapon_stunstick"
 	
 	"Health"			"40"
 	"CanADSOfWeapons"	"1"
+	"NoFiringWhileSprinting"	"1"
 	"Speed"				"58"
 	"SprintSpeed"		"184"
 }

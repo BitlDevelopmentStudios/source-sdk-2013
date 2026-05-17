@@ -31,7 +31,6 @@ public:
 	void AddPlayerClass(const char* szClassName);
 	const CAnticitizen_FilePlayerClassInfo_t& GetPlayerClassInfo(int iPlayerClass) const;
 	int GetNumPlayerClasses(void) { return m_hPlayerClassInfoHandles.Count(); }
-	int GetGlobalClass(int iIndex);
 
 protected:
 

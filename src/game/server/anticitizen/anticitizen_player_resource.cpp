@@ -126,14 +126,3 @@ const CAnticitizen_FilePlayerClassInfo_t& CAnticitizen_PlayerResource::GetPlayer
 
 	return *pSDKInfo;
 }
-
-//-----------------------------------------------------------------------------
-// Purpose: Get a pointer to the specified team manager
-//-----------------------------------------------------------------------------
-int CAnticitizen_PlayerResource::GetGlobalClass(int iIndex)
-{
-	if (iIndex < 0 || iIndex >= GetNumPlayerClasses())
-		return NULL;
-
-	return m_hPlayerClassInfoHandles[iIndex];
-}

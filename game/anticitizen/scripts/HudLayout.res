@@ -267,6 +267,62 @@
 
 		"PaintBackgroundType"	"2"
 	}
+	
+	HudStamina [!$DECK]
+	{
+		"fieldName" "HudStamina"
+		"visible" "1"
+		"enabled" "1"
+		"xpos"	"16"
+		"ypos"	"396"
+		"wide"	"102"
+		"tall"	"26"
+		
+		"StaminaColor" "255 220 0 220"
+
+		"BarInsetX" "8"
+		"BarInsetY" "15"
+		"BarWidth" "92"
+		"BarHeight" "4"
+		"BarChunkWidth" "6"
+		"BarChunkGap" "3"
+
+		"text_xpos" "8"
+		"text_ypos" "4"
+		"text2_xpos" "8"
+		"text2_ypos" "22"
+		"text2_gap" "10"
+
+		"PaintBackgroundType"	"2"
+	}
+
+	HudStamina	[$DECK]
+	{
+		"fieldName" "HudStamina"
+		"visible" "1"
+		"enabled" "1"
+		"xpos"	"16"
+		"ypos"	"386"
+		"wide"	"112"
+		"tall"	"54"
+		
+		"StaminaColor" "255 220 0 220"
+
+		"BarInsetX" "8"
+		"BarInsetY" "18"
+		"BarWidth" "102"
+		"BarHeight" "5"
+		"BarChunkWidth" "6"
+		"BarChunkGap" "3"
+
+		"text_xpos" "8"
+		"text_ypos" "4"
+		"text2_xpos" "8"
+		"text2_ypos" "26"
+		"text2_gap" "14"
+
+		"PaintBackgroundType"	"2"
+	}
 
 	HudPosture	[$WIN32]
 	{

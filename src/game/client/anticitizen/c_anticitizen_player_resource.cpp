@@ -96,3 +96,4 @@ const CAnticitizen_FilePlayerClassInfo_t& C_Anticitizen_PlayerResource::GetPlaye
 
 	return *pSDKInfo;
 }
+
