@@ -283,7 +283,14 @@ void CHL2MP_Player::ReduceTimers(CMoveData* mv)
 		Vector vel = GetAbsVelocity();
 		if (bSprinting && fl2DVelocitySquared > 10000) //speed > 100
 		{
-			flStamina -= 20 * gpGlobals->frametime;
+			if (!(GetFlags() & FL_ONGROUND))
+			{
+				flStamina -= 40 * gpGlobals->frametime;
+			}
+			else
+			{
+				flStamina -= 20 * gpGlobals->frametime;
+			}
 
 			SetStamina(flStamina);
 		}

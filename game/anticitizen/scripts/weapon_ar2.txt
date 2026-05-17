@@ -28,6 +28,7 @@ WeaponData
 		"right"		"-5.80"
 		"up"		"2.2"
 		"forward"		"-10.5"
+		"min_classtype"	"2" // 0 = none, 1 = low, 2 = mid, 3 = high, 4 = freeman
 		"fov"		"-20"
 	}
 

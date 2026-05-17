@@ -67,6 +67,8 @@ ConVar tf_weapon_criticals_bucket_bottom( "tf_weapon_criticals_bucket_bottom", "
 ConVar tf_weapon_criticals_bucket_default( "tf_weapon_criticals_bucket_default", "300.0", FCVAR_REPLICATED | FCVAR_CHEAT );
 #endif // TF
 
+ConVar viewmodel_fov_zoomtime("viewmodel_fov_zoomtime", "0.35", FCVAR_REPLICATED);
+
 //forward declarations of callbacks used by viewmodel_adjust_enable and viewmodel_adjust_fov
 void vm_adjust_enable_callback(IConVar* pConVar, char const* pOldString, float flOldValue);
 void vm_adjust_fov_callback(IConVar* pConVar, const char* pOldString, float flOldValue);
@@ -570,8 +572,15 @@ bool CBaseCombatWeapon::HasIronsights(void)
 	if (!info.bADSWeapons)
 		return false;
 
-	if (GetWpnData().iClassTypeToADS > CLS_TYPE_NONE && GetWpnData().iClassTypeToADS < info.iClassType)
-		return false;
+	if (GetWpnData().iClassTypeToADS > CLS_TYPE_NONE)
+	{
+		bool CanClassADSThisWep = (info.iClassType >= GetWpnData().iClassTypeToADS);
+
+		//Msg("MIN = %i, CLASS = %i, USE = %i\n", GetWpnData().iClassTypeToADS, info.iClassType, CanClassADSThisWep);
+
+		if (!CanClassADSThisWep)
+			return false;
+	}
 
 	return GetWpnData().m_bHasIronsights;
 }
@@ -583,7 +592,10 @@ bool CBaseCombatWeapon::IsIronsighted(void)
 
 void CBaseCombatWeapon::ToggleIronsights(void)
 {
-	if (m_bInReload == true)
+	if (!HasIronsights())
+		return;
+
+	if (m_bInReload)
 	{
 		DisableIronsights();
 	}
@@ -602,15 +614,23 @@ void CBaseCombatWeapon::EnableIronsights(void)
 	if (!prediction->IsFirstTimePredicted())
 		return;
 #endif
-	if (!HasIronsights() || m_bIsIronsighted)
+	if (!HasIronsights())
 		return;
+
+	if (m_bIsIronsighted)
+		return;
+
+	if (m_bInReload)
+	{
+		DisableIronsights();
+	}
 
 	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
 
 	if (!pOwner)
 		return;
 
-	if (pOwner->SetFOV(this, pOwner->GetDefaultFOV() + GetIronsightFOVOffset(), 1.0f)) //modify the last value to adjust how fast the fov is applied
+	if (pOwner->SetFOV(this, pOwner->GetDefaultFOV() + GetIronsightFOVOffset(), viewmodel_fov_zoomtime.GetFloat())) //modify the last value to adjust how fast the fov is applied
 	{
 		CHL2MP_Player *pHL2MPPlayer = ToHL2MPPlayer(pOwner);
 
@@ -634,7 +654,10 @@ void CBaseCombatWeapon::DisableIronsights(void)
 	if (!prediction->IsFirstTimePredicted())
 		return;
 #endif
-	if (!HasIronsights() || !m_bIsIronsighted)
+	if (!HasIronsights())
+		return;
+
+	if (!m_bIsIronsighted)
 		return;
 
 	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
@@ -642,7 +665,7 @@ void CBaseCombatWeapon::DisableIronsights(void)
 	if (!pOwner)
 		return;
 
-	if (pOwner->SetFOV(this, 0, 0.4f)) //modify the last value to adjust how fast the fov is applied
+	if (pOwner->SetFOV(this, 0, viewmodel_fov_zoomtime.GetFloat())) //modify the last value to adjust how fast the fov is applied
 	{
 		CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pOwner);
 

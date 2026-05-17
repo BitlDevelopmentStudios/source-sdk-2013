@@ -33,6 +33,8 @@ extern ConVar in_forceuser;
 #define VIEWMODEL_ANIMATION_PARITY_BITS 3
 #define SCREEN_OVERLAY_MATERIAL "vgui/screens/vgui_overlay"
 
+ConVar ironsight_speed("ironsight_speed", "5", FCVAR_REPLICATED);
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -387,6 +389,7 @@ void CBaseViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePos
 	// UNDONE: Calc this on the server?  Disabled for now as it seems unnecessary to have this info on the server
 #if defined( CLIENT_DLL )
 	QAngle vmangoriginal = eyeAngles;
+	Vector vmposoriginal = eyePosition;
 	QAngle vmangles = eyeAngles;
 	Vector vmorigin = eyePosition;
 
@@ -394,6 +397,11 @@ void CBaseViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePos
 	//Allow weapon lagging
 	if ( pWeapon != NULL )
 	{
+		if (pWeapon->HasIronsights())
+		{
+			CalcIronsights(vmorigin, vmangles, vmposoriginal, vmangoriginal);
+		}
+
 #if defined( CLIENT_DLL )
 		if ( !prediction->InPrediction() )
 #endif
@@ -419,8 +427,6 @@ void CBaseViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePos
 	{
 		g_ClientVirtualReality.OverrideViewModelTransform( vmorigin, vmangles, pWeapon && pWeapon->ShouldUseLargeViewModelVROverride() );
 	}
-
-	CalcIronsights(vmorigin, vmangles);
 
 	SetLocalOrigin( vmorigin );
 	SetLocalAngles( vmangles );
@@ -464,6 +470,14 @@ ConVar sv_viewmodel_lag_do_angles( "sv_viewmodel_lag_do_angles", "1", FCVAR_CHEA
 
 void CBaseViewModel::CalcViewModelLag( Vector& origin, QAngle& angles, QAngle& original_angles )
 {
+	CBaseCombatWeapon* pWeapon = GetOwningWeapon();
+
+	if (!pWeapon)
+		return;
+
+	if (pWeapon->IsIronsighted())
+		return;
+
 	Vector vOriginalOrigin = origin;
 	QAngle vOriginalAngles = angles;
 
@@ -520,24 +534,27 @@ void CBaseViewModel::CalcViewModelLag( Vector& origin, QAngle& angles, QAngle& o
 	}
 }
 
-void CBaseViewModel::CalcIronsights(Vector& pos, QAngle& ang)
+void CBaseViewModel::CalcIronsights(Vector& pos, QAngle& ang, Vector& original_pos, QAngle& original_angles)
 {
-	CBaseCombatWeapon* pWeapon = GetOwningWeapon();
+	CBaseCombatWeapon *pWeapon = GetOwningWeapon();
 
 	if (!pWeapon)
 		return;
 
 	//get delta time for interpolation
-	float delta = (gpGlobals->curtime - pWeapon->m_flIronsightedTime) * 2.5f; //modify this value to adjust how fast the interpolation is
+	float delta = (gpGlobals->curtime - pWeapon->m_flIronsightedTime) * ironsight_speed.GetFloat(); //modify this value to adjust how fast the interpolation is
 	float exp = (pWeapon->IsIronsighted()) ?
 		(delta > 1.0f) ? 1.0f : delta : //normal blending
 		(delta > 1.0f) ? 0.0f : 1.0f - delta; //reverse interpolation
 
 	if (exp <= 0.001f) //fully not ironsighted; save performance
+	{
+		//CalcAdjustedView(pos, ang);
 		return;
+	}
 
-	Vector newPos = pos;
-	QAngle newAng = ang;
+	Vector newPos = original_pos;
+	QAngle newAng = original_angles;
 
 	Vector vForward, vRight, vUp, vOffset;
 	AngleVectors(newAng, &vForward, &vRight, &vUp);

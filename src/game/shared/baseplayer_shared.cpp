@@ -185,6 +185,15 @@ void CBasePlayer::ItemPreFrame()
 	if (!pActive)
 		return;
 
+	if (m_afButtonReleased & IN_IRONSIGHT)
+	{
+		pActive->DisableIronsights();
+	}
+	else if (m_afButtonPressed & IN_IRONSIGHT)
+	{
+		pActive->EnableIronsights();
+	}
+
 #if defined( CLIENT_DLL )
 	// Not predicting this weapon
 	if ( !pActive->IsPredicted() )
