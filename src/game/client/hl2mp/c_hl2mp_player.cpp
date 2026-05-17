@@ -56,6 +56,9 @@ IMPLEMENT_CLIENTCLASS_DT(C_HL2MP_Player, DT_HL2MP_Player, CHL2MP_Player)
 
 	RecvPropInt(RECVINFO(m_iPlayerClass)),
 
+	RecvPropFloat(RECVINFO(m_flNormalSpeed)),
+	RecvPropFloat(RECVINFO(m_flSprintSpeed)),
+
 	RecvPropBool( RECVINFO( m_fIsWalking ) ),
 END_RECV_TABLE()
 

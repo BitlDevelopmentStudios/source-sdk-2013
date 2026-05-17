@@ -15,6 +15,7 @@
 #include "tier0/memdbgon.h"
 
 C_Anticitizen_PlayerResource* g_Anticitizen_PR;
+const CAnticitizen_FilePlayerClassInfo_t pNullPlayerClassInfo = CAnticitizen_FilePlayerClassInfo_t();
 
 IMPLEMENT_CLIENTCLASS_DT(C_Anticitizen_PlayerResource, DT_Anticitizen_PlayerResource, CAnticitizen_PlayerResource)
 	RecvPropArray3( RECVINFO_ARRAY(m_iPlayerClass), RecvPropInt( RECVINFO(m_iPlayerClass[0]))),
@@ -77,6 +78,11 @@ void C_Anticitizen_PlayerResource::AddPlayerClass(const char* szClassName)
 const CAnticitizen_FilePlayerClassInfo_t& C_Anticitizen_PlayerResource::GetPlayerClassInfo(int iPlayerClass) const
 {
 	Assert(iPlayerClass >= 0 && iPlayerClass < m_hPlayerClassInfoHandles.Count());
+
+	if (iPlayerClass < 0)
+	{
+		return pNullPlayerClassInfo;
+	}
 
 	const FilePlayerClassInfo_t* pPlayerClassInfo = GetFilePlayerClassInfoFromHandle(m_hPlayerClassInfoHandles[iPlayerClass]);
 	const CAnticitizen_FilePlayerClassInfo_t* pSDKInfo;

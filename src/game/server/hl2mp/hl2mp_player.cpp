@@ -92,6 +92,9 @@ IMPLEMENT_SERVERCLASS_ST(CHL2MP_Player, DT_HL2MP_Player)
 	SendPropInt( SENDINFO( m_iPlayerSoundType), 3 ),
 
 	SendPropInt(SENDINFO(m_iPlayerClass), 4),
+
+	SendPropFloat(SENDINFO(m_flNormalSpeed)),
+	SendPropFloat(SENDINFO(m_flSprintSpeed)),
 	
 	SendPropExclude( "DT_BaseAnimating", "m_flPoseParameter" ),
 	SendPropExclude( "DT_BaseFlex", "m_viewtarget" ),
@@ -121,6 +124,8 @@ CHL2MP_Player::CHL2MP_Player() : m_PlayerAnimState( this )
 
     m_bEnterObserver = false;
 	m_bReady = false;
+
+	m_iPlayerClass = CLS_INVALID;
 
 	BaseClass::ChangeTeam( 0 );
 	
@@ -159,73 +164,42 @@ void CHL2MP_Player::Precache( void )
 void CHL2MP_Player::GiveAllItems( void )
 {
 	EquipSuit();
-
-	CBasePlayer::GiveAmmo( 255,	"Pistol");
-	CBasePlayer::GiveAmmo( 255,	"AR2" );
-	CBasePlayer::GiveAmmo( 5,	"AR2AltFire" );
-	CBasePlayer::GiveAmmo( 255,	"SMG1");
-	CBasePlayer::GiveAmmo( 1,	"smg1_grenade");
-	CBasePlayer::GiveAmmo( 255,	"Buckshot");
-	CBasePlayer::GiveAmmo( 32,	"357" );
-	CBasePlayer::GiveAmmo( 3,	"rpg_round");
-	CBasePlayer::GiveAmmo( 16,	"XBowBolt");
-
-	CBasePlayer::GiveAmmo( 1,	"grenade" );
-	CBasePlayer::GiveAmmo( 2,	"slam" );
-
-	GiveNamedItem( "weapon_crowbar" );
-	GiveNamedItem( "weapon_stunstick" );
-	GiveNamedItem( "weapon_pistol" );
-	GiveNamedItem( "weapon_357" );
-
-	GiveNamedItem( "weapon_smg1" );
-	GiveNamedItem( "weapon_ar2" );
-	
-	GiveNamedItem( "weapon_shotgun" );
-	GiveNamedItem( "weapon_frag" );
-	
-	GiveNamedItem( "weapon_crossbow" );
-	
-	GiveNamedItem( "weapon_rpg" );
-
-	GiveNamedItem( "weapon_slam" );
-
-	GiveNamedItem( "weapon_physcannon" );
-	
+	GiveAllWeapons();
 }
 
-void CHL2MP_Player::GiveDefaultItems( void )
+void CHL2MP_Player::GiveAllWeapons(void)
 {
-	
-}
+	CBasePlayer::GiveAmmo(255, "Pistol");
+	CBasePlayer::GiveAmmo(255, "AR2");
+	CBasePlayer::GiveAmmo(5, "AR2AltFire");
+	CBasePlayer::GiveAmmo(255, "SMG1");
+	CBasePlayer::GiveAmmo(1, "smg1_grenade");
+	CBasePlayer::GiveAmmo(255, "Buckshot");
+	CBasePlayer::GiveAmmo(32, "357");
+	CBasePlayer::GiveAmmo(3, "rpg_round");
+	CBasePlayer::GiveAmmo(16, "XBowBolt");
 
-void CHL2MP_Player::PickDefaultSpawnTeam( void )
-{
-	if ( GetTeamNumber() == 0 )
-	{
-		CTeam* pCombine = g_Teams[TEAM_COMBINE];
-		CTeam* pRebels = g_Teams[TEAM_FREEMAN];
+	CBasePlayer::GiveAmmo(1, "grenade");
+	CBasePlayer::GiveAmmo(2, "slam");
 
-		if (pCombine == NULL || pRebels == NULL)
-		{
-			ChangeTeam(random->RandomInt(TEAM_COMBINE, TEAM_FREEMAN));
-		}
-		else
-		{
-			if (pCombine->GetNumPlayers() > pRebels->GetNumPlayers())
-			{
-				ChangeTeam(TEAM_FREEMAN);
-			}
-			else if (pCombine->GetNumPlayers() < pRebels->GetNumPlayers())
-			{
-				ChangeTeam(TEAM_COMBINE);
-			}
-			else
-			{
-				ChangeTeam(random->RandomInt(TEAM_COMBINE, TEAM_FREEMAN));
-			}
-		}
-	}
+	GiveNamedItem("weapon_crowbar");
+	GiveNamedItem("weapon_stunstick");
+	GiveNamedItem("weapon_pistol");
+	GiveNamedItem("weapon_357");
+
+	GiveNamedItem("weapon_smg1");
+	GiveNamedItem("weapon_ar2");
+
+	GiveNamedItem("weapon_shotgun");
+	GiveNamedItem("weapon_frag");
+
+	GiveNamedItem("weapon_crossbow");
+
+	GiveNamedItem("weapon_rpg");
+
+	GiveNamedItem("weapon_slam");
+
+	GiveNamedItem("weapon_physcannon");
 }
 
 //-----------------------------------------------------------------------------
@@ -236,7 +210,14 @@ void CHL2MP_Player::Spawn(void)
 	m_flNextModelChangeTime = 0.0f;
 	m_flNextTeamChangeTime = 0.0f;
 
-	PickDefaultSpawnTeam();
+	if (!m_bChosenClass)
+	{
+		ChangeTeam(TEAM_SPECTATOR);
+	}
+	else
+	{
+		ChangeClass(GetPlayerClass());
+	}
 
 	BaseClass::Spawn();
 	
@@ -246,8 +227,6 @@ void CHL2MP_Player::Spawn(void)
 		RemoveSolidFlags( FSOLID_NOT_SOLID );
 
 		RemoveEffects( EF_NODRAW );
-		
-		GiveDefaultItems();
 	}
 
 	SetNumAnimOverlays( 3 );
@@ -277,6 +256,16 @@ void CHL2MP_Player::Spawn(void)
 	SetPlayerUnderwater(false);
 
 	m_bReady = false;
+
+	if (GetTeamNumber() != TEAM_SPECTATOR)
+	{
+		StopObserverMode();
+	}
+	else
+	{
+		// Ms - If we are spectating then go roaming
+		StartObserverMode(OBS_MODE_ROAMING);
+	}
 }
 
 ConVar hl2mp_allow_pickup( "hl2mp_allow_pickup", "0", FCVAR_GAMEDLL );
@@ -696,8 +685,77 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 	if ( iTeam == TEAM_SPECTATOR )
 	{
 		RemoveAllItems( true );
-
 		State_Transition( STATE_OBSERVER_MODE );
+	}
+}
+
+void CHL2MP_Player::ChangeClass(int iClass)
+{
+	CAnticitizen_FilePlayerClassInfo_t* pPlayerClassInfo = (CAnticitizen_FilePlayerClassInfo_t*)GetFilePlayerClassInfoFromHandle(iClass);
+
+	if (pPlayerClassInfo)
+	{
+		if (pPlayerClassInfo->m_szPlayerModel[0])
+		{
+			PrecacheModel(pPlayerClassInfo->m_szPlayerModel);
+			SetModel(pPlayerClassInfo->m_szPlayerModel);
+			SetupPlayerSoundsByModel(pPlayerClassInfo->m_szPlayerModel);
+		}
+
+		if (pPlayerClassInfo->iHealth > 0)
+		{
+			SetHealth(pPlayerClassInfo->iHealth);
+			SetMaxHealth(pPlayerClassInfo->iHealth);
+		}
+
+		if (pPlayerClassInfo->bSuit)
+		{
+			EquipSuit();
+
+			if (pPlayerClassInfo->iSuitArmor > 0)
+			{
+				SetArmorValue(pPlayerClassInfo->iSuitArmor);
+			}
+		}
+
+		if (pPlayerClassInfo->bAllWeapons)
+		{
+			GiveAllWeapons();
+		}
+		else
+		{
+			CBasePlayer::GiveAmmo(120, "Pistol");
+			CBasePlayer::GiveAmmo(120, "AR2");
+			CBasePlayer::GiveAmmo(120, "SMG1");
+			CBasePlayer::GiveAmmo(120, "Buckshot");
+
+			if (pPlayerClassInfo->szPrimaryWeapon[0])
+			{
+				GiveNamedItem(pPlayerClassInfo->szPrimaryWeapon);
+			}
+
+			if (pPlayerClassInfo->szSecondaryWeapon[0])
+			{
+				GiveNamedItem(pPlayerClassInfo->szSecondaryWeapon);
+			}
+
+			if (pPlayerClassInfo->szMeleeWeapon[0])
+			{
+				GiveNamedItem(pPlayerClassInfo->szMeleeWeapon);
+			}
+		}
+
+		if (pPlayerClassInfo->flNormSpeed > 0)
+		{
+			m_flNormalSpeed = pPlayerClassInfo->flNormSpeed;
+		}
+
+		if (pPlayerClassInfo->flSprintSpeed > 0)
+		{
+			m_flSprintSpeed = pPlayerClassInfo->flSprintSpeed;
+		}
+
+		m_bChosenClass = true;
 	}
 }
 
@@ -722,14 +780,32 @@ bool CHL2MP_Player::HandleCommand_JoinTeam( int team )
 
 		return true;
 	}
-	else
-	{
-		StopObserverMode();
-		State_Transition(STATE_ACTIVE);
-	}
 
 	// Switch their actual team...
 	ChangeTeam( team );
+
+	return true;
+}
+
+bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
+{
+	if (!g_Anticitizen_PR)
+		return false;
+
+	if (!g_Anticitizen_PR->GetGlobalClass(iclass) || iclass == 0)
+	{
+		Warning("HandleCommand_JoinClass( %d ) - invalid class index.\n", iclass);
+		return false;
+	}
+
+	if (iclass == CLS_TYPE_FREEMAN)
+	{
+		Warning("Freeman classes are managed by the game.\n");
+		return false;
+	}
+
+	// Switch their actual team...
+	ChangeClass(iclass);
 
 	return true;
 }
@@ -742,6 +818,20 @@ bool CHL2MP_Player::ClientCommand( const CCommand &args )
 		{
 			// instantly join spectators
 			HandleCommand_JoinTeam( TEAM_SPECTATOR );	
+		}
+		return true;
+	}
+	else if (FStrEq(args[0], "joinclass"))
+	{
+		if (args.ArgC() < 2)
+		{
+			Warning("Player sent bad joinclass syntax\n");
+		}
+
+		if (ShouldRunRateLimitedCommand(args))
+		{
+			int iClass = atoi(args[1]);
+			HandleCommand_JoinClass(iClass);
 		}
 		return true;
 	}
@@ -971,7 +1061,9 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 
 	// Note: since we're dead, it won't draw us on the client, but we don't set EF_NODRAW
 	// because we still want to transmit to the clients in our PVS.
-	CreateRagdollEntity();
+	// Ms - Spectators don't have corpes
+	if (GetTeamNumber() != TEAM_SPECTATOR)
+		CreateRagdollEntity();
 
 	DetonateTripmines();
 
@@ -1022,6 +1114,10 @@ int CHL2MP_Player::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 
 void CHL2MP_Player::DeathSound( const CTakeDamageInfo &info )
 {
+	// Ms - Spectators can't scream
+	if (GetTeamNumber() == TEAM_SPECTATOR)
+		return;
+	
 	if ( m_hRagdoll && m_hRagdoll->GetBaseAnimating()->IsDissolving() )
 		 return;
 

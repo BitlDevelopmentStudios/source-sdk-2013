@@ -11,6 +11,7 @@
 #pragma once
 #endif
 
+#include "player_resource.h"
 #include "anticitizen_playerclass_info_parse.h"
 
 class CAnticitizen_PlayerResource : public CPlayerResource
@@ -30,6 +31,7 @@ public:
 	void AddPlayerClass(const char* szClassName);
 	const CAnticitizen_FilePlayerClassInfo_t& GetPlayerClassInfo(int iPlayerClass) const;
 	int GetNumPlayerClasses(void) { return m_hPlayerClassInfoHandles.Count(); }
+	int GetGlobalClass(int iIndex);
 
 protected:
 

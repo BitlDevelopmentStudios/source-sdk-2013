@@ -740,37 +740,6 @@ void CHL2MPRules::ClientSettingsChanged( CBasePlayer *pPlayer )
 	if ( pHL2Player == NULL )
 		return;
 
-	const char *pCurrentModel = modelinfo->GetModelName( pPlayer->GetModel() );
-	const char *szModelName = engine->GetClientConVarValue( engine->IndexOfEdict( pPlayer->edict() ), "cl_playermodel" );
-
-	//If we're different.
-	if ( stricmp( szModelName, pCurrentModel ) )
-	{
-		//Too soon, set the cvar back to what it was.
-		//Note: this will make this function be called again
-		//but since our models will match it'll just skip this whole dealio.
-		if ( pHL2Player->GetNextModelChangeTime() >= gpGlobals->curtime )
-		{
-			char szReturnString[512];
-
-			Q_snprintf( szReturnString, sizeof (szReturnString ), "cl_playermodel %s\n", pCurrentModel );
-			engine->ClientCommand ( pHL2Player->edict(), szReturnString );
-
-			Q_snprintf( szReturnString, sizeof( szReturnString ), "Please wait %d more seconds before trying to switch.\n", (int)(pHL2Player->GetNextModelChangeTime() - gpGlobals->curtime) );
-			ClientPrint( pHL2Player, HUD_PRINTTALK, szReturnString );
-			return;
-		}
-
-		if (Q_stristr(szModelName, "models/human"))
-		{
-			pHL2Player->ChangeTeam(TEAM_FREEMAN);
-		}
-		else
-		{
-			pHL2Player->ChangeTeam(TEAM_COMBINE);
-		}
-	}
-
 	if ( sv_report_client_settings.GetInt() == 1 )
 	{
 		UTIL_LogPrintf( "\"%s\" cl_cmdrate = \"%s\"\n", pHL2Player->GetPlayerName(), engine->GetClientConVarValue( pHL2Player->entindex(), "cl_cmdrate" ));

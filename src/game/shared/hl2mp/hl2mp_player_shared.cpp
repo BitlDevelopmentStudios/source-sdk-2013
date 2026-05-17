@@ -9,21 +9,21 @@
 
 #ifdef CLIENT_DLL
 #include "c_hl2mp_player.h"
+#include "c_anticitizen_player_resource.h"
 #include "prediction.h"
 #define CRecipientFilter C_RecipientFilter
 #else
 #include "hl2mp_player.h"
+#include "anticitizen_player_resource.h"
 #endif
 
 #include "engine/IEngineSound.h"
 #include "SoundEmitterSystem/isoundemittersystembase.h"
 #include "in_buttons.h"
 
-extern ConVar hl2_walkspeed;
 extern ConVar hl2_normspeed;
 extern ConVar hl2_sprintspeed;
 
-#define	HL2_WALK_SPEED hl2_walkspeed.GetFloat()
 #define	HL2_NORM_SPEED hl2_normspeed.GetFloat()
 #define	HL2_SPRINT_SPEED hl2_sprintspeed.GetFloat()
 
@@ -149,78 +149,68 @@ extern ConVar sv_maxspeed;
 
 void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
 {
-	int nChangedButtons = mv->m_nButtons ^ mv->m_nOldButtons;
+	const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
 
-	bool bJustPressedSpeed = !!(nChangedButtons & IN_SPEED);
-
-	const bool bWantSprint = (CanSprint() && IsSuitEquipped() && (mv->m_nButtons & IN_SPEED));
-	const bool bWantsToChangeSprinting = (m_HL2Local.m_bNewSprinting != bWantSprint) && (nChangedButtons & IN_SPEED) != 0;
-
-	bool bSprinting = m_HL2Local.m_bNewSprinting;
-	if (bWantsToChangeSprinting)
+	if (IsSuitEquipped())
 	{
-		if (bWantSprint)
+		int nChangedButtons = mv->m_nButtons ^ mv->m_nOldButtons;
+
+		bool bJustPressedSpeed = !!(nChangedButtons & IN_SPEED);
+
+		const bool bWantSprint = (CanSprint() && (mv->m_nButtons & IN_SPEED));
+		const bool bWantsToChangeSprinting = (m_HL2Local.m_bNewSprinting != bWantSprint) && (nChangedButtons & IN_SPEED) != 0;
+
+		bool bSprinting = m_HL2Local.m_bNewSprinting;
+		if (bWantsToChangeSprinting)
 		{
-			if (m_HL2Local.m_flSuitPower < 10.0f)
+			if (bWantSprint)
 			{
-				if (bJustPressedSpeed)
+				if (m_HL2Local.m_flSuitPower < 10.0f)
 				{
-					CPASAttenuationFilter filter(this);
-					filter.UsePredictionRules();
-					EmitSound(filter, entindex(), "HL2Player.SprintNoPower");
+					if (bJustPressedSpeed)
+					{
+						CPASAttenuationFilter filter(this);
+						filter.UsePredictionRules();
+						EmitSound(filter, entindex(), "HL2Player.SprintNoPower");
+					}
+				}
+				else
+				{
+					bSprinting = true;
 				}
 			}
 			else
 			{
-				bSprinting = true;
+				bSprinting = false;
 			}
 		}
-		else
+
+		if (m_HL2Local.m_flSuitPower < 0.01)
 		{
 			bSprinting = false;
 		}
-	}
 
-	if (m_HL2Local.m_flSuitPower < 0.01)
-	{
-		bSprinting = false;
-	}
+		m_HL2Local.m_bNewSprinting = bSprinting;
 
-	bool bWantWalking;
-
-	if (IsSuitEquipped())
-	{
-		bWantWalking = (mv->m_nButtons & IN_WALK) && !bSprinting && !(mv->m_nButtons & IN_DUCK);
-	}
-	else
-	{
-		bWantWalking = true;
-	}
-
-	if (bWantWalking)
-	{
-		bSprinting = false;
-	}
-
-	m_HL2Local.m_bNewSprinting = bSprinting;
-
-	if (bSprinting)
-	{
-		if (bJustPressedSpeed)
+		if (bSprinting)
 		{
-			CPASAttenuationFilter filter(this);
-			filter.UsePredictionRules();
-			EmitSound(filter, entindex(), "HL2Player.SprintStart");
+			if (bJustPressedSpeed)
+			{
+				CPASAttenuationFilter filter(this);
+				filter.UsePredictionRules();
+				EmitSound(filter, entindex(), "HL2Player.SprintStart");
+			}
+			mv->m_flClientMaxSpeed = info.flSprintSpeed;
 		}
-		mv->m_flClientMaxSpeed = HL2_SPRINT_SPEED;
-	}
-	else if (bWantWalking)
-	{
-		mv->m_flClientMaxSpeed = HL2_WALK_SPEED;
+		else
+		{
+			mv->m_flClientMaxSpeed = info.flNormSpeed;
+		}
 	}
 	else
 	{
-		mv->m_flClientMaxSpeed = HL2_NORM_SPEED;
+		// use norm for now until we add proper sprinting.
+		mv->m_flClientMaxSpeed = info.flNormSpeed;
 	}
 
 	mv->m_flMaxSpeed = sv_maxspeed.GetFloat();
@@ -234,6 +224,11 @@ void CHL2MP_Player::SetPlayerClass(int playerclass)
 int CHL2MP_Player::GetPlayerClass(void)
 {
 	return m_iPlayerClass;
+}
+
+const CAnticitizen_FilePlayerClassInfo_t& CHL2MP_Player::GetPlayerClassInfo(void)
+{
+	return g_Anticitizen_PR->GetPlayerClassInfo(GetPlayerClass());
 }
 
 //==========================

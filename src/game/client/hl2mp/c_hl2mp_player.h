@@ -13,6 +13,7 @@ class C_HL2MP_Player;
 #include "c_basehlplayer.h"
 #include "hl2mp_player_shared.h"
 #include "beamdraw.h"
+#include "c_anticitizen_player_resource.h"
 
 //=============================================================================
 //=============================================================================
@@ -123,6 +124,7 @@ public:
 	//classes
 	void	SetPlayerClass(int playerclass);
 	int		GetPlayerClass(void);
+	const CAnticitizen_FilePlayerClassInfo_t& GetPlayerClassInfo(void);
 
 private:
 	
@@ -143,7 +145,10 @@ private:
 	float m_headPitchMin;
 	float m_headPitchMax;
 
-	CNetworkVar(int, m_iPlayerClass);
+	int m_iPlayerClass;
+
+	float m_flNormalSpeed;
+	float m_flSprintSpeed;
 
 	bool m_isInit;
 	Vector m_vLookAtTarget;

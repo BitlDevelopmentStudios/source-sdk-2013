@@ -6,7 +6,6 @@
 //=============================================================================//
 #include "cbase.h"
 #include "hl2mp_player.h"
-#include "player_resource.h"
 #include "anticitizen_player_resource.h"
 #include "hl2mp_gamerules.h"
 #include "coordsize.h"
@@ -15,6 +14,7 @@
 #include "tier0/memdbgon.h"
 
 CAnticitizen_PlayerResource* g_Anticitizen_PR;
+const CAnticitizen_FilePlayerClassInfo_t pNullPlayerClassInfo = CAnticitizen_FilePlayerClassInfo_t();
 
 // Datatable
 IMPLEMENT_SERVERCLASS_ST(CAnticitizen_PlayerResource, DT_Anticitizen_PlayerResource)
@@ -109,6 +109,11 @@ const CAnticitizen_FilePlayerClassInfo_t& CAnticitizen_PlayerResource::GetPlayer
 {
 	Assert(iPlayerClass >= 0 && iPlayerClass < m_hPlayerClassInfoHandles.Count());
 
+	if (iPlayerClass < 0)
+	{
+		return pNullPlayerClassInfo;
+	}
+
 	const FilePlayerClassInfo_t* pPlayerClassInfo = GetFilePlayerClassInfoFromHandle(m_hPlayerClassInfoHandles[iPlayerClass]);
 	const CAnticitizen_FilePlayerClassInfo_t* pSDKInfo;
 
@@ -120,4 +125,15 @@ const CAnticitizen_FilePlayerClassInfo_t& CAnticitizen_PlayerResource::GetPlayer
 #endif
 
 	return *pSDKInfo;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Get a pointer to the specified team manager
+//-----------------------------------------------------------------------------
+int CAnticitizen_PlayerResource::GetGlobalClass(int iIndex)
+{
+	if (iIndex < 0 || iIndex >= GetNumPlayerClasses())
+		return NULL;
+
+	return m_hPlayerClassInfoHandles[iIndex];
 }

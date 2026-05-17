@@ -529,6 +529,9 @@ void CSpectatorGUI::OnThink()
 			}
 		}
 
+		// Ms - Update the timer
+		UpdateTimer();
+
 #ifdef TF_CLIENT_DLL
 		if ( TFGameRules() && TFGameRules()->ShowMatchSummary() )
 		{
@@ -611,7 +614,7 @@ void CSpectatorGUI::ShowPanel(bool bShow)
 			InvalidateLayout( true, true );
 			m_iWasSteamController = bWasSteamController ? 1 : 0;
 		}
-		m_bSpecScoreboard = false;
+		m_bSpecScoreboard = true;
 	}
 
 	SetVisible( bShow );
@@ -756,9 +759,9 @@ void CSpectatorGUI::UpdateTimer()
 {
 	wchar_t szText[ 63 ];
 
-	int timer = 0;
+	int timer = gpGlobals->curtime;
 
-	V_swprintf_safe ( szText, L"%d:%02d\n", (timer / 60), (timer % 60) );
+	V_swprintf_safe ( szText, L"%d:%02d", (timer / 60), (timer % 60) );
 
 	SetLabelText("timerlabel", szText );
 }

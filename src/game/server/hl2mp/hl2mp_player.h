@@ -19,6 +19,7 @@ class CHL2MP_Player;
 #include "hl2mp_player_shared.h"
 #include "hl2mp_gamerules.h"
 #include "utldict.h"
+#include "anticitizen_player_resource.h"
 
 //=============================================================================
 // >> HL2MP_Player
@@ -60,6 +61,7 @@ public:
 	virtual void PlayerDeathThink( void );
 	virtual void SetAnimation( PLAYER_ANIM playerAnim );
 	virtual bool HandleCommand_JoinTeam( int team );
+	virtual bool HandleCommand_JoinClass(int iclass);
 	virtual bool ClientCommand( const CCommand &args );
 	virtual void CreateViewModel( int viewmodelindex = 0 );
 	virtual bool BecomeRagdollOnClient( const Vector &force );
@@ -71,6 +73,7 @@ public:
 	virtual bool Weapon_Switch( CBaseCombatWeapon *pWeapon, int viewmodelindex = 0);
 	virtual bool BumpWeapon( CBaseCombatWeapon *pWeapon );
 	virtual void ChangeTeam( int iTeam ) OVERRIDE;
+	void ChangeClass(int iClass);
 	virtual void PickupObject ( CBaseEntity *pObject, bool bLimitMassAndSize );
 	virtual void PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, float fvol, bool force );
 	virtual void Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecTarget = NULL, const Vector *pVelocity = NULL );
@@ -92,14 +95,13 @@ public:
 	void CheatImpulseCommands( int iImpulse );
 	void CreateRagdollEntity( void );
 	void GiveAllItems( void );
-	void GiveDefaultItems( void );
+	void GiveAllWeapons(void);
 
 	void ResetAnimation( void );
 	Activity TranslateTeamActivity( Activity ActToTranslate );
 	
 	float GetNextModelChangeTime( void ) { return m_flNextModelChangeTime; }
 	float GetNextTeamChangeTime( void ) { return m_flNextTeamChangeTime; }
-	void  PickDefaultSpawnTeam( void );
 	void  SetupPlayerSoundsByModel( const char *pModelName );
 	const char *GetPlayerModelSoundPrefix( void );
 	int	  GetPlayerModelType( void ) { return m_iPlayerSoundType;	}
@@ -133,6 +135,10 @@ public:
 	//classes
 	void	SetPlayerClass(int playerclass);
 	int		GetPlayerClass(void);
+	const CAnticitizen_FilePlayerClassInfo_t& GetPlayerClassInfo(void);
+
+	float	GetNormalSpeed(void) { return m_flNormalSpeed; }
+	float	GetSprintSpeed(void) { return m_flSprintSpeed; }
 
 	Vector m_vecTotalBulletForce;	//Accumulator for bullet force in a single frame
 
@@ -149,6 +155,8 @@ private:
 	CPlayerAnimState   m_PlayerAnimState;
 
 	CNetworkVar(int, m_iPlayerClass);
+	CNetworkVar(float, m_flNormalSpeed);
+	CNetworkVar(float, m_flSprintSpeed);
 
 	int m_iModelType;
 	CNetworkVar( int, m_iSpawnInterpCounter );
@@ -169,6 +177,7 @@ private:
 
     bool m_bEnterObserver;
 	bool m_bReady;
+	bool m_bChosenClass;
 };
 
 inline CHL2MP_Player *ToHL2MPPlayer( CBaseEntity *pEntity )

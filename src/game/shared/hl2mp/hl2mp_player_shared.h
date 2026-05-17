@@ -13,6 +13,7 @@
 #include "studio.h"
 enum ECombineClasses
 {
+	CLS_INVALID = -1,
 	CLS_METROPOLICE,
 	CLS_COMBINE_SOLDIER,
 	CLS_COMBINE_SHOTGUNNER,

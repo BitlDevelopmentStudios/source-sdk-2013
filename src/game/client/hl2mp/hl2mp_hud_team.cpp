@@ -138,6 +138,10 @@ void CTeamPlayHud::OnThink()
 	if ( pLocalPlayer == NULL )
 		 return;
 
+	// Ms - Don't render the team label if you are a spectator
+	if (pLocalPlayer->GetTeamNumber() == TEAM_SPECTATOR)
+		return;
+
 	if ( pLocalPlayer->IsAlive() == false )
 		 return;
 
