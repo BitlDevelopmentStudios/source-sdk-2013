@@ -13,6 +13,7 @@
 
 #ifdef CLIENT_DLL
 	#include "c_hl2mp_player.h"
+	#include "c_anticitizen_player_resource.h"
 #else
 
 	#include "nav_mesh.h"
@@ -275,12 +276,6 @@ void CHL2MPRules::PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &inf
 #ifndef CLIENT_DLL
 	if ( IsIntermission() )
 		return;
-
-	CAnticitizen_PlayerResource* pTFResource = g_Anticitizen_PR;
-	if (pTFResource)
-	{
-		Msg("Loaded!\n");
-	}
 
 	BaseClass::PlayerKilled( pVictim, info );
 #endif

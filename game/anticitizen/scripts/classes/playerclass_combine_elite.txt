@@ -1,0 +1,18 @@
+PlayerClassDatafile
+{
+	// FilePlayerClassInfo_t members
+	"printname"			"#anticitizen_class_overwatchelite"
+	"playermodel"		"models/combine_soldier.mdl"
+	"selectcmd"			"class_overwatchelite"
+
+	// CAnticitizen_FilePlayerClassInfo_t members
+	"ClassType"			"3" // 0 = none, 1 = low, 2 = mid, 3 = high, 4 = freeman
+	
+	"PrimaryWeapon"		"weapon_ar2"
+	"SecondaryWeapon"	"weapon_smg1"
+	
+	"Health"			"70"
+	"CanADSOfWeapons"	"1"
+	"Speed"				"72"
+	"SprintSpeed"		"215"
+}

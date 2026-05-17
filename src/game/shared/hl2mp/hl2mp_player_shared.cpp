@@ -29,6 +29,21 @@ extern ConVar hl2_sprintspeed;
 
 extern ConVar sv_footsteps;
 
+const char* pszCombineClasses[] =
+{
+	"metropolice",
+	"combine_soldier",
+	"combine_shotgunner",
+	"combine_elite",
+	NULL
+};
+
+const char* pszFreemanClasses[] =
+{
+	"freeman",
+	NULL
+};
+
 const char *g_ppszPlayerSoundPrefixNames[PLAYER_SOUNDS_MAX] =
 {
 	"NPC_Citizen",

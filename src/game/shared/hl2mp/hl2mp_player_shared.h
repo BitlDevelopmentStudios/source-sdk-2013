@@ -12,20 +12,8 @@
 #define HL2MP_PUSHAWAY_THINK_INTERVAL		(1.0f / 20.0f)
 #include "studio.h"
 
-const char* pszCombineClasses[] =
-{
-	"metropolice",
-	"combine_soldier",
-	"combine_shotgunner",
-	"combine_elite",
-	NULL
-};
-
-const char* pszFreemanClasses[] =
-{
-	"freeman",
-	NULL
-};
+extern const char* pszFreemanClasses[];
+extern const char* pszCombineClasses[];
 
 enum
 {

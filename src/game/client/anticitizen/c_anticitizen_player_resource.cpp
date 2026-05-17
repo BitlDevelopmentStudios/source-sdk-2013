@@ -26,6 +26,21 @@ END_RECV_TABLE()
 C_Anticitizen_PlayerResource::C_Anticitizen_PlayerResource()
 {
 	g_Anticitizen_PR = this;
+
+	//parse our classes
+	int i = 0;
+	while (pszCombineClasses[i] != NULL)
+	{
+		AddPlayerClass(pszCombineClasses[i]);
+		i++;
+	}
+
+	i = 0;
+	while (pszFreemanClasses[i] != NULL)
+	{
+		AddPlayerClass(pszFreemanClasses[i]);
+		i++;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -48,7 +63,7 @@ void C_Anticitizen_PlayerResource::AddPlayerClass(const char* szClassName)
 {
 	PLAYERCLASS_FILE_INFO_HANDLE hPlayerClassInfo;
 
-	if (ReadPlayerClassDataFromFileForSlot(filesystem, szClassName, &hPlayerClassInfo, HL2MPRules()->GetEncryptionKey()))
+	if (ReadPlayerClassDataFromFileForSlotEx(filesystem, szClassName, &hPlayerClassInfo, "scripts/classes/playerclass_%s", HL2MPRules()->GetEncryptionKey()))
 	{
 		m_hPlayerClassInfoHandles.AddToTail(hPlayerClassInfo);
 	}
