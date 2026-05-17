@@ -784,6 +784,14 @@ bool CHL2MP_Player::HandleCommand_JoinTeam( int team )
 		return true;
 	}
 
+#ifndef DEBUG
+	if (GetPlayerClass() == CLS_FREEMAN)
+	{
+		Warning("Cannot join another team as Freeman.\n");
+		return true;
+	}
+#endif // !DEBUG
+
 	// Switch their actual team...
 	ChangeTeam( team );
 
