@@ -1,0 +1,4 @@
+https://developer.valvesoftware.com/wiki/Lowering_your_weapon_on_sprint
+https://web.archive.org/web/20170621064352/http://articles.thewavelength.net/702/
+https://developer.valvesoftware.com/wiki/Adding_Ironsights
+https://developer.valvesoftware.com/wiki/Adding_Proximity_Voice

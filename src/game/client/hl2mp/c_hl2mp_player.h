@@ -110,6 +110,7 @@ public:
 	int		GetIDTarget() const;
 	void	UpdateIDTarget( void );
 	void	PrecacheFootStepSounds( void );
+	void	PrecacheADSSounds(void);
 	const char	*GetPlayerModelSoundPrefix( void );
 
 	void	SetStamina(float stamina);

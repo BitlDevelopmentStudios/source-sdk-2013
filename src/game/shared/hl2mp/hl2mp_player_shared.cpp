@@ -76,6 +76,23 @@ void CHL2MP_Player::PrecacheFootStepSounds( void )
 	}
 }
 
+void CHL2MP_Player::PrecacheADSSounds(void)
+{
+	int iFootstepSounds = ARRAYSIZE(g_ppszPlayerSoundPrefixNames);
+	int i;
+
+	for (i = 0; i < iFootstepSounds; ++i)
+	{
+		char szFootStepName[128];
+
+		Q_snprintf(szFootStepName, sizeof(szFootStepName), "%s.ADSIn", g_ppszPlayerSoundPrefixNames[i]);
+		PrecacheScriptSound(szFootStepName);
+
+		Q_snprintf(szFootStepName, sizeof(szFootStepName), "%s.ADSOut", g_ppszPlayerSoundPrefixNames[i]);
+		PrecacheScriptSound(szFootStepName);
+	}
+}
+
 //-----------------------------------------------------------------------------
 // Consider the weapon's built-in accuracy, this character's proficiency with
 // the weapon, and the status of the target. Use this information to determine

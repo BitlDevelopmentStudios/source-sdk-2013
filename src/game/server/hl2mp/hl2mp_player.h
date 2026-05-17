@@ -88,6 +88,7 @@ public:
 	void FlashlightTurnOn( void );
 	void FlashlightTurnOff( void );
 	void	PrecacheFootStepSounds( void );
+	void	PrecacheADSSounds(void);
 
 	QAngle GetAnimEyeAngles( void ) { return m_angEyeAngles.Get(); }
 

@@ -157,6 +157,7 @@ void CHL2MP_Player::Precache( void )
 	PrecacheModel ( "sprites/glow01.vmt" );
 
 	PrecacheFootStepSounds();
+	PrecacheADSSounds();
 
 	PrecacheScriptSound( "NPC_MetroPolice.Die" );
 	PrecacheScriptSound( "NPC_CombineS.Die" );

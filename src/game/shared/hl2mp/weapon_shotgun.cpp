@@ -146,6 +146,8 @@ bool CWeaponShotgun::StartReload( void )
 
 	SendWeaponAnim( ACT_SHOTGUN_RELOAD_START );
 
+	DisableIronsights();
+
 	// Make shotgun shell visible
 	SetBodygroup(1,0);
 

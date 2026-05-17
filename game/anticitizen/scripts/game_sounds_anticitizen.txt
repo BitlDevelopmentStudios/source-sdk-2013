@@ -1,0 +1,59 @@
+"NPC_MetroPolice.ADSIn"
+{
+	"channel"		"CHAN_BODY"
+	"volume"		"0.55"
+	"pitch"		"95, 105"
+
+	"soundlevel"	"SNDLVL_NORM"
+
+	"rndwave"
+	{
+		"wave"	"npc/metropolice/gear4.wav"
+		"wave"	"npc/metropolice/gear5.wav"
+	}
+}
+
+"NPC_MetroPolice.ADSOut"
+{
+	"channel"		"CHAN_BODY"
+	"volume"		"0.55"
+	"pitch"		"95, 105"
+
+	"soundlevel"	"SNDLVL_NORM"
+
+	"rndwave"
+	{
+		"wave"	"npc/metropolice/gear3.wav"
+		"wave"	"npc/metropolice/gear6.wav"
+	}
+}
+
+"NPC_CombineS.ADSIn"
+{
+	"channel"		"CHAN_BODY"
+	"volume"		"0.75"
+	"pitch"		"95, 105"
+
+	"soundlevel"	"SNDLVL_NORM"
+
+	"rndwave"
+	{
+		"wave"	"npc/combine_soldier/gear4.wav"
+		"wave"	"npc/combine_soldier/gear5.wav"
+	}
+}
+
+"NPC_CombineS.ADSOut"
+{
+	"channel"		"CHAN_BODY"
+	"volume"		"0.75"
+	"pitch"		"95, 105"
+
+	"soundlevel"	"SNDLVL_NORM"
+
+	"rndwave"
+	{
+		"wave"	"npc/combine_soldier/gear3.wav"
+		"wave"	"npc/combine_soldier/gear6.wav"
+	}
+}
