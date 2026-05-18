@@ -36,6 +36,7 @@ void CAnticitizen_FilePlayerClassInfo_t::Parse(KeyValues* pKeyValuesData, const 
 
 	iHealth = pKeyValuesData->GetInt("Health", 100);
 	iClassType = pKeyValuesData->GetInt("ClassType", CLS_TYPE_NONE);
+	iSentenceVoice = pKeyValuesData->GetInt("VoiceMode", VOICE_TYPE_NONE);
 	bAllWeapons = pKeyValuesData->GetBool("AllWeapons");
 	bSPMovement = pKeyValuesData->GetBool("SPMovement");
 	bSuit = pKeyValuesData->GetBool("HEVSuit");
@@ -53,11 +54,11 @@ void CAnticitizen_FilePlayerClassInfo_t::Parse(KeyValues* pKeyValuesData, const 
 	if (!bAllWeapons)
 	{
 		// Classname
-		Q_strncpy(szPrimaryWeapon, pKeyValuesData->GetString("PrimaryWeapon", "!! Missing primary weapon name"), MAX_WEAPON_STRING);
+		Q_strncpy(szPrimaryWeapon, pKeyValuesData->GetString("PrimaryWeapon", ""), MAX_WEAPON_STRING);
 		// Classname
-		Q_strncpy(szSecondaryWeapon, pKeyValuesData->GetString("SecondaryWeapon", "!! Missing secondary weapon name"), MAX_WEAPON_STRING);
+		Q_strncpy(szSecondaryWeapon, pKeyValuesData->GetString("SecondaryWeapon", ""), MAX_WEAPON_STRING);
 		// Classname
-		Q_strncpy(szMeleeWeapon, pKeyValuesData->GetString("MeleeWeapon", "!! Missing melee weapon name"), MAX_WEAPON_STRING);
+		Q_strncpy(szMeleeWeapon, pKeyValuesData->GetString("MeleeWeapon", ""), MAX_WEAPON_STRING);
 	}
 }
 

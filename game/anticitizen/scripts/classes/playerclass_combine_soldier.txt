@@ -7,6 +7,7 @@ PlayerClassDatafile
 
 	// CAnticitizen_FilePlayerClassInfo_t members
 	"ClassType"			"2" // 0 = none, 1 = low, 2 = mid, 3 = high, 4 = freeman
+	"VoiceMode"			"2"
 	
 	"PrimaryWeapon"		"weapon_ar2"
 	"SecondaryWeapon"	"weapon_smg1"

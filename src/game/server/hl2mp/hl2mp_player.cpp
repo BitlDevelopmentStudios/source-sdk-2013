@@ -234,6 +234,7 @@ void CHL2MP_Player::Spawn(void)
 	m_nRenderFX = kRenderNormal;
 
 	m_flStamina = 100.0f;
+	m_flNextPainSoundTime = 0;
 	m_Local.m_iHideHUD = 0;
 	
 	AddFlag(FL_ONGROUND); // set the player on the ground at the start of the round.
@@ -696,34 +697,34 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 
 void CHL2MP_Player::LoadClass(int iClass)
 {
-	CAnticitizen_FilePlayerClassInfo_t* pPlayerClassInfo = (CAnticitizen_FilePlayerClassInfo_t*)GetFilePlayerClassInfoFromHandle(iClass);
-
-	if (pPlayerClassInfo)
+	if (GetPlayerClass() > CLS_INVALID)
 	{
-		if (pPlayerClassInfo->m_szPlayerModel[0])
+		const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
+
+		if (pPlayerClassInfo.m_szPlayerModel[0])
 		{
-			PrecacheModel(pPlayerClassInfo->m_szPlayerModel);
-			SetModel(pPlayerClassInfo->m_szPlayerModel);
-			SetupPlayerSoundsByModel(pPlayerClassInfo->m_szPlayerModel);
+			PrecacheModel(pPlayerClassInfo.m_szPlayerModel);
+			SetModel(pPlayerClassInfo.m_szPlayerModel);
+			SetupPlayerSoundsByModel(pPlayerClassInfo.m_szPlayerModel);
 		}
 
-		if (pPlayerClassInfo->iHealth > 0)
+		if (pPlayerClassInfo.iHealth > 0)
 		{
-			SetHealth(pPlayerClassInfo->iHealth);
-			SetMaxHealth(pPlayerClassInfo->iHealth);
+			SetHealth(pPlayerClassInfo.iHealth);
+			SetMaxHealth(pPlayerClassInfo.iHealth);
 		}
 
-		if (pPlayerClassInfo->bSuit)
+		if (pPlayerClassInfo.bSuit)
 		{
 			EquipSuit();
 
-			if (pPlayerClassInfo->iSuitArmor > 0)
+			if (pPlayerClassInfo.iSuitArmor > 0)
 			{
-				SetArmorValue(pPlayerClassInfo->iSuitArmor);
+				SetArmorValue(pPlayerClassInfo.iSuitArmor);
 			}
 		}
 
-		if (pPlayerClassInfo->bAllWeapons)
+		if (pPlayerClassInfo.bAllWeapons)
 		{
 			GiveAllWeapons();
 		}
@@ -734,33 +735,61 @@ void CHL2MP_Player::LoadClass(int iClass)
 			CBasePlayer::GiveAmmo(120, "SMG1");
 			CBasePlayer::GiveAmmo(120, "Buckshot");
 
-			if (pPlayerClassInfo->szPrimaryWeapon[0])
+			if (pPlayerClassInfo.szPrimaryWeapon[0])
 			{
-				GiveNamedItem(pPlayerClassInfo->szPrimaryWeapon);
+				GiveNamedItem(pPlayerClassInfo.szPrimaryWeapon);
 			}
 
-			if (pPlayerClassInfo->szSecondaryWeapon[0])
+			if (pPlayerClassInfo.szSecondaryWeapon[0])
 			{
-				GiveNamedItem(pPlayerClassInfo->szSecondaryWeapon);
+				GiveNamedItem(pPlayerClassInfo.szSecondaryWeapon);
 			}
 
-			if (pPlayerClassInfo->szMeleeWeapon[0])
+			if (pPlayerClassInfo.szMeleeWeapon[0])
 			{
-				GiveNamedItem(pPlayerClassInfo->szMeleeWeapon);
+				GiveNamedItem(pPlayerClassInfo.szMeleeWeapon);
 			}
 		}
 
-		if (pPlayerClassInfo->flNormSpeed > 0)
+		if (pPlayerClassInfo.flNormSpeed > 0)
 		{
-			m_flNormalSpeed = pPlayerClassInfo->flNormSpeed;
+			m_flNormalSpeed = pPlayerClassInfo.flNormSpeed;
 		}
 
-		if (pPlayerClassInfo->flSprintSpeed > 0)
+		if (pPlayerClassInfo.flSprintSpeed > 0)
 		{
-			m_flSprintSpeed = pPlayerClassInfo->flSprintSpeed;
+			m_flSprintSpeed = pPlayerClassInfo.flSprintSpeed;
+		}
+
+		if (pPlayerClassInfo.iSentenceVoice > VOICE_TYPE_NONE)
+		{
+			if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_METROPOLICE)
+			{
+				m_Sentences.Init(this, "NPC_Metropolice.SentenceParameters");
+			}
+			else if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_SOLDIER)
+			{
+				m_Sentences.Init(this, "NPC_Combine.SentenceParameters");
+			}
 		}
 	}
 }
+
+void CHL2MP_Player::SpeakSentence(const char* pSentence)
+{
+	m_Sentences.Speak(pSentence);
+}
+
+void CC_Debug_Sentences(const CCommand& args)
+{
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_GetCommandClient());
+
+	if (pPlayer)
+	{
+		pPlayer->SpeakSentence(args[1]);
+	}
+}
+static ConCommand player_sentence("player_sentence", CC_Debug_Sentences, "Say something\n");
 
 bool CHL2MP_Player::HandleCommand_JoinTeam( int team )
 {
@@ -1149,6 +1178,93 @@ int CHL2MP_Player::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	return BaseClass::OnTakeDamage( inputInfo );
 }
 
+int CHL2MP_Player::OnTakeDamage_Alive(const CTakeDamageInfo& info)
+{
+	if (GetPlayerClass() > CLS_INVALID)
+	{
+		const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
+
+		if (pPlayerClassInfo.iSentenceVoice > VOICE_TYPE_NONE)
+		{
+			PainSound(info);
+
+			if ((info.GetDamageType() & DMG_SLASH) && hl2_episodic.GetBool())
+			{
+				if (m_afPhysicsFlags & PFLAG_USING)
+				{
+					// Stop the player using a rotating button for a short time if hit by a creature's melee attack.
+					// This is for the antlion burrow-corking training in EP1 (sjb).
+					SuspendUse(0.5f);
+				}
+			}
+
+			return BaseClass::BaseClass::OnTakeDamage_Alive(info);;
+		}
+	}
+
+	// Call the base class implementation
+	return BaseClass::OnTakeDamage_Alive(info);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CHL2MP_Player::PainSound(const CTakeDamageInfo& info)
+{
+	// Ms - Spectators can't scream
+	if (GetTeamNumber() == TEAM_SPECTATOR)
+		return;
+
+	if (GetPlayerClass() > CLS_INVALID)
+	{
+		const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
+
+		if (pPlayerClassInfo.iSentenceVoice > VOICE_TYPE_NONE)
+		{
+			if (gpGlobals->curtime < m_flNextPainSoundTime)
+				return;
+
+			float flHeavy = 0.45f;
+			float flLight = 0.75f;
+
+			float healthRatio = (float)GetHealth() / (float)GetMaxHealth();
+			if (healthRatio > 0.0f)
+			{
+				const char* pSentenceName = "";
+
+				if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_METROPOLICE)
+				{
+					pSentenceName = "METROPOLICE_PAIN";
+					if (healthRatio < flHeavy)
+					{
+						pSentenceName = "METROPOLICE_PAIN_HEAVY";
+					}
+					else if (healthRatio > flLight)
+					{
+						pSentenceName = "METROPOLICE_PAIN_LIGHT";
+					}
+				}
+				else if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_SOLDIER)
+				{
+					pSentenceName = "COMBINE_PAIN";
+					if (healthRatio < flHeavy)
+					{
+						pSentenceName = "COMBINE_COVER";
+					}
+					else if (healthRatio > flLight)
+					{
+						pSentenceName = "COMBINE_TAUNT";
+					}
+				}
+
+				// This causes it to speak it no matter what; doesn't bother with setting sounds.
+				m_Sentences.Speak(pSentenceName, SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
+				m_flNextPainSoundTime = gpGlobals->curtime + 1;
+			}
+		}
+	}
+}
+
 void CHL2MP_Player::DeathSound( const CTakeDamageInfo &info )
 {
 	// Ms - Spectators can't scream
@@ -1158,31 +1274,55 @@ void CHL2MP_Player::DeathSound( const CTakeDamageInfo &info )
 	if ( m_hRagdoll && m_hRagdoll->GetBaseAnimating()->IsDissolving() )
 		 return;
 
-	char szStepSound[128];
+	if (GetPlayerClass() > CLS_INVALID)
+	{
+		const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
 
-	Q_snprintf( szStepSound, sizeof( szStepSound ), "%s.Die", GetPlayerModelSoundPrefix() );
+		if (pPlayerClassInfo.iSentenceVoice > VOICE_TYPE_NONE)
+		{
+			if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_METROPOLICE)
+			{
+				m_Sentences.Speak("METROPOLICE_DIE");
+			}
+			else if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_SOLDIER)
+			{
+				m_Sentences.Speak("COMBINE_DIE");
+			}
+		}
+		else
+		{
+			// freeman death sounds.
+			BaseClass::DeathSound(info);
+		}
+	}
+	else
+	{
+		char szStepSound[128];
 
-	const char *pModelName = STRING( GetModelName() );
+		Q_snprintf(szStepSound, sizeof(szStepSound), "%s.Die", GetPlayerModelSoundPrefix());
 
-	CSoundParameters params;
-	if ( GetParametersForSound( szStepSound, params, pModelName ) == false )
-		return;
+		const char* pModelName = STRING(GetModelName());
 
-	Vector vecOrigin = GetAbsOrigin();
-	
-	CRecipientFilter filter;
-	filter.AddRecipientsByPAS( vecOrigin );
+		CSoundParameters params;
+		if (GetParametersForSound(szStepSound, params, pModelName) == false)
+			return;
 
-	EmitSound_t ep;
-	ep.m_nChannel = params.channel;
-	ep.m_pSoundName = params.soundname;
-	ep.m_flVolume = params.volume;
-	ep.m_SoundLevel = params.soundlevel;
-	ep.m_nFlags = 0;
-	ep.m_nPitch = params.pitch;
-	ep.m_pOrigin = &vecOrigin;
+		Vector vecOrigin = GetAbsOrigin();
 
-	EmitSound( filter, entindex(), ep );
+		CRecipientFilter filter;
+		filter.AddRecipientsByPAS(vecOrigin);
+
+		EmitSound_t ep;
+		ep.m_nChannel = params.channel;
+		ep.m_pSoundName = params.soundname;
+		ep.m_flVolume = params.volume;
+		ep.m_SoundLevel = params.soundlevel;
+		ep.m_nFlags = 0;
+		ep.m_nPitch = params.pitch;
+		ep.m_pOrigin = &vecOrigin;
+
+		EmitSound(filter, entindex(), ep);
+	}
 }
 
 CBaseEntity* CHL2MP_Player::EntSelectSpawnPoint( void )

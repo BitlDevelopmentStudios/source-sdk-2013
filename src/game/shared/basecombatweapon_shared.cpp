@@ -567,19 +567,22 @@ bool CBaseCombatWeapon::HasIronsights(void)
 	if (!pOwner)
 		return false;
 
-	const CAnticitizen_FilePlayerClassInfo_t& info = pOwner->GetPlayerClassInfo();
-
-	if (!info.bADSWeapons)
-		return false;
-
-	if (GetWpnData().iClassTypeToADS > CLS_TYPE_NONE)
+	if (pOwner->GetPlayerClass() > CLS_INVALID)
 	{
-		bool CanClassADSThisWep = (info.iClassType >= GetWpnData().iClassTypeToADS);
+		const CAnticitizen_FilePlayerClassInfo_t& info = pOwner->GetPlayerClassInfo();
 
-		//Msg("MIN = %i, CLASS = %i, USE = %i\n", GetWpnData().iClassTypeToADS, info.iClassType, CanClassADSThisWep);
-
-		if (!CanClassADSThisWep)
+		if (!info.bADSWeapons)
 			return false;
+
+		if (GetWpnData().iClassTypeToADS > CLS_TYPE_NONE)
+		{
+			bool CanClassADSThisWep = (info.iClassType >= GetWpnData().iClassTypeToADS);
+
+			//Msg("MIN = %i, CLASS = %i, USE = %i\n", GetWpnData().iClassTypeToADS, info.iClassType, CanClassADSThisWep);
+
+			if (!CanClassADSThisWep)
+				return false;
+		}
 	}
 
 	return GetWpnData().m_bHasIronsights;

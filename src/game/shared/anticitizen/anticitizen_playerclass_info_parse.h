@@ -36,6 +36,16 @@ typedef enum {
 	NUM_CLASS_TYPES,
 } ClassType_t;
 
+typedef enum {
+	VOICE_TYPE_NONE,
+	VOICE_TYPE_METROPOLICE,
+	VOICE_TYPE_SOLDIER,
+
+	// Add new weapon types here
+
+	NUM_VOICE_TYPES,
+} ClassVoice_t;
+
 #define	DEFAULT_NORM_SPEED 190
 #define	DEFAULT_SPRINT_SPEED 320
 
@@ -63,6 +73,7 @@ public:
 	int						iSuitArmor;
 
 	int						iClassType;
+	int						iSentenceVoice;
 
 	bool					bAllWeapons;
 	bool					bSPMovement;

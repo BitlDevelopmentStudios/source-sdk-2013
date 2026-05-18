@@ -169,150 +169,156 @@ extern ConVar sv_maxspeed;
 
 void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
 {
-	const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
-
-	if (IsSuitEquipped())
+	if (GetPlayerClass() > CLS_INVALID)
 	{
-		int nChangedButtons = mv->m_nButtons ^ mv->m_nOldButtons;
+		const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
 
-		bool bJustPressedSpeed = !!(nChangedButtons & IN_SPEED);
-
-		const bool bWantSprint = (CanSprint() && (mv->m_nButtons & IN_SPEED));
-		const bool bWantsToChangeSprinting = (m_HL2Local.m_bNewSprinting != bWantSprint) && (nChangedButtons & IN_SPEED) != 0;
-
-		bool bSprinting = m_HL2Local.m_bNewSprinting;
-		if (bWantsToChangeSprinting)
+		if (IsSuitEquipped())
 		{
-			if (bWantSprint)
+			int nChangedButtons = mv->m_nButtons ^ mv->m_nOldButtons;
+
+			bool bJustPressedSpeed = !!(nChangedButtons & IN_SPEED);
+
+			const bool bWantSprint = (CanSprint() && (mv->m_nButtons & IN_SPEED));
+			const bool bWantsToChangeSprinting = (m_HL2Local.m_bNewSprinting != bWantSprint) && (nChangedButtons & IN_SPEED) != 0;
+
+			bool bSprinting = m_HL2Local.m_bNewSprinting;
+			if (bWantsToChangeSprinting)
 			{
-				if (m_HL2Local.m_flSuitPower < 10.0f)
+				if (bWantSprint)
 				{
-					if (bJustPressedSpeed)
+					if (m_HL2Local.m_flSuitPower < 10.0f)
 					{
-						CPASAttenuationFilter filter(this);
-						filter.UsePredictionRules();
-						EmitSound(filter, entindex(), "HL2Player.SprintNoPower");
+						if (bJustPressedSpeed)
+						{
+							CPASAttenuationFilter filter(this);
+							filter.UsePredictionRules();
+							EmitSound(filter, entindex(), "HL2Player.SprintNoPower");
+						}
+					}
+					else
+					{
+						bSprinting = true;
 					}
 				}
 				else
 				{
-					bSprinting = true;
+					bSprinting = false;
 				}
 			}
-			else
+
+			if (m_HL2Local.m_flSuitPower < 0.01)
 			{
 				bSprinting = false;
 			}
-		}
 
-		if (m_HL2Local.m_flSuitPower < 0.01)
-		{
-			bSprinting = false;
-		}
+			m_HL2Local.m_bNewSprinting = bSprinting;
 
-		m_HL2Local.m_bNewSprinting = bSprinting;
-
-		if (bSprinting)
-		{
-			if (bJustPressedSpeed)
+			if (bSprinting)
 			{
-				CPASAttenuationFilter filter(this);
-				filter.UsePredictionRules();
-				EmitSound(filter, entindex(), "HL2Player.SprintStart");
+				if (bJustPressedSpeed)
+				{
+					CPASAttenuationFilter filter(this);
+					filter.UsePredictionRules();
+					EmitSound(filter, entindex(), "HL2Player.SprintStart");
+				}
+				mv->m_flClientMaxSpeed = info.flSprintSpeed;
 			}
-			mv->m_flClientMaxSpeed = info.flSprintSpeed;
+			else
+			{
+				mv->m_flClientMaxSpeed = info.flNormSpeed;
+			}
 		}
 		else
 		{
-			mv->m_flClientMaxSpeed = info.flNormSpeed;
-		}
-	}
-	else
-	{
-		float stamina = 100.0f;
-		stamina = GetStamina();
+			float stamina = 100.0f;
+			stamina = GetStamina();
 
-		if ((mv->m_nButtons & IN_SPEED) && (stamina > 0) && (mv->m_nButtons & IN_FORWARD))
-		{
-			mv->m_flClientMaxSpeed = info.flSprintSpeed;
-			m_HL2Local.m_bNewSprinting = true;
+			if ((mv->m_nButtons & IN_SPEED) && (stamina > 0) && (mv->m_nButtons & IN_FORWARD))
+			{
+				mv->m_flClientMaxSpeed = info.flSprintSpeed;
+				m_HL2Local.m_bNewSprinting = true;
+			}
+			else
+			{
+				mv->m_flClientMaxSpeed = info.flNormSpeed;
+				m_HL2Local.m_bNewSprinting = false;
+			}
 		}
-		else
-		{
-			mv->m_flClientMaxSpeed = info.flNormSpeed;
-			m_HL2Local.m_bNewSprinting = false;
-		}
-	}
 
-	mv->m_flMaxSpeed = sv_maxspeed.GetFloat();
+		mv->m_flMaxSpeed = sv_maxspeed.GetFloat();
+	}
 }
 
 extern CSuitPowerDevice SuitDeviceSprint;
 
 void CHL2MP_Player::ReduceTimers(CMoveData* mv)
 {
-	const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
-
-	if (IsSuitEquipped())
+	if (GetPlayerClass() > CLS_INVALID)
 	{
-		bool bSprinting = mv->m_flClientMaxSpeed == info.flSprintSpeed;
+		const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
 
-		if (bSprinting)
+		if (IsSuitEquipped())
 		{
-			SuitPower_AddDevice(SuitDeviceSprint);
-		}
-		else
-		{
-			SuitPower_RemoveDevice(SuitDeviceSprint);
-		}
+			bool bSprinting = mv->m_flClientMaxSpeed == info.flSprintSpeed;
 
-		SuitPower_Update();
-	}
-	else
-	{
-		Vector vecPlayerVelocity = GetAbsVelocity();
-		float flStamina = GetStamina();
-
-		float fl2DVelocitySquared = vecPlayerVelocity.x * vecPlayerVelocity.x +
-			vecPlayerVelocity.y * vecPlayerVelocity.y;
-
-		// Can only sprint in forward direction.
-		bool bSprinting = ((mv->m_nButtons & IN_SPEED) && (mv->m_nButtons & IN_FORWARD));
-
-		// If we're holding the sprint key and also actually moving, remove some stamina
-		Vector vel = GetAbsVelocity();
-		if (bSprinting && fl2DVelocitySquared > 10000) //speed > 100
-		{
-			if (!(GetFlags() & FL_ONGROUND))
+			if (bSprinting)
 			{
-				flStamina -= 40 * gpGlobals->frametime;
+				SuitPower_AddDevice(SuitDeviceSprint);
 			}
 			else
 			{
-				flStamina -= 20 * gpGlobals->frametime;
+				SuitPower_RemoveDevice(SuitDeviceSprint);
 			}
 
-			SetStamina(flStamina);
+			SuitPower_Update();
 		}
 		else
 		{
-			//gain some back		
-			if (fl2DVelocitySquared <= 0)
+			Vector vecPlayerVelocity = GetAbsVelocity();
+			float flStamina = GetStamina();
+
+			float fl2DVelocitySquared = vecPlayerVelocity.x * vecPlayerVelocity.x +
+				vecPlayerVelocity.y * vecPlayerVelocity.y;
+
+			// Can only sprint in forward direction.
+			bool bSprinting = ((mv->m_nButtons & IN_SPEED) && (mv->m_nButtons & IN_FORWARD));
+
+			// If we're holding the sprint key and also actually moving, remove some stamina
+			Vector vel = GetAbsVelocity();
+			if (bSprinting && fl2DVelocitySquared > 10000) //speed > 100
 			{
-				flStamina += 60 * gpGlobals->frametime;
-			}
-			else if ((GetFlags() & FL_ONGROUND) &&
-				(mv->m_nButtons & IN_DUCK) &&
-				(GetFlags() & FL_DUCKING))
-			{
-				flStamina += 50 * gpGlobals->frametime;
+				if (!(GetFlags() & FL_ONGROUND))
+				{
+					flStamina -= 40 * gpGlobals->frametime;
+				}
+				else
+				{
+					flStamina -= 20 * gpGlobals->frametime;
+				}
+
+				SetStamina(flStamina);
 			}
 			else
 			{
-				flStamina += 10 * gpGlobals->frametime;
-			}
+				//gain some back		
+				if (fl2DVelocitySquared <= 0)
+				{
+					flStamina += 60 * gpGlobals->frametime;
+				}
+				else if ((GetFlags() & FL_ONGROUND) &&
+					(mv->m_nButtons & IN_DUCK) &&
+					(GetFlags() & FL_DUCKING))
+				{
+					flStamina += 50 * gpGlobals->frametime;
+				}
+				else
+				{
+					flStamina += 10 * gpGlobals->frametime;
+				}
 
-			SetStamina(flStamina);
+				SetStamina(flStamina);
+			}
 		}
 	}
 }

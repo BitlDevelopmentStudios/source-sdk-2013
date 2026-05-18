@@ -20,6 +20,7 @@ class CHL2MP_Player;
 #include "hl2mp_gamerules.h"
 #include "utldict.h"
 #include "anticitizen_player_resource.h"
+#include "player_sentence.h"
 
 //=============================================================================
 // >> HL2MP_Player
@@ -67,6 +68,7 @@ public:
 	virtual bool BecomeRagdollOnClient( const Vector &force );
 	virtual void Event_Killed( const CTakeDamageInfo &info );
 	virtual int OnTakeDamage( const CTakeDamageInfo &inputInfo );
+	virtual int OnTakeDamage_Alive(const CTakeDamageInfo& info);
 	virtual bool WantsLagCompensationOnEntity( const CBasePlayer *pPlayer, const CUserCmd *pCmd, const CBitVec<MAX_EDICTS> *pEntityTransmitBits ) const;
 	virtual void FireBullets ( const FireBulletsInfo_t &info );
 	virtual void OnMyWeaponFired( CBaseCombatWeapon* weapon );
@@ -78,6 +80,7 @@ public:
 	virtual void PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, float fvol, bool force );
 	virtual void Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecTarget = NULL, const Vector *pVelocity = NULL );
 	virtual void UpdateOnRemove( void );
+	virtual void PainSound(const CTakeDamageInfo& info);
 	virtual void DeathSound( const CTakeDamageInfo &info );
 	virtual CBaseEntity* EntSelectSpawnPoint( void );
 
@@ -154,7 +157,15 @@ public:
 
 	bool IsThreatAimingTowardMe( CBaseEntity* threat, float cosTolerance = 0.8f ) const;
 	bool IsThreatFiringAtMe( CBaseEntity* threat ) const;
+
+	void SpeakSentence(const char *pSentence);
+
+protected:
+	CPlayer_Sentence< CHL2MP_Player >* GetSentences() { return &m_Sentences; }
+
 private:
+	CPlayer_Sentence< CHL2MP_Player > m_Sentences;
+	float			m_flNextPainSoundTime;
 
 	CNetworkQAngle( m_angEyeAngles );
 	CPlayerAnimState   m_PlayerAnimState;

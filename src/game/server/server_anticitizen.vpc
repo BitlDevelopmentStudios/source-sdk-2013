@@ -312,6 +312,8 @@ $Project "Server (ANTICITIZEN)"
 		
 		$Folder	"ANTICITIZEN"
 		{
+			$File	"anticitizen\player_sentence.cpp"
+			$File	"anticitizen\player_sentence.h"
 			$File	"anticitizen\anticitizen_player_resource.cpp"
 			$File	"anticitizen\anticitizen_player_resource.h"
 			$File	"$SRCDIR\game\shared\playerclass_info_parse.cpp"
