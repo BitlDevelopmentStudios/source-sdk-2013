@@ -1,3 +1,11 @@
+
+Klow on the Combine Overwiki for the following SVG conversions of the following logos:
+- City 17 logo (Original version by BetaMaster)
+- Overwatch Soldier triangle symbol
+- Combine Claw logo
+- Overwatch Elite logo (also used for the Shotgun Soldier logo
+
+This mod uses the following articles: 
 https://developer.valvesoftware.com/wiki/Lowering_your_weapon_on_sprint
 https://web.archive.org/web/20170621064352/http://articles.thewavelength.net/702/
 https://developer.valvesoftware.com/wiki/Adding_Ironsights

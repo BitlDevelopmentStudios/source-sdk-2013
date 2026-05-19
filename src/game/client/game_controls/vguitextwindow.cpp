@@ -355,6 +355,10 @@ void CTextWindow::OnCommand( const char *command )
 				pszCommand = "chooseteam";
 				break;
 
+			case TEXTWINDOW_CMD_CHANGECLASS:
+				pszCommand = "changeclass";
+				break;
+
 			default:
 				DevMsg("CTextWindow::OnCommand: unknown exit command value %i\n", m_nExitCommand );
 				break;

@@ -10,7 +10,6 @@ PlayerClassDatafile
 	"VoiceMode"			"2"
 	
 	"PrimaryWeapon"		"weapon_ar2"
-	"SecondaryWeapon"	"weapon_smg1"
 	
 	"Health"			"70"
 	"CanADSOfWeapons"	"1"

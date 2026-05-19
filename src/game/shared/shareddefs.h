@@ -536,6 +536,7 @@ enum
 	TEXTWINDOW_CMD_MAPINFO,
 	TEXTWINDOW_CMD_CLOSED_HTMLPAGE,
 	TEXTWINDOW_CMD_CHOOSETEAM,
+	TEXTWINDOW_CMD_CHANGECLASS
 };
 //=============================================================================
 // HPE_END

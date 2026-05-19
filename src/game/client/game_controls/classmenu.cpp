@@ -108,6 +108,16 @@ CClassMenu::~CClassMenu()
 {
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CClassMenu::PerformLayout(void)
+{
+	BaseClass::PerformLayout();
+
+	MoveToCenterOfScreen();
+}
+
 MouseOverPanelButton* CClassMenu::CreateNewMouseOverPanelButton(EditablePanel *panel)
 { 
 	return new MouseOverPanelButton(this, "MouseOverPanelButton", panel);

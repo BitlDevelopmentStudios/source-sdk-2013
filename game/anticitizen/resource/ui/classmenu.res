@@ -6,27 +6,12 @@
 		"fieldName"		"class"
 		"xpos"			"0"
 		"ypos"			"0"
-		"wide"			"640"
-		"tall"			"480"
+		"wide"			"600"
+		"tall"			"350"
 		"autoResize"		"0"
 		"pinCorner"		"0"
 		"visible"		"1"
 		"enabled"		"1"
-		"tabPosition"		"0"
-	}
-
-	"SysMenu"
-	{
-		"ControlName"		"Menu"
-		"fieldName"		"SysMenu"
-		"xpos"			"0"
-		"ypos"			"0"
-		"wide"			"64"
-		"tall"			"24"
-		"autoResize"		"0"
-		"pinCorner"		"0"
-		"visible"		"0"
-		"enabled"		"0"
 		"tabPosition"		"0"
 	}
 
@@ -48,33 +33,15 @@
 		"brighttext"		"0"
 		"font"		"MenuTitle"
 	}
-
-	"classInfoLabel"
-	{
-		"ControlName"		"Label"
-		"fieldName"		"classInfoLabel"
-		"xpos"			"244"
-		"ypos"			"72"
-		"wide"			"180"
-		"tall"			"24"
-		"autoResize"		"0"
-		"pinCorner"		"0"
-		"visible"		"0"
-		"enabled"		"1"
-		"labelText"		"#Cstrike_Class_Info"
-		"textAlignment"		"west"
-		"dulltext"		"0"
-		"brighttext"		"1"
-	}
-
+	
 	"ClassInfo"
 	{
 		"ControlName"		"Panel"
 		"fieldName"		"ClassInfo"
 		"xpos"			"244"
-		"ypos"			"116"
-		"wide"			"400"
-		"tall"			"380"
+		"ypos"			"15"
+		"wide"			"330"
+		"tall"			"330"
 		"autoResize"		"3"
 		"pinCorner"		"0"
 		"visible"		"0"
@@ -82,10 +49,10 @@
 		"tabPosition"		"0"
 	}
 
-	"urban"
+	"police"
 	{
 		"ControlName"		"MouseOverPanelButton"
-		"fieldName"		"urban"
+		"fieldName"		"police"
 		"xpos"			"76"
 		"ypos"			"116"
 		"wide"			"148"
@@ -95,17 +62,17 @@
 		"visible"		"1"
 		"enabled"		"1"
 		"tabPosition"		"0"
-		"labelText"		"#Cstrike_Urban"
+		"labelText"		"#anticitizen_class_civilprotection"
 		"textAlignment"		"west"
 		"dulltext"		"0"
 		"brighttext"		"0"
 		"command"		"joinclass 0"
 	}
 	
-	"gsg9"
+	"soldier"
 	{
 		"ControlName"		"MouseOverPanelButton"
-		"fieldName"		"gsg9"
+		"fieldName"		"soldier"
 		"xpos"			"76"
 		"ypos"			"148"
 		"wide"			"148"
@@ -115,17 +82,17 @@
 		"visible"		"1"
 		"enabled"		"1"
 		"tabPosition"		"0"
-		"labelText"		"#Cstrike_GSG9"
+		"labelText"		"#anticitizen_class_overwatchsoldier"
 		"textAlignment"		"west"
 		"dulltext"		"0"
 		"brighttext"		"0"
 		"command"		"joinclass 1"
 	}
 	
-	"sas"
+	"shotgunner"
 	{
 		"ControlName"		"MouseOverPanelButton"
-		"fieldName"		"sas"
+		"fieldName"		"shotgunner"
 		"xpos"			"76"
 		"ypos"			"180"
 		"wide"			"148"
@@ -135,17 +102,17 @@
 		"visible"		"1"
 		"enabled"		"1"
 		"tabPosition"		"0"
-		"labelText"		"#Cstrike_SAS"
+		"labelText"		"#anticitizen_class_overwatchshotgunner"
 		"textAlignment"		"west"
 		"dulltext"		"0"
 		"brighttext"		"0"
 		"command"		"joinclass 2"
 	}
 	
-	"gign"
+	"elite"
 	{
 		"ControlName"		"MouseOverPanelButton"
-		"fieldName"		"gign"
+		"fieldName"		"elite"
 		"xpos"			"76"
 		"ypos"			"212"
 		"wide"			"148"
@@ -155,7 +122,7 @@
 		"visible"		"1"
 		"enabled"		"1"
 		"tabPosition"		"0"
-		"labelText"		"#Cstrike_GIGN"
+		"labelText"		"#anticitizen_class_overwatchelite"
 		"textAlignment"		"west"
 		"dulltext"		"0"
 		"brighttext"		"0"
