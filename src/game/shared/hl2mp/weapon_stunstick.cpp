@@ -88,7 +88,7 @@ public:
 	void		SetStunState( bool state );
 	bool		GetStunState( void );
 
-	void		Hit(trace_t& traceHit, Activity nHitActivity);
+	void		Hit(trace_t& traceHit, Activity nHitActivity) OVERRIDE;
 
 #ifndef CLIENT_DLL
 	void		Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
