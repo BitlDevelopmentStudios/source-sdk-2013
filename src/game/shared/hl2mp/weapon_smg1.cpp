@@ -55,6 +55,9 @@ public:
 
 	virtual const Vector& GetBulletSpread( void )
 	{
+		if (IsIronsighted())
+			return VECTOR_CONE_3DEGREES;
+
 		static const Vector cone = VECTOR_CONE_5DEGREES;
 		return cone;
 	}

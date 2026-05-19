@@ -56,6 +56,9 @@ public:
 
 	virtual const Vector& GetBulletSpread( void )
 	{		
+		if (IsIronsighted())
+			return VECTOR_CONE_2DEGREES;
+
 		static Vector cone;
 
 		float ramp = RemapValClamped(	m_flAccuracyPenalty, 
