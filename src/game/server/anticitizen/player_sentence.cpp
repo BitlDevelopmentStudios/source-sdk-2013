@@ -129,7 +129,11 @@ int SENTENCEG_PlayRndSz_Player_Lookat(edict_t* entity, const char* szgroupname,
 			pPlayer->GetVectors(&forward, &right, &up);
 			Vector vFakeTarget = (pPlayer->EyePosition() + forward * 128 + right * random->RandomFloat(-32, 32) + up * random->RandomFloat(-16, 16));
 			origin = &vFakeTarget;
-			direction = &pPlayer->BodyDirection3D();
+
+			// proper direction calc
+			Vector vecDirection;
+			AngleVectors(pPlayer->GetAbsAngles(), &vecDirection);
+			direction = &vecDirection;
 
 			CBaseEntity* pEnt;
 			// Get the entity under my crosshair

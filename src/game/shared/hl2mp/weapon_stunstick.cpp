@@ -88,6 +88,8 @@ public:
 	void		SetStunState( bool state );
 	bool		GetStunState( void );
 
+	void		Hit(trace_t& traceHit, Activity nHitActivity);
+
 #ifndef CLIENT_DLL
 	void		Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
 	int			WeaponMeleeAttack1Condition( float flDot, float flDist );
@@ -242,6 +244,82 @@ void CWeaponStunStick::ImpactEffect( trace_t &traceHit )
 
 	//FIXME: need new decals
 	UTIL_ImpactTrace( &traceHit, DMG_CLUB );
+}
+
+//------------------------------------------------------------------------------
+// Purpose: Implement impact function
+//------------------------------------------------------------------------------
+void CWeaponStunStick::Hit(trace_t& traceHit, Activity nHitActivity)
+{
+	CBasePlayer* pPlayer = ToBasePlayer(GetOwner());
+
+	//Do view kick
+//	AddViewKick();
+
+	CBaseEntity* pHitEntity = traceHit.m_pEnt;
+
+	//Apply damage to a hit target
+	if (pHitEntity != NULL)
+	{
+		Vector hitDirection;
+		pPlayer->EyeVectors(&hitDirection, NULL, NULL);
+		VectorNormalize(hitDirection);
+
+#ifndef CLIENT_DLL
+		CTakeDamageInfo info(GetOwner(), GetOwner(), GetDamageForActivity(nHitActivity), DMG_CLUB);
+
+		if (pPlayer)
+		{
+			if (pHitEntity->IsNPC())
+			{
+				// If bonking an NPC, adjust damage.
+				info.AdjustPlayerDamageInflictedForSkillLevel();
+			}
+
+			CBasePlayer* pHitPlayer = ToBasePlayer(pHitEntity);
+
+			if (pHitPlayer)
+			{
+				float yawKick = random->RandomFloat(-48, -24);
+
+				//Kick the player angles
+				pHitPlayer->ViewPunch(QAngle(-16, yawKick, 2));
+
+				Vector	dir = pHitPlayer->GetAbsOrigin() - GetAbsOrigin();
+				VectorNormalize(dir);
+
+				dir *= 500.0f;
+
+				//If not on ground, then don't make them fly!
+				if (!(pHitPlayer->GetFlags() & FL_ONGROUND))
+					dir.z = 0.0f;
+
+				//Push the target back
+				pHitPlayer->ApplyAbsVelocityImpulse(dir);
+
+				color32 red = { 128,128,128,128 };
+				UTIL_ScreenFade(pHitPlayer, red, 0.5f, 0.1f, FFADE_IN);
+
+				// Force the player to drop anything they were holding
+				pHitPlayer->ForceDropOfCarriedPhysObjects();
+			}
+		}
+
+		CalculateMeleeDamageForce(&info, hitDirection, traceHit.endpos);
+
+		pHitEntity->DispatchTraceAttack(info, hitDirection, &traceHit);
+		ApplyMultiDamage();
+
+		// Now hit all triggers along the ray that... 
+		TraceAttackToTriggers(info, traceHit.startpos, traceHit.endpos, hitDirection);
+#endif
+
+		if (this->PlayFleshyHittySoundOnHit())
+			WeaponSound(MELEE_HIT);
+	}
+
+	// Apply an impact effect
+	ImpactEffect(traceHit);
 }
 
 #ifndef CLIENT_DLL
