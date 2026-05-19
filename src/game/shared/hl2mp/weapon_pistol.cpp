@@ -56,9 +56,6 @@ public:
 
 	virtual const Vector& GetBulletSpread( void )
 	{		
-		if (IsIronsighted())
-			return VECTOR_CONE_2DEGREES;
-
 		static Vector cone;
 
 		float ramp = RemapValClamped(	m_flAccuracyPenalty, 
@@ -69,6 +66,9 @@ public:
 
 			// We lerp from very accurate to inaccurate over time
 		VectorLerp( VECTOR_CONE_1DEGREES, VECTOR_CONE_6DEGREES, ramp, cone );
+
+		if (IsIronsighted())
+			cone = VECTOR_CONE_2DEGREES;
 
 		return cone;
 	}

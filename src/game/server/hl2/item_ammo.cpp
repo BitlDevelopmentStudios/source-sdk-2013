@@ -11,6 +11,7 @@
 #include "ammodef.h"
 #include "eventlist.h"
 #include "npcevent.h"
+#include "hl2mp_player.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -514,6 +515,18 @@ public:
 	}
 	bool MyTouch( CBasePlayer *pPlayer )
 	{
+		CHL2MP_Player* pHL2MPlayer = ToHL2MPPlayer(pPlayer);
+
+		if (pHL2MPlayer->GetPlayerClass() > CLS_INVALID)
+		{
+			const CAnticitizen_FilePlayerClassInfo_t& info = pHL2MPlayer->GetPlayerClassInfo();
+
+			if (info.iClassType < 4) // if we're under freeman, skip.
+			{
+				return false;
+			}
+		}
+
 		if (ITEM_GiveAmmo( pPlayer, SIZE_AMMO_SMG1_GRENADE, "SMG1_Grenade"))
 		{
 			if ( g_pGameRules->ItemShouldRespawn( this ) == GR_ITEM_RESPAWN_NO )
@@ -522,6 +535,7 @@ public:
 			}	
 			return true;
 		}
+
 		return false;
 	}
 
@@ -627,6 +641,18 @@ public:
 
 	bool MyTouch( CBasePlayer *pPlayer )
 	{
+		CHL2MP_Player* pHL2MPlayer = ToHL2MPPlayer(pPlayer);
+
+		if (pHL2MPlayer->GetPlayerClass() > CLS_INVALID)
+		{
+			const CAnticitizen_FilePlayerClassInfo_t& info = pHL2MPlayer->GetPlayerClassInfo();
+
+			if (info.iClassType <= 2) // if we're at or under mid, skip.
+			{
+				return false;
+			}
+		}
+
 		if (ITEM_GiveAmmo( pPlayer, SIZE_AMMO_AR2_ALTFIRE, "AR2AltFire" ) )
 		{
 			if ( g_pGameRules->ItemShouldRespawn( this ) == GR_ITEM_RESPAWN_NO )

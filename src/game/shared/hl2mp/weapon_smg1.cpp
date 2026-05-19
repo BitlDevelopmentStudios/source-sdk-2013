@@ -55,10 +55,12 @@ public:
 
 	virtual const Vector& GetBulletSpread( void )
 	{
-		if (IsIronsighted())
-			return VECTOR_CONE_3DEGREES;
+		static Vector cone;	
+		cone = VECTOR_CONE_5DEGREES;
 
-		static const Vector cone = VECTOR_CONE_5DEGREES;
+		if (IsIronsighted())
+			cone = VECTOR_CONE_3DEGREES;
+
 		return cone;
 	}
 
@@ -179,7 +181,13 @@ void CWeaponSMG1::AddViewKick( void )
 {
 	#define	EASY_DAMPEN			0.5f
 	#define	MAX_VERTICAL_KICK	1.0f	//Degrees
+	#define	MAX_VERTICAL_ADS_KICK	0.5f	//Degrees
 	#define	SLIDE_LIMIT			2.0f	//Seconds
+
+	float kick = MAX_VERTICAL_KICK;
+
+	if (IsIronsighted())
+		kick = MAX_VERTICAL_ADS_KICK;
 	
 	//Get the view kick
 	CBasePlayer *pPlayer = ToBasePlayer( GetOwner() );
@@ -187,7 +195,7 @@ void CWeaponSMG1::AddViewKick( void )
 	if ( pPlayer == NULL )
 		return;
 
-	DoMachineGunKick( pPlayer, EASY_DAMPEN, MAX_VERTICAL_KICK, m_fFireDuration, SLIDE_LIMIT );
+	DoMachineGunKick( pPlayer, EASY_DAMPEN, kick, m_fFireDuration, SLIDE_LIMIT );
 }
 
 //-----------------------------------------------------------------------------
@@ -196,10 +204,23 @@ void CWeaponSMG1::AddViewKick( void )
 void CWeaponSMG1::SecondaryAttack( void )
 {
 	// Only the player fires this way so we can cast
-	CBasePlayer *pPlayer = ToBasePlayer( GetOwner() );
+	CHL2MP_Player *pPlayer = ToHL2MPPlayer( GetOwner() );
 	
 	if ( pPlayer == NULL )
 		return;
+
+	if (pPlayer->GetPlayerClass() > CLS_INVALID)
+	{
+		const CAnticitizen_FilePlayerClassInfo_t& info = pPlayer->GetPlayerClassInfo();
+
+		if (info.iClassType < 4) // if we're under freeman, skip.
+		{
+			SendWeaponAnim(ACT_VM_DRYFIRE);
+			BaseClass::WeaponSound(EMPTY);
+			m_flNextEmptySoundTime = m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
+			return;
+		}
+	}
 
 	//Must have ammo
 	if ( ( pPlayer->GetAmmoCount( m_iSecondaryAmmoType ) <= 0 ) || ( pPlayer->GetWaterLevel() == 3 ) )

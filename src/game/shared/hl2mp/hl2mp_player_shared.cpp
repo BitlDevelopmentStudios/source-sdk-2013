@@ -290,11 +290,11 @@ void CHL2MP_Player::ReduceTimers(CMoveData* mv)
 			{
 				if (!(GetFlags() & FL_ONGROUND))
 				{
-					flStamina -= 40 * gpGlobals->frametime;
+					flStamina -= 25 * gpGlobals->frametime;
 				}
 				else
 				{
-					flStamina -= 20 * gpGlobals->frametime;
+					flStamina -= 15 * gpGlobals->frametime;
 				}
 
 				SetStamina(flStamina);
@@ -304,13 +304,13 @@ void CHL2MP_Player::ReduceTimers(CMoveData* mv)
 				//gain some back		
 				if (fl2DVelocitySquared <= 0)
 				{
-					flStamina += 60 * gpGlobals->frametime;
+					flStamina += 30 * gpGlobals->frametime;
 				}
 				else if ((GetFlags() & FL_ONGROUND) &&
 					(mv->m_nButtons & IN_DUCK) &&
 					(GetFlags() & FL_DUCKING))
 				{
-					flStamina += 50 * gpGlobals->frametime;
+					flStamina += 20 * gpGlobals->frametime;
 				}
 				else
 				{

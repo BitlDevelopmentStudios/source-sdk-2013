@@ -697,6 +697,11 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 
 void CHL2MP_Player::LoadClass(int iClass)
 {
+	if (!IsAllowedToPickupWeapons())
+	{
+		SetPreventWeaponPickup(false);
+	}
+
 	if (GetPlayerClass() > CLS_INVALID)
 	{
 		const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
@@ -749,6 +754,8 @@ void CHL2MP_Player::LoadClass(int iClass)
 			{
 				GiveNamedItem(pPlayerClassInfo.szMeleeWeapon);
 			}
+
+			SetPreventWeaponPickup(true);
 		}
 
 		if (pPlayerClassInfo.flNormSpeed > 0)
@@ -799,6 +806,11 @@ bool CHL2MP_Player::HandleCommand_JoinTeam( int team )
 		return false;
 	}
 
+	if (team == GetTeamNumber())
+	{
+		return false;
+	}
+
 	if ( team == TEAM_SPECTATOR )
 	{
 		// Prevent this is the cvar is set
@@ -835,6 +847,11 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 	if (iclass < 0 || iclass >= g_Anticitizen_PR->GetNumPlayerClasses())
 	{
 		Warning("HandleCommand_JoinClass( %d ) - invalid class index.\n", iclass);
+		return false;
+	}
+
+	if (iclass == GetPlayerClass())
+	{
 		return false;
 	}
 

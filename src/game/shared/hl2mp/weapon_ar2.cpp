@@ -243,10 +243,23 @@ void CWeaponAR2::SecondaryAttack( void )
 	if ( m_bShotDelayed )
 		return;
 
-	CBasePlayer* pPlayer = ToBasePlayer( GetOwner() );
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer( GetOwner() );
 
 	if ( pPlayer == NULL )
 		return;
+
+	if (pPlayer->GetPlayerClass() > CLS_INVALID)
+	{
+		const CAnticitizen_FilePlayerClassInfo_t& info = pPlayer->GetPlayerClassInfo();
+
+		if (info.iClassType <= 2) // if we're at or under mid, skip.
+		{
+			SendWeaponAnim(ACT_VM_DRYFIRE);
+			BaseClass::WeaponSound(EMPTY);
+			m_flNextEmptySoundTime = m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
+			return;
+		}
+	}
 
 	// Cannot fire underwater
 	if ( ( pPlayer->GetAmmoCount( m_iSecondaryAmmoType ) <= 0 ) || ( pPlayer->GetWaterLevel() == 3 ) )
@@ -303,15 +316,21 @@ void CWeaponAR2::AddViewKick( void )
 {
 	#define	EASY_DAMPEN			0.5f
 	#define	MAX_VERTICAL_KICK	8.0f	//Degrees
+	#define	MAX_VERTICAL_ADS_KICK	4.0f	//Degrees
 	#define	SLIDE_LIMIT			5.0f	//Seconds
 	
-	//Get the view kick
-	CBasePlayer *pPlayer = ToBasePlayer( GetOwner() );
+	float kick = MAX_VERTICAL_KICK;
 
-	if (!pPlayer)
+	if (IsIronsighted())
+		kick = MAX_VERTICAL_ADS_KICK;
+
+	//Get the view kick
+	CBasePlayer* pPlayer = ToBasePlayer(GetOwner());
+
+	if (pPlayer == NULL)
 		return;
 
-	DoMachineGunKick( pPlayer, EASY_DAMPEN, MAX_VERTICAL_KICK, m_fFireDuration, SLIDE_LIMIT );
+	DoMachineGunKick(pPlayer, EASY_DAMPEN, kick, m_fFireDuration, SLIDE_LIMIT);
 }
 
 //-----------------------------------------------------------------------------

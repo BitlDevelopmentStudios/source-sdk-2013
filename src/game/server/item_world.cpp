@@ -446,8 +446,10 @@ void CItem::ItemTouch( CBaseEntity *pOther )
 	m_OnCacheInteraction.FireOutput(pOther, this);
 
 	// Can I even pick stuff up?
-	if ( !pPlayer->IsAllowedToPickupWeapons() )
-		return;
+	// commented out so we can get ammo.
+	// todo: make it so ammo may not be picked up.
+	//if ( !pPlayer->IsAllowedToPickupWeapons() )
+		//return;
 
 	// ok, a player is touching this item, but can he have it?
 	if ( !g_pGameRules->CanHaveItem( pPlayer, this ) )
