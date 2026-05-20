@@ -12,6 +12,7 @@
 #include "in_buttons.h"
 #include "engine/IEngineSound.h"
 #include "item_healthkit.h"
+#include "anticitizen_playerclass_info_parse.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -46,6 +47,9 @@ void CHealthKit::Spawn( void )
 	SetModel( "models/items/healthkit.mdl" );
 
 	BaseClass::Spawn();
+
+	m_bForceAllowPickup = true;
+	m_iMinClassType = CLS_TYPE_NONE;
 }
 
 
@@ -109,6 +113,9 @@ public:
 		SetModel( "models/healthvial.mdl" );
 
 		BaseClass::Spawn();
+
+		m_bForceAllowPickup = true;
+		m_iMinClassType = CLS_TYPE_NONE;
 	}
 
 	void Precache( void )
