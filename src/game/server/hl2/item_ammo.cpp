@@ -49,6 +49,8 @@ public:
 		Precache( );
 		SetModel( "models/items/boxsrounds.mdl" );
 		BaseClass::Spawn( );
+		m_bForceAllowPickup = true;
+		m_iMinClassType = CLS_TYPE_NONE;
 	}
 	void Precache( void )
 	{
@@ -88,6 +90,8 @@ public:
 		Precache( );
 		SetModel( "models/items/boxsrounds.mdl" );
 		BaseClass::Spawn( );
+		m_bForceAllowPickup = true;
+		m_iMinClassType = CLS_TYPE_NONE;
 	}
 	void Precache( void )
 	{
@@ -126,6 +130,8 @@ public:
 		Precache( );
 		SetModel( "models/items/boxmrounds.mdl");
 		BaseClass::Spawn( );
+		m_bForceAllowPickup = true;
+		m_iMinClassType = CLS_TYPE_NONE;
 	}
 	void Precache( void )
 	{
@@ -164,6 +170,8 @@ public:
 		Precache( );
 		SetModel( "models/items/boxmrounds.mdl");
 		BaseClass::Spawn( );
+		m_bForceAllowPickup = true;
+		m_iMinClassType = CLS_TYPE_NONE;
 	}
 	void Precache( void )
 	{
@@ -202,6 +210,8 @@ public:
 		Precache( );
 		SetModel( "models/items/combine_rifle_cartridge01.mdl");
 		BaseClass::Spawn( );
+		m_bForceAllowPickup = true;
+		m_iMinClassType = CLS_TYPE_MID_TIER;
 	}
 	void Precache( void )
 	{
@@ -240,6 +250,8 @@ public:
 		Precache( );
 		SetModel( "models/items/combine_rifle_cartridge01.mdl");
 		BaseClass::Spawn( );
+		m_bForceAllowPickup = true;
+		m_iMinClassType = CLS_TYPE_MID_TIER;
 	}
 	void Precache( void )
 	{
@@ -625,6 +637,8 @@ public:
 		Precache( );
 		SetModel( "models/items/combine_rifle_ammo01.mdl");
 		BaseClass::Spawn( );
+		m_bForceAllowPickup = true;
+		m_iMinClassType = CLS_TYPE_HIGH_TIER;
 	}
 
 	bool MyTouch( CBasePlayer *pPlayer )
