@@ -350,6 +350,8 @@ void CHL2MP_Player::PreThink( void )
 	SetLocalAngles( vOldAngles );
 }
 
+extern ConVar sk_resource_regen_time;
+
 void CHL2MP_Player::PostThink( void )
 {
 	BaseClass::PostThink();
@@ -367,6 +369,41 @@ void CHL2MP_Player::PostThink( void )
 	QAngle angles = GetLocalAngles();
 	angles[PITCH] = 0;
 	SetLocalAngles( angles );
+
+	if ((GetPlayerClass() > CLS_INVALID))
+	{
+		const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
+
+		if (info.iClassType > CLS_TYPE_LOW_TIER) // if we're at or under low, skip.
+		{
+			CBaseCombatWeapon* pFrag = (CBaseCombatWeapon*)HasNamedPlayerItem("weapon_frag");
+
+			if (pFrag && GetAmmoCount("grenade") < 1)
+			{
+				// If it's been longer than three seconds, reload
+				if ((gpGlobals->curtime - pFrag->m_flNextPrimaryAttack) > sk_resource_regen_time.GetFloat())
+				{
+					// Just load the clip with no animations
+					CBasePlayer::GiveAmmo(1, "grenade");
+				}
+			}
+		}
+
+		if (info.iClassType > CLS_TYPE_MID_TIER) // if we're at or under mid, skip.
+		{
+			CBaseCombatWeapon* pAR2 = (CBaseCombatWeapon*)HasNamedPlayerItem("weapon_ar2");
+
+			if (pAR2 && GetAmmoCount("AR2AltFire") < 1)
+			{
+				// If it's been longer than three seconds, reload
+				if ((gpGlobals->curtime - pAR2->m_flNextSecondaryAttack) > sk_resource_regen_time.GetFloat())
+				{
+					// Just load the clip with no animations
+					CBasePlayer::GiveAmmo(1, "AR2AltFire");
+				}
+			}
+		}
+	}
 }
 
 void CHL2MP_Player::PlayerDeathThink()
@@ -755,6 +792,21 @@ void CHL2MP_Player::LoadClass(int iClass)
 				GiveNamedItem(pPlayerClassInfo.szMeleeWeapon);
 			}
 
+			if (pPlayerClassInfo.iGrenades > 0)
+			{
+				GiveNamedItem("weapon_frag");
+
+				if (pPlayerClassInfo.iGrenades > 1)
+				{
+					CBasePlayer::GiveAmmo((pPlayerClassInfo.iGrenades - 1), "grenade");
+				}
+			}
+
+			if (pPlayerClassInfo.iCombineBalls > 0)
+			{
+				CBasePlayer::GiveAmmo(pPlayerClassInfo.iCombineBalls, "AR2AltFire");
+			}
+
 			SetPreventWeaponPickup(true);
 		}
 
@@ -782,9 +834,32 @@ void CHL2MP_Player::LoadClass(int iClass)
 	}
 }
 
-void CHL2MP_Player::SpeakSentence(const char* pSentence)
+void CHL2MP_Player::SpeakSentence(const char* pSentence, SentencePriority_t nSoundPriority, SentenceCriteria_t nCriteria)
 {
-	m_Sentences.Speak(pSentence);
+	if (GetPlayerClass() > CLS_INVALID)
+	{
+		const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
+
+		if (pPlayerClassInfo.iSentenceVoice > VOICE_TYPE_NONE)
+		{
+			const char* szPrefix = "";
+
+			if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_METROPOLICE)
+			{
+				szPrefix = "METROPOLICE_";
+			}
+			else if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_SOLDIER)
+			{
+				szPrefix = "COMBINE_";
+			}
+
+			char szStepSound[128];
+
+			Q_snprintf(szStepSound, sizeof(szStepSound), "%s%s", szPrefix, pSentence);
+
+			m_Sentences.Speak(szStepSound);
+		}
+	}
 }
 
 void CC_Debug_Sentences(const CCommand& args)
@@ -1275,6 +1350,7 @@ void CHL2MP_Player::PainSound(const CTakeDamageInfo& info)
 				}
 
 				// This causes it to speak it no matter what; doesn't bother with setting sounds.
+				// Use m_Sentences.Speak because we have custom logic here.
 				m_Sentences.Speak(pSentenceName, SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
 				m_flNextPainSoundTime = gpGlobals->curtime + 1;
 			}
@@ -1297,14 +1373,7 @@ void CHL2MP_Player::DeathSound( const CTakeDamageInfo &info )
 
 		if (pPlayerClassInfo.iSentenceVoice > VOICE_TYPE_NONE)
 		{
-			if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_METROPOLICE)
-			{
-				m_Sentences.Speak("METROPOLICE_DIE");
-			}
-			else if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_SOLDIER)
-			{
-				m_Sentences.Speak("COMBINE_DIE");
-			}
+			SpeakSentence("DIE");
 		}
 		else
 		{

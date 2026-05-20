@@ -53,6 +53,7 @@ END_PREDICTION_DATA()
 #endif
 
 extern ConVar sk_auto_reload_time;
+ConVar sk_resource_regen_time("sk_resource_regen_time", "3", FCVAR_REPLICATED);
 
 CBaseHL2MPCombatWeapon::CBaseHL2MPCombatWeapon( void )
 {
@@ -124,28 +125,32 @@ void CBaseHL2MPCombatWeapon::ItemPostFrame(void)
 
 		if (info.bNoFiringWhileSprinting)
 		{
-			if (!m_bLowered && (pOwner->m_nButtons & IN_SPEED))
+			// don't lower the weapon if the weapon is exhaustable.
+			if (!(GetWpnData().iFlags & ITEM_FLAG_EXHAUSTIBLE))
 			{
-				m_bLowered = true;
-				SendWeaponAnim(ACT_VM_IDLE_LOWERED);
-				m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
-				m_flNextSecondaryAttack = m_flNextPrimaryAttack;
-			}
-			else if (m_bLowered && !(pOwner->m_nButtons & IN_SPEED))
-			{
-				m_bLowered = false;
-				SendWeaponAnim(ACT_VM_IDLE);
-				m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
-				m_flNextSecondaryAttack = m_flNextPrimaryAttack;
-			}
-
-			if (m_bLowered)
-			{
-				if (gpGlobals->curtime > m_flNextPrimaryAttack)
+				if (!m_bLowered && (pOwner->m_nButtons & IN_SPEED))
 				{
+					m_bLowered = true;
 					SendWeaponAnim(ACT_VM_IDLE_LOWERED);
 					m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
 					m_flNextSecondaryAttack = m_flNextPrimaryAttack;
+				}
+				else if (m_bLowered && !(pOwner->m_nButtons & IN_SPEED))
+				{
+					m_bLowered = false;
+					SendWeaponAnim(ACT_VM_IDLE);
+					m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
+					m_flNextSecondaryAttack = m_flNextPrimaryAttack;
+				}
+
+				if (m_bLowered)
+				{
+					if (gpGlobals->curtime > m_flNextPrimaryAttack)
+					{
+						SendWeaponAnim(ACT_VM_IDLE_LOWERED);
+						m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
+						m_flNextSecondaryAttack = m_flNextPrimaryAttack;
+					}
 				}
 			}
 		}

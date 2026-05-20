@@ -79,6 +79,9 @@ public:
 	float  m_flNextResetCheckTime;
 #endif
 
+	bool	m_bForceAllowPickup;
+	int		m_iMinClassType;
+
 #if defined( HL2MP )
 	virtual const char *GetWeaponClassForAmmo() const { return NULL; }
 #endif

@@ -213,7 +213,7 @@ void CWeaponSMG1::SecondaryAttack( void )
 	{
 		const CAnticitizen_FilePlayerClassInfo_t& info = pPlayer->GetPlayerClassInfo();
 
-		if (info.iClassType < 4) // if we're under freeman, skip.
+		if (info.iClassType < CLS_TYPE_FREEMAN) // if we're under freeman, skip.
 		{
 			SendWeaponAnim(ACT_VM_DRYFIRE);
 			BaseClass::WeaponSound(EMPTY);

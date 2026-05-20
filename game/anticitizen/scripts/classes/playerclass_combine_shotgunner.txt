@@ -9,6 +9,7 @@ PlayerClassDatafile
 	"ClassType"			"2" // 0 = none, 1 = low, 2 = mid, 3 = high, 4 = freeman
 	"VoiceMode"			"2"
 	
+	"Grenades"			"1"
 	"PrimaryWeapon"		"weapon_shotgun"
 	
 	"Health"			"50"

@@ -75,6 +75,9 @@ public:
 	int						iClassType;
 	int						iSentenceVoice;
 
+	int						iGrenades;
+	int						iCombineBalls;
+
 	bool					bAllWeapons;
 	bool					bSPMovement;
 	bool					bSuit;

@@ -42,6 +42,9 @@ void CAnticitizen_FilePlayerClassInfo_t::Parse(KeyValues* pKeyValuesData, const 
 	bSuit = pKeyValuesData->GetBool("HEVSuit");
 	bNoFiringWhileSprinting = pKeyValuesData->GetBool("NoFiringWhileSprinting");
 
+	iGrenades = pKeyValuesData->GetInt("Grenades", 0);
+	iCombineBalls = pKeyValuesData->GetInt("CombineBalls", 0);
+
 	if (bSuit)
 	{
 		iSuitArmor = pKeyValuesData->GetInt("HEVSuitArmor", 0);

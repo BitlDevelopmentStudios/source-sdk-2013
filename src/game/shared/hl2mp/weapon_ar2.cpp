@@ -108,6 +108,8 @@ void CWeaponAR2::Precache( void )
 //-----------------------------------------------------------------------------
 void CWeaponAR2::ItemPostFrame( void )
 {
+	CHL2MP_Player* pOwner = ToHL2MPPlayer(GetOwner());
+
 	// See if we need to fire off our secondary round
 	if ( m_bShotDelayed && gpGlobals->curtime > m_flDelayedFire )
 	{
@@ -115,8 +117,6 @@ void CWeaponAR2::ItemPostFrame( void )
 	}
 
 	// Update our pose parameter for the vents
-	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
-
 	if ( pOwner )
 	{
 		CBaseViewModel *pVM = pOwner->GetViewModel();
@@ -252,7 +252,7 @@ void CWeaponAR2::SecondaryAttack( void )
 	{
 		const CAnticitizen_FilePlayerClassInfo_t& info = pPlayer->GetPlayerClassInfo();
 
-		if (info.iClassType <= 2) // if we're at or under mid, skip.
+		if (info.iClassType <= CLS_TYPE_MID_TIER) // if we're at or under mid, skip.
 		{
 			SendWeaponAnim(ACT_VM_DRYFIRE);
 			BaseClass::WeaponSound(EMPTY);

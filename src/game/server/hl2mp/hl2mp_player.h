@@ -158,7 +158,7 @@ public:
 	bool IsThreatAimingTowardMe( CBaseEntity* threat, float cosTolerance = 0.8f ) const;
 	bool IsThreatFiringAtMe( CBaseEntity* threat ) const;
 
-	void SpeakSentence(const char *pSentence);
+	void SpeakSentence(const char *pSentence, SentencePriority_t nSoundPriority = SENTENCE_PRIORITY_NORMAL, SentenceCriteria_t nCriteria = SENTENCE_CRITERIA_IN_SQUAD);
 
 protected:
 	CPlayer_Sentence< CHL2MP_Player >* GetSentences() { return &m_Sentences; }

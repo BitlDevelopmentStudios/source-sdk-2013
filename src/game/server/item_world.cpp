@@ -446,10 +446,29 @@ void CItem::ItemTouch( CBaseEntity *pOther )
 	m_OnCacheInteraction.FireOutput(pOther, this);
 
 	// Can I even pick stuff up?
-	// commented out so we can get ammo.
-	// todo: make it so ammo may not be picked up.
-	//if ( !pPlayer->IsAllowedToPickupWeapons() )
-		//return;
+	if (!pPlayer->IsAllowedToPickupWeapons())
+	{
+		//No? Do we have an override?
+		if (m_bForceAllowPickup)
+		{
+			// If we do, can the class pick it up?
+			CHL2MP_Player* pHL2MPlayer = ToHL2MPPlayer(pPlayer);
+
+			if (pHL2MPlayer->GetPlayerClass() > CLS_INVALID)
+			{
+				const CAnticitizen_FilePlayerClassInfo_t& info = pHL2MPlayer->GetPlayerClassInfo();
+
+				if ((m_iMinClassType > 0) && (info.iClassType < m_iMinClassType))
+				{
+					return;
+				}
+			}
+		}
+		else
+		{
+			return;
+		}
+	}
 
 	// ok, a player is touching this item, but can he have it?
 	if ( !g_pGameRules->CanHaveItem( pPlayer, this ) )
