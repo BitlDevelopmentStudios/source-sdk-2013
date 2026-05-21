@@ -81,8 +81,6 @@ private:
 	CBasePlayer *m_pOuter;
 };
 
-extern ConVar snd_player_sentence_volume;
-
 //-----------------------------------------------------------------------------
 // NOTE: This is a template class so each user has a different set of globals
 //-----------------------------------------------------------------------------
