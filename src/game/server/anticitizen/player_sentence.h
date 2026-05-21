@@ -81,6 +81,7 @@ private:
 	CBasePlayer *m_pOuter;
 };
 
+extern ConVar snd_player_sentence_volume;
 
 //-----------------------------------------------------------------------------
 // NOTE: This is a template class so each user has a different set of globals
@@ -133,7 +134,7 @@ void CPlayer_Sentence< PLAYER_CLASS >::Init( PLAYER_CLASS *pOuter, const char *p
 		CSoundParameters params;
 		if ( GetOuter()->GetParametersForSound( pGameSound, params, NULL ) )
 		{
-			m_sentenceVolume = params.volume;
+			m_sentenceVolume = (params.volume * snd_player_sentence_volume.GetFloat());
 			m_sentenceSoundlevel = params.soundlevel;
 			m_voicePitchMin = params.pitchlow;
 			m_voicePitchMax = params.pitchhigh;
