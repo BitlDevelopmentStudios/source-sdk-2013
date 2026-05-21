@@ -12,7 +12,6 @@
 #include "tier0/memdbgon.h"
 
 ConVar player_sentences( "player_sentences", "1" );
-ConVar snd_player_sentence_volume("snd_player_sentence_volume", "1");
 
 //-----------------------------------------------------------------------------
 // Save/load

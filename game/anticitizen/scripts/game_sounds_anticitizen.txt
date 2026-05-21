@@ -1,3 +1,23 @@
+"NPC_Combine.PlayerSentenceParameters"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.50"
+	"pitch"		"95,103"
+
+	"soundlevel"	"SNDLVL_90dB"
+	"wave"		"common/null.wav"
+}
+
+"NPC_MetroPolice.PlayerSentenceParameters"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.50"
+	"pitch"		"100,106"
+
+	"soundlevel"	"SNDLVL_90dB"
+	"wave"		"common/null.wav"
+}
+
 "NPC_MetroPolice.ADSIn"
 {
 	"channel"		"CHAN_BODY"

@@ -824,11 +824,11 @@ void CHL2MP_Player::LoadClass(int iClass)
 		{
 			if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_METROPOLICE)
 			{
-				m_Sentences.Init(this, "NPC_Metropolice.SentenceParameters");
+				m_Sentences.Init(this, "NPC_Metropolice.PlayerSentenceParameters");
 			}
 			else if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_SOLDIER)
 			{
-				m_Sentences.Init(this, "NPC_Combine.SentenceParameters");
+				m_Sentences.Init(this, "NPC_Combine.PlayerSentenceParameters");
 			}
 		}
 	}
