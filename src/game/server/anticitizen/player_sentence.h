@@ -43,20 +43,9 @@ public:
 	CBasePlayer *GetOuter() 						{ return m_pOuter; }
 	const CBasePlayer *GetOuter() const 			{ return m_pOuter; }
 
-	// Check for queued-up-sentences + speak them
-	void UpdateSentenceQueue();
-
 	// Returns the sentence index played, which can be used to determine
 	// the sentence length of time using engine->SentenceLength
 	int Speak( const char *pSentence, SentencePriority_t nSoundPriority = SENTENCE_PRIORITY_NORMAL, SentenceCriteria_t nCriteria = SENTENCE_CRITERIA_IN_SQUAD );
-
-	// Returns the sentence index played, which can be used to determine
-	// the sentence length of time using engine->SentenceLength. If the sentence
-	// was queued, then -1 is returned, which is the same result as if the sound wasn't played
-	int SpeakQueued( const char *pSentence, SentencePriority_t nSoundPriority = SENTENCE_PRIORITY_NORMAL, SentenceCriteria_t nCriteria = SENTENCE_CRITERIA_IN_SQUAD );
-
-	// Clears the sentence queue
-	void ClearQueue();
 
 	bool m_bInit;
 
@@ -75,9 +64,6 @@ private:
 	void SentenceMsg( const char *pStatus, const char *pSentence );
 
 	int		m_voicePitch;
-	int		m_nQueuedSentenceIndex;
-	float	m_flQueueTimeout;
-	int		m_nQueueSoundPriority;
 	CBasePlayer *m_pOuter;
 };
 

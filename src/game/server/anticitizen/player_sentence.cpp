@@ -18,11 +18,7 @@ ConVar player_sentences( "player_sentences", "1" );
 //-----------------------------------------------------------------------------
 BEGIN_SIMPLE_DATADESC(CPlayer_SentenceBase)
 	DEFINE_FIELD( m_voicePitch, FIELD_INTEGER ),
-	DEFINE_FIELD( m_nQueuedSentenceIndex, FIELD_INTEGER ),
-	DEFINE_FIELD( m_flQueueTimeout, FIELD_TIME ),
-	DEFINE_FIELD( m_nQueueSoundPriority, FIELD_INTEGER ),
 END_DATADESC();
-
 
 //-----------------------------------------------------------------------------
 // Speech
@@ -30,7 +26,6 @@ END_DATADESC();
 CPlayer_SentenceBase::CPlayer_SentenceBase()
 {
 	m_bInit = false;
-	ClearQueue();
 }
 
 //-----------------------------------------------------------------------------
@@ -49,43 +44,6 @@ void CPlayer_SentenceBase::SentenceMsg( const char *pStatus, const char *pSenten
 		break;
 	}
 }
-
-
-//-----------------------------------------------------------------------------
-// Check for queued-up-sentences + speak them
-//-----------------------------------------------------------------------------
-void CPlayer_SentenceBase::ClearQueue()
-{
-	m_nQueuedSentenceIndex = -1;
-}
-
-
-//-----------------------------------------------------------------------------
-// Check for queued-up-sentences + speak them
-//-----------------------------------------------------------------------------
-void CPlayer_SentenceBase::UpdateSentenceQueue()
-{
-	if (!m_bInit)
-		return;
-
-	if ( m_nQueuedSentenceIndex == -1 )
-		return;
-
-	// Check for timeout
-	if ( m_flQueueTimeout < gpGlobals->curtime )
-	{
-		ClearQueue();
-		return;
-	}
-
-	SENTENCEG_PlaySentenceIndex(GetOuter()->edict(), m_nQueuedSentenceIndex, GetVolume(), GetSoundLevel(), 0, GetVoicePitch());
-
-	const char* pSentenceName = engine->SentenceNameFromIndex(m_nQueuedSentenceIndex);
-	SentenceMsg("Speaking [from QUEUE]", pSentenceName);
-
-	ClearQueue();
-}
-
 
 //-----------------------------------------------------------------------------
 // Speech criteria
@@ -184,9 +142,6 @@ int CPlayer_SentenceBase::Speak( const char *pSentence, SentencePriority_t nSoun
 	if ( !MatchesCriteria(nCriteria) )
 		return -1;
 
-	// Speaking clears the queue
-	ClearQueue();
-
 	if ( nSoundPriority == SENTENCE_PRIORITY_INVALID )
 	{
 		return PlaySentence( pSentence );
@@ -194,36 +149,6 @@ int CPlayer_SentenceBase::Speak( const char *pSentence, SentencePriority_t nSoun
 
 	int nSentenceIndex = PlaySentence(pSentence);
 	return nSentenceIndex;
-}
-
-
-//-----------------------------------------------------------------------------
-// Speech w/ queue
-//-----------------------------------------------------------------------------
-int CPlayer_SentenceBase::SpeakQueued( const char *pSentence, SentencePriority_t nSoundPriority, SentenceCriteria_t nCriteria )
-{
-	if (!m_bInit)
-		return -1;
-
-	if ( !MatchesCriteria(nCriteria) )
-		return -1;
-
-	// Speaking clears the queue
-	ClearQueue();
-
-	int nSentenceIndex = Speak( pSentence, nSoundPriority, nCriteria );
-	if ( nSentenceIndex >= 0 )
-		return nSentenceIndex;
-	
-	// Queue up the sentence for later playing 
-	int nQueuedSentenceIndex = SENTENCEG_PickRndSz( pSentence );
-	if ( nQueuedSentenceIndex == -1 )
-		return -1;
-
-	m_flQueueTimeout = gpGlobals->curtime + 2.0f;
-	m_nQueueSoundPriority = nSoundPriority;
-	m_nQueuedSentenceIndex = nQueuedSentenceIndex;
-	return -1;
 }
 
 
