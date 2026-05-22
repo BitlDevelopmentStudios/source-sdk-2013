@@ -15,7 +15,7 @@ LOOKING FOR THE OLD BDS BASE WITH QUIVER FORTRESS' SOURCE CODE? Go here: https:/
 
 ## Features:
 - Implements various pull requests from the master repo, allowing for a stable and reliable mod base. Each pull request is squished and merged, ensuring credit is given to each author.
-- Implement's Tony Sergi's HL2MP changes which implement improved player animations and better code consistency.
+- Implements Tony Sergi's HL2MP changes which implement improved player animations and better code consistency.
 - Implemented Discord RPC support (based off #1803).
 - reset.bat file in each mod folder, used for cleaning up config/temporary files for easy mod distribution.
 - Server Admin tools support (based off #948) with extendable module-based command interface.
