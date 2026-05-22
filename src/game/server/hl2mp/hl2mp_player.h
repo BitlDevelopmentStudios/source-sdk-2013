@@ -94,6 +94,7 @@ public:
 
 	virtual void	HandleSpeedChanges(CMoveData* mv) OVERRIDE;
 	virtual void	ReduceTimers(CMoveData* mv) OVERRIDE;
+	virtual void	UpdateStepSound(surfacedata_t* psurface, const Vector& vecOrigin, const Vector& vecVelocity) OVERRIDE;
 		
 	int FlashlightIsOn( void );
 	void FlashlightTurnOn( void );

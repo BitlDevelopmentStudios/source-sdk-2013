@@ -369,6 +369,9 @@ float CBaseHL2MPCombatWeapon::CalcViewmodelBob( void )
 //-----------------------------------------------------------------------------
 void CBaseHL2MPCombatWeapon::AddViewmodelBob( CBaseViewModel *viewmodel, Vector &origin, QAngle &angles )
 {
+	if (IsIronsighted())
+		return;
+	
 	Vector	forward, right;
 	AngleVectors( angles, &forward, &right, NULL );
 
