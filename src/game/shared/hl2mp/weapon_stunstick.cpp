@@ -529,7 +529,8 @@ bool CWeaponStunStick::Deploy( void )
 
 	if (pHL2MPPlayer)
 	{
-		pHL2MPPlayer->SpeakSentence("ACTIVATE_BATON");
+		//pHL2MPPlayer->SpeakSentence("ACTIVATE_BATON");
+		pHL2MPPlayer->SpeakSentence("DEACTIVATE_BATON");
 	}
 #endif
 
