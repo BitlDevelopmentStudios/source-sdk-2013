@@ -421,6 +421,9 @@ protected:
 
 	void			NotifyShouldTransmit( ShouldTransmitState_t state );
 
+private:
+	virtual void ThirdPersonSwitch(bool bThirdPerson);
+protected:
 #endif	// CLIENT_DLL
 
 	int		m_nChangeState;				// For delayed state change of elements
@@ -446,9 +449,7 @@ protected:
 private:
 	CWeaponPhysCannon( const CWeaponPhysCannon & );
 
-#ifndef CLIENT_DLL
 	DECLARE_ACTTABLE();
-#endif
 };
 
 #endif // WEAPON_PHYSCANNON_H
