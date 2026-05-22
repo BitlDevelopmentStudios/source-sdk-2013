@@ -4,6 +4,8 @@
 "toggle_ironsight"				"#Anticitizen_ADS"
 "+ironsight"					"#Anticitizen_ADSHold"
 "changeclass"					"#Anticitizen_ChangeClass"
+"voice_menu_1"					"#Anticitizen_GeneralVoice"
+"voice_menu_2"					"#Anticitizen_SoldierVoice"
 "blank"			"=========================="
 "blank"			"#Valve_Movement_Title"
 "blank"			"=========================="

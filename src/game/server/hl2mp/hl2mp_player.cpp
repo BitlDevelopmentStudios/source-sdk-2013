@@ -235,6 +235,8 @@ void CHL2MP_Player::Spawn(void)
 
 	m_flStamina = 100.0f;
 	m_flNextPainSoundTime = 0;
+	m_flTimeSinceRanOutOfGrenades = 0;
+	m_flTimeSinceRanOutOfBalls = 0;
 	m_Local.m_iHideHUD = 0;
 	
 	AddFlag(FL_ONGROUND); // set the player on the ground at the start of the round.
@@ -350,6 +352,30 @@ void CHL2MP_Player::PreThink( void )
 	SetLocalAngles( vOldAngles );
 }
 
+void CHL2MP_Player::RemoveAmmo(int iCount, int iAmmoIndex)
+{
+	BaseClass::RemoveAmmo(iCount, iAmmoIndex);
+
+	if (GetAmmoCount(iAmmoIndex) < 1)
+	{
+		const char *pName = GetAmmoDef()->GetAmmoOfIndex(iAmmoIndex)->pName;
+
+		if (Q_strcmp(pName, "grenade") == 0)
+		{
+			m_flTimeSinceRanOutOfGrenades = gpGlobals->curtime;
+		}
+		else if (Q_strcmp(pName, "AR2AltFire") == 0)
+		{
+			m_flTimeSinceRanOutOfBalls = gpGlobals->curtime;
+		}
+	}
+}
+
+void CHL2MP_Player::RemoveAmmo(int iCount, const char* szName)
+{
+	RemoveAmmo(iCount, GetAmmoDef()->Index(szName));
+}
+
 extern ConVar sk_resource_regen_time;
 
 void CHL2MP_Player::PostThink( void )
@@ -376,12 +402,10 @@ void CHL2MP_Player::PostThink( void )
 
 		if (info.iClassType > CLS_TYPE_LOW_TIER) // if we're at or under low, skip.
 		{
-			CBaseCombatWeapon* pFrag = (CBaseCombatWeapon*)HasNamedPlayerItem("weapon_frag");
-
-			if (pFrag && GetAmmoCount("grenade") < 1)
+			if (GetAmmoCount("grenade") < 1)
 			{
 				// If it's been longer than three seconds, reload
-				if ((gpGlobals->curtime - pFrag->m_flNextPrimaryAttack) > sk_resource_regen_time.GetFloat())
+				if ((gpGlobals->curtime - m_flTimeSinceRanOutOfGrenades) > sk_resource_regen_time.GetFloat())
 				{
 					// Just load the clip with no animations
 					CBasePlayer::GiveAmmo(1, "grenade");
@@ -391,12 +415,10 @@ void CHL2MP_Player::PostThink( void )
 
 		if (info.iClassType > CLS_TYPE_MID_TIER) // if we're at or under mid, skip.
 		{
-			CBaseCombatWeapon* pAR2 = (CBaseCombatWeapon*)HasNamedPlayerItem("weapon_ar2");
-
-			if (pAR2 && GetAmmoCount("AR2AltFire") < 1)
+			if (GetAmmoCount("AR2AltFire") < 1)
 			{
 				// If it's been longer than three seconds, reload
-				if ((gpGlobals->curtime - pAR2->m_flNextSecondaryAttack) > sk_resource_regen_time.GetFloat())
+				if ((gpGlobals->curtime - m_flTimeSinceRanOutOfBalls) > sk_resource_regen_time.GetFloat())
 				{
 					// Just load the clip with no animations
 					CBasePlayer::GiveAmmo(1, "AR2AltFire");
@@ -1356,6 +1378,12 @@ void CHL2MP_Player::PainSound(const CTakeDamageInfo& info)
 			}
 		}
 	}
+}
+
+int CHL2MP_Player::GetVoiceMode(void)
+{
+	const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
+	return pPlayerClassInfo.iSentenceVoice;
 }
 
 void CHL2MP_Player::DeathSound( const CTakeDamageInfo &info )

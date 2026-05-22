@@ -37,6 +37,7 @@
 	#include "team.h"
 	#include "usermessages.h"
 	#include "tier0/icommandline.h"
+	#include "hl2mp_player.h"
 
 #ifdef NEXT_BOT
 	#include "NextBotManager.h"
@@ -1707,6 +1708,97 @@ ConVarRef suitcharger( "sk_suitcharger" );
 		}
 	}
 
+	const char* SentenceForConcept(int iConcept, int iVoiceMode)
+	{
+		int concept = iConcept;
+
+		if (concept == MP_SENTENCE_LOST_GROUP)
+		{
+			int choice = random->RandomInt(0, 1);
+
+			if (choice == 1)
+			{
+				concept = MP_SENTENCE_LOST_LONG;
+			}
+			else
+			{
+				concept = MP_SENTENCE_LOST_SHORT;
+			}
+		}
+		else if (concept == MP_SENTENCE_ALERT_GROUP)
+		{
+			if (iVoiceMode == VOICE_TYPE_METROPOLICE)
+			{
+				concept = MP_SENTENCE_GO_ALERT;
+			}
+			else if (iVoiceMode == VOICE_TYPE_SOLDIER)
+			{
+				int choice = random->RandomInt(0, 1);
+
+				if (choice == 1)
+				{
+					concept = MP_SENTENCE_GO_ALERT;
+				}
+				else
+				{
+					concept = MP_SENTENCE_COMBINE_ALERT;
+				}
+			}
+		}
+
+		switch (concept)
+		{
+			//none for now. we need to go through this.
+			case MP_SENTENCE_COMBINE_ANNOUNCE:
+				return "ANNOUNCE";
+			case MP_SENTENCE_COMBINE_ASSAULT:
+				return "ASSAULT";
+			case MP_SENTENCE_FLANK:
+				return "FLANK";
+			case MP_SENTENCE_GO_ALERT:
+				return "GO_ALERT";
+			case MP_SENTENCE_LOST_LONG:
+				return "LOST_LONG";
+			case MP_SENTENCE_LOST_SHORT:
+				return "LOST_SHORT";
+			case MP_SENTENCE_REFIND_ENEMY:
+				return "REFIND_ENEMY";
+			case MP_SENTENCE_DANGER:
+				return "DANGER";
+			case MP_SENTENCE_COMBINE_ALERT:
+				return "ALERT";
+			case MP_SENTENCE_IDLE:
+				if (iVoiceMode == VOICE_TYPE_METROPOLICE)
+					return "IDLE_CR";
+				else if (iVoiceMode == VOICE_TYPE_SOLDIER)
+					return "IDLE";
+			case MP_SENTENCE_QUEST:
+				if (iVoiceMode == VOICE_TYPE_METROPOLICE)
+					return "IDLE_QUEST_CR";
+				else if (iVoiceMode == VOICE_TYPE_SOLDIER)
+					return "QUEST";
+			case MP_SENTENCE_ANSWER:
+				if (iVoiceMode == VOICE_TYPE_METROPOLICE)
+					return "IDLE_ANSWER_CR";
+				else if (iVoiceMode == VOICE_TYPE_SOLDIER)
+					return "ANSWER";
+			case MP_SENTENCE_CLEAR:
+				if (iVoiceMode == VOICE_TYPE_METROPOLICE)
+					return "IDLE_CLEAR_CR";
+				else if (iVoiceMode == VOICE_TYPE_SOLDIER)
+					return "CLEAR";
+			case MP_SENTENCE_CHECK:
+				if (iVoiceMode == VOICE_TYPE_METROPOLICE)
+					return "IDLE_CHECK_CR";
+				else if (iVoiceMode == VOICE_TYPE_SOLDIER)
+					return "CHECK";
+			default:
+				break;
+		}
+
+		return "";
+	}
+
 	VoiceCommandMenuItem_t *CMultiplayRules::VoiceCommand( CBaseMultiplayerPlayer *pPlayer, int iMenu, int iItem )
 	{
 		// have the player speak the concept that is in a particular menu slot
@@ -1723,85 +1815,38 @@ ConVarRef suitcharger( "sk_suitcharger" );
 
 		Assert( pItem );
 
-		char szResponse[AI_Response::MAX_RESPONSE_NAME];
-
-		if ( pPlayer->CanSpeakVoiceCommand() )
+		if (pPlayer->CanSpeakVoiceCommand())
 		{
-			CMultiplayer_Expresser *pExpresser = pPlayer->GetMultiplayerExpresser();
-			Assert( pExpresser );
-			pExpresser->AllowMultipleScenes();
+			CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
 
-			if ( pPlayer->SpeakConceptIfAllowed( pItem->m_iConcept, NULL, szResponse, AI_Response::MAX_RESPONSE_NAME ) )
+			if (pHL2MPPlayer)
 			{
-				// show a subtitle if we need to
-				if ( pItem->m_bShowSubtitle )
-				{
-					CRecipientFilter filter;
+				pHL2MPPlayer->SpeakSentence(SentenceForConcept(pItem->m_iConcept, pHL2MPPlayer->GetVoiceMode()));
 
-					if ( pItem->m_bDistanceBasedSubtitle )
-					{
-						filter.AddRecipientsByPAS( pPlayer->WorldSpaceCenter() );
+				// Register this event in the mod-specific usermessages .cpp file if you hit this assert
+				//Assert(usermessages->LookupUserMessage("VoiceSubtitle") != -1);
 
-						// further reduce the range to a certain radius
-						int i;
-						for ( i = filter.GetRecipientCount()-1; i >= 0; i-- )
-						{
-							int index = filter.GetRecipientIndex(i);
-
-							CBasePlayer *pListener = UTIL_PlayerByIndex( index );
-
-							if ( pListener && pListener != pPlayer )
-							{
-								float flDist = ( pListener->WorldSpaceCenter() - pPlayer->WorldSpaceCenter() ).Length2D();
-
-								if ( flDist > VOICE_COMMAND_MAX_SUBTITLE_DIST )
-									filter.RemoveRecipientByPlayerIndex( index );
-							}
-						}
-					}
-					else
-					{
-						filter.AddAllPlayers();
-					}
-
-					// if we aren't a disguised spy
-					if ( !pPlayer->ShouldShowVoiceSubtitleToEnemy() )
-					{
-						// remove players on other teams
-						filter.RemoveRecipientsNotOnTeam( pPlayer->GetTeam() );
-					}
-
-					// Register this event in the mod-specific usermessages .cpp file if you hit this assert
-					Assert( usermessages->LookupUserMessage( "VoiceSubtitle" ) != -1 );
-
-					// Send a subtitle to anyone in the PAS
-					UserMessageBegin( filter, "VoiceSubtitle" );
-						WRITE_BYTE( pPlayer->entindex() );
-						WRITE_BYTE( iMenu );
-						WRITE_BYTE( iItem );
-					MessageEnd();
-				}
-
-				pPlayer->NoteSpokeVoiceCommand( szResponse );
+				// Send a subtitle to anyone in the PAS
+				//CReliableBroadcastRecipientFilter user;
+				//UserMessageBegin(user, "VoiceSubtitle");
+				//WRITE_BYTE(pHL2MPPlayer->entindex());
+				//WRITE_BYTE(iMenu);
+				//WRITE_BYTE(iItem);
+				//MessageEnd();
 
 #ifdef NEXT_BOT
 				// let bots react to player's voice commands
-				CUtlVector< INextBot * > botVector;
-				TheNextBots().CollectAllBots( &botVector );
+				CUtlVector< INextBot* > botVector;
+				TheNextBots().CollectAllBots(&botVector);
 
-				for( int i=0; i<botVector.Count(); ++i )
+				for (int i = 0; i < botVector.Count(); ++i)
 				{
-					botVector[i]->OnActorEmoted( pPlayer, pItem->m_iConcept );
+					botVector[i]->OnActorEmoted(pHL2MPPlayer, pItem->m_iConcept);
 				}
 #endif
-			}
-			else
-			{
-				pItem = NULL;
-			}
 
-			pExpresser->DisallowMultipleScenes();
-			return pItem;
+				return pItem;
+			}
 		}
 
 		return NULL;

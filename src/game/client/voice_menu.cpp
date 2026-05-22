@@ -14,6 +14,8 @@
 #include "hud_basechat.h"
 #include "hud_chat.h"
 #endif // TF_CLIENT_DLL
+#include <anticitizen_playerclass_info_parse.h>
+#include <c_hl2mp_player.h>
 
 static int g_ActiveVoiceMenu = 0;
 
@@ -89,22 +91,39 @@ void OpenVoiceMenu( int index )
 
 static void OpenVoiceMenu_1( void )
 {
-	OpenVoiceMenu( 1 );
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(C_BasePlayer::GetLocalPlayer());
+
+	if (pPlayer)
+	{
+		if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
+		{
+			const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = pPlayer->GetPlayerClassInfo();
+
+			OpenVoiceMenu(1);
+		}
+	}
 }
 
 static void OpenVoiceMenu_2( void )
 {
-	OpenVoiceMenu( 2 );
-}
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(C_BasePlayer::GetLocalPlayer());
 
-static void OpenVoiceMenu_3( void )
-{
-	OpenVoiceMenu( 3 );
+	if (pPlayer)
+	{
+		if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
+		{
+			const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = pPlayer->GetPlayerClassInfo();
+
+			if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_SOLDIER)
+			{
+				OpenVoiceMenu(2);
+			}
+		}
+	}
 }
 
 ConCommand voice_menu_1( "voice_menu_1", OpenVoiceMenu_1, "Opens voice menu 1" );
 ConCommand voice_menu_2( "voice_menu_2", OpenVoiceMenu_2, "Opens voice menu 2" );
-ConCommand voice_menu_3( "voice_menu_3", OpenVoiceMenu_3, "Opens voice menu 3" );
 
 CON_COMMAND( menuselect, "menuselect" )
 {

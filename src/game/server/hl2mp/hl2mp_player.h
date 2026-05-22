@@ -82,6 +82,9 @@ public:
 	virtual void UpdateOnRemove( void );
 	virtual void PainSound(const CTakeDamageInfo& info);
 	virtual void DeathSound( const CTakeDamageInfo &info );
+	int GetVoiceMode();
+	void		RemoveAmmo(int iCount, int iAmmoIndex);
+	void		RemoveAmmo(int iCount, const char* szName);
 	virtual CBaseEntity* EntSelectSpawnPoint( void );
 
 	virtual void	HandleSpeedChanges(CMoveData* mv) OVERRIDE;
@@ -166,6 +169,8 @@ protected:
 private:
 	CPlayer_Sentence< CHL2MP_Player > m_Sentences;
 	float			m_flNextPainSoundTime;
+	float			m_flTimeSinceRanOutOfGrenades;
+	float			m_flTimeSinceRanOutOfBalls;
 
 	CNetworkQAngle( m_angEyeAngles );
 	CPlayerAnimState   m_PlayerAnimState;
