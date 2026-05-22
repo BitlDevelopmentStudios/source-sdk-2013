@@ -524,15 +524,14 @@ void CWeaponStunStick::SetStunState( bool state )
 //-----------------------------------------------------------------------------
 bool CWeaponStunStick::Deploy( void )
 {
-#ifndef CLIENT_DLL
+/*#ifndef CLIENT_DLL
 	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(GetOwner());
 
 	if (pHL2MPPlayer)
 	{
-		//pHL2MPPlayer->SpeakSentence("ACTIVATE_BATON");
-		pHL2MPPlayer->SpeakSentence("DEACTIVATE_BATON");
+		pHL2MPPlayer->SpeakSentence("ACTIVATE_BATON");
 	}
-#endif
+#endif*/
 
 	SetStunState( true );
 
@@ -552,14 +551,14 @@ bool CWeaponStunStick::Holster( CBaseCombatWeapon *pSwitchingTo )
 	if ( BaseClass::Holster( pSwitchingTo ) == false )
 		return false;
 
-#ifndef CLIENT_DLL
+/*#ifndef CLIENT_DLL
 	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(GetOwner());
 
 	if (pHL2MPPlayer)
 	{
 		pHL2MPPlayer->SpeakSentence("DEACTIVATE_BATON");
 	}
-#endif
+#endif*/
 
 	SetStunState( false );
 	SetWeaponVisible( false );
