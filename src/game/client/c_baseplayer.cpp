@@ -1915,6 +1915,12 @@ void C_BasePlayer::ThirdPersonSwitch( bool bThirdperson )
 				}
 			}
 		}
+
+		CBaseCombatWeapon* pWeapon = GetActiveWeapon();
+		if (pWeapon)
+		{
+			pWeapon->ThirdPersonSwitch(bThirdperson);
+		}
 	}
 }
 

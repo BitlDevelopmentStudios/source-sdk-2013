@@ -21,6 +21,7 @@ class CHL2MP_Player;
 #include "utldict.h"
 #include "anticitizen_player_resource.h"
 #include "player_sentence.h"
+#include "hl2mp_playeranimstate.h"
 
 //=============================================================================
 // >> HL2MP_Player
@@ -54,13 +55,17 @@ public:
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
 	DECLARE_ENT_SCRIPTDESC();
+	DECLARE_PREDICTABLE();
+
+	// This passes the event to the client's and server's CHL2MPPlayerAnimState.
+	void			DoAnimationEvent(PlayerAnimEvent_t event, int nData = 0);
+	void			SetupBones(matrix3x4_t* pBoneToWorld, int boneMask);
 
 	virtual void Precache( void );
 	virtual void Spawn( void );
 	virtual void PostThink( void );
 	virtual void PreThink( void );
 	virtual void PlayerDeathThink( void );
-	virtual void SetAnimation( PLAYER_ANIM playerAnim );
 	virtual bool HandleCommand_JoinTeam( int team );
 	virtual bool HandleCommand_JoinClass(int iclass);
 	virtual bool ClientCommand( const CCommand &args );
@@ -96,16 +101,15 @@ public:
 	void	PrecacheFootStepSounds( void );
 	void	PrecacheADSSounds(void);
 
-	QAngle GetAnimEyeAngles( void ) { return m_angEyeAngles.Get(); }
-
 	Vector GetAttackSpread( CBaseCombatWeapon *pWeapon, CBaseEntity *pTarget = NULL );
+	virtual Vector GetAutoaimVector(float flDelta);
 
 	void CheatImpulseCommands( int iImpulse );
 	void CreateRagdollEntity( void );
 	void GiveAllItems( void );
 	void GiveAllWeapons(void);
-
-	void ResetAnimation( void );
+	
+	void SetAnimation(PLAYER_ANIM playerAnim);
 	Activity TranslateTeamActivity( Activity ActToTranslate );
 	
 	float GetNextModelChangeTime( void ) { return m_flNextModelChangeTime; }
@@ -172,8 +176,9 @@ private:
 	float			m_flTimeSinceRanOutOfGrenades;
 	float			m_flTimeSinceRanOutOfBalls;
 
+	CHL2MPPlayerAnimState* m_PlayerAnimState;
+
 	CNetworkQAngle( m_angEyeAngles );
-	CPlayerAnimState   m_PlayerAnimState;
 
 	CNetworkVar(int, m_iPlayerClass);
 	CNetworkVar(float, m_flNormalSpeed);
@@ -200,6 +205,9 @@ private:
     bool m_bEnterObserver;
 	bool m_bReady;
 	bool m_bChosenClass;
+
+	CNetworkVar(int, m_cycleLatch); // Network the cycle to clients periodically
+	CountdownTimer m_cycleLatchTimer;
 };
 
 inline CHL2MP_Player *ToHL2MPPlayer( CBaseEntity *pEntity )
