@@ -104,26 +104,7 @@ static void OpenVoiceMenu_1( void )
 	}
 }
 
-static void OpenVoiceMenu_2( void )
-{
-	CHL2MP_Player* pPlayer = ToHL2MPPlayer(C_BasePlayer::GetLocalPlayer());
-
-	if (pPlayer)
-	{
-		if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
-		{
-			const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = pPlayer->GetPlayerClassInfo();
-
-			if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_SOLDIER)
-			{
-				OpenVoiceMenu(2);
-			}
-		}
-	}
-}
-
-ConCommand voice_menu_1( "voice_menu_1", OpenVoiceMenu_1, "Opens voice menu 1" );
-ConCommand voice_menu_2( "voice_menu_2", OpenVoiceMenu_2, "Opens voice menu 2" );
+ConCommand voice_menu( "voice_menu", OpenVoiceMenu_1, "Opens voice menu 1" );
 
 CON_COMMAND( menuselect, "menuselect" )
 {
