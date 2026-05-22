@@ -369,7 +369,8 @@ float CBaseHL2MPCombatWeapon::CalcViewmodelBob( void )
 //-----------------------------------------------------------------------------
 void CBaseHL2MPCombatWeapon::AddViewmodelBob( CBaseViewModel *viewmodel, Vector &origin, QAngle &angles )
 {
-	if (IsIronsighted())
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
+	if (IsIronsighted() && !pPlayer->IsSprinting())
 		return;
 	
 	Vector	forward, right;

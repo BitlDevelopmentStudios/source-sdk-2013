@@ -394,16 +394,20 @@ void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
 			float stamina = 100.0f;
 			stamina = GetStamina();
 
+			bool bSprinting = false;
+
 			if ((mv->m_nButtons & IN_SPEED) && (stamina > 0) && (mv->m_nButtons & IN_FORWARD))
 			{
 				mv->m_flClientMaxSpeed = info.flSprintSpeed;
-				m_HL2Local.m_bNewSprinting = true;
+				bSprinting = true;
 			}
 			else
 			{
 				mv->m_flClientMaxSpeed = info.flNormSpeed;
-				m_HL2Local.m_bNewSprinting = false;
+				bSprinting = false;
 			}
+
+			m_HL2Local.m_bNewSprinting = bSprinting;
 		}
 
 		mv->m_flMaxSpeed = sv_maxspeed.GetFloat();

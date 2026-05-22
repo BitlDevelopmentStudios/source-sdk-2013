@@ -176,7 +176,7 @@ public:
 	void StartSprinting( void );
 	void StopSprinting( void );
 	void InitSprinting( void );
-	bool IsSprinting( void ) { return m_fIsSprinting; }
+	bool IsSprinting() const { return m_fIsSprinting || m_HL2Local.m_bNewSprinting; }
 	bool CanSprint( void );
 	void EnableSprint( bool bEnable);
 
