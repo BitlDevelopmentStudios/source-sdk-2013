@@ -619,10 +619,10 @@ void CHL2MP_Player::LoadClass(int iClass)
 		}
 		else
 		{
-			CBasePlayer::GiveAmmo(120, "Pistol");
-			CBasePlayer::GiveAmmo(120, "AR2");
-			CBasePlayer::GiveAmmo(120, "SMG1");
-			CBasePlayer::GiveAmmo(120, "Buckshot");
+			CBasePlayer::GiveAmmo(255, "Pistol");
+			CBasePlayer::GiveAmmo(255, "AR2");
+			CBasePlayer::GiveAmmo(255, "SMG1");
+			CBasePlayer::GiveAmmo(255, "Buckshot");
 
 			if (pPlayerClassInfo.szPrimaryWeapon[0])
 			{

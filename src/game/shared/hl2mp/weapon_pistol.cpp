@@ -55,6 +55,8 @@ public:
 
 	virtual bool Reload( void );
 
+	const WeaponProficiencyInfo_t* GetProficiencyValues();
+
 	virtual const Vector& GetBulletSpread( void )
 	{		
 		static Vector cone;
@@ -341,4 +343,21 @@ void CWeaponPistol::AddViewKick( void )
 
 	//Add it to the view punch
 	pPlayer->ViewPunch( viewPunch );
+}
+
+//-----------------------------------------------------------------------------
+const WeaponProficiencyInfo_t* CWeaponPistol::GetProficiencyValues()
+{
+	static WeaponProficiencyInfo_t proficiencyTable[] =
+	{
+		{ 1.0, 1.0	},
+		{ 1.0, 1.0	},
+		{ 1.0, 1.0	},
+		{ 1.0, 1.0	},
+		{ 1.0, 1.0	},
+	};
+
+	COMPILE_TIME_ASSERT(ARRAYSIZE(proficiencyTable) == WEAPON_PROFICIENCY_PERFECT + 1);
+
+	return proficiencyTable;
 }

@@ -103,35 +103,58 @@ extern CMoveData* g_pMoveData;
 //-----------------------------------------------------------------------------
 Vector CHL2MP_Player::GetAttackSpread( CBaseCombatWeapon *pWeapon, CBaseEntity *pTarget )
 {
+	// this is incredibly hacky.
 	if (pWeapon)
 	{
+		int proficiency = WEAPON_PROFICIENCY_PERFECT;
+
 		if (GetPlayerClass() != CLS_FREEMAN)
 		{
-			if (pWeapon->IsIronsighted())
-			{
-				return pWeapon->GetBulletSpread(WEAPON_PROFICIENCY_PERFECT);
-			}
-
 			float groundspeed = Vector2DLength(g_pMoveData->m_vecVelocity.AsVector2D());
 			bool movingalongground = ((GetFlags() & FL_ONGROUND) && groundspeed > 0.0001f);
 
 			if (!(GetFlags() & FL_ONGROUND))
 			{
-				return pWeapon->GetBulletSpread(WEAPON_PROFICIENCY_AVERAGE);
+				proficiency = WEAPON_PROFICIENCY_AVERAGE;
 			}
 			else if (movingalongground)
 			{
-				return pWeapon->GetBulletSpread(WEAPON_PROFICIENCY_GOOD);
+				proficiency = WEAPON_PROFICIENCY_GOOD;
 			}
 			else
 			{
-				return pWeapon->GetBulletSpread(WEAPON_PROFICIENCY_VERY_GOOD);
+				proficiency = WEAPON_PROFICIENCY_VERY_GOOD;
+			}
+
+			if (pWeapon->IsIronsighted())
+			{
+				proficiency = WEAPON_PROFICIENCY_PERFECT;
 			}
 		}
-		else
+
+		const WeaponProficiencyInfo_t* pProficiencyValues = pWeapon->GetProficiencyValues();
+
+		if (pProficiencyValues == NULL)
 		{
-			return pWeapon->GetBulletSpread(WEAPON_PROFICIENCY_PERFECT);
+			DevWarning("%s has no proficiency value table!\n", pWeapon->GetClassname());
+
+			static WeaponProficiencyInfo_t defaultWeaponProficiencyTable[] =
+			{
+				{ 1.0, 1.0	},
+				{ 1.0, 1.0	},
+				{ 1.0, 1.0	},
+				{ 1.0, 1.0	},
+				{ 1.0, 1.0	},
+			};
+
+			COMPILE_TIME_ASSERT(ARRAYSIZE(defaultWeaponProficiencyTable) == WEAPON_PROFICIENCY_PERFECT + 1);
+
+			pProficiencyValues = defaultWeaponProficiencyTable;
 		}
+
+		float scale = (pProficiencyValues)[proficiency].spreadscale;
+
+		return pWeapon->GetBulletSpread() * scale;
 	}
 	
 	return VECTOR_CONE_15DEGREES;
