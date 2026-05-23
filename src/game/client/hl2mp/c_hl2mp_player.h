@@ -104,7 +104,6 @@ public:
 	void	StopSprinting( void );
 	virtual void	HandleSpeedChanges( CMoveData *mv ) OVERRIDE;
 	virtual void	ReduceTimers( CMoveData* mv ) OVERRIDE;
-	virtual void	UpdateStepSound(surfacedata_t* psurface, const Vector& vecOrigin, const Vector& vecVelocity) OVERRIDE;
 	void	UpdateLookAt( void );
 	void	Initialize( void );
 	int		GetIDTarget() const;
