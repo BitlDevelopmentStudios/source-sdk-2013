@@ -609,11 +609,6 @@ public:
 		return (Now() > m_timestamp);
 	}
 
-	bool HasElapsedSinceStart(void) const
-	{
-		return (HasStarted() && IsElapsed());
-	}
-
 	float GetElapsedTime( void ) const
 	{
 		return Now() - m_timestamp + m_duration;
