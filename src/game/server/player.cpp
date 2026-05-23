@@ -200,7 +200,7 @@ ConVar  player_debug_print_damage( "player_debug_print_damage", "0", FCVAR_CHEAT
 
 void CC_GiveCurrentAmmo( void )
 {
-	CBasePlayer *pPlayer = UTIL_PlayerByIndex(1);
+	CBasePlayer* pPlayer = UTIL_GetCommandClient();
 
 	if( pPlayer )
 	{
@@ -7829,7 +7829,15 @@ void CStripWeapons::StripWeapons(inputdata_t &data, bool stripSuit)
 	}
 	else if ( !g_pGameRules->IsDeathmatch() )
 	{
-		pPlayer = UTIL_GetLocalPlayer();
+		for (int i = 1; i <= gpGlobals->maxClients; i++)
+		{
+			pPlayer = UTIL_PlayerByIndex(i);
+			if (pPlayer)
+			{
+				pPlayer->RemoveAllItems(stripSuit);
+			}
+		}
+		return;
 	}
 
 	if ( pPlayer )
@@ -7925,10 +7933,12 @@ void CRevertSaved::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 	SetNextThink( gpGlobals->curtime + LoadTime() );
 	SetThink( &CRevertSaved::LoadThink );
 
-	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
-
-	if ( pPlayer )
+	for (int i = 1; i <= gpGlobals->maxClients; i++)
 	{
+		CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+		if (!pPlayer)
+			continue;
+
 		//Adrian: Setting this flag so we can't move or save a game.
 		pPlayer->pl.deadflag = true;
 		pPlayer->AddFlag( (FL_NOTARGET|FL_FROZEN) );
@@ -7983,9 +7993,18 @@ void CRevertSaved::MessageThink( void )
 
 void CRevertSaved::LoadThink( void )
 {
-	if ( !gpGlobals->deathmatch )
+	// From SecobMod
+	//SecobMod__Information: Here we change level to the map we're already on if a vital ally such as Alyx is killed etc etc etc.
+	if (AI_IsSinglePlayer())
 	{
 		engine->ServerCommand("reload\n");
+	}
+	else
+	{
+		char* szDefaultMapName = new char[32];
+		Q_strncpy(szDefaultMapName, STRING(gpGlobals->mapname), 32);
+		engine->ChangeLevel(szDefaultMapName, NULL);
+		return;
 	}
 }
 

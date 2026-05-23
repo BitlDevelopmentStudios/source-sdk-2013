@@ -7715,7 +7715,7 @@ void CBaseEntity::DispatchResponse( const char *conceptName )
 	ModifyOrAppendCriteria( set );
 
 	// Append local player criteria to set,too
-	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 	if( pPlayer )
 		pPlayer->ModifyOrAppendPlayerCriteria( set );
 
@@ -7774,7 +7774,7 @@ void CBaseEntity::DumpResponseCriteria( void )
 	ModifyOrAppendCriteria( set );
 
 	// Append local player criteria to set,too
-	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 	if ( pPlayer )
 	{
 		pPlayer->ModifyOrAppendPlayerCriteria( set );
@@ -8259,7 +8259,7 @@ bool CBaseEntity::SUB_AllowedToFade( void )
 
 	// on Xbox, allow these to fade out
 #ifndef _XBOX
-	CBasePlayer *pPlayer = ( AI_IsSinglePlayer() ) ? UTIL_GetLocalPlayer() : NULL;
+	CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 
 	if ( pPlayer && pPlayer->FInViewCone( this ) )
 		return false;
