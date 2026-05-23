@@ -580,21 +580,71 @@ CBasePlayer	*UTIL_PlayerByIndex( int playerIndex )
 // 
 CBasePlayer *UTIL_GetLocalPlayer( void )
 {
-	if ( gpGlobals->maxClients > 1 )
-	{
-		if ( developer.GetBool() )
-		{
-			Assert( !"UTIL_GetLocalPlayer" );
-			
-#ifdef	DEBUG
-			Warning( "UTIL_GetLocalPlayer() called in multiplayer game.\n" );
-#endif
-		}
+	// first try getting the host, failing that, get *ANY* player
+	if (!engine->IsDedicatedServer())
+		return UTIL_GetListenServerHost();
 
-		return NULL;
+	for (int i = 1; i <= gpGlobals->maxClients; i++)
+	{
+		CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+		if (pPlayer)
+			return pPlayer;
 	}
 
-	return UTIL_PlayerByIndex( 1 );
+	return NULL;
+}
+
+CBasePlayer* UTIL_GetNearestPlayer(const Vector& origin)
+{
+	float distToNearest = FLT_MAX;
+	CBasePlayer* pNearest = NULL;
+	for (int i = 1; i <= gpGlobals->maxClients; i++)
+	{
+		CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+		if (!pPlayer)
+			continue;
+
+		// Unique to Mapbase: Prefer non-spectators, but if we haven't found any other players yet, count it.
+		// This means we'll fall back to the spectator if no other players are found in the level.
+		if (pPlayer->GetObserverMode() != OBS_MODE_NONE)
+		{
+			if (!pNearest)
+				pNearest = pPlayer;
+			continue;
+		}
+
+		float flDist = (pPlayer->GetAbsOrigin() - origin).LengthSqr();
+		if (flDist < distToNearest)
+		{
+			pNearest = pPlayer;
+			distToNearest = flDist;
+		}
+	}
+	return pNearest;
+}
+
+CBasePlayer* UTIL_GetNearestVisiblePlayer(CBaseEntity* pLooker, int mask)
+{
+	float distToNearest = FLT_MAX;
+	CBasePlayer* pNearest = NULL;
+	for (int i = 1; i <= gpGlobals->maxClients; i++)
+	{
+		CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+		if (!pPlayer)
+			continue;
+
+		// Unique to Mapbase: Ignore spectators outright when searching for nearest visible.
+		if (pPlayer->GetObserverMode() != OBS_MODE_NONE)
+			continue;
+
+		float flDist = (pPlayer->GetAbsOrigin() - pLooker->GetAbsOrigin()).LengthSqr();
+		if (flDist < distToNearest && pLooker->FVisible(pPlayer, mask))
+		{
+			pNearest = pPlayer;
+			distToNearest = flDist;
+		}
+	}
+	return pNearest;
 }
 
 //

@@ -546,6 +546,22 @@ CBaseEntity *CGlobalEntityList::FindEntityProcedural( const char *szName, CBaseE
 			}
 
 		}
+		else if (FStrEq(pName, "nearestplayer"))
+		{
+			if (pSearchingEntity)
+			{
+				return UTIL_GetNearestPlayer(pSearchingEntity->GetAbsOrigin());
+			}
+			else if (pActivator)
+			{
+				return UTIL_GetNearestPlayer(pActivator->GetAbsOrigin());
+			}
+			else
+			{
+				// FIXME: error condition?
+				return (CBaseEntity*)UTIL_GetLocalPlayer();
+			}
+		}
 		else if ( FStrEq( pName, "activator" ) )
 		{
 			return pActivator;
@@ -570,7 +586,11 @@ CBaseEntity *CGlobalEntityList::FindEntityProcedural( const char *szName, CBaseE
 			}
 			else
 			{
-				return FindPickerEntity( UTIL_PlayerByIndex(1) );
+				CBasePlayer* pPlayer = ToBasePlayer(pSearchingEntity);
+				if (!pPlayer)
+					pPlayer = ToBasePlayer(pActivator);
+
+				return FindPickerEntity(pPlayer ? pPlayer : UTIL_GetLocalPlayer());
 			}
 		}
 		else if ( FStrEq( pName, "self" ) )

@@ -1321,7 +1321,7 @@ void CBaseHeadcrab::DropFromCeiling( void )
 				{
 					SetSchedule( SCHED_HEADCRAB_CEILING_DROP );
 
-					CBaseEntity *pPlayer = AI_GetSinglePlayer();
+					CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 
 					if ( pPlayer )
 					{
