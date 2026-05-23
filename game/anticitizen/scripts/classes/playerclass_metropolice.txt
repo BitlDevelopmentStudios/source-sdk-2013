@@ -15,7 +15,7 @@ PlayerClassDatafile
 	
 	"Health"			"40"
 	"CanADSOfWeapons"	"1"
-	"NoFiringWhileSprinting"	"1"
-	"Speed"				"58"
-	"SprintSpeed"		"184"
+	
+	"ADSSpeed"			"58"
+	"Speed"				"184"
 }

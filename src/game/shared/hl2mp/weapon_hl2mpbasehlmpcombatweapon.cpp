@@ -53,7 +53,7 @@ END_PREDICTION_DATA()
 #endif
 
 extern ConVar sk_auto_reload_time;
-ConVar sk_resource_regen_time("sk_resource_regen_time", "3", FCVAR_REPLICATED);
+ConVar sk_resource_regen_time("sk_resource_regen_time", "6", FCVAR_REPLICATED);
 
 CBaseHL2MPCombatWeapon::CBaseHL2MPCombatWeapon( void )
 {
@@ -369,8 +369,8 @@ float CBaseHL2MPCombatWeapon::CalcViewmodelBob( void )
 //-----------------------------------------------------------------------------
 void CBaseHL2MPCombatWeapon::AddViewmodelBob( CBaseViewModel *viewmodel, Vector &origin, QAngle &angles )
 {
-	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
-	if (IsIronsighted() && !pPlayer->IsSprinting())
+	//CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
+	if (IsIronsighted() /*&& !pPlayer->IsSprinting()*/)
 		return;
 	
 	Vector	forward, right;

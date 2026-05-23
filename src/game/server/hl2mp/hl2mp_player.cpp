@@ -102,8 +102,6 @@ IMPLEMENT_SERVERCLASS_ST(CHL2MP_Player, DT_HL2MP_Player)
 
 	SendPropFloat(SENDINFO(m_flNormalSpeed)),
 	SendPropFloat(SENDINFO(m_flSprintSpeed)),
-
-	SendPropFloat(SENDINFO(m_flStamina)),
 	
 	SendPropExclude( "DT_BaseAnimating", "m_flPoseParameter" ),
 	SendPropExclude("DT_BaseAnimating", "m_flPlaybackRate"),
@@ -161,6 +159,9 @@ CHL2MP_Player::CHL2MP_Player()
 	m_iPlayerClass = CLS_INVALID;
 	m_cycleLatch = 0;
 	m_cycleLatchTimer.Invalidate();
+
+	m_grenadeReloadTimer.Invalidate();
+	m_ballReloadTimer.Invalidate();
 
 	BaseClass::ChangeTeam( 0 );
 	
@@ -263,10 +264,7 @@ void CHL2MP_Player::Spawn(void)
 
 	m_nRenderFX = kRenderNormal;
 
-	m_flStamina = 100.0f;
 	m_flNextPainSoundTime = 0;
-	m_flTimeSinceRanOutOfGrenades = 0;
-	m_flTimeSinceRanOutOfBalls = 0;
 	m_Local.m_iHideHUD = 0;
 	
 	AddFlag(FL_ONGROUND); // set the player on the ground at the start of the round.
@@ -348,30 +346,6 @@ void CHL2MP_Player::PreThink( void )
 	m_vecTotalBulletForce = vec3_origin;
 }
 
-void CHL2MP_Player::RemoveAmmo(int iCount, int iAmmoIndex)
-{
-	BaseClass::RemoveAmmo(iCount, iAmmoIndex);
-
-	if (GetAmmoCount(iAmmoIndex) < 1)
-	{
-		const char *pName = GetAmmoDef()->GetAmmoOfIndex(iAmmoIndex)->pName;
-
-		if (Q_strcmp(pName, "grenade") == 0)
-		{
-			m_flTimeSinceRanOutOfGrenades = gpGlobals->curtime;
-		}
-		else if (Q_strcmp(pName, "AR2AltFire") == 0)
-		{
-			m_flTimeSinceRanOutOfBalls = gpGlobals->curtime;
-		}
-	}
-}
-
-void CHL2MP_Player::RemoveAmmo(int iCount, const char* szName)
-{
-	RemoveAmmo(iCount, GetAmmoDef()->Index(szName));
-}
-
 extern ConVar sk_resource_regen_time;
 
 void CHL2MP_Player::PostThink( void )
@@ -400,10 +374,18 @@ void CHL2MP_Player::PostThink( void )
 			if (GetAmmoCount("grenade") < 1)
 			{
 				// If it's been longer than three seconds, reload
-				if ((gpGlobals->curtime - m_flTimeSinceRanOutOfGrenades) > sk_resource_regen_time.GetFloat())
+				if (m_grenadeReloadTimer.HasElapsedSinceStart())
 				{
 					// Just load the clip with no animations
 					CBasePlayer::GiveAmmo(1, "grenade");
+					m_grenadeReloadTimer.Invalidate();
+				}
+				else
+				{
+					if (!m_grenadeReloadTimer.HasStarted())
+					{
+						m_grenadeReloadTimer.Start(sk_resource_regen_time.GetFloat());
+					}
 				}
 			}
 		}
@@ -413,10 +395,18 @@ void CHL2MP_Player::PostThink( void )
 			if (GetAmmoCount("AR2AltFire") < 1)
 			{
 				// If it's been longer than three seconds, reload
-				if ((gpGlobals->curtime - m_flTimeSinceRanOutOfBalls) > sk_resource_regen_time.GetFloat())
+				if (m_ballReloadTimer.HasElapsedSinceStart())
 				{
 					// Just load the clip with no animations
 					CBasePlayer::GiveAmmo(1, "AR2AltFire");
+					m_ballReloadTimer.Invalidate();
+				}
+				else
+				{
+					if (!m_ballReloadTimer.HasStarted())
+					{
+						m_ballReloadTimer.Start(sk_resource_regen_time.GetFloat());
+					}
 				}
 			}
 		}

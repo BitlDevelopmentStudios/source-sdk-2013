@@ -88,8 +88,6 @@ public:
 	virtual void PainSound(const CTakeDamageInfo& info);
 	virtual void DeathSound( const CTakeDamageInfo &info );
 	int GetVoiceMode();
-	void		RemoveAmmo(int iCount, int iAmmoIndex);
-	void		RemoveAmmo(int iCount, const char* szName);
 	virtual CBaseEntity* EntSelectSpawnPoint( void );
 
 	virtual void	HandleSpeedChanges(CMoveData* mv) OVERRIDE;
@@ -153,9 +151,6 @@ public:
 	float	GetNormalSpeed(void) { return m_flNormalSpeed; }
 	float	GetSprintSpeed(void) { return m_flSprintSpeed; }
 
-	void	SetStamina(float stamina);
-	float	GetStamina(void);
-
 	Vector m_vecTotalBulletForce;	//Accumulator for bullet force in a single frame
 
 	// Tracks our ragdoll entity.
@@ -174,8 +169,6 @@ protected:
 private:
 	CPlayer_Sentence< CHL2MP_Player > m_Sentences;
 	float			m_flNextPainSoundTime;
-	float			m_flTimeSinceRanOutOfGrenades;
-	float			m_flTimeSinceRanOutOfBalls;
 
 	CHL2MPPlayerAnimState* m_PlayerAnimState;
 
@@ -184,7 +177,6 @@ private:
 	CNetworkVar(int, m_iPlayerClass);
 	CNetworkVar(float, m_flNormalSpeed);
 	CNetworkVar(float, m_flSprintSpeed);
-	CNetworkVar(float, m_flStamina);
 
 	int m_iModelType;
 	CNetworkVar( int, m_iSpawnInterpCounter );
@@ -209,6 +201,8 @@ private:
 
 	CNetworkVar(int, m_cycleLatch); // Network the cycle to clients periodically
 	CountdownTimer m_cycleLatchTimer;
+	CountdownTimer m_grenadeReloadTimer;
+	CountdownTimer m_ballReloadTimer;
 };
 
 inline CHL2MP_Player *ToHL2MPPlayer( CBaseEntity *pEntity )

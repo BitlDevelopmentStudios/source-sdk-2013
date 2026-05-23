@@ -48,6 +48,7 @@ typedef enum {
 
 #define	DEFAULT_NORM_SPEED 190
 #define	DEFAULT_SPRINT_SPEED 320
+#define	DEFAULT_ADS_SPEED 150
 
 //-----------------------------------------------------------------------------
 // Purpose: Contains the data read from the player class script files. 
@@ -86,6 +87,7 @@ public:
 
 	float					flNormSpeed;
 	float					flSprintSpeed;
+	float					flADSSpeed;
 
 	char					szPrimaryWeapon[MAX_WEAPON_STRING];
 	char					szSecondaryWeapon[MAX_WEAPON_STRING];

@@ -391,23 +391,14 @@ void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
 		}
 		else
 		{
-			float stamina = 100.0f;
-			stamina = GetStamina();
-
-			bool bSprinting = false;
-
-			if ((mv->m_nButtons & IN_SPEED) && (stamina > 0) && (mv->m_nButtons & IN_FORWARD))
+			if (GetActiveWeapon() && GetActiveWeapon()->IsIronsighted())
 			{
-				mv->m_flClientMaxSpeed = info.flSprintSpeed;
-				bSprinting = true;
+				mv->m_flClientMaxSpeed = info.flADSSpeed;
 			}
 			else
 			{
 				mv->m_flClientMaxSpeed = info.flNormSpeed;
-				bSprinting = false;
 			}
-
-			m_HL2Local.m_bNewSprinting = bSprinting;
 		}
 
 		mv->m_flMaxSpeed = sv_maxspeed.GetFloat();
@@ -437,53 +428,6 @@ void CHL2MP_Player::ReduceTimers(CMoveData* mv)
 
 			SuitPower_Update();
 		}
-		else
-		{
-			Vector vecPlayerVelocity = GetAbsVelocity();
-			float flStamina = GetStamina();
-
-			float fl2DVelocitySquared = vecPlayerVelocity.x * vecPlayerVelocity.x +
-				vecPlayerVelocity.y * vecPlayerVelocity.y;
-
-			// Can only sprint in forward direction.
-			bool bSprinting = ((mv->m_nButtons & IN_SPEED) && (mv->m_nButtons & IN_FORWARD));
-
-			// If we're holding the sprint key and also actually moving, remove some stamina
-			Vector vel = GetAbsVelocity();
-			if (bSprinting && fl2DVelocitySquared > 10000) //speed > 100
-			{
-				if (!(GetFlags() & FL_ONGROUND))
-				{
-					flStamina -= 25 * gpGlobals->frametime;
-				}
-				else
-				{
-					flStamina -= 15 * gpGlobals->frametime;
-				}
-
-				SetStamina(flStamina);
-			}
-			else
-			{
-				//gain some back		
-				if (fl2DVelocitySquared <= 0)
-				{
-					flStamina += 30 * gpGlobals->frametime;
-				}
-				else if ((GetFlags() & FL_ONGROUND) &&
-					(mv->m_nButtons & IN_DUCK) &&
-					(GetFlags() & FL_DUCKING))
-				{
-					flStamina += 20 * gpGlobals->frametime;
-				}
-				else
-				{
-					flStamina += 10 * gpGlobals->frametime;
-				}
-
-				SetStamina(flStamina);
-			}
-		}
 	}
 }
 
@@ -495,16 +439,6 @@ void CHL2MP_Player::SetPlayerClass(int playerclass)
 int CHL2MP_Player::GetPlayerClass(void)
 {
 	return m_iPlayerClass;
-}
-
-void CHL2MP_Player::SetStamina(float stamina)
-{ 
-	m_flStamina = clamp(stamina, 0, 100); 
-}
-
-float CHL2MP_Player::GetStamina(void)
-{ 
-	return m_flStamina; 
 }
 
 const CAnticitizen_FilePlayerClassInfo_t& CHL2MP_Player::GetPlayerClassInfo(void)
