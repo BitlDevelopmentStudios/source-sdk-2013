@@ -107,6 +107,165 @@ Vector CHL2MP_Player::GetAttackSpread( CBaseCombatWeapon *pWeapon, CBaseEntity *
 	return VECTOR_CONE_15DEGREES;
 }
 
+void CHL2MP_Player::UpdateStepSound(surfacedata_t* psurface, const Vector& vecOrigin, const Vector& vecVelocity)
+{
+	bool bWalking;
+	float fvol;
+	Vector knee;
+	Vector feet;
+	float height;
+	float speed;
+	float velrun;
+	float velwalk;
+	int	fLadder;
+
+	if (m_flStepSoundTime > 0)
+	{
+		m_flStepSoundTime -= 1000.0f * gpGlobals->frametime;
+		if (m_flStepSoundTime < 0)
+		{
+			m_flStepSoundTime = 0;
+		}
+	}
+
+	if (m_flStepSoundTime > 0)
+		return;
+
+	if (GetFlags() & (FL_FROZEN | FL_ATCONTROLS))
+		return;
+
+	if (GetMoveType() == MOVETYPE_NOCLIP || GetMoveType() == MOVETYPE_OBSERVER)
+		return;
+
+	if (!sv_footsteps.GetFloat())
+		return;
+
+	speed = VectorLength(vecVelocity);
+	float groundspeed = Vector2DLength(vecVelocity.AsVector2D());
+
+	// determine if we are on a ladder
+	fLadder = (GetMoveType() == MOVETYPE_LADDER);
+
+	GetStepSoundVelocities(&velwalk, &velrun);
+
+	bool onground = (GetFlags() & FL_ONGROUND);
+	bool movingalongground = (groundspeed > 0.0001f);
+	bool moving_fast_enough = true;
+
+	// To hear step sounds you must be either on a ladder or moving along the ground AND
+	// You must be moving fast enough
+
+	if (!moving_fast_enough || !(fLadder || (onground && movingalongground)))
+		return;
+
+	//	MoveHelper()->PlayerSetAnimation( PLAYER_WALK );
+
+	bWalking = speed < velrun;
+
+	VectorCopy(vecOrigin, knee);
+	VectorCopy(vecOrigin, feet);
+
+	height = GetPlayerMaxs()[2] - GetPlayerMins()[2];
+
+	knee[2] = vecOrigin[2] + 0.2 * height;
+
+	// find out what we're stepping in or on...
+	if (fLadder)
+	{
+		psurface = GetLadderSurface(vecOrigin);
+		fvol = 0.5;
+
+		SetStepSoundTime(STEPSOUNDTIME_ON_LADDER, bWalking);
+	}
+#ifdef CSTRIKE_DLL
+	else if (enginetrace->GetPointContents(knee) & MASK_WATER)  // we want to use the knee for Cstrike, not the waist
+#else
+	else if (GetWaterLevel() == WL_Waist)
+#endif // CSTRIKE_DLL
+	{
+		static int iSkipStep = 0;
+
+		if (iSkipStep == 0)
+		{
+			iSkipStep++;
+			return;
+		}
+
+		if (iSkipStep++ == 3)
+		{
+			iSkipStep = 0;
+		}
+		psurface = physprops->GetSurfaceData(physprops->GetSurfaceIndex("wade"));
+		fvol = 0.65;
+		SetStepSoundTime(STEPSOUNDTIME_WATER_KNEE, bWalking);
+	}
+	else if (GetWaterLevel() == WL_Feet)
+	{
+		psurface = physprops->GetSurfaceData(physprops->GetSurfaceIndex("water"));
+		fvol = bWalking ? 0.2 : 0.5;
+
+		SetStepSoundTime(STEPSOUNDTIME_WATER_FOOT, bWalking);
+	}
+	else
+	{
+		if (!psurface)
+			return;
+
+		SetStepSoundTime(STEPSOUNDTIME_NORMAL, bWalking);
+
+		switch (psurface->game.material)
+		{
+		default:
+		case CHAR_TEX_CONCRETE:
+			fvol = bWalking ? 0.2 : 0.5;
+			break;
+
+		case CHAR_TEX_METAL:
+			fvol = bWalking ? 0.2 : 0.5;
+			break;
+
+		case CHAR_TEX_DIRT:
+			fvol = bWalking ? 0.25 : 0.55;
+			break;
+
+		case CHAR_TEX_VENT:
+			fvol = bWalking ? 0.4 : 0.7;
+			break;
+
+		case CHAR_TEX_GRATE:
+			fvol = bWalking ? 0.2 : 0.5;
+			break;
+
+		case CHAR_TEX_TILE:
+			fvol = bWalking ? 0.2 : 0.5;
+			break;
+
+		case CHAR_TEX_SLOSH:
+			fvol = bWalking ? 0.2 : 0.5;
+			break;
+		}
+	}
+
+	// play the sound
+	// 65% volume if ducking
+	if (GetFlags() & FL_DUCKING)
+	{
+		fvol *= 0.65;
+	}
+
+	// if we're moving fast enough, our playersounds should change from BaseClass to ours.
+	bool moving_fast_enough_sndplay = (speed >= velwalk);
+
+	if (!moving_fast_enough_sndplay)
+	{
+		BaseClass::PlayStepSound(feet, psurface, fvol, false);
+	}
+	else
+	{
+		PlayStepSound(feet, psurface, fvol, false);
+	}
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : step - 
