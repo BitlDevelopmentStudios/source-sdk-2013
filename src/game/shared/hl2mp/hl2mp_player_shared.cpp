@@ -94,6 +94,8 @@ void CHL2MP_Player::PrecacheADSSounds(void)
 	}
 }
 
+extern CMoveData* g_pMoveData;
+
 //-----------------------------------------------------------------------------
 // Consider the weapon's built-in accuracy, this character's proficiency with
 // the weapon, and the status of the target. Use this information to determine
@@ -101,8 +103,36 @@ void CHL2MP_Player::PrecacheADSSounds(void)
 //-----------------------------------------------------------------------------
 Vector CHL2MP_Player::GetAttackSpread( CBaseCombatWeapon *pWeapon, CBaseEntity *pTarget )
 {
-	if ( pWeapon )
-		return pWeapon->GetBulletSpread( WEAPON_PROFICIENCY_PERFECT );
+	if (pWeapon)
+	{
+		if (GetPlayerClass() != CLS_FREEMAN)
+		{
+			if (pWeapon->IsIronsighted())
+			{
+				return pWeapon->GetBulletSpread(WEAPON_PROFICIENCY_PERFECT);
+			}
+
+			float groundspeed = Vector2DLength(g_pMoveData->m_vecVelocity.AsVector2D());
+			bool movingalongground = ((GetFlags() & FL_ONGROUND) && groundspeed > 0.0001f);
+
+			if (!(GetFlags() & FL_ONGROUND))
+			{
+				return pWeapon->GetBulletSpread(WEAPON_PROFICIENCY_AVERAGE);
+			}
+			else if (movingalongground)
+			{
+				return pWeapon->GetBulletSpread(WEAPON_PROFICIENCY_GOOD);
+			}
+			else
+			{
+				return pWeapon->GetBulletSpread(WEAPON_PROFICIENCY_VERY_GOOD);
+			}
+		}
+		else
+		{
+			return pWeapon->GetBulletSpread(WEAPON_PROFICIENCY_PERFECT);
+		}
+	}
 	
 	return VECTOR_CONE_15DEGREES;
 }
