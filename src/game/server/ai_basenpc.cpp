@@ -7209,7 +7209,7 @@ void CAI_BaseNPC::InitRelationshipTable(void)
 		case CLASS_CONSCRIPT:
 		case CLASS_VORTIGAUNT:
 		case CLASS_HACKED_ROLLERMINE:
-			ChangeTeam(TEAM_REBELS);
+			ChangeTeam(TEAM_FREEMAN);
 			break;
 
 		case CLASS_NONE:
