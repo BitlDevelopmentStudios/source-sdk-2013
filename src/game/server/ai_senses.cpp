@@ -13,6 +13,9 @@
 #include "team.h"
 #include "ai_basenpc.h"
 #include "saverestore_utlvector.h"
+#ifdef NEXT_BOT
+	#include "NextBotManager.h"
+#endif
 
 #ifdef PORTAL
 	#include "portal_util_shared.h"
@@ -80,6 +83,9 @@ BEGIN_SIMPLE_DATADESC( CAI_Senses )
 	DEFINE_FIELD( m_TimeLastLookHighPriority, 	FIELD_TIME	),
 	DEFINE_FIELD( m_TimeLastLookNPCs, 	FIELD_TIME	),
 	DEFINE_FIELD( m_TimeLastLookMisc, 	FIELD_TIME	),
+#ifdef NEXT_BOT
+	DEFINE_FIELD(m_TimeLastLookNextBots, FIELD_TIME),
+#endif
 
 END_DATADESC()
 
@@ -349,6 +355,9 @@ void CAI_Senses::Look( int iDistance )
 		LookForHighPriorityEntities( iDistance );
 		LookForNPCs( iDistance);
 		LookForObjects( iDistance );
+#ifdef NEXT_BOT
+		LookForNextBots(iDistance);
+#endif
 		
 		//-----------------------------
 		
@@ -504,6 +513,79 @@ int CAI_Senses::LookForNPCs( int iDistance )
     return m_SeenNPCs.Count();
 }
 
+#ifdef NEXT_BOT
+//-----------------------------------------------------------------------------
+
+int CAI_Senses::LookForNextBots(int iDistance)
+{
+	bool bRemoveStaleFromCache = false;
+	float distSq = (iDistance * iDistance);
+	const Vector& origin = GetAbsOrigin();
+	AI_Efficiency_t efficiency = GetOuter()->GetEfficiency();
+	//use npc time.
+	float timeNPCs = (efficiency < AIE_VERY_EFFICIENT) ? AI_STANDARD_NPC_SEARCH_TIME : AI_EFFICIENT_NPC_SEARCH_TIME;
+	if (gpGlobals->curtime - m_TimeLastLookNextBots > timeNPCs)
+	{
+		AI_PROFILE_SENSES(CAI_Senses_LookForNextBots);
+
+		m_TimeLastLookNextBots = gpGlobals->curtime;
+
+		if (efficiency < AIE_SUPER_EFFICIENT)
+		{
+			int i, nSeen = 0;
+
+			BeginGather();
+
+			CUtlVector< INextBot* > botVector;
+			TheNextBots().CollectAllBots(&botVector);
+			for (i = 0; i < botVector.Count(); ++i)
+			{
+				CBaseCombatCharacter* bot = botVector[i]->GetEntity();
+
+				if (!bot)
+					continue;
+
+				if (bot->IsPlayer())
+					continue;
+
+				if (bot->IsAlive() && origin.DistToSqr(bot->GetAbsOrigin()) < distSq)
+				{
+					if (Look(bot))
+					{
+						nSeen++;
+					}
+				}
+			}
+
+			EndGather(nSeen, &m_SeenNextBots);
+
+			return nSeen;
+		}
+
+		bRemoveStaleFromCache = true;
+		// Fall through
+	}
+
+	for (int i = m_SeenNextBots.Count() - 1; i >= 0; --i)
+	{
+		if (m_SeenNextBots[i].Get() == NULL)
+		{
+			m_SeenNextBots.FastRemove(i);
+		}
+		else if (bRemoveStaleFromCache)
+		{
+			if ((origin.DistToSqr(m_SeenNextBots[i]->GetAbsOrigin()) > distSq) ||
+				!Look(m_SeenNextBots[i]))
+			{
+				m_SeenNextBots.FastRemove(i);
+			}
+		}
+	}
+
+	return m_SeenNextBots.Count();
+}
+#endif
+
 //-----------------------------------------------------------------------------
 
 int CAI_Senses::LookForObjects( int iDistance )
@@ -557,6 +639,10 @@ float CAI_Senses::GetTimeLastUpdate( CBaseEntity *pEntity )
 		return 0;
 	if ( pEntity->IsPlayer() )
 		return m_TimeLastLookHighPriority;
+#ifdef NEXT_BOT
+	if (pEntity->IsNextBot())
+		return m_TimeLastLookNextBots;
+#endif
 	if ( pEntity->IsNPC() )
 		return m_TimeLastLookNPCs;
 	return m_TimeLastLookMisc;
