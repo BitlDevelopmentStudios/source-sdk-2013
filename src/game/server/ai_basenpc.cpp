@@ -643,7 +643,7 @@ void CAI_BaseNPC::Ignite( float flFlameLifetime, bool bNPCOnly, float flSize, bo
 	BaseClass::Ignite( flFlameLifetime, bNPCOnly, flSize, bCalledByLevelDesigner );
 
 #ifdef HL2_EPISODIC
-	CBasePlayer *pPlayer = AI_GetSinglePlayer();
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 	if ( pPlayer->IRelationType( this ) != D_LI )
 	{
 		CNPC_Alyx *alyx = CNPC_Alyx::GetAlyx();
@@ -777,7 +777,7 @@ int CAI_BaseNPC::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		{
 			// See if the person that injured me is an NPC.
 			CAI_BaseNPC *pAttacker = dynamic_cast<CAI_BaseNPC *>( info.GetAttacker() );
-			CBasePlayer *pPlayer = AI_GetSinglePlayer();
+			CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 
 			if( pAttacker && pAttacker->IsAlive() && pPlayer )
 			{
@@ -3110,7 +3110,7 @@ void CAI_BaseNPC::UpdateEfficiency( bool bInPVS )
 
 	//---------------------------------
 
-	CBasePlayer *pPlayer = AI_GetSinglePlayer(); 
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 	static Vector vPlayerEyePosition;
 	static Vector vPlayerForward;
 	static int iPrevFrame = -1;
@@ -3354,7 +3354,7 @@ void CAI_BaseNPC::UpdateSleepState( bool bInPVS )
 {
 	if ( GetSleepState() > AISS_AWAKE )
 	{
-		CBasePlayer *pLocalPlayer = AI_GetSinglePlayer();
+		CBasePlayer* pLocalPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 		if ( !pLocalPlayer )
 		{
 			if ( gpGlobals->maxClients > 1 )
@@ -3554,7 +3554,7 @@ void CAI_BaseNPC::RebalanceThinks()
 
 		int i;
 
-		CBasePlayer *pPlayer = AI_GetSinglePlayer();
+		CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 		Vector vPlayerForward;
 		Vector vPlayerEyePosition;
 
@@ -3835,7 +3835,7 @@ void CAI_BaseNPC::SetPlayerAvoidState( void )
 
 		GetPlayerAvoidBounds( &vMins, &vMaxs );
 
-		CBasePlayer *pLocalPlayer = AI_GetSinglePlayer();
+		CBasePlayer* pLocalPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 
 		if ( pLocalPlayer )
 		{
@@ -4810,14 +4810,14 @@ void CAI_BaseNPC::RunAI( void )
 		}
 	}
 
-	if( ai_debug_loners.GetBool() && !IsInSquad() && AI_IsSinglePlayer() )
+	if (ai_debug_loners.GetBool() && !IsInSquad())
 	{
 		Vector right;
 		Vector vecPoint;
 
 		vecPoint = EyePosition() + Vector( 0, 0, 12 );
 
-		UTIL_GetLocalPlayer()->GetVectors( NULL, &right, NULL );
+		UTIL_GetNearestPlayer(GetAbsOrigin())->GetVectors(NULL, &right, NULL);
 
 		NDebugOverlay::Line( vecPoint, vecPoint + Vector( 0, 0, 64 ), 255, 0, 0, false , 0.1 );
 		NDebugOverlay::Line( vecPoint, vecPoint + Vector( 0, 0, 32 ) + right * 32, 255, 0, 0, false , 0.1 );
@@ -8677,7 +8677,7 @@ void CAI_BaseNPC::DrawDebugGeometryOverlays(void)
 
 		info.SetDamage( m_iHealth );
 		info.SetAttacker( this );
-		info.SetInflictor( ( AI_IsSinglePlayer() ) ? (CBaseEntity *)AI_GetSinglePlayer() : (CBaseEntity *)this );
+		info.SetInflictor((CBaseEntity*)this);
 		info.SetDamageType( DMG_GENERIC );
 
 		m_debugOverlays &= ~OVERLAY_NPC_KILL_BIT;
@@ -11916,7 +11916,7 @@ bool CAI_BaseNPC::CineCleanup()
 			{
 				SetLocalOrigin( origin );
 
-				int drop = UTIL_DropToFloor( this, MASK_NPCSOLID, UTIL_GetLocalPlayer() );
+				int drop = UTIL_DropToFloor(this, MASK_NPCSOLID, UTIL_GetNearestVisiblePlayer(this));
 
 				// Origin in solid?  Set to org at the end of the sequence
 				if ( ( drop < 0 ) || sv_test_scripted_sequences.GetBool() )
@@ -11993,7 +11993,7 @@ void CAI_BaseNPC::Teleport( const Vector *newPosition, const QAngle *newAngles, 
 
 bool CAI_BaseNPC::FindSpotForNPCInRadius( Vector *pResult, const Vector &vStartPos, CAI_BaseNPC *pNPC, float radius, bool bOutOfPlayerViewcone )
 {
-	CBasePlayer *pPlayer = AI_GetSinglePlayer();
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(pNPC->GetAbsOrigin());
 	QAngle fan;
 
 	fan.x = 0;
@@ -12527,13 +12527,7 @@ bool CAI_BaseNPC::IsPlayerAlly( CBasePlayer *pPlayer )
 { 
 	if ( pPlayer == NULL )
 	{
-		// in multiplayer mode we need a valid pPlayer 
-		// or override this virtual function
-		if ( !AI_IsSinglePlayer() )
-			return false;
-
-		// NULL means single player mode
-		pPlayer = UTIL_GetLocalPlayer();
+		pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 	}
 
 	return ( !pPlayer || IRelationType( pPlayer ) == D_LI ); 
@@ -12827,7 +12821,7 @@ bool CAI_BaseNPC::FindNearestValidGoalPos( const Vector &vTestPoint, Vector *pRe
 
 	if ( vCandidate != vec3_invalid )
 	{
-		AI_Waypoint_t *pPathToPoint = GetPathfinder()->BuildRoute( GetAbsOrigin(), vCandidate, AI_GetSinglePlayer(), 5*12, NAV_NONE, true );
+		AI_Waypoint_t* pPathToPoint = GetPathfinder()->BuildRoute(GetAbsOrigin(), vCandidate, UTIL_GetNearestPlayer(GetAbsOrigin()), 5 * 12, NAV_NONE, true);
 		if ( pPathToPoint )
 		{
 			GetPathfinder()->UnlockRouteNodes( pPathToPoint );
