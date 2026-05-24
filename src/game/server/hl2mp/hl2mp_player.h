@@ -205,6 +205,7 @@ private:
 	CountdownTimer m_cycleLatchTimer;
 	CountdownTimer m_grenadeReloadTimer;
 	CountdownTimer m_ballReloadTimer;
+	CountdownTimer m_hackReloadTimer;
 };
 
 inline CHL2MP_Player *ToHL2MPPlayer( CBaseEntity *pEntity )

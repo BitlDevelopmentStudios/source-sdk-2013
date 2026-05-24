@@ -162,6 +162,7 @@ CHL2MP_Player::CHL2MP_Player()
 
 	m_grenadeReloadTimer.Invalidate();
 	m_ballReloadTimer.Invalidate();
+	m_hackReloadTimer.Invalidate();
 
 	BaseClass::ChangeTeam( 0 );
 	
@@ -410,6 +411,27 @@ void CHL2MP_Player::PostThink( void )
 				}
 			}
 		}
+
+		if (info.iManhacks == -1)
+		{
+			if (GetAmmoCount("Manhacks") < 1)
+			{
+				// If it's been longer than three seconds, reload
+				if (m_hackReloadTimer.HasElapsedSinceStart())
+				{
+					// Just load the clip with no animations
+					CBasePlayer::GiveAmmo(1, "Manhacks");
+					m_hackReloadTimer.Invalidate();
+				}
+				else
+				{
+					if (!m_hackReloadTimer.HasStarted())
+					{
+						m_hackReloadTimer.Start(sk_resource_regen_time.GetFloat());
+					}
+				}
+			}
+		}
 	}
 	
 	if (IsAlive() && m_cycleLatchTimer.IsElapsed())
@@ -652,6 +674,11 @@ void CHL2MP_Player::LoadClass(int iClass)
 			if (pPlayerClassInfo.iCombineBalls > 0 || pPlayerClassInfo.iCombineBalls == -1)
 			{
 				CBasePlayer::GiveAmmo(pPlayerClassInfo.iCombineBalls, "AR2AltFire");
+			}
+
+			if (pPlayerClassInfo.iManhacks > 0 || pPlayerClassInfo.iManhacks == -1)
+			{
+				CBasePlayer::GiveAmmo(pPlayerClassInfo.iManhacks, "Manhacks");
 			}
 
 			SetPreventWeaponPickup(true);
