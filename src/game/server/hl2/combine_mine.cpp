@@ -872,18 +872,17 @@ float CBounceBomb::FindNearestNPC()
 		}
 	}
 
-	for (int i = 1; i <= gpGlobals->maxClients; i++)
-	{
-		CBaseEntity* pPlayer = UTIL_PlayerByIndex(i);
-		if (pPlayer && !(pPlayer->GetFlags() & FL_NOTARGET) && pPlayer->IsAlive())
-		{
-			float flDist = (pPlayer->GetAbsOrigin() - GetAbsOrigin()).LengthSqr();
+	// finally, check the player.
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 
-			if (flDist < flNearest && FVisible(pPlayer, MASK_SOLID_BRUSHONLY))
-			{
-				flNearest = flDist;
-				SetNearestNPC(pPlayer);
-			}
+	if( pPlayer && !(pPlayer->GetFlags() & FL_NOTARGET) )
+	{
+		float flDist = (pPlayer->GetAbsOrigin() - GetAbsOrigin() ).LengthSqr();
+
+		if( flDist < flNearest && FVisible( pPlayer, MASK_SOLID_BRUSHONLY ) )
+		{
+			flNearest = flDist;
+			SetNearestNPC( pPlayer );
 		}
 	}
 

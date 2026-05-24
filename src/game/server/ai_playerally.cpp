@@ -406,7 +406,7 @@ void CAI_PlayerAlly::GatherConditions( void )
 		SetCondition( COND_TALKER_CLIENTUNSEEN );
 	}
 
-	CBasePlayer* pLocalPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+	CBasePlayer *pLocalPlayer = AI_GetSinglePlayer();
 
 	if ( !pLocalPlayer )
 	{
@@ -459,7 +459,7 @@ void CAI_PlayerAlly::GatherEnemyConditions( CBaseEntity *pEnemy )
 		{
 			if( Classify() == CLASS_PLAYER_ALLY_VITAL && hl2_episodic.GetBool() )
 			{
-				CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+				CBasePlayer *pPlayer = AI_GetSinglePlayer();
 
 				if( pPlayer )
 				{
@@ -1002,9 +1002,10 @@ void CAI_PlayerAlly::StartTask( const Task_t *pTask )
 	{
 	case TASK_MOVE_AWAY_PATH:
 		{
-			if (HasCondition(COND_PLAYER_PUSHING))
+			if ( HasCondition( COND_PLAYER_PUSHING ) && AI_IsSinglePlayer() )
 			{
-				GetMotor()->SetIdealYawToTarget(UTIL_GetNearestPlayer(GetAbsOrigin())->WorldSpaceCenter());
+				// @TODO (toml 10-22-04): cope with multiplayer push
+				GetMotor()->SetIdealYawToTarget( UTIL_GetLocalPlayer()->WorldSpaceCenter() );
 			}
 			BaseClass::StartTask( pTask );
 			break;
@@ -1458,7 +1459,7 @@ bool CAI_PlayerAlly::IsOkToSpeak( ConceptCategory_t category, bool fRespondingTo
 		}
 
 		// Don't talk if we're too far from the player
-		CBaseEntity* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+		CBaseEntity *pPlayer = AI_GetSinglePlayer();
 		if ( pPlayer )
 		{
 			float flDist = sv_npc_talker_maxdist.GetFloat();
