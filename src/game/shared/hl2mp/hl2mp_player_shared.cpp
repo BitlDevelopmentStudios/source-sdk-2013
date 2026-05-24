@@ -17,6 +17,7 @@
 #include "anticitizen_player_resource.h"
 #endif
 
+#include "hl2mp_gamerules.h"
 #include "engine/IEngineSound.h"
 #include "SoundEmitterSystem/isoundemittersystembase.h"
 #include "in_buttons.h"
@@ -506,7 +507,6 @@ const CAnticitizen_FilePlayerClassInfo_t& CHL2MP_Player::GetPlayerClassInfo(void
 //-----------------------------------------------------------------------------
 bool CHL2MP_Player::ShouldCollide(int collisionGroup, int contentsMask) const
 {
-#ifndef CLIENT_DLL
 	extern ConVar hl2mp_avoidteammates;
 	if ((collisionGroup == COLLISION_GROUP_PLAYER || collisionGroup == COLLISION_GROUP_PLAYER_MOVEMENT) && hl2mp_avoidteammates.GetBool())
 	{
@@ -523,6 +523,6 @@ bool CHL2MP_Player::ShouldCollide(int collisionGroup, int contentsMask) const
 			break;
 		}
 	}
-#endif
+
 	return BaseClass::ShouldCollide(collisionGroup, contentsMask);
 }
