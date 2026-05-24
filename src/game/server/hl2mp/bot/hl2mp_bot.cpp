@@ -2411,8 +2411,13 @@ bool CHL2MPBot::IsEnemy( const CBaseEntity* them ) const
 	if ( them == this )
 		return false;
 
-	if ( !them->IsPlayer() )
-		return false;
+	if (!them->IsPlayer())
+	{
+		if (!them->IsNPC())
+		{ 
+			return false;
+		}
+	}
 
 	if ( hl2mp_bot_ignore_real_players.GetBool() )
 	{
