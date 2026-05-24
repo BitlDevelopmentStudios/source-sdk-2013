@@ -756,7 +756,7 @@ void CNPC_Combine::StartTask( const Task_t *pTask )
 	case TASK_COMBINE_SIGNAL_BEST_SOUND:
 		if( IsInSquad() && GetSquad()->NumMembers() > 1 )
 		{
-			CBasePlayer *pPlayer = AI_GetSinglePlayer();
+			CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 
 			if( pPlayer && OccupyStrategySlot( SQUAD_SLOT_EXCLUSIVE_HANDSIGN ) && pPlayer->FInViewCone( this ) )
 			{
@@ -2565,7 +2565,7 @@ void CNPC_Combine::SpeakSentence( int sentenceType )
 //=========================================================
 // PainSound
 //=========================================================
-void CNPC_Combine::PainSound ( void )
+void CNPC_Combine::PainSound ( const CTakeDamageInfo& info )
 {
 	// NOTE: The response system deals with this at the moment
 	if ( GetFlags() & FL_DISSOLVING )

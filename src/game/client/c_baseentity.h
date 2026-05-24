@@ -993,6 +993,9 @@ public:
 	// are relative to the attachment on this entity.
 	void SetParent( C_BaseEntity *pParentEntity, int iParentAttachment=0 );
 
+	// Some entities should predict +USE interaction
+	virtual void			Use(CBaseEntity* pActivator, CBaseEntity* pCaller, USE_TYPE useType, float value) {}
+
 	bool					PhysicsRunThink( thinkmethods_t thinkMethod = THINK_FIRE_ALL_FUNCTIONS );
 	bool					PhysicsRunSpecificThink( int nContextIndex, BASEPTR thinkFunc );
 

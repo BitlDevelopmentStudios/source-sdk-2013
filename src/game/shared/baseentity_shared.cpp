@@ -79,6 +79,12 @@ ConVar	ai_shot_bias_min( "ai_shot_bias_min", "-1.0", FCVAR_REPLICATED );
 ConVar	ai_shot_bias_max( "ai_shot_bias_max", "1.0", FCVAR_REPLICATED );
 ConVar	ai_debug_shoot_positions( "ai_debug_shoot_positions", "0", FCVAR_REPLICATED | FCVAR_CHEAT );
 
+#if defined(HL2MP)
+ConVar	mp_use_server_bulletfx("mp_use_server_bulletfx", "2", FCVAR_NONE, "Whether or not to use serverside bullet FX in multiplayer.\n"
+	"The default for HL2:DM is 0, but this causes issues with entities that don't transfer their damage filters or blood color to the client, such as NPCs.\n"
+	"While 1 universally re-enables serverside bullet FX, 2 only uses serverside bullet FX for non-players.");
+#endif
+
 // Utility func to throttle rate at which the "reasonable position" spew goes out
 static double s_LastEntityReasonableEmitTime;
 bool CheckEmitReasonablePhysicsSpew()
@@ -1605,7 +1611,19 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 	bool bDoServerEffects = true;
 
 #if defined( HL2MP ) && defined( GAME_DLL )
-	bDoServerEffects = false;
+	switch (mp_use_server_bulletfx.GetInt())
+	{
+	case 0:
+	default:
+		bDoServerEffects = false;
+		break;
+	case 1:
+		bDoServerEffects = true;
+		break;
+	case 2:
+		bDoServerEffects = !IsPlayer();
+		break;
+	}
 #endif
 
 #if defined( GAME_DLL )
@@ -2041,7 +2059,7 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 bool CBaseEntity::ShouldDrawUnderwaterBulletBubbles()
 {
 #if defined( HL2_DLL ) && defined( GAME_DLL )
-	CBaseEntity *pPlayer = ( gpGlobals->maxClients == 1 ) ? UTIL_GetLocalPlayer() : NULL;
+	CBaseEntity* pPlayer = UTIL_GetNearestVisiblePlayer(this);
 	return pPlayer && (pPlayer->GetWaterLevel() == 3);
 #else
 	return false;

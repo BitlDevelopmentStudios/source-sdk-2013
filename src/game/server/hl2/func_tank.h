@@ -76,6 +76,7 @@ public:
 	bool	CreateVPhysics( void );
 	bool	KeyValue( const char *szKeyName, const char *szValue );
 	void	UpdateOnRemove();
+	void	AddEffects(int nEffects);
 
 	void	SetYawRate( float flYawRate ) { m_yawRate = flYawRate; }
 	void	SetPitchRate( float flPitchRate ) { m_pitchRate = flPitchRate; }

@@ -498,3 +498,31 @@ const CAnticitizen_FilePlayerClassInfo_t& CHL2MP_Player::GetPlayerClassInfo(void
 {
 	return g_Anticitizen_PR->GetPlayerClassInfo(GetPlayerClass());
 }
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Input  : collisionGroup - 
+// Output : Returns true on success, false on failure.
+//-----------------------------------------------------------------------------
+bool CHL2MP_Player::ShouldCollide(int collisionGroup, int contentsMask) const
+{
+#ifndef CLIENT_DLL
+	extern ConVar hl2mp_avoidteammates;
+	if ((collisionGroup == COLLISION_GROUP_PLAYER || collisionGroup == COLLISION_GROUP_PLAYER_MOVEMENT) && hl2mp_avoidteammates.GetBool())
+	{
+		switch (GetTeamNumber())
+		{
+		case TEAM_REBELS:
+			if ((contentsMask & CONTENTS_TEAM1))
+				return false;
+			break;
+
+		case TEAM_COMBINE:
+			if ((contentsMask & CONTENTS_TEAM2))
+				return false;
+			break;
+		}
+	}
+#endif
+	return BaseClass::ShouldCollide(collisionGroup, contentsMask);
+}

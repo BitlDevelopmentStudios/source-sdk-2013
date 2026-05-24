@@ -1172,7 +1172,7 @@ void CAntlionTemplateMaker::FindNodesCloseToPlayer( void )
 {
 	SetContextThink( &CAntlionTemplateMaker::FindNodesCloseToPlayer, gpGlobals->curtime + random->RandomFloat( 0.75, 1.75 ), s_pBlockedEffectsThinkContext );
 
-	CBasePlayer *pPlayer = AI_GetSinglePlayer();
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin()); // dubious
 
 	if ( pPlayer == NULL )
 		 return;
@@ -1218,7 +1218,7 @@ void CAntlionTemplateMaker::FindNodesCloseToPlayer( void )
 				continue;
 
 			Vector vHintPos;
-			pNode->GetPosition( HULL_MEDIUM, &vHintPos );
+			pNode->GetPosition(UTIL_GetNearestPlayer(GetAbsOrigin()), &vHintPos);
 		
 			bool bBlank;
 			if ( CBaseEntity *pBlocker = AllHintsFromClusterBlocked( pNode, bBlank ) )

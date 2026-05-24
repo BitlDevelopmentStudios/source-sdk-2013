@@ -70,6 +70,8 @@ extern ConVar weapon_showproficiency;
 ConVar ai_show_hull_attacks( "ai_show_hull_attacks", "0" );
 ConVar ai_force_serverside_ragdoll( "ai_force_serverside_ragdoll", "0" );
 
+ConVar	ai_team_relationships("ai_team_relationships", "1", FCVAR_NONE, "If assigned to a team, NPCs will reinterpret default relationships according to which team each player/NPC is on.");
+
 ConVar nb_last_area_update_tolerance( "nb_last_area_update_tolerance", "4.0", FCVAR_CHEAT, "Distance a character needs to travel in order to invalidate cached area" ); // 4.0 tested as sweet spot (for wanderers, at least). More resulted in little benefit, less quickly diminished benefit [7/31/2008 tom]
 
 #ifndef _RETAIL
@@ -2761,8 +2763,37 @@ Relationship_t *CBaseCombatCharacter::FindEntityRelationship( CBaseEntity *pTarg
 
 Disposition_t CBaseCombatCharacter::IRelationType ( CBaseEntity *pTarget )
 {
-	if ( pTarget )
-		return FindEntityRelationship( pTarget )->disposition;
+	if (pTarget)
+	{
+		if (ai_team_relationships.GetBool())
+		{
+			// If both me and my target on a team, override default relationships
+			if (GetTeamNumber() != TEAM_UNASSIGNED && pTarget->GetTeamNumber() != TEAM_UNASSIGNED)
+			{
+				// Only override if our relationship with this entity is identical to the default (prevents overriding ai_relationship)
+				Disposition_t nDisposition = FindEntityRelationship(pTarget)->disposition;
+				if (nDisposition == GetDefaultRelationshipDisposition(pTarget->Classify()))
+				{
+					if (GetTeamNumber() == pTarget->GetTeamNumber())
+					{
+						// Same team = like (neutral if that was the default)
+						if (nDisposition == D_NU)
+							return D_NU;
+						return D_LI;
+					}
+					else
+					{
+						// Not the same team = hate (fear if that was the default)
+						if (nDisposition == D_FR)
+							return D_FR;
+						return D_HT;
+					}
+				}
+			}
+		}
+
+		return FindEntityRelationship(pTarget)->disposition;
+	}
 	return D_NU;
 }
 

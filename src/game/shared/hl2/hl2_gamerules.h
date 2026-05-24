@@ -11,7 +11,7 @@
 #endif
 
 #include "gamerules.h"
-#include "singleplay_gamerules.h"
+#include "teamplayroundbased_gamerules.h"
 #include "hl2_shareddefs.h"
 
 #ifdef CLIENT_DLL
@@ -28,10 +28,10 @@ public:
 };
 
 
-class CHalfLife2 : public CSingleplayRules
+class CHalfLife2 : public CTeamplayRules
 {
 public:
-	DECLARE_CLASS( CHalfLife2, CSingleplayRules );
+	DECLARE_CLASS( CHalfLife2, CTeamplayRules );
 
 	// Damage Query Overrides.
 	virtual bool			Damage_IsTimeBased( int iDmgType );
@@ -46,6 +46,8 @@ public:
 	virtual float			GetAmmoQuantityScale( int iAmmoIndex );
 	virtual void			LevelInitPreEntity();
 #endif
+
+	bool	MegaPhyscannonActive(void) { return m_bMegaPhysgun; }
 
 private:
 	// Rules change for the mega physgun
@@ -84,7 +86,6 @@ public:
 	bool	NPC_ShouldDropHealth( CBasePlayer *pRecipient );
 	void	NPC_DroppedHealth( void );
 	void	NPC_DroppedGrenade( void );
-	bool	MegaPhyscannonActive( void ) { return m_bMegaPhysgun;	}
 	
 	virtual bool IsAlyxInDarknessMode();
 
@@ -106,13 +107,7 @@ private:
 //-----------------------------------------------------------------------------
 inline CHalfLife2* HL2GameRules()
 {
-#if ( !defined( HL2_DLL ) && !defined( HL2_CLIENT_DLL ) ) || defined( HL2MP )
-	Assert( 0 );	// g_pGameRules is NOT an instance of CHalfLife2 and bad things happen
-#endif
-
 	return static_cast<CHalfLife2*>(g_pGameRules);
 }
-
-
 
 #endif // HL2_GAMERULES_H

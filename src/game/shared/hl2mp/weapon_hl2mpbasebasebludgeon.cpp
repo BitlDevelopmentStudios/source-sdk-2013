@@ -17,11 +17,13 @@
 
 #if defined( CLIENT_DLL )
 	#include "c_hl2mp_player.h"
+	#include "c_ai_basenpc.h"
 #else
 	#include "hl2mp_player.h"
 	#include "ndebugoverlay.h"
 	#include "te_effect_dispatch.h"
 	#include "ilagcompensationmanager.h"
+	#include "ai_basenpc.h"
 #endif
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -167,6 +169,10 @@ void CBaseHL2MPBludgeonWeapon::Hit( trace_t &traceHit, Activity nHitActivity )
 
 		if ( this->PlayFleshyHittySoundOnHit() )
 			WeaponSound( MELEE_HIT );
+
+		// Don't do impact effect if this is an ally
+		if (pHitEntity->MyNPCPointer() && pHitEntity->MyNPCPointer()->IsPlayerAlly(pPlayer))
+			return;
 	}
 
 	// Apply an impact effect

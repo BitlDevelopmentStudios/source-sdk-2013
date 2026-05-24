@@ -12,12 +12,26 @@
 #include "c_basehlplayer.h"
 #endif
 
+#include "takedamageinfo.h"
+
 #include "death_pose.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
 #define PING_MAX_TIME	2.0
+
+BEGIN_RECV_TABLE_NOBASE(C_AI_BaseNPC, DT_BaseNPCGameData)
+RecvPropInt(RECVINFO(m_iHealth)),
+RecvPropInt(RECVINFO(m_takedamage)),
+RecvPropInt(RECVINFO(m_bloodColor)),
+//RecvPropString( RECVINFO( m_szNetname ) ),	// Transmitted by player resource now
+RecvPropInt(RECVINFO(m_nDefaultPlayerRelationship)),
+END_RECV_TABLE();
+
+#ifdef CAI_BaseNPC
+#undef CAI_BaseNPC
+#endif
 
 IMPLEMENT_CLIENTCLASS_DT( C_AI_BaseNPC, DT_AI_BaseNPC, CAI_BaseNPC )
 	RecvPropInt( RECVINFO( m_lifeState ) ),
@@ -31,6 +45,7 @@ IMPLEMENT_CLIENTCLASS_DT( C_AI_BaseNPC, DT_AI_BaseNPC, CAI_BaseNPC )
 	RecvPropInt( RECVINFO( m_bSpeedModActive ) ),
 	RecvPropBool( RECVINFO( m_bImportanRagdoll ) ),
 	RecvPropFloat( RECVINFO( m_flTimePingEffect ) ),
+	RecvPropDataTable("npc_gamedata", 0, 0, &REFERENCE_RECV_TABLE(DT_BaseNPCGameData)),
 END_RECV_TABLE()
 
 extern ConVar cl_npc_speedmod_intime;
@@ -47,6 +62,7 @@ bool NPC_IsImportantNPC( C_BaseAnimating *pAnimating )
 
 C_AI_BaseNPC::C_AI_BaseNPC()
 {
+	SetBloodColor(DONT_BLEED);
 }
 
 //-----------------------------------------------------------------------------
@@ -183,3 +199,86 @@ bool C_AI_BaseNPC::GetRagdollInitBoneArrays( matrix3x4_t *pDeltaBones0, matrix3x
 	return bRet;
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void C_AI_BaseNPC::DispatchTraceAttack(const CTakeDamageInfo& info, const Vector& vecDir, trace_t* ptr, CDmgAccumulator* pAccumulator)
+{
+	m_fNoDamageDecal = false;
+
+	if (info.GetAttacker() && info.GetAttacker()->IsPlayer())
+	{
+		if (IsPlayerAlly(ToBasePlayer(info.GetAttacker())))
+		{
+			m_fNoDamageDecal = true;
+			return;
+		}
+	}
+
+	BaseClass::DispatchTraceAttack(info, vecDir, ptr, pAccumulator);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void C_AI_BaseNPC::DecalTrace(trace_t* pTrace, char const* decalName)
+{
+	if (m_fNoDamageDecal)
+	{
+		// Don't do impact decals when we shouldn't
+		// (adapts an existing hack from singleplayer HL2, see serverside counterpart)
+		m_fNoDamageDecal = false;
+		return;
+	}
+	BaseClass::DecalTrace(pTrace, decalName);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void C_AI_BaseNPC::ImpactTrace(trace_t* pTrace, int iDamageType, const char* pCustomImpactName)
+{
+	if (m_fNoDamageDecal)
+	{
+		// Don't do impact decals when we shouldn't
+		// (adapts an existing hack from singleplayer HL2, see serverside counterpart)
+		m_fNoDamageDecal = false;
+		return;
+	}
+	BaseClass::ImpactTrace(pTrace, iDamageType, pCustomImpactName);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+bool C_AI_BaseNPC::IsPlayerAlly(C_BasePlayer* pPlayer)
+{
+	if (pPlayer == NULL)
+	{
+		pPlayer = C_BasePlayer::GetLocalPlayer();
+	}
+
+	if (pPlayer->GetTeamNumber() == TEAM_UNASSIGNED)
+	{
+		// AI relationship code isn't available here, so we currently transmit a var from the server to determine if we're, at least generically, an ally
+		return (m_nDefaultPlayerRelationship == GR_TEAMMATE);
+	}
+	else if (GetTeamNumber() == pPlayer->GetTeamNumber())
+	{
+		// Same team probably means allies
+		return true;
+	}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+bool C_AI_BaseNPC::IsNeutralTo(C_BasePlayer* pPlayer)
+{
+	if (IsPlayerAlly(pPlayer))
+		return false;
+
+	return (m_nDefaultPlayerRelationship == GR_NOTTEAMMATE);
+}

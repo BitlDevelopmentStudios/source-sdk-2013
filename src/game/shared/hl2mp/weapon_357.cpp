@@ -14,6 +14,7 @@
 	#include <prediction.h>
 #else
 	#include "hl2mp_player.h"
+	#include "te_effect_dispatch.h"
 #endif
 
 #include "weapon_hl2mpbasehlmpcombatweapon.h"
@@ -37,6 +38,10 @@ public:
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
 	DECLARE_ACTTABLE();
+
+#ifndef CLIENT_DLL
+	void Operator_HandleAnimEvent(animevent_t* pEvent, CBaseCombatCharacter* pOperator);
+#endif
 
 private:
 	
@@ -69,9 +74,38 @@ acttable_t CWeapon357::m_acttable[] =
 	{ ACT_MP_RELOAD_CROUCH,				ACT_HL2MP_GESTURE_RELOAD_PISTOL,		false },
 
 	{ ACT_MP_JUMP,						ACT_HL2MP_JUMP_PISTOL,					false },
+
+	{ ACT_RANGE_ATTACK1,				ACT_RANGE_ATTACK_PISTOL,				false },
 };
 
 IMPLEMENT_ACTTABLE( CWeapon357 );
+
+#ifndef CLIENT_DLL
+void CWeapon357::Operator_HandleAnimEvent(animevent_t* pEvent, CBaseCombatCharacter* pOperator)
+{
+	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+
+	switch (pEvent->event)
+	{
+		case EVENT_WEAPON_RELOAD:
+		{
+			CEffectData data;
+
+			// Emit six spent shells
+			for (int i = 0; i < 6; i++)
+			{
+				data.m_vOrigin = pOwner->WorldSpaceCenter() + RandomVector(-4, 4);
+				data.m_vAngles = QAngle(90, random->RandomInt(0, 360), 0);
+				data.m_nEntIndex = entindex();
+
+				DispatchEffect("ShellEject", data);
+			}
+
+			break;
+		}
+	}
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
@@ -144,6 +178,10 @@ void CWeapon357::PrimaryAttack( void )
 #endif // CLIENT_DLL
 
 	pPlayer->ViewPunch( QAngle( -8, random->RandomFloat( -2, 2 ), 0 ) );
+#ifndef CLIENT_DLL
+	pPlayer->SetMuzzleFlashTime(gpGlobals->curtime + 0.5);
+	CSoundEnt::InsertSound(SOUND_COMBAT, GetAbsOrigin(), 600, 0.2, GetOwner());
+#endif // CLIENT_DLL
 
 	if ( !m_iClip1 && pPlayer->GetAmmoCount( m_iPrimaryAmmoType ) <= 0 )
 	{

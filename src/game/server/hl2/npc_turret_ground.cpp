@@ -148,6 +148,8 @@ void CNPC_GroundTurret::Spawn( void )
 
 	GetAttachment( "light", vecPos );
 	m_vecLightOffset = vecPos - GetAbsOrigin();
+
+	SetBloodColor(DONT_BLEED);
 }
 
 //-----------------------------------------------------------------------------

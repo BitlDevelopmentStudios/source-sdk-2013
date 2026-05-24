@@ -98,6 +98,9 @@ public:
 	bool SuitPower_RemoveDevice( const CSuitPowerDevice& device );
 	bool SuitPower_ShouldRecharge( void );
 	float SuitPower_GetCurrentPercentage( void ) { return m_HL2Local.m_flSuitPower; }
+
+	virtual void	DispatchTraceAttack(const CTakeDamageInfo& info, const Vector& vecDir, trace_t* ptr, CDmgAccumulator* pAccumulator = NULL);
+	virtual bool	ShouldCollide(int collisionGroup, int contentsMask) const;
 	
 	bool	CanSprint( void );
 	void	StartSprinting( void );

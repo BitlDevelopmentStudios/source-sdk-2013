@@ -279,6 +279,7 @@ ConVar  alyx_darkness_force( "alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REP
 	//-----------------------------------------------------------------------------
 	void CHalfLife2::PlayerSpawn( CBasePlayer *pPlayer )
 	{
+		BaseClass::PlayerSpawn(pPlayer);
 	}
 
 	//-----------------------------------------------------------------------------
@@ -1398,10 +1399,12 @@ ConVar  alyx_darkness_force( "alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REP
 		{
 			// A physics object has struck a player ally. Don't allow damage if it
 			// came from the player's physcannon. 
-			CBasePlayer *pPlayer = UTIL_PlayerByIndex(1);
-
-			if( pPlayer )
+			for (int i = 1; i <= gpGlobals->maxClients; i++)
 			{
+				CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+				if (!pPlayer)
+					continue;
+
 				CBaseEntity *pWeapon = pPlayer->HasNamedPlayerItem("weapon_physcannon");
 
 				if( pWeapon )
@@ -1534,14 +1537,6 @@ bool CHalfLife2::ShouldCollide( int collisionGroup0, int collisionGroup1 )
 
 	if ( collisionGroup0 == HL2COLLISION_GROUP_COMBINE_BALL && collisionGroup1 == HL2COLLISION_GROUP_COMBINE_BALL_NPC )
 		return false;
-
-	if ( ( collisionGroup0 == COLLISION_GROUP_WEAPON ) ||
-		( collisionGroup0 == COLLISION_GROUP_PLAYER ) ||
-		( collisionGroup0 == COLLISION_GROUP_PROJECTILE ) )
-	{
-		if ( collisionGroup1 == HL2COLLISION_GROUP_COMBINE_BALL )
-			return false;
-	}
 
 	if ( collisionGroup0 == COLLISION_GROUP_DEBRIS )
 	{
@@ -1775,7 +1770,6 @@ bool CHalfLife2::ShouldBurningPropsEmitLight()
 // Global functions.
 // ------------------------------------------------------------------------------------ //
 
-#ifndef HL2MP
 #ifndef PORTAL
 
 // shared ammo definition
@@ -1876,5 +1870,4 @@ CAmmoDef *GetAmmoDef()
 	return &def;
 }
 
-#endif
 #endif

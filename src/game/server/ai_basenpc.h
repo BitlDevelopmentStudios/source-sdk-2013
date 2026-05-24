@@ -1108,6 +1108,10 @@ public:
 	bool IsInPlayerSquad() const;
 	virtual CAI_BaseNPC *GetSquadCommandRepresentative()				{ return NULL; }
 
+	// Only used in multiplayer: Allows multiple players to have independent commandable squads
+	virtual CBasePlayer* GetPlayerCommander() const { return NULL; }
+	bool IsInThisPlayerSquad(CBasePlayer* pPlayer) const;
+
 	virtual bool TargetOrder( CBaseEntity *pTarget, CAI_BaseNPC **Allies, int numAllies ) { OnTargetOrder(); return true; }
 	virtual void MoveOrder( const Vector &vecDest, CAI_BaseNPC **Allies, int numAllies ) { SetCommandGoal( vecDest ); SetCondition( COND_RECEIVED_ORDERS ); OnMoveOrder(); }
 
@@ -1877,6 +1881,14 @@ public:
 
 
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED( m_lifeState );
+
+	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_iHealth);
+	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_takedamage);
+	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_bloodColor);
+
+	// Used to determine whether to draw blood, target ID, etc. on the client
+	// Uses first 3 gamerules relationship return codes (GR_TEAMMATE, GR_NOTTEAMMATE, and GR_ENEMY)
+	CNetworkVar(int, m_nDefaultPlayerRelationship);
 
 	//---------------------------------
 	//	Outputs
