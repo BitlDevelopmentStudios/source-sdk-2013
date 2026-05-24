@@ -167,7 +167,7 @@ public:
 	//---------------------------------
 	bool 			IsCommandable();
 	bool			IsPlayerAlly( CBasePlayer *pPlayer = NULL );
-	bool			CanJoinPlayerSquad();
+	bool			CanJoinPlayerSquad(CBasePlayer* pPlayer = NULL);
 	bool			WasInPlayerSquad();
 	bool			HaveCommandGoal() const;
 	bool			IsCommandMoving();
@@ -181,9 +181,9 @@ public:
 	void 			CommanderUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 	bool			ShouldSpeakRadio( CBaseEntity *pListener );
 	void			OnMoveToCommandGoalFailed();
-	void			AddToPlayerSquad();
-	void			RemoveFromPlayerSquad();
-	void 			TogglePlayerSquadState();
+	void			AddToPlayerSquad(CBasePlayer* pPlayer = NULL);
+	void			RemoveFromPlayerSquad(CBasePlayer* pPlayer = NULL);
+	void 			TogglePlayerSquadState(CBasePlayer* pPlayer = NULL);
 	void			UpdatePlayerSquad();
 	static int __cdecl PlayerSquadCandidateSortFunc( const SquadCandidate_t *, const SquadCandidate_t * );
 	void 			FixupPlayerSquad();
@@ -195,6 +195,9 @@ public:
 	void			AddInsignia();
 	void			RemoveInsignia();
 	bool			SpeakCommandResponse( AIConcept_t concept, const char *modifiers = NULL );
+
+	CBasePlayer*	GetPlayerCommander() const { return m_hPlayerCommander; }
+	void			FindPlayerCommander();
 	
 	//---------------------------------
 	// Scanner interaction
@@ -303,6 +306,9 @@ private:
 	bool			m_bWasInPlayerSquad;
 	float			m_flTimeLastCloseToPlayer;
 	string_t		m_iszDenyCommandConcept;
+
+	// The player with command over us
+	CHandle<CBasePlayer>	m_hPlayerCommander;
 
 	CSimpleSimTimer	m_AutoSummonTimer;
 	Vector			m_vAutoSummonAnchor;

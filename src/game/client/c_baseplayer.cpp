@@ -2103,6 +2103,11 @@ void C_BasePlayer::PostThink( void )
 		{
 			SetCollisionBounds( VEC_HULL_MIN, VEC_HULL_MAX );
 		}
+
+		if (m_hUseEntity != NULL)
+		{
+			m_hUseEntity->Use(this, this, USE_SET, 2);
+		}
 		
 		if ( !CommentaryModeShouldSwallowInput( this ) )
 		{

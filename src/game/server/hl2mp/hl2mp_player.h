@@ -109,6 +109,8 @@ public:
 	const char *GetPlayerModelSoundPrefix( void );
 	int	  GetPlayerModelType( void ) { return m_iPlayerSoundType;	}
 
+	virtual bool	ShouldCollide(int collisionGroup, int contentsMask) const;
+
 	int	GetMaxAmmo( int iAmmoIndex ) const;
 	
 	void  DetonateTripmines( void );

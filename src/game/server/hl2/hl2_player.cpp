@@ -1188,7 +1188,22 @@ void CHL2_Player::Spawn(void)
 
 	m_Local.m_iHideHUD |= HIDEHUD_CHAT;
 
-	m_pPlayerAISquad = g_AI_SquadManager.FindCreateSquad(AllocPooledString(PLAYER_SQUADNAME));
+	extern ConVar player_squad_mp_shared;
+	if (!player_squad_mp_shared.GetBool())
+	{
+		char szSquadName[32];
+
+		if (UTIL_GetLocalPlayer() == this)
+		{
+			Q_strncpy(szSquadName, PLAYER_SQUADNAME, sizeof(szSquadName));
+		}
+		else
+		{
+			Q_snprintf(szSquadName, sizeof(szSquadName), "%s%i", PLAYER_SQUADNAME, entindex());
+		}
+
+		m_pPlayerAISquad = g_AI_SquadManager.FindCreateSquad(AllocPooledString(szSquadName));
+	}
 
 	InitSprinting();
 
@@ -1673,7 +1688,7 @@ void CHL2_Player::CommanderExecute( CommanderCommand_t command )
 	
 	for ( i = 0; !bHandled && i < Allies.Count(); i++ )
 	{
-		if ( Allies[i] != pTargetNpc && Allies[i]->IsPlayerAlly() )
+		if (Allies[i] != pTargetNpc && Allies[i]->IsPlayerAlly(this))
 		{
 			bHandled = !CommanderExecuteOne( Allies[i], goal, Allies.Base(), Allies.Count() );
 		}
@@ -2196,7 +2211,7 @@ void CHL2_Player::SetPlayerUnderwater( bool state )
 bool CHL2_Player::PassesDamageFilter( const CTakeDamageInfo &info )
 {
 	CBaseEntity *pAttacker = info.GetAttacker();
-	if( pAttacker && pAttacker->MyNPCPointer() && pAttacker->MyNPCPointer()->IsPlayerAlly() )
+	if (pAttacker && pAttacker->MyNPCPointer() && pAttacker->MyNPCPointer()->IsPlayerAlly(this))
 	{
 		return false;
 	}
@@ -2292,7 +2307,7 @@ void CHL2_Player::NotifyFriendsOfDamage( CBaseEntity *pAttackerEntity )
 			const float NEAR_Z = 12*12;
 			const float NEAR_XY_SQ = Square( 50*12 );
 			CAI_BaseNPC *pNpc = g_AI_Manager.AccessAIs()[i];
-			if ( pNpc->IsPlayerAlly() )
+			if (pNpc->IsPlayerAlly(this))
 			{
 				const Vector &originNpc = pNpc->GetAbsOrigin();
 				if ( fabsf( originNpc.z - origin.z ) < NEAR_Z )
@@ -3835,7 +3850,7 @@ void CLogicPlayerProxy::Activate( void )
 
 	if ( m_hPlayer == NULL )
 	{
-		m_hPlayer = AI_GetSinglePlayer();
+		m_hPlayer = UTIL_GetLocalPlayer();
 	}
 }
 

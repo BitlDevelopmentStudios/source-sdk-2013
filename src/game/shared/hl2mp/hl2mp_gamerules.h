@@ -16,7 +16,7 @@
 #pragma once
 
 #include "gamerules.h"
-#include "teamplay_gamerules.h"
+#include "hl2_gamerules.h"
 #include "gamevars_shared.h"
 
 #ifndef CLIENT_DLL
@@ -38,10 +38,10 @@ enum
 	#define CHL2MPGameRulesProxy C_HL2MPGameRulesProxy
 #endif
 
-class CHL2MPGameRulesProxy : public CGameRulesProxy
+class CHL2MPGameRulesProxy : public CHalfLife2Proxy
 {
 public:
-	DECLARE_CLASS( CHL2MPGameRulesProxy, CGameRulesProxy );
+	DECLARE_CLASS( CHL2MPGameRulesProxy, CHalfLife2Proxy );
 	DECLARE_NETWORKCLASS();
 };
 
@@ -79,10 +79,10 @@ public:
 	Vector m_vCrouchTraceMax;	
 };
 
-class CHL2MPRules : public CTeamplayRules
+class CHL2MPRules : public CHalfLife2
 {
 public:
-	DECLARE_CLASS( CHL2MPRules, CTeamplayRules );
+	DECLARE_CLASS( CHL2MPRules, CHalfLife2 );
 
 #ifdef CLIENT_DLL
 
@@ -152,6 +152,8 @@ public:
 	void	CheckAllPlayersReady( void );
 
 	virtual bool IsConnectedUserInfoChangeAllowed( CBasePlayer *pPlayer );
+
+	bool	MegaPhyscannonActive(void) { return false; }
 	
 private:
 	

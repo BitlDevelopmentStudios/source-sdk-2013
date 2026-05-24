@@ -979,6 +979,20 @@ IRagdoll* C_HL2MP_Player::GetRepresentativeRagdoll() const
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void C_HL2MP_Player::DispatchTraceAttack(const CTakeDamageInfo& info, const Vector& vecDir, trace_t* ptr, CDmgAccumulator* pAccumulator)
+{
+	if (info.GetAttacker())
+	{
+		if (!friendlyfire.GetInt() && HL2MPRules()->PlayerRelationship(this, info.GetAttacker()) == GR_TEAMMATE)
+			return;
+	}
+
+	BaseClass::DispatchTraceAttack(info, vecDir, ptr, pAccumulator);
+}
+
 //HL2MPRAGDOLL
 
 

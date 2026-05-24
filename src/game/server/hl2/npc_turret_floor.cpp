@@ -352,6 +352,8 @@ void CNPC_FloorTurret::Spawn( void )
 	CreateVPhysics();
 
 	SetState(NPC_STATE_IDLE);
+
+	SetBloodColor(DONT_BLEED);
 }
 
 //-----------------------------------------------------------------------------

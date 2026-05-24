@@ -1171,7 +1171,7 @@ void CAI_PlayerAlly::Event_Killed( const CTakeDamageInfo &info )
 	// notify the player
 	if ( IsInPlayerSquad() )
 	{
-		CBasePlayer *player = AI_GetSinglePlayer();
+		CBasePlayer* player = GetPlayerCommander();
 		if ( player )
 		{
 			variant_t emptyVariant;

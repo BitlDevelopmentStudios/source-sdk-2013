@@ -168,6 +168,8 @@ public:
 	int GetNumSquadCommandables();
 	int GetNumSquadCommandableMedics();
 
+	CAI_Squad* GetPlayerSquad() const { return m_pPlayerAISquad; }
+
 	// Locator
 	void UpdateLocatorPosition( const Vector &vecPosition );
 
