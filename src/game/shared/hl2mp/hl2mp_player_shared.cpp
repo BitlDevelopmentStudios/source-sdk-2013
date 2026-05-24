@@ -15,6 +15,7 @@
 #include "hl2mp_player.h"
 #endif
 
+#include "hl2mp_gamerules.h"
 #include "engine/IEngineSound.h"
 #include "SoundEmitterSystem/isoundemittersystembase.h"
 
@@ -131,7 +132,6 @@ void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, f
 //-----------------------------------------------------------------------------
 bool CHL2MP_Player::ShouldCollide(int collisionGroup, int contentsMask) const
 {
-#ifndef CLIENT_DLL
 	extern ConVar hl2mp_avoidteammates;
 	if ((collisionGroup == COLLISION_GROUP_PLAYER || collisionGroup == COLLISION_GROUP_PLAYER_MOVEMENT) && hl2mp_avoidteammates.GetBool())
 	{
@@ -148,6 +148,6 @@ bool CHL2MP_Player::ShouldCollide(int collisionGroup, int contentsMask) const
 			break;
 		}
 	}
-#endif
+
 	return BaseClass::ShouldCollide(collisionGroup, contentsMask);
 }
