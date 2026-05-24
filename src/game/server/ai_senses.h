@@ -33,8 +33,7 @@ enum seentype_t
 	SEEN_ALL = -1,	// Default
 	SEEN_HIGH_PRIORITY = 0,
 	SEEN_NPCS,
-	SEEN_MISC,
-	SEEN_NEXTBOTS
+	SEEN_MISC
 };
 
 #define SENSING_FLAGS_NONE			0x00000000
@@ -62,9 +61,6 @@ public:
 		m_SeenArrays[0] = &m_SeenHighPriority;
 		m_SeenArrays[1] = &m_SeenNPCs;
 		m_SeenArrays[2] = &m_SeenMisc;
-#ifdef NEXT_BOT
-		m_SeenArrays[3] = &m_SeenNextBots;
-#endif
 		m_iSensingFlags = SENSING_FLAGS_NONE;
 	}
 	
@@ -122,9 +118,6 @@ private:
 	int 			LookForHighPriorityEntities( int iDistance );
 	int 			LookForNPCs( int iDistance );
 	int 			LookForObjects( int iDistance );
-#ifdef NEXT_BOT
-	int 			LookForNextBots(int iDistance);
-#endif
 	
 	bool			SeeEntity( CBaseEntity *pEntity );
 	
@@ -137,22 +130,12 @@ private:
 	CUtlVector<EHANDLE> m_SeenHighPriority;
 	CUtlVector<EHANDLE> m_SeenNPCs;
 	CUtlVector<EHANDLE> m_SeenMisc;
-#ifdef NEXT_BOT
-	CUtlVector<EHANDLE> m_SeenNextBots;
-#endif
 	
-#ifdef NEXT_BOT
-	CUtlVector<EHANDLE>* m_SeenArrays[4];
-#else
-	CUtlVector<EHANDLE>* m_SeenArrays[3];
-#endif
+	CUtlVector<EHANDLE> *m_SeenArrays[3];
 	
 	float			m_TimeLastLookHighPriority;
 	float			m_TimeLastLookNPCs;
 	float			m_TimeLastLookMisc;
-#ifdef NEXT_BOT
-	float			m_TimeLastLookNextBots;
-#endif
 
 	int				m_iSensingFlags;
 };
