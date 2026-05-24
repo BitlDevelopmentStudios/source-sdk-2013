@@ -218,9 +218,11 @@ void CCredits::OnRestore()
 void CCredits::RollOutroCredits()
 {
 	sv_unlockedchapters.SetValue( "15" );
+	
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 
-	CRecipientFilter user;
-	user.AddAllPlayers();
+	CSingleUserRecipientFilter user( pPlayer );
+	user.MakeReliable();
 
 	UserMessageBegin( user, "CreditsMsg" );
 		WRITE_BYTE( 3 );
@@ -239,8 +241,10 @@ void CCredits::InputRollOutroCredits( inputdata_t &inputdata )
 
 void CCredits::InputShowLogo( inputdata_t &inputdata )
 {
-	CRecipientFilter user;
-	user.AddAllPlayers();
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+
+	CSingleUserRecipientFilter user( pPlayer );
+	user.MakeReliable();
 
 	if ( m_flLogoLength )
 	{
@@ -263,8 +267,10 @@ void CCredits::InputSetLogoLength( inputdata_t &inputdata )
 
 void CCredits::InputRollCredits( inputdata_t &inputdata )
 {
-	CRecipientFilter user;
-	user.AddAllPlayers();
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+
+	CSingleUserRecipientFilter user( pPlayer );
+	user.MakeReliable();
 
 	UserMessageBegin( user, "CreditsMsg" );
 		WRITE_BYTE( 2 );

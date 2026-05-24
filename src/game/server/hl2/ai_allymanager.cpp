@@ -124,6 +124,13 @@ void CAI_AllyManager::CountAllies( int *pTotal, int *pMedics )
 {
 	(*pTotal) = (*pMedics) = 0;
 
+	if ( !AI_IsSinglePlayer() )
+	{
+		// @TODO (toml 10-22-04): no MP support right now
+		return;
+	}
+
+	const Vector &	vPlayerPos = UTIL_GetLocalPlayer()->GetAbsOrigin();
 	CAI_BaseNPC **	ppAIs 	= g_AI_Manager.AccessAIs();
 	int 			nAIs 	= g_AI_Manager.NumAIs();
 
@@ -139,11 +146,9 @@ void CAI_AllyManager::CountAllies( int *pTotal, int *pMedics )
 			if( ppAIs[i]->HasSpawnFlags(SF_CITIZEN_NOT_COMMANDABLE) )
 				continue;
 			
-			CBasePlayer* pPlayer = UTIL_GetNearestPlayer(ppAIs[i]->GetAbsOrigin());
-			if (ppAIs[i]->IRelationType(pPlayer) != D_LI)
+			// They only count if I can use them.
+			if( ppAIs[i]->IRelationType( UTIL_GetLocalPlayer() ) != D_LI )
 				continue;
-
-			const Vector& vPlayerPos = pPlayer->GetAbsOrigin();
 
 			// Skip distant NPCs
 			if ( !ppAIs[i]->IsInPlayerSquad() && 
