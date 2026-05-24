@@ -369,7 +369,7 @@ void CHL2MP_Player::PostThink( void )
 	{
 		const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
 
-		if (info.iClassType > CLS_TYPE_LOW_TIER) // if we're at or under low, skip.
+		if (info.iGrenades == -1)
 		{
 			if (GetAmmoCount("grenade") < 1)
 			{
@@ -390,7 +390,7 @@ void CHL2MP_Player::PostThink( void )
 			}
 		}
 
-		if (info.iClassType > CLS_TYPE_MID_TIER) // if we're at or under mid, skip.
+		if (info.iCombineBalls == -1)
 		{
 			if (GetAmmoCount("AR2AltFire") < 1)
 			{
@@ -639,7 +639,7 @@ void CHL2MP_Player::LoadClass(int iClass)
 				GiveNamedItem(pPlayerClassInfo.szMeleeWeapon);
 			}
 
-			if (pPlayerClassInfo.iGrenades > 0)
+			if (pPlayerClassInfo.iGrenades > 0 || pPlayerClassInfo.iGrenades == -1)
 			{
 				GiveNamedItem("weapon_frag");
 
@@ -649,7 +649,7 @@ void CHL2MP_Player::LoadClass(int iClass)
 				}
 			}
 
-			if (pPlayerClassInfo.iCombineBalls > 0)
+			if (pPlayerClassInfo.iCombineBalls > 0 || pPlayerClassInfo.iCombineBalls == -1)
 			{
 				CBasePlayer::GiveAmmo(pPlayerClassInfo.iCombineBalls, "AR2AltFire");
 			}

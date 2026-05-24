@@ -9,7 +9,7 @@ PlayerClassDatafile
 	"ClassType"			"3" // 0 = none, 1 = low, 2 = mid, 3 = high, 4 = freeman
 	"VoiceMode"			"2"
 	
-	"CombineBalls"		"1"
+	"CombineBalls"		"-1"
 	"PrimaryWeapon"		"weapon_ar2"
 	
 	"Health"			"70"

@@ -9,6 +9,8 @@ PlayerClassDatafile
 	"ClassType"			"1" // 0 = none, 1 = low, 2 = mid, 3 = high, 4 = freeman
 	"VoiceMode"			"1"
 	
+	"Manhacks"			"-1"
+	
 	"PrimaryWeapon"		"weapon_smg1"
 	"SecondaryWeapon"	"weapon_pistol"
 	"MeleeWeapon"		"weapon_stunstick"
