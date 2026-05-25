@@ -2158,6 +2158,15 @@ void CBasePlayer::PlayerDeathThink(void)
 			return;
 	}
 
+#ifdef C_ARMS
+	CBaseViewModel* pHands = GetViewModel(1);
+
+	if (pHands)
+	{
+		pHands->SetModel(""); // FIX: Removes hand model when the player is dead
+	}
+#endif
+
 	if (m_lifeState == LIFE_DYING)
 	{
 		m_lifeState = LIFE_DEAD;
