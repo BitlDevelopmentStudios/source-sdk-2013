@@ -619,6 +619,23 @@ void CHL2MP_Player::LoadClass(int iClass)
 			SetupPlayerSoundsByModel(pPlayerClassInfo.m_szPlayerModel);
 		}
 
+		if (pPlayerClassInfo.m_szCArmModel[0])
+		{
+			PrecacheModel(pPlayerClassInfo.m_szCArmModel);
+
+			CBaseViewModel* pHands = GetViewModel(1);
+
+			if (pHands)
+			{
+				pHands->SetModel(pPlayerClassInfo.m_szCArmModel);
+
+				if (pPlayerClassInfo.iCArmSkin > 0)
+				{
+					pHands->SetSkin(pPlayerClassInfo.iCArmSkin);
+				}
+			}
+		}
+
 		if (pPlayerClassInfo.iHealth > 0)
 		{
 			SetHealth(pPlayerClassInfo.iHealth);

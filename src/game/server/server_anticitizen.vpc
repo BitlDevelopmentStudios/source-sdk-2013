@@ -9,6 +9,7 @@ $Macro GAMENAME 	"anticitizen"
 
 $Include "$SRCDIR\game\server\server_base.vpc"
 $Include "$SRCDIR\game\server\nav_mesh.vpc"
+$Include "$SRCDIR\game\shared\c_arms_include.vpc"
 
 $Configuration
 {
