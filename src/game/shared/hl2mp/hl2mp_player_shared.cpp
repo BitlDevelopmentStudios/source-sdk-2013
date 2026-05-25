@@ -204,6 +204,7 @@ void CHL2MP_Player::UpdateStepSound(surfacedata_t* psurface, const Vector& vecOr
 
 	bool onground = (GetFlags() & FL_ONGROUND);
 	bool movingalongground = (groundspeed > 0.0001f);
+
 	bool moving_fast_enough = true;
 
 	// To hear step sounds you must be either on a ladder or moving along the ground AND
@@ -310,7 +311,11 @@ void CHL2MP_Player::UpdateStepSound(surfacedata_t* psurface, const Vector& vecOr
 	// if we're moving fast enough, our playersounds should change from BaseClass to ours.
 	bool moving_fast_enough_sndplay = (speed >= velwalk);
 
-	if (!moving_fast_enough_sndplay)
+	if (GetPlayerClass() == CLS_FREEMAN)
+	{
+		BaseClass::PlayStepSound(feet, psurface, fvol, false);
+	}
+	else if (!moving_fast_enough_sndplay)
 	{
 		BaseClass::PlayStepSound(feet, psurface, fvol, false);
 	}

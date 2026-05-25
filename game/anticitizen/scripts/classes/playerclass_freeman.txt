@@ -2,7 +2,7 @@ PlayerClassDatafile
 {
 	// FilePlayerClassInfo_t members
 	"printname"			"#anticitizen_class_freeman"
-	"playermodel"		"models/player.mdl"
+	"playermodel"		"models/gordon/gordon.mdl"
 	"selectcmd"			"class_freeman"
 
 	// CAnticitizen_FilePlayerClassInfo_t members

@@ -357,6 +357,16 @@ void CWeaponFrag::PrimaryAttack( void )
 void CWeaponFrag::DecrementAmmo( CBaseCombatCharacter *pOwner )
 {
 	pOwner->RemoveAmmo( 1, m_iPrimaryAmmoType );
+
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
+
+	if (pPlayer)
+	{
+		if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
+		{
+			pPlayer->SwitchToNextBestWeapon(this);
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
