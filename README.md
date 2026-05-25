@@ -19,13 +19,14 @@ LOOKING FOR THE OLD BDS BASE WITH QUIVER FORTRESS' SOURCE CODE? Go here: https:/
 - Implements changes from Saul's repository, allowing for features like autocomplete for the "give" command, colored messages in chat, and FGD fixes for compilers (https://github.com/saul/source-sdk-2013).
 - Implements changes from the Source Engine Co-Operative Base Modification (SecobMod), which includes Winston's multiplayer NPC support (https://developer.valvesoftware.com/wiki/Co-Operative_Base_(Mod)).
 - Implemented Discord RPC support (based off #1803).
+- Built-in c_arms support. Just add `$Include "$SRCDIR\game\shared\c_arms_include.vpc"` to the top of your VPC file and set it up! Based on https://developer.valvesoftware.com/wiki/Hand_Viewmodels
 - reset.bat file in each mod folder, used for cleaning up config/temporary files for easy mod distribution.
 - Server Admin tools support (based off #948) with extendable module-based command interface.
 - Animated Avatars support (based off #1380)
 - Serverfinder/Quick Search: A quick and easy way for players to start and join servers.
 - Supports Xbox 360 achievement notifications.
 
-## Credits;
+## Additional Credits;
 The Mapbase team for MP fixes as well as their implementation of Tony Sergi's, Saul's, and SecobMod's code as well as fixes for aformentioned code.
 The SecobMod implementation uses code from dutchmega's Collaborate mod (https://developer.valvesoftware.com/wiki/Collaborate)
 
