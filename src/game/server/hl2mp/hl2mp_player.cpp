@@ -673,7 +673,7 @@ void CHL2MP_Player::LoadClass(int iClass)
 			{
 				pHands->SetModel(pPlayerClassInfo.m_szCArmModel);
 
-				if (pPlayerClassInfo.iCArmSkin > 0)
+				if (pPlayerClassInfo.iCArmSkin > -1)
 				{
 					pHands->SetSkin(pPlayerClassInfo.iCArmSkin);
 				}

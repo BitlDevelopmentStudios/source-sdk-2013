@@ -617,6 +617,7 @@ public:
 	int						GetIdealSequence( void ) { return m_nIdealSequence; }
 
 	bool					SetIdealActivity( Activity ideal );
+	Activity				GetTwoHandedActivityForActivity(Activity ideal);
 	void					MaintainIdealActivity( void );
 
 #ifdef CLIENT_DLL

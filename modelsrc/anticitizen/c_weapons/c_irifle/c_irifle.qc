@@ -129,10 +129,6 @@ $animation "a_vent_open_corrective_animation" "c_irifle_anims\a_vent_open_correc
 $animation "a_vent_closed_corrective_animation" "c_irifle_anims\a_vent_closed_corrective_animation.smd" {
 }
 
-$animation "a_vent_neutral" "c_irifle_anims\a_vent_neutral.smd" {
-	fps 30
-}
-
 $animation "a_vent_open" "c_irifle_anims\a_vent_open.smd" {
 	fps 30
 	// Crowbar writes this subtract option to prevent jigglebone and poseparameter problems when delta sequences are recompiled.
@@ -144,6 +140,8 @@ $animation "a_vent_closed" "c_irifle_anims\a_vent_closed.smd" {
 	// Crowbar writes this subtract option to prevent jigglebone and poseparameter problems when delta sequences are recompiled.
 	subtract "a_vent_closed_corrective_animation" 0
 }
+
+// one-handed
 
 $sequence "IR_idle" {
 	"c_irifle_anims\IR_idle.smd"
@@ -270,6 +268,140 @@ $sequence "lowidle" {
 $sequence "shake" {
 	"c_irifle_anims\shake.smd"
 	activity "ACT_VM_FIDGET" 1
+	fadein 0.2
+	fadeout 0.2
+	node "Fire"
+	fps 30
+	loop
+}
+
+// two-handed
+
+$sequence "IR_idle_2hand" {
+	"c_irifle_anims_2hand\IR_idle_2hand.smd"
+	activity "ACT_VM_IDLE_TWO_HANDED" 1
+	fadein 0.2
+	fadeout 0.2
+	node "Ready"
+	fps 30
+	loop
+}
+
+$sequence "IR_fire_2hand" {
+	"c_irifle_anims_2hand\IR_fire_2hand.smd"
+	activity "ACT_VM_PRIMARYATTACK_TWO_HANDED" 1
+	{ event AE_MUZZLEFLASH 0 "COMBINE MUZZLE" }
+	fadein 0.2
+	fadeout 0.2
+	node "Fire"
+	snap
+	fps 30
+}
+
+$sequence "fire2_2hand" {
+	"c_irifle_anims_2hand\fire2_2hand.smd"
+	activity "ACT_VM_RECOIL1_TWO_HANDED" 1
+	{ event AE_MUZZLEFLASH 0 "COMBINE MUZZLE" }
+	fadein 0.2
+	fadeout 0.2
+	node "Fire"
+	snap
+	fps 30
+}
+
+$sequence "fire3_2hand" {
+	"c_irifle_anims_2hand\fire3_2hand.smd"
+	activity "ACT_VM_RECOIL2_TWO_HANDED" 1
+	{ event AE_MUZZLEFLASH 0 "COMBINE MUZZLE" }
+	fadein 0.2
+	fadeout 0.2
+	node "Fire"
+	snap
+	fps 30
+}
+
+$sequence "fire4_2hand" {
+	"c_irifle_anims_2hand\fire4_2hand.smd"
+	activity "ACT_VM_RECOIL3_TWO_HANDED" 1
+	{ event AE_MUZZLEFLASH 0 "COMBINE MUZZLE" }
+	fadein 0.2
+	fadeout 0.2
+	node "Fire"
+	snap
+	fps 30
+}
+
+$sequence "IR_fire2_2hand" {
+	"c_irifle_anims_2hand\IR_fire2_2hand.smd"
+	activity "ACT_VM_SECONDARYATTACK_TWO_HANDED" 1
+	{ event AE_MUZZLEFLASH 0 "COMBINE MUZZLE" }
+	fadein 0.2
+	fadeout 0.2
+	snap
+	fps 30
+}
+
+$sequence "IR_reload_2hand" {
+	"c_irifle_anims_2hand\IR_reload_2hand.smd"
+	activity "ACT_VM_RELOAD_TWO_HANDED" 1
+	{ event AE_CL_PLAYSOUND 1 "Weapon_AR2.Reload_Rotate" }
+	{ event AE_CL_PLAYSOUND 19 "Weapon_AR2.Reload_Push" }
+	fadein 0.2
+	fadeout 0.2
+	node "Ready"
+	fps 30
+}
+
+$sequence "IR_draw_2hand" {
+	"c_irifle_anims_2hand\IR_draw_2hand.smd"
+	activity "ACT_VM_DRAW_TWO_HANDED" 1
+	fadein 0.2
+	fadeout 0.2
+	node "Ready"
+	snap
+	fps 30
+}
+
+$sequence "IR_holster_2hand" {
+	"c_irifle_anims_2hand\IR_holster_2hand.smd"
+	activity "ACT_VM_HOLSTER_TWO_HANDED" 1
+	fadein 0.2
+	fadeout 0.2
+	node "Ready"
+	fps 30
+}
+
+$sequence "idletolow_2hand" {
+	"c_irifle_anims_2hand\idletolow_2hand.smd"
+	activity "ACT_VM_LOWERED_TO_IDLE_TWO_HANDED" 1
+	fadein 0.2
+	fadeout 0.2
+	transition "Ready" "Low"
+	fps 30
+}
+
+$sequence "lowtoidle_2hand" {
+	"c_irifle_anims_2hand\lowtoidle_2hand.smd"
+	activity "ACT_VM_IDLE_TO_LOWERED_TWO_HANDED" 1
+	fadein 0.2
+	fadeout 0.2
+	transition "Low" "Ready"
+	fps 30
+}
+
+$sequence "lowidle_2hand" {
+	"c_irifle_anims_2hand\lowidle_2hand.smd"
+	activity "ACT_VM_IDLE_LOWERED_TWO_HANDED" 1
+	fadein 0.2
+	fadeout 0.2
+	node "Low"
+	fps 30
+	loop
+}
+
+$sequence "shake_2hand" {
+	"c_irifle_anims_2hand\shake_2hand.smd"
+	activity "ACT_VM_FIDGET_TWO_HANDED" 1
 	fadein 0.2
 	fadeout 0.2
 	node "Fire"

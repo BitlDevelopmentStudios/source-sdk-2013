@@ -2609,6 +2609,66 @@ void CBaseCombatWeapon::MaintainIdealActivity( void )
 	SendWeaponAnim( m_IdealActivity );
 }
 
+// HACK. do this better.
+Activity CBaseCombatWeapon::GetTwoHandedActivityForActivity(Activity ideal)
+{
+	MDLCACHE_CRITICAL_SECTION();
+	Activity curIdeal = ideal;
+	switch (curIdeal)
+	{
+		case ACT_VM_IDLE:
+			curIdeal = ACT_VM_IDLE_TWO_HANDED;
+			break;
+		case ACT_VM_IDLE_EMPTY:
+			curIdeal = ACT_VM_IDLE_EMPTY_TWO_HANDED;
+			break;
+		case ACT_VM_PRIMARYATTACK:
+			curIdeal = ACT_VM_PRIMARYATTACK_TWO_HANDED;
+			break;
+		case ACT_VM_RECOIL1:
+			curIdeal = ACT_VM_RECOIL1_TWO_HANDED;
+			break;
+		case ACT_VM_RECOIL2:
+			curIdeal = ACT_VM_RECOIL2_TWO_HANDED;
+			break;
+		case ACT_VM_RECOIL3:
+			curIdeal = ACT_VM_RECOIL3_TWO_HANDED;
+			break;
+		case ACT_VM_DRYFIRE:
+			curIdeal = ACT_VM_DRYFIRE_TWO_HANDED;
+			break;
+		case ACT_VM_DRAW:
+			curIdeal = ACT_VM_DRAW_TWO_HANDED;
+			break;
+		case ACT_VM_DRAW_EMPTY:
+			curIdeal = ACT_VM_DRAW_EMPTY_TWO_HANDED;
+			break;
+		case ACT_VM_RELOAD:
+			curIdeal = ACT_VM_RELOAD_TWO_HANDED;
+			break;
+		case ACT_VM_HOLSTER:
+			curIdeal = ACT_VM_HOLSTER_TWO_HANDED;
+			break;
+		case ACT_VM_LOWERED_TO_IDLE:
+			curIdeal = ACT_VM_LOWERED_TO_IDLE_TWO_HANDED;
+			break;
+		case ACT_VM_IDLE_TO_LOWERED:
+			curIdeal = ACT_VM_IDLE_TO_LOWERED_TWO_HANDED;
+			break;
+		case ACT_VM_IDLE_LOWERED:
+			curIdeal = ACT_VM_IDLE_LOWERED_TWO_HANDED;
+			break;
+		case ACT_VM_SECONDARYATTACK:
+			curIdeal = ACT_VM_SECONDARYATTACK_TWO_HANDED;
+			break;
+		case ACT_VM_FIDGET:
+			curIdeal = ACT_VM_FIDGET_TWO_HANDED;
+			break;
+	}
+
+	return (Activity)SelectWeightedSequence(curIdeal);
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Sets the ideal activity for the weapon to be in, allowing for transitional animations inbetween
 // Input  : ideal - activity to end up at, ideally
@@ -2617,6 +2677,17 @@ bool CBaseCombatWeapon::SetIdealActivity( Activity ideal )
 {
 	MDLCACHE_CRITICAL_SECTION();
 	int	idealSequence = SelectWeightedSequence( ideal );
+
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
+
+	if (pPlayer && pPlayer->GetPlayerClass() > CLS_INVALID)
+	{
+		const CAnticitizen_FilePlayerClassInfo_t& info = pPlayer->GetPlayerClassInfo();
+		if (info.bTwoHandedWeaponAnims && (GetTwoHandedActivityForActivity(ideal) > -1))
+		{
+			idealSequence = GetTwoHandedActivityForActivity(ideal);
+		}
+	}
 
 	if ( idealSequence == -1 )
 		return false;
@@ -2875,6 +2946,9 @@ BEGIN_DATADESC( CBaseCombatWeapon )
 	DEFINE_FIELD( m_fMinRange2, FIELD_FLOAT ),
 	DEFINE_FIELD( m_fMaxRange1, FIELD_FLOAT ),
 	DEFINE_FIELD( m_fMaxRange2, FIELD_FLOAT ),
+
+	DEFINE_FIELD(m_bIsIronsighted, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_flIronsightedTime, FIELD_FLOAT),
 
 	DEFINE_FIELD( m_iPrimaryAmmoCount, FIELD_INTEGER ),
 	DEFINE_FIELD( m_iSecondaryAmmoCount, FIELD_INTEGER ),

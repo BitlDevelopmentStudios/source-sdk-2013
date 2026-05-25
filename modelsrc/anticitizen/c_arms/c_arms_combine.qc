@@ -21,7 +21,7 @@ $texturegroup "skinfamilies"
 {
 	{ "combinesoldiersheet"         }
 	{ "combinesoldiersheet_shotgun" }
-	{ "combine_elite" }
+	{ "combine_elite_giblimb" }
 	{ "combinesoldiersheet_prisonguard"         }
 }
 
