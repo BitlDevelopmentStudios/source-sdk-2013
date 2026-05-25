@@ -1,0 +1,21 @@
+//-----------------------------------------------------------------------------
+//	C_ARMS_INCLUDE.VPC
+//
+//	Project Script
+//-----------------------------------------------------------------------------
+
+$Configuration
+{
+	$Compiler
+	{
+		$PreprocessorDefinitions		"$BASE;C_ARMS"
+	}
+}
+
+$Project
+{
+	$Folder	"Source Files"
+	{
+		$File	"$SRCDIR\game\shared\handviewmodel_shared.cpp"
+	}
+}
