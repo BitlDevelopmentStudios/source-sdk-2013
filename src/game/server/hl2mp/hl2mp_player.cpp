@@ -202,7 +202,38 @@ void CHL2MP_Player::Precache( void )
 void CHL2MP_Player::GiveAllItems( void )
 {
 	EquipSuit();
-	GiveAllWeapons();
+
+	CBasePlayer::GiveAmmo(255, "Pistol");
+	CBasePlayer::GiveAmmo(255, "AR2");
+	CBasePlayer::GiveAmmo(5, "AR2AltFire");
+	CBasePlayer::GiveAmmo(255, "SMG1");
+	CBasePlayer::GiveAmmo(1, "smg1_grenade");
+	CBasePlayer::GiveAmmo(255, "Buckshot");
+	CBasePlayer::GiveAmmo(32, "357");
+	CBasePlayer::GiveAmmo(3, "rpg_round");
+	CBasePlayer::GiveAmmo(16, "XBowBolt");
+
+	CBasePlayer::GiveAmmo(1, "grenade");
+	CBasePlayer::GiveAmmo(2, "slam");
+
+	GiveNamedItem("weapon_crowbar");
+	GiveNamedItem("weapon_stunstick");
+	GiveNamedItem("weapon_pistol");
+	GiveNamedItem("weapon_357");
+
+	GiveNamedItem("weapon_smg1");
+	GiveNamedItem("weapon_ar2");
+
+	GiveNamedItem("weapon_shotgun");
+	GiveNamedItem("weapon_frag");
+
+	GiveNamedItem("weapon_crossbow");
+
+	GiveNamedItem("weapon_rpg");
+
+	GiveNamedItem("weapon_slam");
+
+	GiveNamedItem("weapon_physcannon");
 }
 
 void CHL2MP_Player::GiveAllWeapons(void)
@@ -234,6 +265,19 @@ void CHL2MP_Player::GiveAllWeapons(void)
 	GiveNamedItem("weapon_rpg");
 
 	GiveNamedItem("weapon_physcannon");
+
+	const char* szDefaultWeaponName = engine->GetClientConVarValue(engine->IndexOfEdict(edict()), "cl_defaultweapon");
+
+	CBaseCombatWeapon* pDefaultWeapon = Weapon_OwnsThisType(szDefaultWeaponName);
+
+	if (pDefaultWeapon)
+	{
+		Weapon_Switch(pDefaultWeapon);
+	}
+	else
+	{
+		Weapon_Switch(Weapon_OwnsThisType("weapon_physcannon"));
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -696,6 +740,12 @@ void CHL2MP_Player::LoadClass(int iClass)
 			if (pPlayerClassInfo.iManhacks > 0 || pPlayerClassInfo.iManhacks == -1)
 			{
 				CBasePlayer::GiveAmmo(pPlayerClassInfo.iManhacks, "Manhacks");
+			}
+
+			// switch to our primary instead of the last weapon we were given.
+			if (pPlayerClassInfo.szPrimaryWeapon[0])
+			{
+				Weapon_Switch(Weapon_OwnsThisType(pPlayerClassInfo.szPrimaryWeapon));
 			}
 
 			SetPreventWeaponPickup(true);
