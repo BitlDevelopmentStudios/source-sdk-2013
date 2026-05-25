@@ -2,7 +2,16 @@ Klow on the Combine Overwiki for the following SVG conversions of the following 
 - City 17 logo (Original version by BetaMaster)
 - Overwatch Soldier triangle symbol
 - Combine Claw logo
-- Overwatch Elite logo (also used for the Shotgun Soldier logo
+- Overwatch Elite logo (also used for the Shotgun Soldier logo.
+
+Facepunch Studios for the c_weapon HEV arms and animations.
+
+bossn00b for the true combine c_hands and metropolice c_hands.
+cblp_soñador for the hand texture.
+https://steamcommunity.com/sharedfiles/filedetails/?id=2860571852
+https://steamcommunity.com/sharedfiles/filedetails/?id=853079618
+
+2-handed pistol animations by xdshot: https://steamcommunity.com/sharedfiles/filedetails/?id=1644171575
 
 This mod uses the following articles: 
 https://web.archive.org/web/20170621064352/http://articles.thewavelength.net/702/
