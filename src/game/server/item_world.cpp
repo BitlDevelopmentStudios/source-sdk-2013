@@ -240,8 +240,8 @@ void CItem::ActivateWhenAtRest( float flTime /* = 0.5f */ )
 {
 	RemoveSolidFlags( FSOLID_TRIGGER );
 	m_bActivateWhenAtRest = true;
-	SetThink( &CItem::ComeToRest );
-	SetNextThink( gpGlobals->curtime + flTime );
+	// HL2 entities (e.g. item_item_crate) often use ActivateWhenAtRest() before spawn, which is overridden by FallThink() in MP
+	SetContextThink(&CItem::ComeToRest, gpGlobals->curtime + flTime, "ComeToRestThink");
 }
 
 
@@ -258,8 +258,7 @@ void CItem::OnEntityEvent( EntityEvent_t event, void *pEventData )
 		{
 			// Delay rest for a sec, to avoid changing collision 
 			// properties inside a collision callback.
-			SetThink( &CItem::ComeToRest );
-			SetNextThink( gpGlobals->curtime + 0.1f );
+			SetContextThink(&CItem::ComeToRest, gpGlobals->curtime + 0.1f, "ComeToRestThink");
 		}
 		break;
 	}
@@ -275,7 +274,7 @@ void CItem::ComeToRest( void )
 	{
 		m_bActivateWhenAtRest = false;
 		AddSolidFlags( FSOLID_TRIGGER );
-		SetThink( NULL );
+		SetContextThink(NULL, TICK_NEVER_THINK, "ComeToRestThink");
 	}
 }
 

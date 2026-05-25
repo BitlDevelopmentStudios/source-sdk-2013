@@ -26,7 +26,7 @@ LOOKING FOR THE OLD BDS BASE WITH QUIVER FORTRESS' SOURCE CODE? Go here: https:/
 - Supports Xbox 360 achievement notifications.
 
 ## Credits;
-The Mapbase team for their implementation of Tony Sergi's, Saul's, and SecobMod's code as well as fixes for aformentioned code.
+The Mapbase team for MP fixes as well as their implementation of Tony Sergi's, Saul's, and SecobMod's code as well as fixes for aformentioned code.
 The SecobMod implementation uses code from dutchmega's Collaborate mod (https://developer.valvesoftware.com/wiki/Collaborate)
 
 ## Setup:

@@ -10472,6 +10472,17 @@ CBaseEntity *CAI_BaseNPC::DropItem ( const char *pszItemName, Vector vecPos, QAn
 			pItem->ApplyLocalAngularVelocityImpulse( AngularImpulse( 0, random->RandomFloat( 0, 100 ), 0 ) );
 		}
 
+		// Fixes health vials, grenades, etc. respawning
+		if (pItem->IsCombatItem())
+		{
+			pItem->AddSpawnFlags(SF_NORESPAWN);
+		}
+		else if (pItem->IsBaseCombatWeapon())
+		{
+			// Adding SF_NORESPAWN directly to weapons causes them to be considered level-placed, which we don't want
+			pItem->MyCombatWeaponPointer()->Drop(vec3_origin);
+		}
+
 		return pItem;
 	}
 	else

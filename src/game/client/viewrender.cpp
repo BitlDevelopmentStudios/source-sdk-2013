@@ -53,6 +53,7 @@
 #include "clientmode_shared.h"
 #include "sourcevr/isourcevirtualreality.h"
 #include "client_virtualreality.h"
+#include "fmtstr.h"
 #ifdef TF_CLIENT_DLL
 #include "tf/c_tf_player.h"
 #endif
@@ -111,6 +112,7 @@ ConVar r_entityclips( "r_entityclips", "1" ); //FIXME: Nvidia drivers before 81.
 static ConVar r_drawopaqueworld( "r_drawopaqueworld", "1", FCVAR_CHEAT );
 static ConVar r_drawtranslucentworld( "r_drawtranslucentworld", "1", FCVAR_CHEAT );
 static ConVar r_3dsky( "r_3dsky","1", 0, "Enable the rendering of 3d sky boxes" );
+static ConVar r_3dsky_water("r_3dsky_water", "1", FCVAR_ARCHIVE, "Enable the rendering of 3d sky boxes in water");
 static ConVar r_skybox( "r_skybox","1", FCVAR_CHEAT, "Enable the rendering of sky boxes" );
 #ifdef TF_CLIENT_DLL
 ConVar r_drawviewmodel( "r_drawviewmodel","1", FCVAR_DONTRECORD );
@@ -120,6 +122,8 @@ ConVar r_drawviewmodel( "r_drawviewmodel","1", FCVAR_CHEAT );
 static ConVar r_drawtranslucentrenderables( "r_drawtranslucentrenderables", "1", FCVAR_CHEAT );
 static ConVar r_drawopaquerenderables( "r_drawopaquerenderables", "1", FCVAR_CHEAT );
 static ConVar r_threaded_renderables( "r_threaded_renderables", "0" );
+
+static ConVar r_skybox_use_new_renderer("r_skybox_use_new_renderer", "1", FCVAR_NONE, "Use game client's 2D SkyBox renderer");
 
 // FIXME: This is not static because we needed to turn it off for TF2 playtests
 ConVar r_DrawDetailProps( "r_DrawDetailProps", "1", FCVAR_NONE, "0=Off, 1=Normal, 2=Wireframe" );
@@ -2049,6 +2053,115 @@ void CViewRender::CleanupMain3DView( const CViewSetup &viewRender )
 	render->PopView( GetFrustum() );
 }
 
+//-----------------------------------------------------------------------------
+// Builds and draws the 2D SkyBox faces
+//-----------------------------------------------------------------------------
+CViewRender::skyface_t CViewRender::s_rgSkyFaces[k_ESkyFaceCount] =
+{
+	{ "LF", {-1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f }, { 0.f, 0.f, 1.f } },
+	{ "RT", { 1.f, 0.f, 0.f }, { 0.f,-1.f, 0.f }, { 0.f, 0.f, 1.f } },
+	{ "FT", { 0.f,-1.f, 0.f }, {-1.f, 0.f, 0.f }, { 0.f, 0.f, 1.f } },
+	{ "BK", { 0.f, 1.f, 0.f }, { 1.f, 0.f, 0.f }, { 0.f, 0.f, 1.f } },
+	{ "UP", { 0.f, 0.f, 1.f }, { 0.f,-1.f, 0.f }, {-1.f, 0.f, 0.f } },
+	{ "DN", { 0.f, 0.f,-1.f }, { 0.f,-1.f, 0.f }, { 1.f, 0.f, 0.f } },
+};
+
+bool CViewRender::BSetupSkyBox(const char* pszSkyName)
+{
+	bool bRetVal = true;
+	for (int iFace = k_ESkyFaceFirst; iFace <= k_ESkyFaceLast; iFace++)
+	{
+		auto& sf = s_rgSkyFaces[iFace];
+
+		sf.pMaterial.Init(CFmtStr("SkyBox/%s%s", pszSkyName, sf.pszPostfix), TEXTURE_GROUP_SKYBOX);
+		sf.nSamplingResolution = 256;
+
+		if (IsErrorMaterial(sf.pMaterial))
+		{
+			bRetVal = false; // Mark as failed, but try to get rest of the faces..
+			continue;
+		}
+
+		// Get at the texture and it's mapping dimensions, since IMaterial::GetMappingWidth/Height is busted here
+		bool bFound;
+		IMaterialVar* pBaseTextureVar = sf.pMaterial->FindVar("$BaseTexture", &bFound, false);
+		if (bFound)
+		{
+			ITexture* pTexture = NULL;
+			switch (pBaseTextureVar->GetType())
+			{
+			case MATERIAL_VAR_TYPE_STRING:
+				pTexture = g_pMaterialSystem->FindTexture(pBaseTextureVar->GetStringValue(), TEXTURE_GROUP_SKYBOX, false);
+				break;
+			case MATERIAL_VAR_TYPE_TEXTURE:
+				pTexture = pBaseTextureVar->GetTextureValue();
+				break;
+			default:
+				Assert(NULL);
+			}
+			if (pTexture)
+			{
+				sf.nSamplingResolution = Min(pTexture->GetMappingWidth(), pTexture->GetMappingHeight());
+			}
+		}
+	}
+	return bRetVal;
+}
+
+void CViewRender::DrawSkyBox(const CViewSetup& View, bool bNoHeightClip)
+{
+	CMatRenderContextPtr pRenderContext(g_pMaterialSystem);
+
+	MaterialHeightClipMode_t ePrevClipMode = pRenderContext->GetHeightClipMode();
+	if (bNoHeightClip)
+	{
+		pRenderContext->SetHeightClipMode(MATERIAL_HEIGHTCLIPMODE_DISABLE);
+	}
+
+	float flDist = View.zFar / 2.f;
+
+	// Draw a quad for each face of the sky around the camera
+	for (int iFace = k_ESkyFaceFirst; iFace <= k_ESkyFaceLast; iFace++)
+	{
+		auto& sf = s_rgSkyFaces[iFace];
+
+		Vector vecCenter = flDist * sf.vecNormal + View.origin;
+		Vector vecRight = flDist * sf.vecRight;
+		Vector vecUp = flDist * sf.vecUp;
+
+		float flMinUV = .5f / (float)sf.nSamplingResolution;
+		float flMaxUV = 1.f - flMinUV;
+
+		IMesh* pMesh = pRenderContext->GetDynamicMesh(true, NULL, NULL, sf.pMaterial);
+
+		CMeshBuilder MeshBuilder;
+		MeshBuilder.Begin(pMesh, MATERIAL_QUADS, 1);
+
+		MeshBuilder.Position3fv((vecCenter - vecRight + vecUp).Base());
+		MeshBuilder.TexCoord2f(0, flMinUV, flMinUV);
+		MeshBuilder.AdvanceVertexF< VTX_HAVEPOS, 1 >();
+
+		MeshBuilder.Position3fv((vecCenter + vecRight + vecUp).Base());
+		MeshBuilder.TexCoord2f(0, flMaxUV, flMinUV);
+		MeshBuilder.AdvanceVertexF< VTX_HAVEPOS, 1 >();
+
+		MeshBuilder.Position3fv((vecCenter + vecRight - vecUp).Base());
+		MeshBuilder.TexCoord2f(0, flMaxUV, flMaxUV);
+		MeshBuilder.AdvanceVertexF< VTX_HAVEPOS, 1 >();
+
+		MeshBuilder.Position3fv((vecCenter - vecRight - vecUp).Base());
+		MeshBuilder.TexCoord2f(0, flMinUV, flMaxUV);
+		MeshBuilder.AdvanceVertexF< VTX_HAVEPOS, 1 >();
+
+		MeshBuilder.End();
+		pMesh->Draw();
+	}
+
+	if (bNoHeightClip)
+	{
+		pRenderContext->SetHeightClipMode(ePrevClipMode);
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Queues up an overlay rendering
@@ -3742,11 +3855,46 @@ void CRendering3dView::DrawWorld( float waterZAdjust )
 		return;
 	}
 
-	unsigned long engineFlags = BuildEngineDrawWorldListFlags( m_DrawFlags );
+	unsigned long engineFlags;
+	if (r_skybox_use_new_renderer.GetBool())
+	{
+		if (m_DrawFlags & DF_DRAWSKYBOX)
+		{
+			// Hook up our own 2D sky draw routine
+			m_pMainView->DrawSkyBox((*this), !(m_DrawFlags & DF_CLIP_SKYBOX));
+		}
+
+		engineFlags = BuildEngineDrawWorldListFlags(m_DrawFlags & ~DF_DRAWSKYBOX);
+	}
+	else
+	{
+		engineFlags = BuildEngineDrawWorldListFlags(m_DrawFlags);
+	}
 
 	render->DrawWorldLists( m_pWorldRenderList, engineFlags, waterZAdjust );
 }
 
+void CRendering3dView::Draw3DSkybox()
+{
+	if (!(r_3dsky.GetBool() && r_3dsky_water.GetBool()))
+		return;
+
+	CMatRenderContextPtr pRenderContext(materials);
+	pRenderContext->SetHeightClipMode(MATERIAL_HEIGHTCLIPMODE_DISABLE);
+
+	CSkyboxView* pSkyView = new CSkyboxView(m_pMainView);
+
+	pRenderContext->OverrideDepthEnable(true, false);
+	SkyboxVisibility_t nSkyboxVisible = SKYBOX_NOT_VISIBLE;
+	if (pSkyView->Setup(*this, &m_ClearFlags, &nSkyboxVisible))
+		pSkyView->Draw();
+	SafeRelease(pSkyView);
+	pRenderContext->OverrideDepthEnable(false, false);
+
+	EnableWorldFog();
+	render->ViewSetupVis(m_pMainView->ShouldForceNoVis(), 1, &(m_pMainView->GetViewSetup()->origin));
+	pRenderContext->SetHeightClipMode(MATERIAL_HEIGHTCLIPMODE_RENDER_ABOVE_HEIGHT);
+}
 
 CMaterialReference g_material_WriteZ; //init'ed on by CViewRender::Init()
 
@@ -4849,7 +4997,8 @@ void CRendering3dView::SetFogVolumeState( const VisibleFogVolumeInfo_t &fogInfo,
 //-----------------------------------------------------------------------------
 SkyboxVisibility_t CSkyboxView::ComputeSkyboxVisibility()
 {
-	return engine->IsSkyboxVisibleFromPoint( origin );
+	// Use origin of main view (fixes issue where sometimes 3D sky dissapears in water)
+	return engine->IsSkyboxVisibleFromPoint(m_pMainView->GetViewSetup()->origin);
 }
 
 
@@ -4960,7 +5109,7 @@ void CSkyboxView::DrawInternal( view_id_t iSkyBoxViewID, bool bInvokePreAndPostR
 	// with this near plane.  If so, move it in a bit.  It's at 2.0 to give us more precision.  That means you 
 	// need to keep the eye position at least 2 * scale away from the geometry in the skybox
 	zNear = 2.0;
-	zFar = MAX_TRACE_LENGTH;
+	zFar = MAX_TRACE_LENGTH * 2; // Double up zFar to fix 3D skyboxes in water
 
 	// scale origin by sky scale
 	if ( m_pSky3dParams->scale > 0 )
@@ -5607,6 +5756,10 @@ void CBaseWorldView::DrawExecute( float waterHeight, view_id_t viewID, float wat
 
 	if ( m_DrawFlags & DF_DRAW_ENTITITES )
 	{
+		// Render 3D skybox in water reflection only when rendering entities
+		if (viewID == VIEW_REFLECTION)
+			Draw3DSkybox();
+
 		DrawWorld( waterZAdjust );
 		DrawOpaqueRenderables( DepthMode );
 

@@ -159,6 +159,7 @@ private:
 	// Input handlers
 	void InputEnable( inputdata_t &inputdata );
 	void InputDisable( inputdata_t &inputdata );
+	void InputSetPlayerFilter(inputdata_t& inputdata);
 
 	// Output handlers
 	COutputEvent	m_OnConditionsSatisfied;
@@ -184,6 +185,7 @@ private:
 		const char			*pszName;
 	};
 
+	static EvaluatorInfo_t gm_PlayerEvaluators[];
 	static EvaluatorInfo_t gm_Evaluators[];
 
 	//---------------------------------
@@ -243,6 +245,9 @@ private:
 
 	ThreeState_t	m_fActorInVehicle;
 	ThreeState_t	m_fPlayerInVehicle;
+
+	string_t				m_iszPlayerFilterName;
+	CHandle<CBaseFilter> 	m_hPlayerFilter;
 
 	CUtlVector< CAI_ScriptConditionsElement > m_ElementList;
 

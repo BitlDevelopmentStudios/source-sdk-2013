@@ -446,6 +446,9 @@ public:
 
 	int				m_nButtons;
 
+	int				m_afButtonDisabled;	// A mask of input flags that are cleared automatically
+	int				m_afButtonForced;	// These are forced onto the player's inputs
+
 	CUserCmd		*m_pCurrentCommand;
 
 	// Movement constraints

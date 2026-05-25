@@ -15,7 +15,9 @@ LINK_ENTITY_TO_CLASS( env_player_surface_trigger, CEnvPlayerSurfaceTrigger );
 
 BEGIN_DATADESC( CEnvPlayerSurfaceTrigger )
 	DEFINE_KEYFIELD( m_iTargetGameMaterial, FIELD_INTEGER, "gamematerial" ),
-	DEFINE_FIELD( m_iCurrentGameMaterial, FIELD_INTEGER ),
+	DEFINE_AUTO_ARRAY(m_iCurrentGameMaterial, FIELD_INTEGER),
+	DEFINE_AUTO_ARRAY(m_iLastGameMaterial, FIELD_INTEGER),
+	DEFINE_FIELD(m_nNumOnMaterial, FIELD_INTEGER),
 	DEFINE_FIELD( m_bDisabled, FIELD_BOOLEAN ),
 
 	DEFINE_THINKFUNC( UpdateMaterialThink ),
@@ -27,6 +29,10 @@ BEGIN_DATADESC( CEnvPlayerSurfaceTrigger )
 	// Outputs
 	DEFINE_OUTPUT(m_OnSurfaceChangedToTarget, "OnSurfaceChangedToTarget"),
 	DEFINE_OUTPUT(m_OnSurfaceChangedFromTarget, "OnSurfaceChangedFromTarget"),
+
+	// Used in MP
+	DEFINE_OUTPUT(m_OnSurfaceChangedToTargetAll, "OnSurfaceChangedToTargetAll"),
+	DEFINE_OUTPUT(m_OnSurfaceChangedFromTargetAll, "OnSurfaceChangedFromTargetAll"),
 END_DATADESC()
 
 // Global list of surface triggers
@@ -48,7 +54,12 @@ void CEnvPlayerSurfaceTrigger::Spawn( void )
 	SetSolid( SOLID_NONE );
 	SetMoveType( MOVETYPE_NONE );
 
-	m_iCurrentGameMaterial = 0;
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		m_iCurrentGameMaterial[i] = 0;
+		m_iLastGameMaterial[i] = 0;
+	}
+
 	m_bDisabled = false;
 
 	g_PlayerSurfaceTriggers.AddToTail( this );
@@ -90,15 +101,16 @@ void CEnvPlayerSurfaceTrigger::PlayerSurfaceChanged( CBasePlayer *pPlayer, char 
 		return;
 
 	// Fire the output if we've changed, but only if it involves the target material
-	if ( gameMaterial != (char)m_iCurrentGameMaterial &&
-	     ( gameMaterial == m_iTargetGameMaterial || m_iCurrentGameMaterial == m_iTargetGameMaterial ) )
+	int idx = pPlayer->entindex();
+	if (gameMaterial != (char)(m_iCurrentGameMaterial[idx]) &&
+		(gameMaterial == m_iTargetGameMaterial || m_iCurrentGameMaterial[idx] == m_iTargetGameMaterial))
 	{
-		DevMsg( 2, "Player changed material to %d (was %d)\n", gameMaterial, m_iCurrentGameMaterial );
+		DevMsg(2, "Player changed material to %d (was %d)\n", gameMaterial, m_iCurrentGameMaterial[idx]);
 
-		m_iCurrentGameMaterial = (int)gameMaterial;
+		m_iCurrentGameMaterial[idx] = (int)gameMaterial;
 
-		SetThink( &CEnvPlayerSurfaceTrigger::UpdateMaterialThink );
-		SetNextThink( gpGlobals->curtime );
+		SetThink(&CEnvPlayerSurfaceTrigger::UpdateMaterialThink);
+		SetNextThink(gpGlobals->curtime);
 	}
 }
 
@@ -108,13 +120,41 @@ void CEnvPlayerSurfaceTrigger::PlayerSurfaceChanged( CBasePlayer *pPlayer, char 
 //-----------------------------------------------------------------------------
 void CEnvPlayerSurfaceTrigger::UpdateMaterialThink( void )
 {
-	if ( m_iCurrentGameMaterial == m_iTargetGameMaterial )
+	CBasePlayer* pFirstPlayer = NULL;
+	int nNumOnMaterialLast = m_nNumOnMaterial;
+
+	for (int i = 0; i < gpGlobals->maxClients; i++)
 	{
-		m_OnSurfaceChangedToTarget.FireOutput( NULL, this );
+		CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+		if (!pFirstPlayer)
+			pFirstPlayer = pPlayer;
+
+		if (m_iCurrentGameMaterial[i] != m_iLastGameMaterial[i])
+		{
+			if (m_iCurrentGameMaterial[i] == m_iTargetGameMaterial)
+			{
+				m_OnSurfaceChangedToTarget.FireOutput(pPlayer, this);
+				m_nNumOnMaterial++;
+			}
+			else
+			{
+				m_OnSurfaceChangedFromTarget.FireOutput(pPlayer, this);
+
+				if (m_nNumOnMaterial > 0)
+					m_nNumOnMaterial--;
+			}
+		}
+
+		m_iLastGameMaterial[i] = m_iCurrentGameMaterial[i];
 	}
-	else 
+
+	if (nNumOnMaterialLast == 0 && m_nNumOnMaterial > 0)
 	{
-		m_OnSurfaceChangedFromTarget.FireOutput( NULL, this );
+		m_OnSurfaceChangedToTargetAll.FireOutput(pFirstPlayer, this);
+	}
+	else if (nNumOnMaterialLast > 0 && m_nNumOnMaterial == 0)
+	{
+		m_OnSurfaceChangedFromTargetAll.FireOutput(pFirstPlayer, this);
 	}
 }
 
@@ -124,6 +164,7 @@ void CEnvPlayerSurfaceTrigger::UpdateMaterialThink( void )
 void CEnvPlayerSurfaceTrigger::InputDisable( inputdata_t &inputdata )
 {
 	m_bDisabled = true;
+	m_nNumOnMaterial = 0;
 }
 
 //-----------------------------------------------------------------------------

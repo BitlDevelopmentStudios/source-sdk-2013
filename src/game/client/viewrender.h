@@ -223,6 +223,8 @@ protected:
 
 	void			DrawWorld( float waterZAdjust );
 
+	void			Draw3DSkybox();
+
 	// Draws all opaque/translucent renderables in leaves that were rendered
 	void			DrawOpaqueRenderables( ERenderDepthMode DepthMode );
 	void			DrawTranslucentRenderables( bool bInSkybox, bool bShadowDepth );
@@ -423,6 +425,10 @@ public:
 	{
 		m_UnderWaterOverlayMaterial.Init( pMaterial );
 	}
+
+	virtual bool	BSetupSkyBox(const char* pszSkyName);
+	virtual void	DrawSkyBox(const CViewSetup& View, bool bNoHeightClip);
+
 private:
 	int				m_BuildWorldListsNumber;
 
@@ -529,6 +535,31 @@ private:
 #if defined( REPLAY_ENABLED )
 	CReplayScreenshotTaker	*m_pReplayScreenshotTaker;
 #endif
+
+	enum ESkyFace
+	{
+		k_ESkyFaceLeft = 0,
+		k_ESkyFaceRight,
+		k_ESkyFaceFront,
+		k_ESkyFaceBack,
+		k_ESkyFaceUp,
+		k_ESkyFaceDown,
+
+		k_ESkyFaceCount,
+
+		k_ESkyFaceFirst = k_ESkyFaceLeft,
+		k_ESkyFaceLast = k_ESkyFaceDown
+	};
+
+	struct skyface_t
+	{
+		const char* pszPostfix;					// Postfix of the texture filename
+		const Vector		vecNormal, vecRight, vecUp; // Face direction and local tangent axes for building quads
+		CMaterialReference	pMaterial;					// Material associated with this face
+		int					nSamplingResolution;		// Used for UV clamping, smallest of texture width/height
+	};
+
+	static skyface_t		s_rgSkyFaces[k_ESkyFaceCount];
 };
 
 #endif // VIEWRENDER_H
