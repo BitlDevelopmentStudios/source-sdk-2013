@@ -16,6 +16,7 @@ PlayerClassDatafile
 	
 	"Health"			"50"
 	"CanADSOfWeapons"	"1"
+	"TwoHandedWeaponAnims"	"1"
 	
 	"ADSSpeed"			"72"
 	"Speed"				"215"
