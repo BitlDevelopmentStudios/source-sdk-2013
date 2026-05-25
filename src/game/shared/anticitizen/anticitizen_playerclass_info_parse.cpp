@@ -21,7 +21,8 @@ CAnticitizen_FilePlayerClassInfo_t::CAnticitizen_FilePlayerClassInfo_t()
 	bSPMovement = false;
 	bSuit = false;
 	bADSWeapons = false;
-	bNoFiringWhileSprinting = false;
+	m_szCArmModel[0] = 0;
+	iCArmSkin = 0;
 	iClassType = CLS_TYPE_NONE;
 	flNormSpeed = DEFAULT_NORM_SPEED;
 	flSprintSpeed = DEFAULT_SPRINT_SPEED;
@@ -34,13 +35,16 @@ void CAnticitizen_FilePlayerClassInfo_t::Parse(KeyValues* pKeyValuesData, const 
 {
 	BaseClass::Parse(pKeyValuesData, szClassName);
 
+	Q_strncpy(m_szCArmModel, pKeyValuesData->GetString("CArmsModel", "!! Missing CArmsModel on Player Class"), MAX_PLAYERCLASS_NAME_LENGTH);
+	iCArmSkin = pKeyValuesData->GetInt("CArmsSkin", 0);
+
 	iHealth = pKeyValuesData->GetInt("Health", 100);
 	iClassType = pKeyValuesData->GetInt("ClassType", CLS_TYPE_NONE);
 	iSentenceVoice = pKeyValuesData->GetInt("VoiceMode", VOICE_TYPE_NONE);
 	bAllWeapons = pKeyValuesData->GetBool("AllWeapons");
 	bSPMovement = pKeyValuesData->GetBool("SPMovement");
 	bSuit = pKeyValuesData->GetBool("HEVSuit");
-	bNoFiringWhileSprinting = pKeyValuesData->GetBool("NoFiringWhileSprinting");
+	bTwoHandedWeaponAnims = pKeyValuesData->GetBool("TwoHandedWeaponAnims");
 
 	iGrenades = pKeyValuesData->GetInt("Grenades", 0);
 	iCombineBalls = pKeyValuesData->GetInt("CombineBalls", 0);

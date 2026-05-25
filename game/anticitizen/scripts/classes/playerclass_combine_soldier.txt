@@ -3,6 +3,7 @@ PlayerClassDatafile
 	// FilePlayerClassInfo_t members
 	"printname"			"#anticitizen_class_overwatchsoldier"
 	"playermodel"		"models/combine_soldier.mdl"
+	"CArmsModel"		"models/weapons/c_arms_combine.mdl"
 	"selectcmd"			"class_overwatchsoldier"
 
 	// CAnticitizen_FilePlayerClassInfo_t members

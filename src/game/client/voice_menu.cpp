@@ -97,8 +97,6 @@ static void OpenVoiceMenu_1( void )
 	{
 		if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
 		{
-			const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = pPlayer->GetPlayerClassInfo();
-
 			OpenVoiceMenu(1);
 		}
 	}

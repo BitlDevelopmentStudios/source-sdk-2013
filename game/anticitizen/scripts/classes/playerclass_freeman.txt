@@ -3,6 +3,7 @@ PlayerClassDatafile
 	// FilePlayerClassInfo_t members
 	"printname"			"#anticitizen_class_freeman"
 	"playermodel"		"models/gordon/gordon.mdl"
+	"CArmsModel"		"models/weapons/c_arms_hev.mdl"
 	"selectcmd"			"class_freeman"
 
 	// CAnticitizen_FilePlayerClassInfo_t members

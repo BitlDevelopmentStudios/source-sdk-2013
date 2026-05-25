@@ -113,52 +113,6 @@ bool CBaseHL2MPCombatWeapon::Ready( void )
 	return true;
 }
 
-void CBaseHL2MPCombatWeapon::ItemPostFrame(void)
-{
-	CHL2MP_Player* pOwner = assert_cast<CHL2MP_Player*>(GetOwner());
-	if (!pOwner)
-		return;
-
-	if (pOwner->GetPlayerClass() > CLS_INVALID)
-	{
-		const CAnticitizen_FilePlayerClassInfo_t& info = pOwner->GetPlayerClassInfo();
-
-		if (info.bNoFiringWhileSprinting)
-		{
-			// don't lower the weapon if the weapon is exhaustable.
-			if (!(GetWpnData().iFlags & ITEM_FLAG_EXHAUSTIBLE))
-			{
-				if (!m_bLowered && (pOwner->m_nButtons & IN_SPEED))
-				{
-					m_bLowered = true;
-					SendWeaponAnim(ACT_VM_IDLE_LOWERED);
-					m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
-					m_flNextSecondaryAttack = m_flNextPrimaryAttack;
-				}
-				else if (m_bLowered && !(pOwner->m_nButtons & IN_SPEED))
-				{
-					m_bLowered = false;
-					SendWeaponAnim(ACT_VM_IDLE);
-					m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
-					m_flNextSecondaryAttack = m_flNextPrimaryAttack;
-				}
-
-				if (m_bLowered)
-				{
-					if (gpGlobals->curtime > m_flNextPrimaryAttack)
-					{
-						SendWeaponAnim(ACT_VM_IDLE_LOWERED);
-						m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
-						m_flNextSecondaryAttack = m_flNextPrimaryAttack;
-					}
-				}
-			}
-		}
-	}
-
-	BaseClass::ItemPostFrame();
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Output : Returns true on success, false on failure.

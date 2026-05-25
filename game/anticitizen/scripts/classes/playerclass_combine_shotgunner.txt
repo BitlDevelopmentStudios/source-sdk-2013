@@ -3,6 +3,8 @@ PlayerClassDatafile
 	// FilePlayerClassInfo_t members
 	"printname"			"#anticitizen_class_overwatchshotgunner"
 	"playermodel"		"models/combine_soldier_shotgunner.mdl"
+	"CArmsModel"		"models/weapons/c_arms_combine.mdl"
+	"CArmsSkin"			"1"
 	"selectcmd"			"class_overwatchshotgunner"
 
 	// CAnticitizen_FilePlayerClassInfo_t members

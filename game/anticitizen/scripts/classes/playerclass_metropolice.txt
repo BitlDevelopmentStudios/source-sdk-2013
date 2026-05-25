@@ -3,6 +3,7 @@ PlayerClassDatafile
 	// FilePlayerClassInfo_t members
 	"printname"			"#anticitizen_class_civilprotection"
 	"playermodel"		"models/police.mdl"
+	"CArmsModel"		"models/weapons/c_arms_police.mdl"
 	"selectcmd"			"class_civilprotection"
 
 	// CAnticitizen_FilePlayerClassInfo_t members
@@ -17,6 +18,7 @@ PlayerClassDatafile
 	
 	"Health"			"40"
 	"CanADSOfWeapons"	"1"
+	"TwoHandedWeaponAnims"	"1"
 	
 	"ADSSpeed"			"58"
 	"Speed"				"184"

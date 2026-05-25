@@ -69,6 +69,8 @@ public:
 
 public:
 	// Class properties
+	char					m_szCArmModel[MAX_PLAYERCLASS_NAME_LENGTH];
+	int						iCArmSkin;
 
 	int						iHealth;
 	int						iSuitArmor;
@@ -84,7 +86,8 @@ public:
 	bool					bSPMovement;
 	bool					bSuit;
 	bool					bADSWeapons;
-	bool					bNoFiringWhileSprinting;
+	// HACK: only for the pistol??
+	bool					bTwoHandedWeaponAnims;
 
 	float					flNormSpeed;
 	float					flSprintSpeed;
