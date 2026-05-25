@@ -257,6 +257,11 @@ END_RECV_TABLE()
 		RecvPropInt			( RECVINFO( m_nWaterLevel ) ),
 		RecvPropFloat		( RECVINFO( m_flLaggedMovementValue )),
 
+		// These are transmitted so that prediction is aware of what buttons are disabled
+		// (e.g. weapons don't fire when +attack is disabled)
+		RecvPropInt			(RECVINFO(m_afButtonDisabled)),
+		RecvPropInt			(RECVINFO(m_afButtonForced)),
+
 	END_RECV_TABLE()
 
 	

@@ -894,6 +894,10 @@ void CPrediction::RunCommand( C_BasePlayer *player, CUserCmd *ucmd, IMoveHelper 
 	gpGlobals->curtime		= player->m_nTickBase * TICK_INTERVAL;
 	gpGlobals->frametime	= m_bEnginePaused ? 0 : TICK_INTERVAL;
 
+	// Add and subtract buttons we're forcing on the player
+	ucmd->buttons |= player->m_afButtonForced;
+	ucmd->buttons &= ~player->m_afButtonDisabled;
+
 	g_pGameMovement->StartTrackPredictionErrors( player );
 
 // TODO
