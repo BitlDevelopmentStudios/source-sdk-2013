@@ -1,3 +1,5 @@
+Taito for various assets/animations from Half-Life 2 Survivor Ver 2.0, such as the manhack weapon model.
+
 Klow on the Combine Overwiki for the following SVG conversions of the following logos:
 - City 17 logo (Original version by BetaMaster)
 - Overwatch Soldier triangle symbol
