@@ -464,11 +464,14 @@ void CHL2MP_Player::PostThink( void )
 				if (m_hackReloadTimer.HasElapsedSinceStart())
 				{
 					// Just load the clip with no animations
+					SetBodygroup(1, 1);
 					CBasePlayer::GiveAmmo(1, "Manhacks");
 					m_hackReloadTimer.Invalidate();
 				}
 				else
 				{
+					SetBodygroup(1, 0);
+
 					if (!m_hackReloadTimer.HasStarted())
 					{
 						m_hackReloadTimer.Start(sk_resource_regen_time.GetFloat());
@@ -722,7 +725,7 @@ void CHL2MP_Player::LoadClass(int iClass)
 				GiveNamedItem(pPlayerClassInfo.szMeleeWeapon);
 			}
 
-			if (pPlayerClassInfo.iGrenades > 0 || pPlayerClassInfo.iGrenades == -1)
+			if (pPlayerClassInfo.iGrenades == -1 || pPlayerClassInfo.iGrenades > 0)
 			{
 				GiveNamedItem("weapon_frag");
 
@@ -732,14 +735,20 @@ void CHL2MP_Player::LoadClass(int iClass)
 				}
 			}
 
-			if (pPlayerClassInfo.iCombineBalls > 0 || pPlayerClassInfo.iCombineBalls == -1)
+			if (pPlayerClassInfo.iCombineBalls == -1 || pPlayerClassInfo.iCombineBalls > 0)
 			{
 				CBasePlayer::GiveAmmo(pPlayerClassInfo.iCombineBalls, "AR2AltFire");
 			}
 
-			if (pPlayerClassInfo.iManhacks > 0 || pPlayerClassInfo.iManhacks == -1)
+			if (pPlayerClassInfo.iManhacks == -1 || pPlayerClassInfo.iManhacks > 0)
 			{
-				CBasePlayer::GiveAmmo(pPlayerClassInfo.iManhacks, "Manhacks");
+				SetBodygroup(1, 1);
+				GiveNamedItem("weapon_manhack");
+
+				if (pPlayerClassInfo.iManhacks > 1)
+				{
+					CBasePlayer::GiveAmmo(pPlayerClassInfo.iManhacks, "Manhacks");
+				}
 			}
 
 			// switch to our primary instead of the last weapon we were given.

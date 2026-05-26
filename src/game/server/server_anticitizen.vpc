@@ -321,6 +321,10 @@ $Project "Server (ANTICITIZEN)"
 			$File	"$SRCDIR\game\shared\playerclass_info_parse.h"
 			$File	"$SRCDIR\game\shared\anticitizen\anticitizen_playerclass_info_parse.cpp"
 			$File	"$SRCDIR\game\shared\anticitizen\anticitizen_playerclass_info_parse.h"
+			$Folder	"Weapons"
+			{
+				$File	"$SRCDIR\game\shared\anticitizen\weapon_manhack.cpp"
+			}
 		}
 
 		$Folder	"HL2MP"

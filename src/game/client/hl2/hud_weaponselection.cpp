@@ -21,6 +21,9 @@
 
 #include "vgui/ILocalize.h"
 
+#include "hl2mp_player_shared.h"
+#include "c_hl2mp_player.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -683,8 +686,18 @@ void CHudWeaponSelection::Paint()
 						C_BaseCombatWeapon *pWeapon = GetWeaponInSlot( i, slotpos );
 						if ( !pWeapon )
 						{
-							if ( !hud_showemptyweaponslots.GetBool() )
+							CHL2MP_Player* pPlayer = ToHL2MPPlayer(C_BasePlayer::GetLocalPlayer());
+
+							if (pPlayer && pPlayer->GetPlayerClass() == CLS_FREEMAN)
+							{
+								if (!hud_showemptyweaponslots.GetBool())
+									continue;
+							}
+							else
+							{
 								continue;
+							}
+							
 							DrawBox( xpos, ypos, largeBoxWide, largeBoxTall, m_EmptyBoxColor, m_flAlphaOverride, bDrawBucketNumber ? i + 1 : -1 );
 						}
 						else

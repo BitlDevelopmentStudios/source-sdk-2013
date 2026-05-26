@@ -55,6 +55,8 @@
 #include "portal_player.h"
 #endif // PORTAL
 
+#include "hl2mp_player.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -2640,10 +2642,17 @@ int CHL2_Player::GiveAmmo( int nCount, int nAmmoIndex, bool bSuppressSound)
 	if (nAmmoIndex < 0)
 		return 0;
 
+	// in anticitizen one, don't autoswitch back to grenades.
 	bool bCheckAutoSwitch = false;
-	if (!HasAnyAmmoOfType(nAmmoIndex))
+
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(this);
+
+	if (pPlayer && pPlayer->GetPlayerClass() == CLS_FREEMAN)
 	{
-		bCheckAutoSwitch = true;
+		if (!HasAnyAmmoOfType(nAmmoIndex))
+		{
+			bCheckAutoSwitch = true;
+		}
 	}
 
 	int nAdd = BaseClass::GiveAmmo(nCount, nAmmoIndex, bSuppressSound);
