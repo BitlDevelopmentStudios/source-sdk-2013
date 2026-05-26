@@ -51,8 +51,6 @@ bool IsTeamName( const char *string )
 	return false;
 }
 
-
-
 //-----------------------------------------------------------------------------------------------------
 int Bot_GetTeamByName( const char *string )
 {
@@ -69,6 +67,52 @@ int Bot_GetTeamByName( const char *string )
 	return iTeam;
 }
 
+//-----------------------------------------------------------------------------------------------------
+bool IsClassName(const char* string)
+{
+	if (!stricmp(string, "police"))
+	{
+		return true;
+	}
+	else if (!stricmp(string, "soldier"))
+	{
+		return true;
+	}
+	else if (!stricmp(string, "shotgunner"))
+	{
+		return true;
+	}
+	else if (!stricmp(string, "elite"))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------------
+int Bot_GetClassByName(const char* string)
+{
+	int iTeam = CLS_INVALID;
+	if (!stricmp(string, "police"))
+	{
+		iTeam = CLS_METROPOLICE;
+	}
+	else if (!stricmp(string, "soldier"))
+	{
+		iTeam = CLS_COMBINE_SOLDIER;
+	}
+	else if (!stricmp(string, "shotgunner"))
+	{
+		iTeam = CLS_COMBINE_SHOTGUNNER;
+	}
+	else if (!stricmp(string, "elite"))
+	{
+		iTeam = CLS_COMBINE_ELITE;
+	}
+
+	return iTeam;
+}
 
 //-----------------------------------------------------------------------------------------------------
 CHL2MPBot::DifficultyType StringToDifficultyLevel( const char *string )
@@ -223,7 +267,7 @@ const char *GetRandomBotName( void )
 
 
 //-----------------------------------------------------------------------------------------------------
-void CreateBotName( int iTeam, CHL2MPBot::DifficultyType skill, char* pBuffer, int iBufferSize )
+void CreateBotName( CHL2MPBot::DifficultyType skill, char* pBuffer, int iBufferSize )
 {
 	const char *pBotName = GetRandomBotName();
 	const char* pFriendlyOrEnemyTitle = "";
@@ -256,7 +300,7 @@ CON_COMMAND_F( hl2mp_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 		int nArgAsInteger = atoi( args.Arg(i) );
 
 		// each argument could be a classname, a team, a difficulty level, a count, or a name
-		if ( IsTeamName( args.Arg(i) ) )
+		if ( IsClassName( args.Arg(i) ) )
 		{
 			teamname = args.Arg(i);
 		}
@@ -283,16 +327,6 @@ CON_COMMAND_F( hl2mp_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 		}
 	}
 
-	int iTeam = Bot_GetTeamByName( teamname );
-
-	if ( iTeam == TEAM_UNASSIGNED )
-	{
-		CTeam* pRebels = GetGlobalTeam( TEAM_FREEMAN );
-		CTeam* pCombine = GetGlobalTeam( TEAM_COMBINE );
-
-		iTeam = pRebels->GetNumPlayers() < pCombine->GetNumPlayers() ? TEAM_FREEMAN : TEAM_COMBINE;
-	}
-
 	char name[256];
 	int iNumAdded = 0;
 	for( i=0; i<botCount; ++i )
@@ -302,7 +336,7 @@ CON_COMMAND_F( hl2mp_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 
 		if ( !pszBotNameViaArg )
 		{
-			CreateBotName( iTeam, skill, name, sizeof(name) );
+			CreateBotName( skill, name, sizeof(name) );
 			pszBotName = name;
 		}
 		else
@@ -330,23 +364,18 @@ CON_COMMAND_F( hl2mp_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 				pBot->SetAttribute( CHL2MPBot::PROP_HATER );
 			}
 
-			const char *pszModel = "";
-			if ( iTeam == TEAM_UNASSIGNED )
-			{
-				pszModel = g_ppszRandomModels[ RandomInt( 0, ARRAYSIZE( g_ppszRandomModels ) ) ];
-			}
-			else if ( iTeam == TEAM_COMBINE )
-			{
-				pszModel = g_ppszRandomCombineModels[RandomInt( 0, ARRAYSIZE( g_ppszRandomCombineModels ) )];
-			}
-			else
-			{
-				pszModel = g_ppszRandomCitizenModels[RandomInt( 0, ARRAYSIZE( g_ppszRandomCitizenModels ) )];
-			}
-			engine->SetFakeClientConVarValue( pBot->edict(), "cl_playermodel", pszModel );
 			engine->SetFakeClientConVarValue( pBot->edict(), "name", name );
-			pBot->HandleCommand_JoinTeam( iTeam );
-			pBot->ChangeTeam( iTeam );
+
+			int iClass = i;
+
+			if (iClass >= CLS_LAST_COMBINE_CLASS)
+			{
+				random->SetSeed((int)gpGlobals->curtime);
+				iClass = iClass = random->RandomInt(CLS_FIRST_COMBINE_CLASS, CLS_LAST_COMBINE_CLASS);
+			}
+
+			pBot->HandleCommand_JoinClass(iClass);
+			// team is chosen by the game.....
 
 			pBot->SetDifficulty( skill );
 
@@ -375,21 +404,13 @@ CON_COMMAND_F( hl2mp_bot_kick, "Remove a HL2MPBot by name, or all bots (\"all\")
 	}
 
 	bool bMoveToSpectatorTeam = false;
-	int iTeam = TEAM_UNASSIGNED;
+	int iTeam = TEAM_ANY;
 	int i;
 	const char *pPlayerName = "";
 	for( i=1; i<args.ArgC(); ++i )
 	{
 		// each argument could be a classname, a team, or a count
-		if ( FStrEq( args.Arg(i), "freeman" ) )
-		{
-			iTeam = TEAM_FREEMAN;
-		}
-		else if ( FStrEq( args.Arg(i), "combine" ) )
-		{
-			iTeam = TEAM_COMBINE;
-		}
-		else if ( FStrEq( args.Arg(i), "all" ) )
+		if ( FStrEq( args.Arg(i), "all" ) )
 		{
 			iTeam = TEAM_ANY;
 		}
@@ -454,21 +475,13 @@ CON_COMMAND_F( hl2mp_bot_kill, "Kill a HL2MPBot by name, or all bots (\"all\")."
 		return;
 	}
 
-	int iTeam = TEAM_UNASSIGNED;
+	int iTeam = TEAM_ANY;
 	int i;
 	const char *pPlayerName = "";
 	for( i=1; i<args.ArgC(); ++i )
 	{
 		// each argument could be a classname, a team, or a count
-		if ( FStrEq( args.Arg(i), "freeman" ) )
-		{
-			iTeam = TEAM_FREEMAN;
-		}
-		else if ( FStrEq( args.Arg(i), "combine" ) )
-		{
-			iTeam = TEAM_COMBINE;
-		}
-		else if ( FStrEq( args.Arg(i), "all" ) )
+		if ( FStrEq( args.Arg(i), "all" ) )
 		{
 			iTeam = TEAM_ANY;
 		}
@@ -1510,6 +1523,10 @@ void CHL2MPBot::EquipBestWeaponForThreat( const CKnownEntity *threat )
 	if ( !pLongRange ) pLongRange = Weapon_OwnsThisType( "weapon_rpg" );
 	if ( !pLongRange ) pLongRange = Weapon_OwnsThisType( "weapon_crossbow" );
 	if ( !pLongRange ) pLongRange = Weapon_OwnsThisType( "weapon_357" );
+	//this means that bots will consider grenades/manhacks as long range weapons.
+	//this is dumb but it allows bots to use grenades.
+	if (!pLongRange) pLongRange = Weapon_OwnsThisType("weapon_frag");
+	if (!pLongRange) pLongRange = Weapon_OwnsThisType("weapon_manhack");
 
 	CBaseCombatWeapon* pMachineGun = NULL;
 	if ( !pMachineGun ) pMachineGun = Weapon_OwnsThisType( "weapon_ar2" );
@@ -1739,7 +1756,8 @@ bool CHL2MPBot::IsHitScanWeapon( CBaseHL2MPCombatWeapon *weapon ) const
 			 FClassnameIs( weapon, "weapon_crowbar" ) ||
 			 FClassnameIs( weapon, "weapon_stunstick" ) ||
 			 FClassnameIs( weapon, "weapon_crossbow" ) ||
-			 FClassnameIs( weapon, "weapon_physcannon" ) )
+			 FClassnameIs( weapon, "weapon_physcannon" ) ||
+			 FClassnameIs(weapon, "weapon_manhack"))
 		{
 			return false;
 		}
@@ -1813,7 +1831,8 @@ bool CHL2MPBot::IsBarrageAndReloadWeapon( CBaseHL2MPCombatWeapon *weapon ) const
 	{
 		if ( FClassnameIs( weapon, "weapon_frag" ) ||
 			 FClassnameIs( weapon, "weapon_crossbow" ) ||
-			 FClassnameIs( weapon, "weapon_shotgun" ) )
+			 FClassnameIs( weapon, "weapon_shotgun" ) || 
+			 FClassnameIs(weapon, "weapon_manhack") )
 		{
 			return true;
 		}

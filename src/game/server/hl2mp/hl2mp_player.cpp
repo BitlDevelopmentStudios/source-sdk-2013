@@ -737,7 +737,14 @@ void CHL2MP_Player::LoadClass(int iClass)
 
 			if (pPlayerClassInfo.iCombineBalls == -1 || pPlayerClassInfo.iCombineBalls > 0)
 			{
-				CBasePlayer::GiveAmmo(pPlayerClassInfo.iCombineBalls, "AR2AltFire");
+				if (pPlayerClassInfo.iGrenades > 1)
+				{
+					CBasePlayer::GiveAmmo(pPlayerClassInfo.iCombineBalls, "AR2AltFire");
+				}
+				else if (pPlayerClassInfo.iCombineBalls == -1)
+				{
+					CBasePlayer::GiveAmmo(1, "AR2AltFire");
+				}
 			}
 
 			if (pPlayerClassInfo.iManhacks == -1 || pPlayerClassInfo.iManhacks > 0)

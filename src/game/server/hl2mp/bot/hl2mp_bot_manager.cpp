@@ -25,7 +25,7 @@ ConVar hl2mp_bot_melee_only( "hl2mp_bot_melee_only", "0", FCVAR_GAMEDLL, "If non
 ConVar hl2mp_bot_gravgun_only( "hl2mp_bot_gravgun_only", "0", FCVAR_GAMEDLL, "If nonzero, HL2MPBots will only use gravity gun weapon" );
 
 extern const char *GetRandomBotName( void );
-extern void CreateBotName( int iTeam, CHL2MPBot::DifficultyType skill, char* pBuffer, int iBufferSize );
+extern void CreateBotName( CHL2MPBot::DifficultyType skill, char* pBuffer, int iBufferSize );
 
 static bool UTIL_KickBotFromTeam( int kickTeam )
 {
@@ -305,86 +305,32 @@ void CHL2MPBotManager::MaintainBotQuota()
 		{
 			pBot->SetAttribute( CHL2MPBot::QUOTA_MANANGED );
 
-			int iTeam = TEAM_UNASSIGNED;
+			int iClass = CLS_INVALID;
 
-			if ( iTeam == TEAM_UNASSIGNED )
+			if (iClass == CLS_INVALID)
 			{
-				CTeam* pRebels = GetGlobalTeam( TEAM_FREEMAN );
-				CTeam* pCombine = GetGlobalTeam( TEAM_COMBINE );
-
-				iTeam = pRebels->GetNumPlayers() < pCombine->GetNumPlayers() ? TEAM_FREEMAN : TEAM_COMBINE;
-			}
-
-			const char* pszModel = "";
-			if ( iTeam == TEAM_UNASSIGNED )
-			{
-				pszModel = g_ppszRandomModels[RandomInt( 0, ARRAYSIZE( g_ppszRandomModels ) )];
-			}
-			else if ( iTeam == TEAM_COMBINE )
-			{
-				pszModel = g_ppszRandomCombineModels[RandomInt( 0, ARRAYSIZE( g_ppszRandomCombineModels ) )];
-			}
-			else
-			{
-				pszModel = g_ppszRandomCitizenModels[RandomInt( 0, ARRAYSIZE( g_ppszRandomCitizenModels ) )];
+				random->SetSeed((int)gpGlobals->curtime);
+				iClass = random->RandomInt(CLS_FIRST_COMBINE_CLASS, CLS_LAST_COMBINE_CLASS);
 			}
 
 			// give the bot a proper name
 			char name[256];
 			CHL2MPBot::DifficultyType skill = pBot->GetDifficulty();
-			CreateBotName( pBot->GetTeamNumber(), skill, name, sizeof( name ) );
-			engine->SetFakeClientConVarValue( pBot->edict(), "cl_playermodel", pszModel );
+			CreateBotName( skill, name, sizeof( name ) );
 			engine->SetFakeClientConVarValue( pBot->edict(), "name", name );
-			pBot->HandleCommand_JoinTeam( iTeam );
-			pBot->ChangeTeam( iTeam );
+			pBot->HandleCommand_JoinClass(iClass);
+			// team is chosen by the game.....
 		}
 	}
 	else if ( desiredBotCount < nHL2MPBotsOnGameTeams )
 	{
 		// kick a bot to maintain quota
 		
-		// first remove any unassigned bots
-		if ( UTIL_KickBotFromTeam( TEAM_UNASSIGNED ) )
+		// attempt to kick a bot from the given team. keep the bot on the freeman team on the freeman team.
+		if ( UTIL_KickBotFromTeam( TEAM_COMBINE ) )
 			return;
-
-		int kickTeam;
-
-		CTeam *pRebels = GetGlobalTeam( TEAM_FREEMAN );
-		CTeam *pCombine = GetGlobalTeam( TEAM_COMBINE );
-
-		// remove from the team that has more players
-		if ( pCombine->GetNumPlayers() > pRebels->GetNumPlayers() )
-		{
-			kickTeam = TEAM_COMBINE;
-		}
-		else if ( pCombine->GetNumPlayers() < pRebels->GetNumPlayers() )
-		{
-			kickTeam = TEAM_FREEMAN;
-		}
-		// remove from the team that's winning
-		else if ( pCombine->GetScore() > pRebels->GetScore() )
-		{
-			kickTeam = TEAM_COMBINE;
-		}
-		else if ( pCombine->GetScore() < pRebels->GetScore() )
-		{
-			kickTeam = TEAM_FREEMAN;
-		}
-		else
-		{
-			// teams and scores are equal, pick a team at random
-			kickTeam = (RandomInt( 0, 1 ) == 0) ? TEAM_COMBINE : TEAM_FREEMAN;
-		}
-
-		// attempt to kick a bot from the given team
-		if ( UTIL_KickBotFromTeam( kickTeam ) )
-			return;
-
-		// if there were no bots on the team, kick a bot from the other team
-		UTIL_KickBotFromTeam( kickTeam == TEAM_COMBINE ? TEAM_FREEMAN : TEAM_COMBINE );
 	}
 }
-
 
 //----------------------------------------------------------------------------------------------------------------
 bool CHL2MPBotManager::IsAllBotTeam( int iTeam )

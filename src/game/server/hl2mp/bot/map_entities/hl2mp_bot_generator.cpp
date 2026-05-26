@@ -14,7 +14,7 @@
 extern ConVar hl2mp_bot_prefix_name_with_difficulty;
 extern ConVar hl2mp_bot_difficulty;
 
-extern void CreateBotName( int iTeam, CHL2MPBot::DifficultyType skill, char* pBuffer, int iBufferSize );
+extern void CreateBotName( CHL2MPBot::DifficultyType skill, char* pBuffer, int iBufferSize );
 
 //------------------------------------------------------------------------------
 
@@ -277,7 +277,7 @@ void CHL2MPBotGenerator::SpawnBot( void )
 	CHL2MPBot *bot = TheHL2MPBots().GetAvailableBotFromPool();
 	if ( bot == NULL )
 	{
-		CreateBotName( TEAM_UNASSIGNED, (CHL2MPBot::DifficultyType)m_difficulty, name, sizeof(name) );
+		CreateBotName( (CHL2MPBot::DifficultyType)m_difficulty, name, sizeof(name) );
 		bot = NextBotCreatePlayerBot< CHL2MPBot >( name );
 	}
 
@@ -323,40 +323,15 @@ void CHL2MPBotGenerator::SpawnBot( void )
 
 		bot->SetActionPoint( dynamic_cast<CHL2MPBotActionPoint *>( m_moveGoal.Get() ) );
 
-		// XXX(misyl): TODO!!!!!
-#if 0
-		// pick a team and force the team change
-		// HandleCommand_JoinTeam() may fail, but this should always succeed
-		int iTeam = TEAM_UNASSIGNED;
-		if ( FStrEq( m_teamName.ToCStr(), "auto" ) )
+		int iClass = CLS_INVALID;
+
+		if (iClass == CLS_INVALID)
 		{
-			iTeam = bot->GetAutoTeam();
+			random->SetSeed((int)gpGlobals->curtime);
+			iClass = random->RandomInt(CLS_FIRST_COMBINE_CLASS, CLS_LAST_COMBINE_CLASS);
 		}
-		else if ( FStrEq( m_teamName.ToCStr(), "spectate" ) )
-		{
-			iTeam = TEAM_SPECTATOR;
-		}
-		else
-		{
-			for ( int i = 0; i < TF_TEAM_COUNT; ++i )
-			{
-				COMPILE_TIME_ASSERT( TF_TEAM_COUNT == ARRAYSIZE( g_aTeamNames ) );
-				if ( FStrEq( m_teamName.ToCStr(), g_aTeamNames[i] ) )
-				{
-					iTeam = i;
-					break;
-				}
-			}
-		}
-		if ( iTeam == TEAM_UNASSIGNED )
-		{
-			iTeam = bot->GetAutoTeam();
-		}
-		bot->ChangeTeam( iTeam, false, false );
-		
-		const char* pClassName =  m_bBotChoosesClass ? bot->GetNextSpawnClassname() : m_className.ToCStr();
-		bot->HandleCommand_JoinClass( pClassName );
-#endif
+
+		bot->HandleCommand_JoinClass(iClass);
 
 		if ( bot->IsAlive() == false )
 		{

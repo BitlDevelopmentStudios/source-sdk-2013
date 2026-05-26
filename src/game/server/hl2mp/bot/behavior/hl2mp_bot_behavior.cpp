@@ -305,7 +305,7 @@ Vector CHL2MPBotMainAction::SelectTargetPoint( const INextBot *meBot, const CBas
 					}
 				}
 			}
-			if ( myWeapon->ClassMatches( "weapon_frag" ) )
+			if ( myWeapon->ClassMatches( "weapon_frag" ) || myWeapon->ClassMatches("weapon_manhack"))
 			{
 				Vector toThreat = subject->GetAbsOrigin() - me->GetAbsOrigin();
 				float threatRange = toThreat.NormalizeInPlace();

@@ -51,6 +51,22 @@ public:
 		if ( !pItem )
 			return false;
 
+		if (m_me->GetPlayerClass() != CLS_FREEMAN)
+		{
+			if (!m_me->IsAllowedToPickupWeapons())
+			{
+				if (pItem->m_bForceAllowPickup)
+				{
+					if (pItem->m_iMinClassType > m_me->GetPlayerClass())
+						return false;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
 		const char* pszWeaponClass = pItem->GetWeaponClassForAmmo();
 		if ( !pszWeaponClass || !*pszWeaponClass )
 			return false;
