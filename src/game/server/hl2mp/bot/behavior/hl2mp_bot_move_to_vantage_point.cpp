@@ -41,6 +41,7 @@ ActionResult< CHL2MPBot >	CHL2MPBotMoveToVantagePoint::Update( CHL2MPBot *me, fl
 	const CKnownEntity *threat = me->GetVisionInterface()->GetPrimaryKnownThreat();
 	if ( threat && threat->IsVisibleInFOVNow() )
 	{
+		me->SpeakSentenceForConcept(MP_SENTENCE_REFIND_ENEMY);
 		return Done( "Enemy is visible" );
 	}
 

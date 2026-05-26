@@ -52,6 +52,7 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 	if ( isUsingCloseRangeWeapon && threat->IsVisibleRecently() && me->IsRangeLessThan( threat->GetLastKnownPosition(), 1.1f * me->GetDesiredAttackRange() ) )
 	{
 		// circle around our victim
+		me->SpeakSentenceForConcept(MP_SENTENCE_FLANK);
 		if ( me->TransientlyConsistentRandomValue( 3.0f ) < 0.5f )
 		{
 			me->PressLeftButton();
@@ -96,6 +97,7 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 			if ( me->IsRangeLessThan( threat->GetLastKnownPosition(), 20.0f ) )
 			{
 				me->GetVisionInterface()->ForgetEntity( threat->GetEntity() );
+				me->SpeakSentenceForConcept(MP_SENTENCE_LOST_GROUP);
 				return Done( "I lost my target!" );
 			}
 

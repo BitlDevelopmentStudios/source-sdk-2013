@@ -1708,97 +1708,6 @@ ConVarRef suitcharger( "sk_suitcharger" );
 		}
 	}
 
-	const char* SentenceForConcept(int iConcept, int iVoiceMode)
-	{
-		int concept = iConcept;
-
-		if (concept == MP_SENTENCE_LOST_GROUP)
-		{
-			int choice = random->RandomInt(0, 1);
-
-			if (choice == 1)
-			{
-				concept = MP_SENTENCE_LOST_LONG;
-			}
-			else
-			{
-				concept = MP_SENTENCE_LOST_SHORT;
-			}
-		}
-		else if (concept == MP_SENTENCE_ALERT_GROUP)
-		{
-			if (iVoiceMode == VOICE_TYPE_METROPOLICE)
-			{
-				concept = MP_SENTENCE_GO_ALERT;
-			}
-			else if (iVoiceMode == VOICE_TYPE_SOLDIER)
-			{
-				int choice = random->RandomInt(0, 1);
-
-				if (choice == 1)
-				{
-					concept = MP_SENTENCE_GO_ALERT;
-				}
-				else
-				{
-					concept = MP_SENTENCE_COMBINE_ALERT;
-				}
-			}
-		}
-
-		switch (concept)
-		{
-			//none for now. we need to go through this.
-			case MP_SENTENCE_COMBINE_ANNOUNCE:
-				return "ANNOUNCE";
-			case MP_SENTENCE_COMBINE_ASSAULT:
-				return "ASSAULT";
-			case MP_SENTENCE_FLANK:
-				return "FLANK";
-			case MP_SENTENCE_GO_ALERT:
-				return "GO_ALERT";
-			case MP_SENTENCE_LOST_LONG:
-				return "LOST_LONG";
-			case MP_SENTENCE_LOST_SHORT:
-				return "LOST_SHORT";
-			case MP_SENTENCE_REFIND_ENEMY:
-				return "REFIND_ENEMY";
-			case MP_SENTENCE_DANGER:
-				return "DANGER";
-			case MP_SENTENCE_COMBINE_ALERT:
-				return "ALERT";
-			case MP_SENTENCE_IDLE:
-				if (iVoiceMode == VOICE_TYPE_METROPOLICE)
-					return "IDLE_CR";
-				else if (iVoiceMode == VOICE_TYPE_SOLDIER)
-					return "IDLE";
-			case MP_SENTENCE_QUEST:
-				if (iVoiceMode == VOICE_TYPE_METROPOLICE)
-					return "IDLE_QUEST_CR";
-				else if (iVoiceMode == VOICE_TYPE_SOLDIER)
-					return "QUEST";
-			case MP_SENTENCE_ANSWER:
-				if (iVoiceMode == VOICE_TYPE_METROPOLICE)
-					return "IDLE_ANSWER_CR";
-				else if (iVoiceMode == VOICE_TYPE_SOLDIER)
-					return "ANSWER";
-			case MP_SENTENCE_CLEAR:
-				if (iVoiceMode == VOICE_TYPE_METROPOLICE)
-					return "IDLE_CLEAR_CR";
-				else if (iVoiceMode == VOICE_TYPE_SOLDIER)
-					return "CLEAR";
-			case MP_SENTENCE_CHECK:
-				if (iVoiceMode == VOICE_TYPE_METROPOLICE)
-					return "IDLE_CHECK_CR";
-				else if (iVoiceMode == VOICE_TYPE_SOLDIER)
-					return "CHECK";
-			default:
-				break;
-		}
-
-		return "";
-	}
-
 	VoiceCommandMenuItem_t *CMultiplayRules::VoiceCommand( CBaseMultiplayerPlayer *pPlayer, int iMenu, int iItem )
 	{
 		// have the player speak the concept that is in a particular menu slot
@@ -1821,7 +1730,7 @@ ConVarRef suitcharger( "sk_suitcharger" );
 
 			if (pHL2MPPlayer)
 			{
-				pHL2MPPlayer->SpeakSentence(SentenceForConcept(pItem->m_iConcept, pHL2MPPlayer->GetVoiceMode()));
+				pHL2MPPlayer->SpeakSentenceForConcept(pItem->m_iConcept);
 
 				// Register this event in the mod-specific usermessages .cpp file if you hit this assert
 				//Assert(usermessages->LookupUserMessage("VoiceSubtitle") != -1);

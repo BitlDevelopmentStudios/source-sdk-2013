@@ -79,6 +79,7 @@ ActionResult< CHL2MPBot >	CHL2MPBotSeekAndDestroy::Update( CHL2MPBot *me, float 
 		const float engageRange = 1000.0f;
 		if ( me->IsRangeLessThan( threat->GetLastKnownPosition(), engageRange ) )
 		{
+			me->SpeakSentenceForConcept(MP_SENTENCE_REFIND_ENEMY);
 			return SuspendFor( new CHL2MPBotAttack, "Going after an enemy" );
 		}
 	}

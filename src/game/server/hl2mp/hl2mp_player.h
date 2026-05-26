@@ -22,6 +22,7 @@ class CHL2MP_Player;
 #include "anticitizen_player_resource.h"
 #include "player_sentence.h"
 #include "hl2mp_playeranimstate.h"
+#include "mp_shareddefs.h"
 
 //=============================================================================
 // >> HL2MP_Player
@@ -163,7 +164,16 @@ public:
 	bool IsThreatAimingTowardMe( CBaseEntity* threat, float cosTolerance = 0.8f ) const;
 	bool IsThreatFiringAtMe( CBaseEntity* threat ) const;
 
+	const char* SentenceForConcept(int iConcept, int iVoiceMode);
 	void SpeakSentence(const char *pSentence, SentencePriority_t nSoundPriority = SENTENCE_PRIORITY_NORMAL, SentenceCriteria_t nCriteria = SENTENCE_CRITERIA_IN_SQUAD);
+
+	void SpeakSentenceForConcept(int iConcept) 
+	{ 
+		if (GetVoiceMode() > VOICE_TYPE_NONE)
+		{
+			SpeakSentence(SentenceForConcept(iConcept, GetVoiceMode()));
+		}
+	}
 
 protected:
 	CPlayer_Sentence< CHL2MP_Player >* GetSentences() { return &m_Sentences; }

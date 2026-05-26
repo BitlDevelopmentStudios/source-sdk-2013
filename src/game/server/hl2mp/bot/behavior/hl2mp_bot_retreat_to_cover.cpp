@@ -164,6 +164,8 @@ ActionResult< CHL2MPBot >	CHL2MPBotRetreatToCover::OnStart( CHL2MPBot *me, Actio
 		m_hideDuration = RandomFloat( hl2mp_bot_wait_in_cover_min_time.GetFloat(), hl2mp_bot_wait_in_cover_max_time.GetFloat() );
 	}
 
+	me->SpeakSentenceForConcept(MP_SENTENCE_DANGER);
+
 	m_waitInCoverTimer.Start( m_hideDuration );
 
 	return Continue();
