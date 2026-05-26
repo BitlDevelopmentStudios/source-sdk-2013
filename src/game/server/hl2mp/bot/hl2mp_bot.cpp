@@ -1228,6 +1228,7 @@ void CHL2MPBot::UpdateLookingAroundForEnemies( void )
 		if ( known->IsVisibleInFOVNow() )
 		{
 			// I see you!
+			me->SpeakSentenceForConcept(MP_SENTENCE_REFIND_ENEMY);
 			GetBodyInterface()->AimHeadTowards( known->GetEntity(), IBody::CRITICAL, 1.0f, NULL, "Aiming at a visible threat" );
 			return;
 		}
