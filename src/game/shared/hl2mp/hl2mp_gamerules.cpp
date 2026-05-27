@@ -308,7 +308,11 @@ int CHL2MPRules::GetRemainingSoldierCount(void)
 		if (pPlayer->GetTeam() != pCombine)
 			continue;
 
-		if (!pPlayer->m_bInitialSpawn && pPlayer->GetLifeCount() > 0)
+#ifdef  CLIENT_DLL
+		if (pPlayer->GetLifeCount() > 0)
+#else
+		if (!pPlayer->m_bInitialSpawn && (pPlayer->GetLifeCount() > 0))
+#endif //  CLIENT_DLL
 		{
 			iLives += pPlayer->GetLifeCount();
 		}
@@ -355,7 +359,7 @@ bool CHL2MPRules::IsFreemanAlive(void)
 		if (pPlayer->GetTeam() != pFreeman)
 			continue;
 
-		if (!pPlayer->m_bInitialSpawn && pPlayer->IsDead())
+		if (!pPlayer->m_bInitialSpawn && (pPlayer->GetLifeCount() == 0) && pPlayer->IsDead())
 		{
 			return false;
 		}
@@ -373,7 +377,7 @@ void CHL2MPRules::Think( void )
 	CGameRules::Think();
 
 	// LOGIC HERE
-	// alsways use m_bInitialSpawn when checking lives or deaths.
+	// always use m_bInitialSpawn when checking lives or deaths.
 
 	ManageObjectRelocation();
 
