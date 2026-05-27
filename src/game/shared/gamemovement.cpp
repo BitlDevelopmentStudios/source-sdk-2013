@@ -1740,7 +1740,11 @@ void CGameMovement::AirAccelerate( Vector& wishdir, float wishspeed, float accel
 	if (addspeed <= 0)
 		return;
 
-	bool usingConVar = true;
+	// Determine acceleration speed after acceleration
+	if (sv_fixed_airaccelerate.GetBool())
+		accelspeed = accel * wishspd * gpGlobals->frametime * player->m_surfaceFriction;
+	else
+		accelspeed = accel * wishspeed * gpGlobals->frametime * player->m_surfaceFriction;
 
 	// for freeman, use the busted acceleration. for the combine, use the fixed acceleration. 
 	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(player);
@@ -1758,18 +1762,7 @@ void CGameMovement::AirAccelerate( Vector& wishdir, float wishspeed, float accel
 			{
 				accelspeed = accel * wishspd * gpGlobals->frametime * player->m_surfaceFriction;
 			}
-
-			usingConVar = false;
 		}
-	}
-	
-	if (usingConVar)
-	{
-		// Determine acceleration speed after acceleration
-		if (sv_fixed_airaccelerate.GetBool())
-			accelspeed = accel * wishspd * gpGlobals->frametime * player->m_surfaceFriction;
-		else
-			accelspeed = accel * wishspeed * gpGlobals->frametime * player->m_surfaceFriction;
 	}
 
 	// Cap it

@@ -474,6 +474,8 @@ void CWeaponManhack::ThrowGrenade( CBasePlayer *pPlayer )
 		pManhack->SetLocalAngles(vec3_angle);
 		pManhack->AddSpawnFlags((SF_MANHACK_PACKED_UP | SF_NPC_FADE_CORPSE));
 		pManhack->Spawn();
+		// not needed, but allows the manhack to work properly when playing as freeman.
+		pManhack->ChangeTeam(pPlayer->GetTeamNumber());
 
 		IPhysicsObject* pPhysicsObject = pManhack->VPhysicsGetObject();
 		if (pPhysicsObject)

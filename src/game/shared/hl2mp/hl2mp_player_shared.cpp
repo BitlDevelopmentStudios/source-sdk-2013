@@ -139,18 +139,19 @@ Vector CHL2MP_Player::GetAttackSpread( CBaseCombatWeapon *pWeapon, CBaseEntity *
 		{
 			DevWarning("%s has no proficiency value table!\n", pWeapon->GetClassname());
 
-			static WeaponProficiencyInfo_t defaultWeaponProficiencyTable[] =
+			// Weapon proficiency table. Keep this in sync with WeaponProficiency_t enum in the header!!
+			static WeaponProficiencyInfo_t g_BaseWeaponProficiencyTable[] =
 			{
-				{ 1.0, 1.0	},
-				{ 1.0, 1.0	},
-				{ 1.0, 1.0	},
-				{ 1.0, 1.0	},
-				{ 1.0, 1.0	},
+				{ 2.50, 1.0	},
+				{ 2.00, 1.0	},
+				{ 1.50, 1.0	},
+				{ 1.25, 1.0 },
+				{ 1.00, 1.0	},
 			};
 
-			COMPILE_TIME_ASSERT(ARRAYSIZE(defaultWeaponProficiencyTable) == WEAPON_PROFICIENCY_PERFECT + 1);
+			COMPILE_TIME_ASSERT(ARRAYSIZE(g_BaseWeaponProficiencyTable) == WEAPON_PROFICIENCY_PERFECT + 1);
 
-			pProficiencyValues = defaultWeaponProficiencyTable;
+			pProficiencyValues = g_BaseWeaponProficiencyTable;
 		}
 
 		float scale = (pProficiencyValues)[proficiency].spreadscale;
