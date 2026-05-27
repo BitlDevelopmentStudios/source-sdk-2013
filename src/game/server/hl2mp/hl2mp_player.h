@@ -151,6 +151,8 @@ public:
 	int		GetPlayerClass(void);
 	const CAnticitizen_FilePlayerClassInfo_t& GetPlayerClassInfo(void);
 
+	void	SetChosenClass(bool val) { m_bChosenClass = val; }
+
 	void	ResetPlayerClass(void) 
 	{ 
 		m_bChosenClass = false; 

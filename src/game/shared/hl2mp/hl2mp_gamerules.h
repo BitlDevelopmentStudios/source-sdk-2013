@@ -104,6 +104,9 @@ public:
 	virtual float FlWeaponTryRespawn( CBaseCombatWeapon *pWeapon );
 	virtual Vector VecWeaponRespawnSpot( CBaseCombatWeapon *pWeapon );
 	virtual int WeaponShouldRespawn( CBaseCombatWeapon *pWeapon );
+	virtual int GetRemainingSoldierCount(void);
+	virtual void SelectFreeman(void);
+	virtual bool IsFreemanAlive(void);
 	virtual void Think( void );
 	virtual void CreateStandardEntities( void );
 	virtual void ClientSettingsChanged( CBasePlayer *pPlayer );
@@ -118,7 +121,6 @@ public:
 
 	float GetMapRemainingTime();
 	void CleanUpMap();
-	void CheckRestartGame();
 	void RestartGame();
 
 	void OnNavMeshLoad( void );
@@ -134,7 +136,6 @@ public:
 	void	AddLevelDesignerPlacedObject( CBaseEntity *pEntity );
 	void	RemoveLevelDesignerPlacedObject( CBaseEntity *pEntity );
 	void	ManageObjectRelocation( void );
-	void    CheckChatForReadySignal( CHL2MP_Player *pPlayer, const char *chatmsg );
 	const char *GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer );
 
 #endif
@@ -143,14 +144,12 @@ public:
 
 	virtual void ClientDisconnected( edict_t *pClient );
 
-	bool CheckGameOver( void );
 	bool IsIntermission( void );
 
 	void PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &info );
 
 	
 	bool	IsTeamplay( void ) { return true;	}
-	void	CheckAllPlayersReady( void );
 
 	virtual bool IsConnectedUserInfoChangeAllowed( CBasePlayer *pPlayer );
 
@@ -161,11 +160,10 @@ private:
 	CNetworkVar( bool, m_bTeamPlayEnabled );
 	CNetworkVar( float, m_flGameStartTime );
 	CUtlVector<EHANDLE> m_hRespawnableItemsAndWeapons;
-	float m_tmNextPeriodicThink;
 	float m_flRestartGameTime;
 	bool m_bCompleteReset;
-	bool m_bAwaitingReadyRestart;
-	bool m_bHeardAllPlayersReady;
+	bool m_bGameRunning;
+	bool m_bHasMinPlayersToStart;
 
 #ifndef CLIENT_DLL
 	bool m_bChangelevelDone;

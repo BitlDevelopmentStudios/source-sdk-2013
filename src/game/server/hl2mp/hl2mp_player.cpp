@@ -300,6 +300,7 @@ void CHL2MP_Player::Spawn(void)
 
 	if (!m_bChosenClass)
 	{
+		m_bInitialSpawn = true;
 		ChangeTeam(TEAM_SPECTATOR);
 	}
 	else
@@ -663,6 +664,8 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 
 void CHL2MP_Player::LoadClass(int iClass)
 {
+	RemoveAllItems(true);
+
 	if (!IsAllowedToPickupWeapons())
 	{
 		SetPreventWeaponPickup(false);
@@ -1003,7 +1006,8 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 	{
 		return false;
 	}
-
+	
+#ifndef DEBUG
 	if (iclass == CLS_FREEMAN)
 	{
 		Warning("Cleverly done, Mr. Freeman, but you're not supposed to be here.\n");
@@ -1015,8 +1019,17 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 		Warning("Dr. Freeman? Can you hear me? Do not go into the light!\n");
 		return false;
 	}
+#endif // !DEBUG
 
+#ifdef DEBUG
+	if (iclass == CLS_FREEMAN)
+	{
+		ChangeTeam(TEAM_FREEMAN);
+	}
+	else if (GetTeamNumber() != TEAM_COMBINE)
+#else
 	if (GetTeamNumber() != TEAM_COMBINE)
+#endif // !DEBUG
 	{
 		ChangeTeam(TEAM_COMBINE);
 	}
@@ -1660,11 +1673,7 @@ void CHL2MP_Player::CheckChatText( char *p, int bufsize )
 	// copy buf back into p
 	Q_strncpy( p, buf, bufsize );
 
-	delete[] buf;	
-
-	const char *pReadyCheck = p;
-
-	HL2MPRules()->CheckChatForReadySignal( this, pReadyCheck );
+	delete[] buf;
 }
 
 void CHL2MP_Player::State_Transition( HL2MPPlayerState newState )

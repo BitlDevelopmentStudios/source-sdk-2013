@@ -14,6 +14,7 @@
 #ifdef CLIENT_DLL
 	#include "c_hl2mp_player.h"
 	#include "c_anticitizen_player_resource.h"
+	#include "c_team.h"
 #else
 
 	#include "nav_mesh.h"
@@ -45,6 +46,8 @@ ConVar sv_hl2mp_weapon_respawn_time( "sv_hl2mp_weapon_respawn_time", "20", FCVAR
 ConVar sv_hl2mp_item_respawn_time( "sv_hl2mp_item_respawn_time", "30", FCVAR_GAMEDLL | FCVAR_NOTIFY );
 ConVar sv_report_client_settings("sv_report_client_settings", "0", FCVAR_GAMEDLL | FCVAR_NOTIFY );
 
+ConVar sv_minplayerstostart("sv_minplayerstostart", "2", FCVAR_GAMEDLL | FCVAR_NOTIFY);
+
 extern ConVar mp_chattime;
 
 extern CBaseEntity	 *g_pLastCombineSpawn;
@@ -53,7 +56,6 @@ extern CBaseEntity	 *g_pLastRebelSpawn;
 #define WEAPON_MAX_DISTANCE_FROM_SPAWN 64
 
 #endif
-
 ConVar hl2mp_avoidteammates("hl2mp_avoidteammates", "1", FCVAR_REPLICATED, "If enabled, players on the same team will not collide with each other.");
 
 REGISTER_GAMERULES_CLASS( CHL2MPRules );
@@ -196,12 +198,11 @@ CHL2MPRules::CHL2MPRules()
 	m_flGameStartTime = 0;
 
 	m_hRespawnableItemsAndWeapons.RemoveAll();
-	m_tmNextPeriodicThink = 0;
 	m_flRestartGameTime = 0;
 	m_bCompleteReset = false;
-	m_bHeardAllPlayersReady = false;
-	m_bAwaitingReadyRestart = false;
 	m_bChangelevelDone = false;
+	m_bGameRunning = false;
+	m_bHasMinPlayersToStart = false;
 
 #endif
 }
@@ -285,6 +286,84 @@ void CHL2MPRules::PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &inf
 #endif
 }
 
+int CHL2MPRules::GetRemainingSoldierCount(void)
+{
+#ifdef  CLIENT_DLL
+	C_Team* pCombine = GetGlobalTeam(TEAM_COMBINE);
+#else
+	CTeam* pCombine = g_Teams[TEAM_COMBINE];
+#endif //  CLIENT_DLL
+	int iLives = 0;
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+
+		if (!pPlayer)
+			continue;
+
+		if (pPlayer->GetLifeCount() == -1)
+			continue;
+
+		if (pPlayer->GetTeam() != pCombine)
+			continue;
+
+		if (!pPlayer->m_bInitialSpawn && pPlayer->GetLifeCount() > 0)
+		{
+			iLives += pPlayer->GetLifeCount();
+		}
+	}
+
+	return iLives;
+}
+
+void CHL2MPRules::SelectFreeman(void)
+{
+#ifndef CLIENT_DLL
+	int iPlayerCount = UTIL_GetPlayerCount();
+	random->SetSeed(gpGlobals->curtime);
+	int iRandPlayer = random->RandomInt(1, iPlayerCount);
+
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(iRandPlayer));
+
+	if (pPlayer)
+	{
+		pPlayer->ResetPlayerClass();
+		pPlayer->ChangeTeam(TEAM_FREEMAN);
+		pPlayer->SetPlayerClass(CLS_FREEMAN);
+		pPlayer->SetChosenClass(true);
+	}
+	else
+	{
+		DevWarning("Can't find invalid user %i\n", iRandPlayer);
+	}
+#endif
+}
+
+bool CHL2MPRules::IsFreemanAlive(void)
+{
+#ifndef CLIENT_DLL
+	CTeam* pFreeman = g_Teams[TEAM_FREEMAN];
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+
+		if (!pPlayer)
+			continue;
+
+		if (pPlayer->GetTeam() != pFreeman)
+			continue;
+
+		if (!pPlayer->m_bInitialSpawn && pPlayer->IsDead())
+		{
+			return false;
+		}
+	}
+#endif
+
+	return true;
+}
 
 void CHL2MPRules::Think( void )
 {
@@ -293,62 +372,8 @@ void CHL2MPRules::Think( void )
 	
 	CGameRules::Think();
 
-	if ( g_fGameOver )   // someone else quit the game already
-	{
-		// check to see if we should change levels now
-		if ( m_flIntermissionEndTime < gpGlobals->curtime )
-		{
-			if ( !m_bChangelevelDone )
-			{
-				ChangeLevel(); // intermission is over
-				m_bChangelevelDone = true;
-			}
-		}
-
-		return;
-	}
-
-//	float flTimeLimit = mp_timelimit.GetFloat() * 60;
-	float flFragLimit = fraglimit.GetFloat();
-	
-	if ( GetMapRemainingTime() < 0 )
-	{
-		GoToIntermission();
-		return;
-	}
-
-	if ( flFragLimit )
-	{
-		CTeam* pCombine = g_Teams[TEAM_COMBINE];
-		CTeam* pRebels = g_Teams[TEAM_FREEMAN];
-
-		if (pCombine->GetScore() >= flFragLimit || pRebels->GetScore() >= flFragLimit)
-		{
-			GoToIntermission();
-			return;
-		}
-	}
-
-	if ( gpGlobals->curtime > m_tmNextPeriodicThink )
-	{		
-		CheckAllPlayersReady();
-		CheckRestartGame();
-		m_tmNextPeriodicThink = gpGlobals->curtime + 1.0;
-	}
-
-	if ( m_flRestartGameTime > 0.0f && m_flRestartGameTime <= gpGlobals->curtime )
-	{
-		RestartGame();
-	}
-
-	if( m_bAwaitingReadyRestart && m_bHeardAllPlayersReady )
-	{
-		UTIL_ClientPrintAll( HUD_PRINTCENTER, "All players ready. Game will restart in 5 seconds" );
-		UTIL_ClientPrintAll( HUD_PRINTCONSOLE, "All players ready. Game will restart in 5 seconds" );
-
-		m_flRestartGameTime = gpGlobals->curtime + 5;
-		m_bAwaitingReadyRestart = false;
-	}
+	// LOGIC HERE
+	// alsways use m_bInitialSpawn when checking lives or deaths.
 
 	ManageObjectRelocation();
 
@@ -362,6 +387,7 @@ void CHL2MPRules::GoToIntermission( void )
 		return;
 
 	g_fGameOver = true;
+	m_bGameRunning = false;
 
 	m_flIntermissionEndTime = gpGlobals->curtime + mp_chattime.GetInt();
 
@@ -377,24 +403,6 @@ void CHL2MPRules::GoToIntermission( void )
 	}
 #endif
 	
-}
-
-bool CHL2MPRules::CheckGameOver()
-{
-#ifndef CLIENT_DLL
-	if ( g_fGameOver )   // someone else quit the game already
-	{
-		// check to see if we should change levels now
-		if ( m_flIntermissionEndTime < gpGlobals->curtime )
-		{
-			ChangeLevel(); // intermission is over			
-		}
-
-		return true;
-	}
-#endif
-
-	return false;
 }
 
 // when we are within this close to running out of entities,  items 
@@ -935,13 +943,17 @@ void CHL2MPRules::RestartGame()
 		if ( !pPlayer )
 			continue;
 
-		if ( pPlayer->GetActiveWeapon() )
+		if (pPlayer->GetActiveWeapon())
 		{
 			pPlayer->GetActiveWeapon()->Holster();
 		}
-		pPlayer->RemoveAllItems( true );
-		respawn( pPlayer, false );
-		pPlayer->Reset();
+
+		pPlayer->RemoveFlag(FL_FROZEN);
+		pPlayer->ShowViewPortPanel(PANEL_SCOREBOARD, false);
+		pPlayer->RemoveAllItems(true);
+		pPlayer->ResetDeathCount();
+		pPlayer->ResetFragCount();
+		pPlayer->Spawn();
 	}
 
 	// Respawn entities (glass, doors, etc..)
@@ -960,8 +972,7 @@ void CHL2MPRules::RestartGame()
 	}
 
 	m_flIntermissionEndTime = 0;
-	m_flRestartGameTime = 0.0;		
-	m_bCompleteReset = false;
+	m_flRestartGameTime = 0.0;
 
 	IGameEvent * event = gameeventmanager->CreateEvent( "round_start" );
 	if ( event )
@@ -1077,79 +1088,6 @@ void CHL2MPRules::CleanUpMap()
 	// DO NOT CALL SPAWN ON info_node ENTITIES!
 
 	MapEntity_ParseAllEntities( engine->GetMapEntitiesString(), &filter, true );
-}
-
-void CHL2MPRules::CheckChatForReadySignal( CHL2MP_Player *pPlayer, const char *chatmsg )
-{
-	if( m_bAwaitingReadyRestart && FStrEq( chatmsg, mp_ready_signal.GetString() ) )
-	{
-		if( !pPlayer->IsReady() )
-		{
-			pPlayer->SetReady( true );
-		}		
-	}
-}
-
-void CHL2MPRules::CheckRestartGame( void )
-{
-	// Restart the game if specified by the server
-	int iRestartDelay = mp_restartgame.GetInt();
-
-	if ( iRestartDelay > 0 )
-	{
-		if ( iRestartDelay > 60 )
-			iRestartDelay = 60;
-
-
-		// let the players know
-		char strRestartDelay[64];
-		Q_snprintf( strRestartDelay, sizeof( strRestartDelay ), "%d", iRestartDelay );
-		UTIL_ClientPrintAll( HUD_PRINTCENTER, "Game will restart in %s1 %s2", strRestartDelay, iRestartDelay == 1 ? "SECOND" : "SECONDS" );
-		UTIL_ClientPrintAll( HUD_PRINTCONSOLE, "Game will restart in %s1 %s2", strRestartDelay, iRestartDelay == 1 ? "SECOND" : "SECONDS" );
-
-		m_flRestartGameTime = gpGlobals->curtime + iRestartDelay;
-		m_bCompleteReset = true;
-		mp_restartgame.SetValue( 0 );
-	}
-
-	if( mp_readyrestart.GetBool() )
-	{
-		m_bAwaitingReadyRestart = true;
-		m_bHeardAllPlayersReady = false;
-		
-
-		const char *pszReadyString = mp_ready_signal.GetString();
-
-
-		// Don't let them put anything malicious in there
-		if( pszReadyString == NULL || Q_strlen(pszReadyString) > 16 )
-		{
-			pszReadyString = "ready";
-		}
-
-		IGameEvent *event = gameeventmanager->CreateEvent( "hl2mp_ready_restart" );
-		if ( event )
-			gameeventmanager->FireEvent( event );
-
-		mp_readyrestart.SetValue( 0 );
-
-		// cancel any restart round in progress
-		m_flRestartGameTime = -1;
-	}
-}
-
-void CHL2MPRules::CheckAllPlayersReady( void )
-{
-	for (int i = 1; i <= gpGlobals->maxClients; i++ )
-	{
-		CHL2MP_Player *pPlayer = (CHL2MP_Player*) UTIL_PlayerByIndex( i );
-
-		if ( !pPlayer )
-			continue;
-		if ( !pPlayer->IsReady() )
-			return;
-	}
-	m_bHeardAllPlayersReady = true;
 }
 
 //-----------------------------------------------------------------------------
