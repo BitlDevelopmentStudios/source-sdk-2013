@@ -30,6 +30,7 @@
 #include "vtf/vtf.h"
 #include "materialsystem/deformations.h"
 #include "materialsystem/IColorCorrection.h"
+#include "iconvar.h"
 
 
 //-----------------------------------------------------------------------------
@@ -431,6 +432,9 @@ struct MaterialVideoMode_t
 	int m_RefreshRate;		// 0 == default (ignored for windowed mode)
 };
 
+// HACK!!!!!
+static ConVar r_defshadowfiltersize("r_defshadowfiltersize", "0.5", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+
 // fixme: should move this into something else.
 struct FlashlightState_t
 {
@@ -439,7 +443,7 @@ struct FlashlightState_t
 		m_bEnableShadows = false;						// Provide reasonable defaults for shadow depth mapping parameters
 		m_bDrawShadowFrustum = false;
 		m_flShadowMapResolution = 1024.0f;
-		m_flShadowFilterSize = 3.0f;
+		m_flShadowFilterSize = r_defshadowfiltersize.GetFloat();
 		m_flShadowSlopeScaleDepthBias = 16.0f;
 		m_flShadowDepthBias = 0.0005f;
 		m_flShadowJitterSeed = 0.0f;
