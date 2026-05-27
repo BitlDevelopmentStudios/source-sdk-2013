@@ -33,7 +33,7 @@ The SecobMod implementation uses code from dutchmega's Collaborate mod (https://
 This repository implements fixes the VDC, including:
 https://developer.valvesoftware.com/wiki/General_SDK_Snippets_%26_Fixes
 https://developer.valvesoftware.com/wiki/Detail_props/Aspect_ratio_fix
-
+https://developer.valvesoftware.com/wiki/Env_projectedtexture/fixes
 
 ## Setup:
 Read Autumn/Misyl's setup guide at README_FROG.md for detailed setup.
