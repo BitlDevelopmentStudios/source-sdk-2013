@@ -31,6 +31,7 @@ LOOKING FOR THE OLD BDS BASE WITH QUIVER FORTRESS' SOURCE CODE? Go here: https:/
 The Mapbase team for MP fixes as well as their implementation of Tony Sergi's, Saul's, and SecobMod's code as well as fixes for aformentioned code.
 The SecobMod implementation uses code from dutchmega's Collaborate mod (https://developer.valvesoftware.com/wiki/Collaborate)
 Iván Bravo Bravo for the NPC AI node generation code.
+Sirmasters from BSNOOCH, for making the Mapadd code. (Part of SMMOD)
 This repository implements fixes the VDC, including:
 https://developer.valvesoftware.com/wiki/General_SDK_Snippets_%26_Fixes
 https://developer.valvesoftware.com/wiki/Detail_props/Aspect_ratio_fix

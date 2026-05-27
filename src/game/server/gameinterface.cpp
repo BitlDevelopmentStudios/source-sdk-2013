@@ -90,6 +90,7 @@
 #include "serverbenchmark_base.h"
 #include "querycache.h"
 #include "player_voice_listener.h"
+#include "SMMOD/mapadd.h"
 
 #ifdef TF_DLL
 #include "gc_clientsystem.h"
@@ -1057,6 +1058,19 @@ bool CServerGameDLL::LevelInit( const char *pMapName, char const *pMapEntities, 
 		MapEntity_ParseAllEntities( pMapEntities, &filter );
 
 		g_pServerBenchmark->StartBenchmark();
+
+		//after that, spawn mapadds
+		CMapAdd* pMapadd = GetMapAddEntity();
+
+		if (!pMapadd)
+		{
+			pMapadd = CreateMapAddEntity();
+			pMapadd->RunLabel("Init");
+		}
+		else
+		{
+			pMapadd->RunLabel("Init");
+		}
 
 		// Now call the mod specific parse
 		LevelInit_ParseAllEntities( pMapEntities );
