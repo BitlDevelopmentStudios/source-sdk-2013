@@ -1697,6 +1697,8 @@ void CGameMovement::FinishGravity( void )
 	CheckVelocity();
 }
 
+ConVar sv_fixed_airaccelerate("sv_fixed_airaccelerate", "1", FCVAR_REPLICATED | FCVAR_NOTIFY);
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : wishdir - 
@@ -1731,7 +1733,10 @@ void CGameMovement::AirAccelerate( Vector& wishdir, float wishspeed, float accel
 		return;
 
 	// Determine acceleration speed after acceleration
-	accelspeed = accel * wishspeed * gpGlobals->frametime * player->m_surfaceFriction;
+	if (sv_fixed_airaccelerate.GetBool())
+		accelspeed = accel * wishspd * gpGlobals->frametime * player->m_surfaceFriction;
+	else
+		accelspeed = accel * wishspeed * gpGlobals->frametime * player->m_surfaceFriction;
 
 	// Cap it
 	if (accelspeed > addspeed)
