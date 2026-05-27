@@ -304,12 +304,12 @@ void CHL2MP_Player::Spawn(void)
 	}
 	else
 	{
+		LoadClass(GetPlayerClass());
+
 		if (m_bInitialSpawn)
 		{
 			m_bInitialSpawn = false;
 		}
-
-		LoadClass(GetPlayerClass());
 	}
 	
 	if ( !IsObserver() )
@@ -702,9 +702,12 @@ void CHL2MP_Player::LoadClass(int iClass)
 			SetMaxHealth(pPlayerClassInfo.iHealth);
 		}
 
-		if (pPlayerClassInfo.iLives > 0)
+		if (m_bInitialSpawn)
 		{
-			SetLifeCount(pPlayerClassInfo.iLives);
+			if (pPlayerClassInfo.iLives > 0)
+			{
+				SetLifeCount(pPlayerClassInfo.iLives);
+			}
 		}
 
 		if (pPlayerClassInfo.bSuit)

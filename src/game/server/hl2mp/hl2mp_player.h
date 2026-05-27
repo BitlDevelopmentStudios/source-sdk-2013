@@ -161,7 +161,7 @@ public:
 	float	GetSprintSpeed(void) { return m_flSprintSpeed; }
 
 	void	SetLifeCount(int val) { m_iLives = val; }
-	float	GetLifeCount(void)	  { return m_iLives; }
+	int		GetLifeCount(void)	  { return m_iLives; }
 
 	Vector m_vecTotalBulletForce;	//Accumulator for bullet force in a single frame
 
