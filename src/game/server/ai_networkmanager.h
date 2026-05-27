@@ -58,6 +58,8 @@ public:
 	void			FixupHints();
 	void			MarkDontSaveGraph();
 
+	void	SetRebuildNeeded(bool b = true) { m_bNeedGraphRebuild = b; }
+
 public:
 	CAI_NetworkEditTools *	GetEditOps() { return m_pEditOps; }
 	CAI_Network *			GetNetwork() { return m_pNetwork; }
@@ -67,7 +69,8 @@ private:
 	void			DelayedInit();
 	void			RebuildThink();
 	void			SaveNetworkGraph( void) ;	
-	static bool		IsAIFileCurrent( const char *szMapName );		
+	static bool		IsAIFileCurrent( const char *szMapName );
+	static bool		IsTextFileNewer(const char *szMapName);
 	
 	static bool				gm_fNetworksLoaded;							// Have AINetworks been loaded
 	
