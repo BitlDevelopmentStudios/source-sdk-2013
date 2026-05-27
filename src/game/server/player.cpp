@@ -1523,28 +1523,31 @@ void CBasePlayer::PackDeadPlayerItems( void )
 	}
 
 // go through all of the weapons and make a list of the ones to pack
-	for ( i = 0 ; i < WeaponCount() ; i++ )
+	if (iAmmoRules != GR_PLR_DROP_GUN_NO)
 	{
-		// there's a weapon here. Should I pack it?
-		CBaseCombatWeapon *pPlayerItem = GetWeapon( i );
-		if ( pPlayerItem )
+		for (i = 0; i < WeaponCount(); i++)
 		{
-			switch( iWeaponRules )
+			// there's a weapon here. Should I pack it?
+			CBaseCombatWeapon* pPlayerItem = GetWeapon(i);
+			if (pPlayerItem)
 			{
-			case GR_PLR_DROP_GUN_ACTIVE:
-				if ( GetActiveWeapon() && pPlayerItem == GetActiveWeapon() )
+				switch (iWeaponRules)
 				{
-					// this is the active item. Pack it.
-					rgpPackWeapons[ iPW++ ] = pPlayerItem;
+				case GR_PLR_DROP_GUN_ACTIVE:
+					if (GetActiveWeapon() && pPlayerItem == GetActiveWeapon())
+					{
+						// this is the active item. Pack it.
+						rgpPackWeapons[iPW++] = pPlayerItem;
+					}
+					break;
+
+				case GR_PLR_DROP_GUN_ALL:
+					rgpPackWeapons[iPW++] = pPlayerItem;
+					break;
+
+				default:
+					break;
 				}
-				break;
-
-			case GR_PLR_DROP_GUN_ALL:
-				rgpPackWeapons[ iPW++ ] = pPlayerItem;
-				break;
-
-			default:
-				break;
 			}
 		}
 	}

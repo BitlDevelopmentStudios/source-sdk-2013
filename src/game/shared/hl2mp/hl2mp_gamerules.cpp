@@ -578,6 +578,12 @@ float CHL2MPRules::FlItemRespawnTime( CItem *pItem )
 	return sv_hl2mp_item_respawn_time.GetFloat();
 }
 
+//=========================================================
+//=========================================================
+int CHL2MPRules::DeadPlayerWeapons(CBasePlayer* pPlayer)
+{
+	return GR_PLR_DROP_GUN_NO;
+}
 
 //=========================================================
 // CanHaveWeapon - returns false if the player is not allowed
