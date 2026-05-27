@@ -1523,7 +1523,7 @@ void CBasePlayer::PackDeadPlayerItems( void )
 	}
 
 // go through all of the weapons and make a list of the ones to pack
-	if (iAmmoRules != GR_PLR_DROP_GUN_NO)
+	if (iWeaponRules != GR_PLR_DROP_GUN_NO)
 	{
 		for (i = 0; i < WeaponCount(); i++)
 		{
