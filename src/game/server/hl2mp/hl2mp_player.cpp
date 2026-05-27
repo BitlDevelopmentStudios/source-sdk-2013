@@ -1006,7 +1006,13 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 
 	if (iclass == CLS_FREEMAN)
 	{
-		Warning("Freeman classes are managed by the game.\n");
+		Warning("Cleverly done, Mr. Freeman, but you're not supposed to be here.\n");
+		return false;
+	}
+
+	if (GetPlayerClass() == CLS_FREEMAN)
+	{
+		Warning("Dr. Freeman? Can you hear me? Do not go into the light! \n");
 		return false;
 	}
 
