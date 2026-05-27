@@ -1619,6 +1619,8 @@ void CHL2MP_Player::Reset()
 {	
 	ResetDeathCount();
 	ResetFragCount();
+	ResetPlayerClass();
+	SetLifeCount(-1);
 }
 
 bool CHL2MP_Player::IsReady()
