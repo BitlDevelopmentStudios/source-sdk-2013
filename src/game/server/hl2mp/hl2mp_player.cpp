@@ -1012,7 +1012,7 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 
 	if (GetPlayerClass() == CLS_FREEMAN)
 	{
-		Warning("Dr. Freeman? Can you hear me? Do not go into the light! \n");
+		Warning("Dr. Freeman? Can you hear me? Do not go into the light!\n");
 		return false;
 	}
 
