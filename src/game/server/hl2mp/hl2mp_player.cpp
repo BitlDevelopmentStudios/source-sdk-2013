@@ -987,6 +987,12 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 	if (!g_Anticitizen_PR)
 		return false;
 
+	if (!m_bInitialSpawn && (GetLifeCount() == 0))
+	{
+		ClientPrint(this, HUD_PRINTCENTER, "#Anticitizen_OutOfLives");
+		return false;
+	}
+
 	if (iclass < 0 || iclass >= g_Anticitizen_PR->GetNumPlayerClasses())
 	{
 		Warning("HandleCommand_JoinClass( %d ) - invalid class index.\n", iclass);
