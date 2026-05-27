@@ -17,6 +17,7 @@ PlayerClassDatafile
 	"MeleeWeapon"		"weapon_stunstick"
 	
 	"Health"			"40"
+	"Lives"				"3"
 	"CanADSOfWeapons"	"1"
 	"TwoHandedWeaponAnims"	"1"
 	

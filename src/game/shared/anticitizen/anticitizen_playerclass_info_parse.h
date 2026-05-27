@@ -74,6 +74,7 @@ public:
 
 	int						iHealth;
 	int						iSuitArmor;
+	int						iLives;
 
 	int						iClassType;
 	int						iSentenceVoice;

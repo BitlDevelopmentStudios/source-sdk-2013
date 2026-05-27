@@ -151,8 +151,17 @@ public:
 	int		GetPlayerClass(void);
 	const CAnticitizen_FilePlayerClassInfo_t& GetPlayerClassInfo(void);
 
+	void	ResetPlayerClass(void) 
+	{ 
+		m_bChosenClass = false; 
+		m_iPlayerClass = CLS_INVALID; 
+	}
+
 	float	GetNormalSpeed(void) { return m_flNormalSpeed; }
 	float	GetSprintSpeed(void) { return m_flSprintSpeed; }
+
+	void	SetLifeCount(int val) { m_iLives = val; }
+	float	GetLifeCount(void)	  { return m_iLives; }
 
 	Vector m_vecTotalBulletForce;	//Accumulator for bullet force in a single frame
 
@@ -178,6 +187,9 @@ public:
 protected:
 	CPlayer_Sentence< CHL2MP_Player >* GetSentences() { return &m_Sentences; }
 
+public:
+	bool m_bInitialSpawn;
+
 private:
 	CPlayer_Sentence< CHL2MP_Player > m_Sentences;
 	float			m_flNextPainSoundTime;
@@ -189,6 +201,8 @@ private:
 	CNetworkVar(int, m_iPlayerClass);
 	CNetworkVar(float, m_flNormalSpeed);
 	CNetworkVar(float, m_flSprintSpeed);
+
+	CNetworkVar(int, m_iLives);
 
 	int m_iModelType;
 	CNetworkVar( int, m_iSpawnInterpCounter );

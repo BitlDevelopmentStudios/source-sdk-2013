@@ -39,6 +39,7 @@ void CAnticitizen_FilePlayerClassInfo_t::Parse(KeyValues* pKeyValuesData, const 
 	iCArmSkin = pKeyValuesData->GetInt("CArmsSkin", 0);
 
 	iHealth = pKeyValuesData->GetInt("Health", 100);
+	iLives = pKeyValuesData->GetInt("Lives", -1);
 	iClassType = pKeyValuesData->GetInt("ClassType", CLS_TYPE_NONE);
 	iSentenceVoice = pKeyValuesData->GetInt("VoiceMode", VOICE_TYPE_NONE);
 	bAllWeapons = pKeyValuesData->GetBool("AllWeapons");

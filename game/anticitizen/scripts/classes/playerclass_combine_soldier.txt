@@ -15,6 +15,7 @@ PlayerClassDatafile
 	"SecondaryWeapon"	"weapon_smg1"
 	
 	"Health"			"50"
+	"Lives"				"3"
 	"CanADSOfWeapons"	"1"
 	"TwoHandedWeaponAnims"	"1"
 	

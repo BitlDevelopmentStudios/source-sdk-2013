@@ -138,6 +138,9 @@ public:
 	int		GetPlayerClass(void);
 	const CAnticitizen_FilePlayerClassInfo_t& GetPlayerClassInfo(void);
 
+	// we should get the life count from the server....
+	float	GetLifeCount(void) { return m_iLives; }
+
 private:
 	
 	C_HL2MP_Player( const C_HL2MP_Player & );
@@ -158,6 +161,7 @@ private:
 	float m_headPitchMax;
 
 	int m_iPlayerClass;
+	int m_iLives;
 
 	float m_flNormalSpeed;
 	float m_flSprintSpeed;

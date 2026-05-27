@@ -15,6 +15,7 @@ PlayerClassDatafile
 	"PrimaryWeapon"		"weapon_ar2"
 	
 	"Health"			"70"
+	"Lives"				"3"
 	"CanADSOfWeapons"	"1"
 	"TwoHandedWeaponAnims"	"1"
 	

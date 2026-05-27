@@ -15,6 +15,7 @@ PlayerClassDatafile
 	"PrimaryWeapon"		"weapon_shotgun"
 	
 	"Health"			"50"
+	"Lives"				"3"
 	"CanADSOfWeapons"	"1"
 	"TwoHandedWeaponAnims"	"1"
 	

@@ -98,6 +98,8 @@ IMPLEMENT_SERVERCLASS_ST(CHL2MP_Player, DT_HL2MP_Player)
 	SendPropInt( SENDINFO( m_iSpawnInterpCounter), 4 ),
 	SendPropInt( SENDINFO( m_iPlayerSoundType), 3 ),
 
+	SendPropInt(SENDINFO(m_iLives) ),
+
 	SendPropInt(SENDINFO(m_iPlayerClass), 4),
 
 	SendPropFloat(SENDINFO(m_flNormalSpeed)),
@@ -156,7 +158,13 @@ CHL2MP_Player::CHL2MP_Player()
     m_bEnterObserver = false;
 	m_bReady = false;
 
+	m_bInitialSpawn = true;
+
 	m_iPlayerClass = CLS_INVALID;
+	m_bChosenClass = false;
+
+	m_iLives = -1;
+
 	m_cycleLatch = 0;
 	m_cycleLatchTimer.Invalidate();
 
@@ -296,6 +304,11 @@ void CHL2MP_Player::Spawn(void)
 	}
 	else
 	{
+		if (m_bInitialSpawn)
+		{
+			m_bInitialSpawn = false;
+		}
+
 		LoadClass(GetPlayerClass());
 	}
 	
@@ -687,6 +700,11 @@ void CHL2MP_Player::LoadClass(int iClass)
 		{
 			SetHealth(pPlayerClassInfo.iHealth);
 			SetMaxHealth(pPlayerClassInfo.iHealth);
+		}
+
+		if (pPlayerClassInfo.iLives > 0)
+		{
+			SetLifeCount(pPlayerClassInfo.iLives);
 		}
 
 		if (pPlayerClassInfo.bSuit)
