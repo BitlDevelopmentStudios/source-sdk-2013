@@ -32,6 +32,12 @@ enum
 	TEAM_FREEMAN,
 };
 
+enum
+{
+	STATE_PREROUND,
+	STATE_PLAYING,
+	STATE_COMPLETION
+};
 
 #ifdef CLIENT_DLL
 	#define CHL2MPRules C_HL2MPRules
@@ -107,11 +113,13 @@ public:
 	virtual int GetRemainingSoldierCount(void);
 	virtual void SelectFreeman(void);
 	virtual bool IsFreemanAlive(void);
+	virtual bool CheckCanEndGame(void);
 	virtual void Think( void );
 	virtual void CreateStandardEntities( void );
 	virtual void ClientSettingsChanged( CBasePlayer *pPlayer );
 	virtual int PlayerRelationship( CBaseEntity *pPlayer, CBaseEntity *pTarget );
 	virtual void GoToIntermission( void );
+	virtual void LeaveIntermission(void);
 	virtual void DeathNotice( CBasePlayer *pVictim, const CTakeDamageInfo &info );
 	virtual const char *GetGameDescription( void );
 	// derive this function if you mod uses encrypted weapon info files
@@ -119,11 +127,12 @@ public:
 	virtual const CViewVectors* GetViewVectors() const;
 	const HL2MPViewVectors* GetHL2MPViewVectors() const;
 
-	float GetMapRemainingTime();
 	void CleanUpMap();
-	void RestartGame();
+	void RestartGame(bool gameend = false);
 
 	void OnNavMeshLoad( void );
+
+	int GetState(void) { return m_iRoundState; }
 	
 #ifndef CLIENT_DLL
 	virtual Vector VecItemRespawnSpot( CItem *pItem );
@@ -138,6 +147,7 @@ public:
 	void	ManageObjectRelocation( void );
 	const char *GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer );
 
+	virtual CHL2MP_Player* GetFreeman() { return pFreeman; }
 #endif
 
 	bool IsOfficialMap( void );
@@ -162,10 +172,13 @@ private:
 	CUtlVector<EHANDLE> m_hRespawnableItemsAndWeapons;
 	float m_flRestartGameTime;
 	bool m_bCompleteReset;
-	bool m_bGameRunning;
 	bool m_bHasMinPlayersToStart;
+	bool m_bStartedStartClock;
+	int m_iRoundState;
 
 #ifndef CLIENT_DLL
+	//may be disasterous
+	CHL2MP_Player* pFreeman;
 	bool m_bChangelevelDone;
 #endif
 };

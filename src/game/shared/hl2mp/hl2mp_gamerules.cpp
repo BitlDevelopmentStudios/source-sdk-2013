@@ -48,6 +48,8 @@ ConVar sv_report_client_settings("sv_report_client_settings", "0", FCVAR_GAMEDLL
 
 ConVar sv_minplayerstostart("sv_minplayerstostart", "2", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 
+ConVar sv_startwaitime("sv_startwaitime", "30", FCVAR_GAMEDLL | FCVAR_NOTIFY);
+
 extern ConVar mp_chattime;
 
 extern CBaseEntity	 *g_pLastCombineSpawn;
@@ -201,8 +203,10 @@ CHL2MPRules::CHL2MPRules()
 	m_flRestartGameTime = 0;
 	m_bCompleteReset = false;
 	m_bChangelevelDone = false;
-	m_bGameRunning = false;
 	m_bHasMinPlayersToStart = false;
+	pFreeman = NULL;
+	m_iRoundState = STATE_PREROUND;
+	m_bStartedStartClock = false;
 
 #endif
 }
@@ -324,6 +328,9 @@ int CHL2MPRules::GetRemainingSoldierCount(void)
 void CHL2MPRules::SelectFreeman(void)
 {
 #ifndef CLIENT_DLL
+	if (pFreeman)
+		return;
+
 	int iPlayerCount = UTIL_GetPlayerCount();
 	random->SetSeed(gpGlobals->curtime);
 	int iRandPlayer = random->RandomInt(1, iPlayerCount);
@@ -336,10 +343,7 @@ void CHL2MPRules::SelectFreeman(void)
 		pPlayer->ChangeTeam(TEAM_FREEMAN);
 		pPlayer->SetPlayerClass(CLS_FREEMAN);
 		pPlayer->SetChosenClass(true);
-	}
-	else
-	{
-		DevWarning("Can't find invalid user %i\n", iRandPlayer);
+		pFreeman = pPlayer;
 	}
 #endif
 }
@@ -347,19 +351,13 @@ void CHL2MPRules::SelectFreeman(void)
 bool CHL2MPRules::IsFreemanAlive(void)
 {
 #ifndef CLIENT_DLL
-	CTeam* pFreeman = g_Teams[TEAM_FREEMAN];
-
-	for (int i = 0; i < MAX_PLAYERS; i++)
+	if (pFreeman)
 	{
-		CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+		// don't end if a freeman player disconnects.
+		if (pFreeman->IsDisconnecting())
+			return true;
 
-		if (!pPlayer)
-			continue;
-
-		if (pPlayer->GetTeam() != pFreeman)
-			continue;
-
-		if (!pPlayer->m_bInitialSpawn && (pPlayer->GetLifeCount() == 0) && pPlayer->IsDead())
+		if (!pFreeman->m_bInitialSpawn && (pFreeman->GetLifeCount() == 0) && pFreeman->IsDead())
 		{
 			return false;
 		}
@@ -369,6 +367,29 @@ bool CHL2MPRules::IsFreemanAlive(void)
 	return true;
 }
 
+bool CHL2MPRules::CheckCanEndGame(void)
+{
+	// no longer at the player minimum.
+	if (m_bHasMinPlayersToStart)
+	{
+		return true;
+	}
+
+	// freeman is dead
+	if (!IsFreemanAlive())
+	{
+		return true;
+	}
+
+	// soldiers are dead
+	if (GetRemainingSoldierCount() == 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 void CHL2MPRules::Think( void )
 {
 
@@ -376,8 +397,82 @@ void CHL2MPRules::Think( void )
 	
 	CGameRules::Think();
 
-	// LOGIC HERE
-	// always use m_bInitialSpawn when checking lives or deaths.
+	// set every tick for player management.
+	m_bHasMinPlayersToStart = (UTIL_GetPlayerCount() >= sv_minplayerstostart.GetInt());
+
+	switch (m_iRoundState)
+	{
+		case STATE_PREROUND:
+		{
+			LeaveIntermission();
+			m_bCompleteReset = false;
+
+			if (m_bHasMinPlayersToStart)
+			{
+				if (!m_bStartedStartClock)
+				{
+					m_flGameStartTime = gpGlobals->curtime + sv_startwaitime.GetInt();
+					m_bStartedStartClock = true;
+				}
+
+				if (m_flGameStartTime < gpGlobals->curtime)
+				{
+					m_iRoundState = STATE_PLAYING;
+
+					if (!pFreeman)
+					{
+						SelectFreeman();
+					}
+
+					if (!m_bCompleteReset)
+					{
+						RestartGame();
+						m_bCompleteReset = true;
+					}
+				}
+				else
+				{
+					UTIL_ClientPrintAll(HUD_PRINTCENTER, "#Anticitizen_GameStarts", sv_startwaitime.GetString());
+				}
+			}
+			else
+			{
+				UTIL_ClientPrintAll(HUD_PRINTCENTER, "#Anticitizen_WaitingforPlayers");
+				m_flGameStartTime = -1;
+			}
+
+			break;
+		}
+
+		case STATE_PLAYING:
+		{
+			/*if (!g_fGameOver && CheckCanEndGame())
+			{
+				m_iRoundState = STATE_COMPLETION;
+				g_fGameOver = true;
+				m_bCompleteReset = false;
+				GoToIntermission();
+			}*/
+			break;
+		}
+
+		case STATE_COMPLETION:
+		{
+			if (g_fGameOver)
+			{
+				if (m_flIntermissionEndTime < gpGlobals->curtime)
+				{
+					m_iRoundState = STATE_PREROUND;
+					if (!m_bCompleteReset)
+					{
+						RestartGame(true);
+						m_bCompleteReset = true;
+					}
+				}
+			}
+			break;
+		}
+	}
 
 	ManageObjectRelocation();
 
@@ -391,7 +486,6 @@ void CHL2MPRules::GoToIntermission( void )
 		return;
 
 	g_fGameOver = true;
-	m_bGameRunning = false;
 
 	m_flIntermissionEndTime = gpGlobals->curtime + mp_chattime.GetInt();
 
@@ -407,6 +501,30 @@ void CHL2MPRules::GoToIntermission( void )
 	}
 #endif
 	
+}
+
+void CHL2MPRules::LeaveIntermission(void)
+{
+#ifndef CLIENT_DLL
+	if (!g_fGameOver)
+		return;
+
+	g_fGameOver = false;
+
+	m_flIntermissionEndTime = gpGlobals->curtime;
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+
+		if (!pPlayer)
+			continue;
+
+		pPlayer->ShowViewPortPanel(PANEL_SCOREBOARD, false);
+		pPlayer->RemoveFlag(FL_FROZEN);
+	}
+#endif
+
 }
 
 // when we are within this close to running out of entities,  items 
@@ -639,12 +757,22 @@ void CHL2MPRules::ClientDisconnected( edict_t *pClient )
 	// Msg( "CLIENT DISCONNECTED, REMOVING FROM TEAM.\n" );
 
 	CBasePlayer *pPlayer = (CBasePlayer *)CBaseEntity::Instance( pClient );
-	if ( pPlayer )
+	if (pPlayer)
 	{
 		// Remove the player from his team
-		if ( pPlayer->GetTeam() )
+		if (pPlayer->GetTeam())
 		{
-			pPlayer->GetTeam()->RemovePlayer( pPlayer );
+			pPlayer->GetTeam()->RemovePlayer(pPlayer);
+		}
+
+		if (pPlayer == pFreeman)
+		{
+			pFreeman = NULL;
+
+			if (!g_fGameOver)
+			{
+				SelectFreeman();
+			}
 		}
 	}
 
@@ -807,19 +935,6 @@ bool CHL2MPRules::IsConnectedUserInfoChangeAllowed( CBasePlayer *pPlayer )
 {
 	return true;
 }
- 
-float CHL2MPRules::GetMapRemainingTime()
-{
-	// if timelimit is disabled, return 0
-	if ( mp_timelimit.GetInt() <= 0 )
-		return 0;
-
-	// timelimit is in minutes
-
-	float timeleft = (m_flGameStartTime + mp_timelimit.GetInt() * 60.0f ) - gpGlobals->curtime;
-
-	return timeleft;
-}
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -923,20 +1038,8 @@ bool CHL2MPRules::ClientCommand( CBaseEntity *pEdict, const CCommand &args )
 
 #ifndef CLIENT_DLL
 
-void CHL2MPRules::RestartGame()
+void CHL2MPRules::RestartGame(bool gameend)
 {
-	// bounds check
-	if ( mp_timelimit.GetInt() < 0 )
-	{
-		mp_timelimit.SetValue( 0 );
-	}
-	m_flGameStartTime = gpGlobals->curtime;
-	if ( !IsFinite( m_flGameStartTime.Get() ) )
-	{
-		Warning( "Trying to set a NaN game start time\n" );
-		m_flGameStartTime.GetForModify() = 0.0f;
-	}
-
 	CleanUpMap();
 	
 	// now respawn all players
@@ -947,16 +1050,25 @@ void CHL2MPRules::RestartGame()
 		if ( !pPlayer )
 			continue;
 
-		if (pPlayer->GetActiveWeapon())
+		if (gameend)
 		{
-			pPlayer->GetActiveWeapon()->Holster();
+			pPlayer->Reset();
 		}
+		else
+		{
+			pPlayer->m_bInitialSpawn = true;
 
-		pPlayer->RemoveFlag(FL_FROZEN);
-		pPlayer->ShowViewPortPanel(PANEL_SCOREBOARD, false);
-		pPlayer->RemoveAllItems(true);
-		pPlayer->ResetDeathCount();
-		pPlayer->ResetFragCount();
+			if (pPlayer->GetActiveWeapon())
+			{
+				pPlayer->GetActiveWeapon()->Holster();
+			}
+
+			pPlayer->RemoveAllItems(true);
+			pPlayer->ResetDeathCount();
+			pPlayer->ResetFragCount();
+			pPlayer->SetLifeCount(-1);
+		}
+		
 		pPlayer->Spawn();
 	}
 
@@ -975,8 +1087,13 @@ void CHL2MPRules::RestartGame()
 		pCombine->SetScore( 0 );
 	}
 
+	pFreeman = NULL;
 	m_flIntermissionEndTime = 0;
 	m_flRestartGameTime = 0.0;
+	g_fGameOver = false;
+	m_bHasMinPlayersToStart = false;
+	m_bStartedStartClock = true;
+	m_flGameStartTime = 0;
 
 	IGameEvent * event = gameeventmanager->CreateEvent( "round_start" );
 	if ( event )
