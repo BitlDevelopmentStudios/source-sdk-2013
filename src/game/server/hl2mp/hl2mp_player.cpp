@@ -1591,9 +1591,13 @@ ReturnSpot:
 	return pSpot;
 } 
 
-void CHL2MP_Player::Reset()
+void CHL2MP_Player::Reset(bool gameend)
 {	
 	m_bInitialSpawn = true;
+	if (gameend)
+	{
+		m_bChosenClass = false;
+	}
 
 	if (GetActiveWeapon())
 	{
@@ -1603,7 +1607,10 @@ void CHL2MP_Player::Reset()
 	RemoveAllItems(true);
 	ResetDeathCount();
 	ResetFragCount();
-	ResetPlayerClass();
+	if (gameend)
+	{
+		ResetPlayerClass();
+	}
 	SetLifeCount(-1);
 }
 

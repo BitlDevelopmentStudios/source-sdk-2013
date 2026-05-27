@@ -49,6 +49,7 @@ ConVar sv_report_client_settings("sv_report_client_settings", "0", FCVAR_GAMEDLL
 ConVar sv_minplayerstostart("sv_minplayerstostart", "2", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 
 ConVar sv_startwaitime("sv_startwaitime", "30", FCVAR_GAMEDLL | FCVAR_NOTIFY);
+ConVar sv_startplaywaitime("sv_startplaywaitime", "5", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 
 extern ConVar mp_chattime;
 
@@ -200,7 +201,6 @@ CHL2MPRules::CHL2MPRules()
 	m_flGameStartTime = 0;
 
 	m_hRespawnableItemsAndWeapons.RemoveAll();
-	m_flRestartGameTime = 0;
 	m_bCompleteReset = false;
 	m_bChangelevelDone = false;
 	m_bHasMinPlayersToStart = false;
@@ -357,7 +357,7 @@ bool CHL2MPRules::IsFreemanAlive(void)
 		if (pFreeman->IsDisconnecting())
 			return true;
 
-		if (!pFreeman->m_bInitialSpawn && (pFreeman->GetLifeCount() == 0) && pFreeman->IsDead())
+		if (pFreeman->GetLifeCount() == 0)
 		{
 			return false;
 		}
@@ -370,7 +370,7 @@ bool CHL2MPRules::IsFreemanAlive(void)
 bool CHL2MPRules::CheckCanEndGame(void)
 {
 	// no longer at the player minimum.
-	if (m_bHasMinPlayersToStart)
+	if (!m_bHasMinPlayersToStart)
 	{
 		return true;
 	}
@@ -404,8 +404,15 @@ void CHL2MPRules::Think( void )
 	{
 		case STATE_PREROUND:
 		{
-			LeaveIntermission();
 			m_bCompleteReset = false;
+
+			if (m_bJustEnded)
+			{
+				RestartGame(true);
+				m_bJustEnded = false;
+			}
+
+			LeaveIntermission();
 
 			if (m_bHasMinPlayersToStart)
 			{
@@ -429,10 +436,12 @@ void CHL2MPRules::Think( void )
 						RestartGame();
 						m_bCompleteReset = true;
 					}
+
+					m_flGameStartTime = gpGlobals->curtime + sv_startplaywaitime.GetInt();
 				}
 				else
 				{
-					UTIL_ClientPrintAll(HUD_PRINTCENTER, "#Anticitizen_GameStarts", sv_startwaitime.GetString());
+					UTIL_ClientPrintAll(HUD_PRINTCENTER, "#Anticitizen_RoundStarts", sv_startwaitime.GetString());
 				}
 			}
 			else
@@ -446,13 +455,39 @@ void CHL2MPRules::Think( void )
 
 		case STATE_PLAYING:
 		{
-			/*if (!g_fGameOver && CheckCanEndGame())
+			if (m_flGameStartTime < gpGlobals->curtime)
 			{
-				m_iRoundState = STATE_COMPLETION;
-				g_fGameOver = true;
-				m_bCompleteReset = false;
-				GoToIntermission();
-			}*/
+				for (int i = 0; i < MAX_PLAYERS; i++)
+				{
+					CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+
+					if (!pPlayer)
+						continue;
+
+					pPlayer->RemoveFlag(FL_FROZEN);
+				}
+
+				if (!g_fGameOver && CheckCanEndGame())
+				{
+					m_iRoundState = STATE_COMPLETION;
+					GoToIntermission();
+				}
+			}
+			else
+			{
+				UTIL_ClientPrintAll(HUD_PRINTCENTER, "#Anticitizen_GameStarts", sv_startplaywaitime.GetString());
+
+				for (int i = 0; i < MAX_PLAYERS; i++)
+				{
+					CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+
+					if (!pPlayer)
+						continue;
+
+					pPlayer->AddFlag(FL_FROZEN);
+				}
+			}
+
 			break;
 		}
 
@@ -462,14 +497,11 @@ void CHL2MPRules::Think( void )
 			{
 				if (m_flIntermissionEndTime < gpGlobals->curtime)
 				{
+					m_bJustEnded = true;
 					m_iRoundState = STATE_PREROUND;
-					if (!m_bCompleteReset)
-					{
-						RestartGame(true);
-						m_bCompleteReset = true;
-					}
 				}
 			}
+
 			break;
 		}
 	}
@@ -510,8 +542,6 @@ void CHL2MPRules::LeaveIntermission(void)
 		return;
 
 	g_fGameOver = false;
-
-	m_flIntermissionEndTime = gpGlobals->curtime;
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
@@ -1050,25 +1080,7 @@ void CHL2MPRules::RestartGame(bool gameend)
 		if ( !pPlayer )
 			continue;
 
-		if (gameend)
-		{
-			pPlayer->Reset();
-		}
-		else
-		{
-			pPlayer->m_bInitialSpawn = true;
-
-			if (pPlayer->GetActiveWeapon())
-			{
-				pPlayer->GetActiveWeapon()->Holster();
-			}
-
-			pPlayer->RemoveAllItems(true);
-			pPlayer->ResetDeathCount();
-			pPlayer->ResetFragCount();
-			pPlayer->SetLifeCount(-1);
-		}
-		
+		pPlayer->Reset(gameend);
 		pPlayer->Spawn();
 	}
 
@@ -1087,12 +1099,21 @@ void CHL2MPRules::RestartGame(bool gameend)
 		pCombine->SetScore( 0 );
 	}
 
-	pFreeman = NULL;
+	if (gameend)
+	{
+		pFreeman = NULL;
+	}
+
 	m_flIntermissionEndTime = 0;
-	m_flRestartGameTime = 0.0;
-	g_fGameOver = false;
 	m_bHasMinPlayersToStart = false;
-	m_bStartedStartClock = true;
+	if (gameend)
+	{
+		m_bStartedStartClock = false;
+	}
+	else
+	{
+		m_bStartedStartClock = true;
+	}
 	m_flGameStartTime = 0;
 
 	IGameEvent * event = gameeventmanager->CreateEvent( "round_start" );

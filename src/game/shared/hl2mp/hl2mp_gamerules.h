@@ -170,10 +170,10 @@ private:
 	CNetworkVar( bool, m_bTeamPlayEnabled );
 	CNetworkVar( float, m_flGameStartTime );
 	CUtlVector<EHANDLE> m_hRespawnableItemsAndWeapons;
-	float m_flRestartGameTime;
 	bool m_bCompleteReset;
 	bool m_bHasMinPlayersToStart;
 	bool m_bStartedStartClock;
+	bool m_bJustEnded;
 	int m_iRoundState;
 
 #ifndef CLIENT_DLL

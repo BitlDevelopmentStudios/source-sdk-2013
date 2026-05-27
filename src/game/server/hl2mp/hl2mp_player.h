@@ -124,7 +124,7 @@ public:
 	
 	void  DetonateTripmines( void );
 
-	void Reset();
+	void Reset(bool gameend = false);
 
 	bool IsReady();
 	void SetReady( bool bReady );
