@@ -1004,23 +1004,13 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 		return false;
 	}
 
-#ifndef DEBUG
 	if (iclass == CLS_FREEMAN)
 	{
 		Warning("Freeman classes are managed by the game.\n");
 		return false;
 	}
-#endif // !DEBUG
 
-#ifdef DEBUG
-	if (iclass == CLS_FREEMAN)
-	{
-		ChangeTeam(TEAM_FREEMAN);
-	}
-	else if (GetTeamNumber() != TEAM_COMBINE)
-#else
 	if (GetTeamNumber() != TEAM_COMBINE)
-#endif // !DEBUG
 	{
 		ChangeTeam(TEAM_COMBINE);
 	}

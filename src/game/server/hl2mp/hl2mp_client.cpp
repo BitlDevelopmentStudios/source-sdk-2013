@@ -172,6 +172,8 @@ void respawn( CBaseEntity *pEdict, bool fCopyCorpse )
 			{
 				pPlayer->ResetPlayerClass();
 				pPlayer->Spawn();
+				// tell the player that they're out of lives.
+				ClientPrint(pPlayer, HUD_PRINTCENTER, "#Anticitizen_OutOfLives");
 			}
 			else
 			{
