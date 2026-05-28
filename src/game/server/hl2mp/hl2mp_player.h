@@ -195,6 +195,7 @@ public:
 private:
 	CPlayer_Sentence< CHL2MP_Player > m_Sentences;
 	float			m_flNextPainSoundTime;
+	float			m_flNextSentenceTime;
 
 	CHL2MPPlayerAnimState* m_PlayerAnimState;
 

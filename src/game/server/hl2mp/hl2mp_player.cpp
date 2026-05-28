@@ -42,6 +42,9 @@ extern CBaseEntity				*g_pLastSpawn;
 
 ConVar hl2mp_spawn_frag_fallback_radius( "hl2mp_spawn_frag_fallback_radius", "48", FCVAR_NONE, "If no spawns are available, kill players with this radius to allow new players to spawn." );
 
+ConVar sv_sentencedelay("sv_sentencedelay", "5", FCVAR_NOTIFY);
+ConVar sv_painsentencedelay("sv_painsentencedelay", "1.5", FCVAR_NOTIFY);
+
 #define HL2MP_COMMAND_MAX_RATE 0.3
 
 #define CYCLELATCH_UPDATE_INTERVAL	0.2f
@@ -93,10 +96,6 @@ IMPLEMENT_SERVERCLASS_ST(CHL2MP_Player, DT_HL2MP_Player)
 
 	// Data that gets sent to all other players
 	SendPropDataTable( "hl2mpnonlocaldata", 0, &REFERENCE_SEND_TABLE( DT_HL2MPNonLocalPlayerExclusive ), SendProxy_SendNonLocalDataTable ),
-
-	SendPropEHandle( SENDINFO( m_hRagdoll ) ),
-	SendPropInt( SENDINFO( m_iSpawnInterpCounter), 4 ),
-	SendPropInt( SENDINFO( m_iPlayerSoundType), 3 ),
 
 	SendPropInt(SENDINFO(m_iLives) ),
 
@@ -907,6 +906,11 @@ const char* CHL2MP_Player::SentenceForConcept(int iConcept, int iVoiceMode)
 
 void CHL2MP_Player::SpeakSentence(const char* pSentence, SentencePriority_t nSoundPriority, SentenceCriteria_t nCriteria)
 {
+	bool alwaysSpeak = ((nSoundPriority == SENTENCE_PRIORITY_INVALID) && (nCriteria == SENTENCE_CRITERIA_ALWAYS));
+
+	if ((gpGlobals->curtime < m_flNextSentenceTime) && !alwaysSpeak)
+		return;
+
 	if (GetPlayerClass() > CLS_INVALID)
 	{
 		const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
@@ -929,6 +933,8 @@ void CHL2MP_Player::SpeakSentence(const char* pSentence, SentencePriority_t nSou
 			Q_snprintf(szStepSound, sizeof(szStepSound), "%s%s", szPrefix, pSentence);
 
 			m_Sentences.Speak(szStepSound);
+
+			m_flNextSentenceTime = gpGlobals->curtime + sv_sentencedelay.GetFloat();
 		}
 	}
 }
@@ -1259,6 +1265,14 @@ void CHL2MP_Player::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecT
 				return;
 			}
 		}
+		else
+		{
+			if (HL2MPRules()->DeadPlayerWeapons(this) == GR_PLR_DROP_GUN_NO)
+			{
+				// do not drop any weapon if we're told not to, except for primed grenades.
+				return;
+			}
+		}
 	}
 
 	BaseClass::Weapon_Drop( pWeapon, pvecTarget, pVelocity );
@@ -1433,7 +1447,7 @@ void CHL2MP_Player::PainSound(const CTakeDamageInfo& info)
 				// This causes it to speak it no matter what; doesn't bother with setting sounds.
 				// Use m_Sentences.Speak because we have custom logic here.
 				m_Sentences.Speak(pSentenceName, SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
-				m_flNextPainSoundTime = gpGlobals->curtime + 1;
+				m_flNextPainSoundTime = gpGlobals->curtime + sv_painsentencedelay.GetFloat();
 			}
 		}
 	}
@@ -1460,7 +1474,8 @@ void CHL2MP_Player::DeathSound( const CTakeDamageInfo &info )
 
 		if (pPlayerClassInfo.iSentenceVoice > VOICE_TYPE_NONE)
 		{
-			SpeakSentence("DIE");
+			// This causes it to speak it no matter what; doesn't bother with setting sounds.
+			SpeakSentence("DIE", SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
 		}
 		else
 		{
