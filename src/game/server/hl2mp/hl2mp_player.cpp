@@ -1255,23 +1255,10 @@ void CHL2MP_Player::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecT
 	//Drop a grenade if it's primed.
 	if ( GetActiveWeapon() )
 	{
-		CBaseCombatWeapon *pGrenade = Weapon_OwnsThisType("weapon_frag");
-
-		if ( GetActiveWeapon() == pGrenade )
+		if (HL2MPRules()->DeadPlayerWeapons(this) == GR_PLR_DROP_GUN_NO)
 		{
-			if ( ( m_nButtons & IN_ATTACK ) || (m_nButtons & IN_ATTACK2) )
-			{
-				DropPrimedFragGrenade( this, pGrenade );
-				return;
-			}
-		}
-		else
-		{
-			if (HL2MPRules()->DeadPlayerWeapons(this) == GR_PLR_DROP_GUN_NO)
-			{
-				// do not drop any weapon if we're told not to, except for primed grenades.
-				return;
-			}
+			// do not drop any weapon if we're told not to, except for primed grenades.
+			return;
 		}
 	}
 
@@ -1386,7 +1373,7 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 	{
 		CBasePlayer* pPlayer = ToBasePlayer(info.GetAttacker());
 
-		if (pPlayer != NULL)
+		if ((pPlayer != NULL) && (pPlayer != this))
 		{
 			CHalfLife2* pHL2GameRules = static_cast<CHalfLife2*>(g_pGameRules);
 
@@ -1395,6 +1382,18 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 			{
 				DropItem("item_healthvial", WorldSpaceCenter() + RandomVector(-4, 4), RandomAngle(0, 360));
 				pHL2GameRules->NPC_DroppedHealth();
+			}
+
+			CBaseCombatWeapon* pGrenade = Weapon_OwnsThisType("weapon_frag");
+
+			if (GetActiveWeapon() == pGrenade)
+			{
+				// Attempt to drop a grenade. We don't do anything from werapon_drop here for accuracy's sake.
+				if (pHL2GameRules->NPC_ShouldDropGrenade(pPlayer))
+				{
+					DropItem("weapon_frag", WorldSpaceCenter() + RandomVector(-4, 4), RandomAngle(0, 360));
+					pHL2GameRules->NPC_DroppedGrenade();
+				}
 			}
 		}
 	}
