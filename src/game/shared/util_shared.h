@@ -692,6 +692,8 @@ CSteamID UTIL_SteamIDFromProperString( const char *pszInputRaw, bool bAllowSteam
 //-----------------------------------------------------------------------------
 CSteamID UTIL_GuessSteamIDFromFuzzyInput( const char *pszInputRaw, bool bCurrentUniverseOnly = true );
 
+int UTIL_GetPlayerCount(void);
+
 // This will return the first active operation string it can find. In the case of multiple
 // operations overlapping, the list order will act as priority.
 const char		   *UTIL_GetActiveOperationString();

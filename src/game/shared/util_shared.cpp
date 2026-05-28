@@ -1628,6 +1628,23 @@ CSteamID UTIL_GuessSteamIDFromFuzzyInput( const char *pszInputRaw, bool bCurrent
 	return CSteamID();
 }
 
+int UTIL_GetPlayerCount(void)
+{
+	int iPlayerCount = 0;
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+
+		if (!pPlayer)
+			continue;
+
+		iPlayerCount++;
+	}
+
+	return iPlayerCount;
+}
+
 #define WORKSHOP_PREFIX_1		"workshop/"
 #define MAP_WORKSHOP_PREFIX_1	"maps/" WORKSHOP_PREFIX_1
 

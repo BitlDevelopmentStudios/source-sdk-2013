@@ -215,6 +215,11 @@ void C_AI_BaseNPC::DispatchTraceAttack(const CTakeDamageInfo& info, const Vector
 		}
 	}
 
+	if (m_bloodColor == DONT_BLEED)
+	{
+		m_fNoDamageDecal = true;
+	}
+
 	BaseClass::DispatchTraceAttack(info, vecDir, ptr, pAccumulator);
 }
 
