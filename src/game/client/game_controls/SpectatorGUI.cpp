@@ -614,7 +614,7 @@ void CSpectatorGUI::ShowPanel(bool bShow)
 			InvalidateLayout( true, true );
 			m_iWasSteamController = bWasSteamController ? 1 : 0;
 		}
-		m_bSpecScoreboard = true;
+		m_bSpecScoreboard = false;
 	}
 
 	SetVisible( bShow );
