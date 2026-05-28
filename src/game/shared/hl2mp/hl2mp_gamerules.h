@@ -39,6 +39,14 @@ enum
 	STATE_COMPLETION
 };
 
+enum
+{
+	GAME_NOT_ENDED,
+	GAME_END_NOTENOUGHPLAYERS,
+	GAME_END_FREEMANDEAD,
+	GAME_END_NOMORESOLDIERS
+};
+
 #ifdef CLIENT_DLL
 	#define CHL2MPRules C_HL2MPRules
 	#define CHL2MPGameRulesProxy C_HL2MPGameRulesProxy
@@ -113,7 +121,7 @@ public:
 	virtual int GetRemainingSoldierCount(void);
 	virtual void SelectFreeman(void);
 	virtual bool IsFreemanAlive(void);
-	virtual bool CheckCanEndGame(void);
+	virtual int CheckCanEndGame(void);
 	virtual void Think( void );
 	virtual void CreateStandardEntities( void );
 	virtual void ClientSettingsChanged( CBasePlayer *pPlayer );
@@ -175,6 +183,7 @@ private:
 	bool m_bStartedStartClock;
 	bool m_bJustEnded;
 	int m_iRoundState;
+	int m_iGameEndReason;
 
 #ifndef CLIENT_DLL
 	//may be disasterous

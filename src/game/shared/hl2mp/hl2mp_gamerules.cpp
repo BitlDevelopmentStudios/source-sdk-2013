@@ -357,7 +357,17 @@ bool CHL2MPRules::IsFreemanAlive(void)
 		if (pFreeman->IsDisconnecting())
 			return true;
 
-		if (!pFreeman->m_bInitialSpawn && (pFreeman->IsDead() || (pFreeman->GetLifeCount() == 0) || (pFreeman->GetTeamNumber() == TEAM_SPECTATOR)))
+		if (!pFreeman->IsAlive())
+		{
+			return false;
+		}
+
+		if (pFreeman->GetLifeCount() == 0)
+		{
+			return false;
+		}
+
+		if (pFreeman->GetTeamNumber() == TEAM_SPECTATOR)
 		{
 			return false;
 		}
@@ -367,27 +377,27 @@ bool CHL2MPRules::IsFreemanAlive(void)
 	return true;
 }
 
-bool CHL2MPRules::CheckCanEndGame(void)
+int CHL2MPRules::CheckCanEndGame(void)
 {
 	// no longer at the player minimum.
 	if (!m_bHasMinPlayersToStart)
 	{
-		return true;
+		return GAME_END_NOTENOUGHPLAYERS;
 	}
 
 	// freeman is dead
 	if (!IsFreemanAlive())
 	{
-		return true;
+		return GAME_END_FREEMANDEAD;
 	}
 
 	// soldiers are dead
 	if (GetRemainingSoldierCount() == 0)
 	{
-		return true;
+		return GAME_END_NOMORESOLDIERS;
 	}
 
-	return false;
+	return GAME_NOT_ENDED;
 }
 
 void CHL2MPRules::Think( void )
@@ -467,9 +477,12 @@ void CHL2MPRules::Think( void )
 					pPlayer->RemoveFlag(FL_FROZEN);
 				}
 
-				if (!g_fGameOver && CheckCanEndGame())
+				m_iGameEndReason = CheckCanEndGame();
+
+				if (!g_fGameOver && (m_iGameEndReason > GAME_NOT_ENDED))
 				{
 					m_iRoundState = STATE_COMPLETION;
+
 					GoToIntermission();
 				}
 			}
@@ -499,6 +512,25 @@ void CHL2MPRules::Think( void )
 				{
 					m_bJustEnded = true;
 					m_iRoundState = STATE_PREROUND;
+				}
+				else
+				{
+					const char* szPhrase = "";
+
+					switch (m_iGameEndReason)
+					{
+						case GAME_END_NOTENOUGHPLAYERS:
+							szPhrase = "#Anticitizen_NotEnoughPlayers";
+							break;
+						case GAME_END_FREEMANDEAD:
+							szPhrase = "#Anticitizen_FreemanDead";
+							break;
+						case GAME_END_NOMORESOLDIERS:
+							szPhrase = "#Anticitizen_SoldiersDead";
+							break;
+					}
+
+					UTIL_ClientPrintAll(HUD_PRINTCENTER, szPhrase, mp_chattime.GetString());
 				}
 			}
 
@@ -1102,6 +1134,7 @@ void CHL2MPRules::RestartGame(bool gameend)
 	if (gameend)
 	{
 		pFreeman = NULL;
+		m_iGameEndReason = GAME_NOT_ENDED;
 	}
 
 	m_flIntermissionEndTime = 0;

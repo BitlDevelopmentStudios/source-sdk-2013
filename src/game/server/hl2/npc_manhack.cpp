@@ -2403,7 +2403,6 @@ void CNPC_Manhack::Spawn(void)
 	AddEFlags( EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL );
 	AddEffects( EF_NOSHADOW );
 
-	SetBloodColor( DONT_BLEED );
 	SetCurrentVelocity( vec3_origin );
 	m_vForceVelocity.Init();
 	m_vCurrentBanking.Init();
@@ -2455,6 +2454,8 @@ void CNPC_Manhack::Spawn(void)
 	m_bHeld = false;
 	m_bHackedByAlyx = false;
 	StopLoitering();
+
+	SetBloodColor(DONT_BLEED);
 }
 
 //-----------------------------------------------------------------------------

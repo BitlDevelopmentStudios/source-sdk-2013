@@ -312,11 +312,7 @@ void CHL2MP_Player::UpdateStepSound(surfacedata_t* psurface, const Vector& vecOr
 	// if we're moving fast enough, our playersounds should change from BaseClass to ours.
 	bool moving_fast_enough_sndplay = (speed >= velwalk);
 
-	if (GetPlayerClass() == CLS_FREEMAN)
-	{
-		BaseClass::PlayStepSound(feet, psurface, fvol, false);
-	}
-	else if (!moving_fast_enough_sndplay)
+	if (!moving_fast_enough_sndplay)
 	{
 		BaseClass::PlayStepSound(feet, psurface, fvol, false);
 	}
@@ -336,6 +332,13 @@ void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, f
 {
 	if ( gpGlobals->maxClients > 1 && !sv_footsteps.GetFloat() )
 		return;
+
+	// give freeman his proper sounds.
+	if (GetPlayerClass() == CLS_FREEMAN)
+	{
+		BaseClass::PlayStepSound(vecOrigin, psurface, fvol, force);
+		return;
+	}
 
 #if defined( CLIENT_DLL )
 	// during prediction play footstep sounds only once
