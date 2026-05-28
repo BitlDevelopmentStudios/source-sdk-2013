@@ -1071,6 +1071,14 @@ void CHL2MP_Player::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecT
 				return;
 			}
 		}
+		else
+		{
+			if (HL2MPRules()->DeadPlayerWeapons(this) == GR_PLR_DROP_GUN_NO)
+			{
+				// do not drop any weapon if we're told not to, except for primed grenades.
+				return;
+			}
+		}
 	}
 
 	BaseClass::Weapon_Drop( pWeapon, pvecTarget, pVelocity );
