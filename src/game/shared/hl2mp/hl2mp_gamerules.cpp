@@ -357,7 +357,7 @@ bool CHL2MPRules::IsFreemanAlive(void)
 		if (pFreeman->IsDisconnecting())
 			return true;
 
-		if (pFreeman->IsDead() || (pFreeman->GetLifeCount() == 0) || (pFreeman->GetTeamNumber() == TEAM_SPECTATOR))
+		if (!pFreeman->m_bInitialSpawn && (pFreeman->IsDead() || (pFreeman->GetLifeCount() == 0) || (pFreeman->GetTeamNumber() == TEAM_SPECTATOR)))
 		{
 			return false;
 		}
