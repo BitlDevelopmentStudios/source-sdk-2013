@@ -1252,12 +1252,19 @@ void CHL2MP_Player::FlashlightTurnOff( void )
 
 void CHL2MP_Player::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecTarget, const Vector *pVelocity )
 {
-	//Drop a grenade if it's primed.
 	if ( GetActiveWeapon() )
 	{
 		if (HL2MPRules()->DeadPlayerWeapons(this) == GR_PLR_DROP_GUN_NO)
 		{
-			// do not drop any weapon if we're told not to, except for primed grenades.
+			// do not drop any weapon if we're told not to.
+			return;
+		}
+
+		CBaseCombatWeapon* pManhack = Weapon_OwnsThisType("weapon_manhack");
+
+		if (GetActiveWeapon() == pManhack)
+		{
+			// refuse to spawn the manhack.
 			return;
 		}
 	}
@@ -1366,10 +1373,8 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 
 	DetonateTripmines();
 
-	BaseClass::Event_Killed( subinfo );
-
-	// if we're a combine, drop a health vial on death like the actual NPC.
-	if ((GetTeamNumber() == TEAM_COMBINE) && (GetPlayerClass() != CLS_FREEMAN))
+	// if we're a combine, drop a health vial or grenade on death like the actual NPC. This uses the spawning code too!
+	if ((GetPlayerClass() != CLS_FREEMAN))
 	{
 		CBasePlayer* pPlayer = ToBasePlayer(info.GetAttacker());
 
@@ -1386,7 +1391,7 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 
 			CBaseCombatWeapon* pGrenade = Weapon_OwnsThisType("weapon_frag");
 
-			if (GetActiveWeapon() == pGrenade)
+			if (pGrenade)
 			{
 				// Attempt to drop a grenade. We don't do anything from werapon_drop here for accuracy's sake.
 				if (pHL2GameRules->NPC_ShouldDropGrenade(pPlayer))
@@ -1397,6 +1402,8 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 			}
 		}
 	}
+
+	BaseClass::Event_Killed( subinfo );
 
 	if ( info.GetDamageType() & DMG_DISSOLVE )
 	{
