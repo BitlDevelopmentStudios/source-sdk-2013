@@ -109,6 +109,9 @@ bool CheckEmitReasonablePhysicsSpew()
 //-----------------------------------------------------------------------------
 void SpawnBlood(Vector vecSpot, const Vector &vecDir, int bloodColor, float flDamage)
 {
+	if (bloodColor == DONT_BLEED)
+		return;
+
 	UTIL_BloodDrips( vecSpot, vecDir, bloodColor, (int)flDamage );
 }
 
