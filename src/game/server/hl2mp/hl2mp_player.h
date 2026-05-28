@@ -90,6 +90,7 @@ public:
 	virtual void DeathSound( const CTakeDamageInfo &info );
 	int GetVoiceMode();
 	virtual CBaseEntity* EntSelectSpawnPoint( void );
+	CBaseEntity*	DropItem(const char* pszItemName, Vector vecPos, QAngle vecAng);
 
 	virtual void	HandleSpeedChanges(CMoveData* mv) OVERRIDE;
 	virtual void	ReduceTimers(CMoveData* mv) OVERRIDE;

@@ -1306,6 +1306,65 @@ void CHL2MP_Player::DetonateTripmines( void )
 	EmitSound( "Weapon_SLAM.SatchelDetonate" );
 }
 
+//=========================================================
+// DropItem - dead npc drops named item
+//=========================================================
+CBaseEntity* CHL2MP_Player::DropItem(const char* pszItemName, Vector vecPos, QAngle vecAng)
+{
+	if (!pszItemName)
+	{
+		DevMsg("DropItem() - No item name!\n");
+		return NULL;
+	}
+
+	CBaseEntity* pItem = CBaseEntity::Create(pszItemName, vecPos, vecAng, this);
+
+	if (pItem)
+	{
+		if (g_pGameRules->IsAllowedToSpawn(pItem) == false)
+		{
+			UTIL_Remove(pItem);
+			return NULL;
+		}
+
+		IPhysicsObject* pPhys = pItem->VPhysicsGetObject();
+
+		if (pPhys)
+		{
+			// Add an extra push in a random direction
+			Vector			vel = RandomVector(-64.0f, 64.0f);
+			AngularImpulse	angImp = RandomAngularImpulse(-300.0f, 300.0f);
+
+			vel[2] = 0.0f;
+			pPhys->AddVelocity(&vel, &angImp);
+		}
+		else
+		{
+			// do we want this behavior to be default?! (sjb)
+			pItem->ApplyAbsVelocityImpulse(GetAbsVelocity());
+			pItem->ApplyLocalAngularVelocityImpulse(AngularImpulse(0, random->RandomFloat(0, 100), 0));
+		}
+
+		// Fixes health vials, grenades, etc. respawning
+		if (pItem->IsCombatItem())
+		{
+			pItem->AddSpawnFlags(SF_NORESPAWN);
+		}
+		else if (pItem->IsBaseCombatWeapon())
+		{
+			// Adding SF_NORESPAWN directly to weapons causes them to be considered level-placed, which we don't want
+			pItem->MyCombatWeaponPointer()->Drop(vec3_origin);
+		}
+
+		return pItem;
+	}
+	else
+	{
+		DevMsg("DropItem() - Didn't create!\n");
+		return NULL;
+	}
+}
+
 void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 {
 	//update damage info with our accumulated physics force
@@ -1321,6 +1380,24 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 	DetonateTripmines();
 
 	BaseClass::Event_Killed( subinfo );
+
+	// if we're a combine, drop a health vial on death like the actual NPC.
+	if ((GetTeamNumber() == TEAM_COMBINE) && (GetPlayerClass() != CLS_FREEMAN))
+	{
+		CBasePlayer* pPlayer = ToBasePlayer(info.GetAttacker());
+
+		if (pPlayer != NULL)
+		{
+			CHalfLife2* pHL2GameRules = static_cast<CHalfLife2*>(g_pGameRules);
+
+			// Attempt to drop health
+			if (pHL2GameRules->NPC_ShouldDropHealth(pPlayer))
+			{
+				DropItem("item_healthvial", WorldSpaceCenter() + RandomVector(-4, 4), RandomAngle(0, 360));
+				pHL2GameRules->NPC_DroppedHealth();
+			}
+		}
+	}
 
 	if ( info.GetDamageType() & DMG_DISSOLVE )
 	{
