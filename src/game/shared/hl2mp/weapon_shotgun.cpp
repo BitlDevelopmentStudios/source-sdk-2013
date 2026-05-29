@@ -483,6 +483,12 @@ void CWeaponShotgun::SecondaryAttack( void )
 		return;
 	}
 
+	// shotgunner cannot use secondary fire
+	if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
+	{
+		return;
+	}
+
 	pPlayer->m_nButtons &= ~IN_ATTACK2;
 	// MUST call sound before removing a round from the clip of a CMachineGun
 	WeaponSound(WPN_DOUBLE);
