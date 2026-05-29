@@ -29,6 +29,7 @@
 #include "SoundEmitterSystem/isoundemittersystembase.h"
 
 #include "ilagcompensationmanager.h"
+#include "bot/hl2mp_bot.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -426,6 +427,15 @@ void CHL2MP_Player::PostThink( void )
 
 	if ((GetPlayerClass() > CLS_INVALID))
 	{
+		// do not use the timer unless the diffoculty is higher.
+		CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(this);
+
+		if (pBot)
+		{
+			if (pBot->GetDifficulty() <= CHL2MPBot::DifficultyType::NORMAL)
+				goto cyclelatch;
+		}
+
 		const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
 
 		if (info.iGrenades == -1)
@@ -495,6 +505,7 @@ void CHL2MP_Player::PostThink( void )
 		}
 	}
 	
+cyclelatch:
 	if (IsAlive() && m_cycleLatchTimer.IsElapsed())
 	{
 		m_cycleLatchTimer.Start(CYCLELATCH_UPDATE_INTERVAL);
