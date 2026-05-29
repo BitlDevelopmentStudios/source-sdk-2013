@@ -332,7 +332,12 @@ CON_COMMAND_F( tf_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 	const char *classname = NULL;
 	const char *teamname = "auto";
 	const char *pszBotNameViaArg = NULL;
-	CTFBot::DifficultyType skill = clamp( (CTFBot::DifficultyType)tf_bot_difficulty.GetInt(), CTFBot::EASY, CTFBot::EXPERT );
+	CTFBot::DifficultyType skill = CTFBot::UNDEFINED;
+
+	if (tf_bot_difficulty.GetInt() > CTFBot::UNDEFINED)
+	{
+		skill = clamp((CTFBot::DifficultyType)tf_bot_difficulty.GetInt(), CTFBot::EASY, CTFBot::EXPERT);
+	}
 
 	int i;
 	for( i=1; i<args.ArgC(); ++i )
@@ -418,6 +423,12 @@ CON_COMMAND_F( tf_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 			}
 
 			pBot->HandleCommand_JoinTeam( teamname );
+
+			if (skill == CTFBot::UNDEFINED)
+			{
+				random->SetSeed((int)gpGlobals->curtime);
+				skill = (CTFBot::DifficultyType)random->RandomInt(CTFBot::EASY, CTFBot::EXPERT);
+			}
 
 			pBot->SetDifficulty( skill );
 
