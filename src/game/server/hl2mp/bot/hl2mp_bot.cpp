@@ -248,7 +248,12 @@ CON_COMMAND_F( hl2mp_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 	int botCount = 1;
 	const char *teamname = "auto";
 	const char *pszBotNameViaArg = NULL;
-	CHL2MPBot::DifficultyType skill = clamp( (CHL2MPBot::DifficultyType)hl2mp_bot_difficulty.GetInt(), CHL2MPBot::EASY, CHL2MPBot::EXPERT );
+	CHL2MPBot::DifficultyType skill = CHL2MPBot::UNDEFINED;
+
+	if (hl2mp_bot_difficulty.GetInt() > CHL2MPBot::UNDEFINED)
+	{
+		skill = clamp((CHL2MPBot::DifficultyType)hl2mp_bot_difficulty.GetInt(), CHL2MPBot::EASY, CHL2MPBot::EXPERT);
+	}
 
 	int i;
 	for( i=1; i<args.ArgC(); ++i )
@@ -348,6 +353,12 @@ CON_COMMAND_F( hl2mp_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 			engine->SetFakeClientConVarValue( pBot->edict(), "name", name );
 			pBot->HandleCommand_JoinTeam( iTeam );
 			pBot->ChangeTeam( iTeam );
+
+			if (skill == CHL2MPBot::UNDEFINED)
+			{
+				random->SetSeed((int)gpGlobals->curtime);
+				skill = (CHL2MPBot::DifficultyType)random->RandomInt(CHL2MPBot::EASY, CHL2MPBot::EXPERT);
+			}
 
 			pBot->SetDifficulty( skill );
 
