@@ -104,6 +104,14 @@ ActionResult< CHL2MPBot >	CHL2MPBotSeekAndDestroy::Update( CHL2MPBot *me, float 
 		{
 			bEntityVisible = true;
 
+			if (me->GetPlayerClass() != CLS_FREEMAN)
+			{
+				if (!me->IsAllowedToPickupWeapons())
+				{
+					bEntityVisible = false;
+				}
+			}
+
 			CBaseCombatWeapon* pWeapon = dynamic_cast<CBaseCombatWeapon*>( m_hTargetEntity.Get() );
 			if ( pWeapon )
 			{
@@ -303,42 +311,45 @@ void CHL2MPBotSeekAndDestroy::RecomputeSeekPath( CHL2MPBot *me )
 		return;
 	}
 
-	// Don't try to find weapons if the timer elapsed. Probably went bad?
-	if ( !m_bTimerElapsed && !me->IsPropFreak() )
+	if (me->GetPlayerClass() == CLS_FREEMAN)
 	{
-		CUtlVector<CBaseEntity*> pWeapons;
-
-		CNotOwnedWeaponFilter weaponFilter( me );
-		CBaseEntity* pSearch = NULL;
-		while ( ( pSearch = gEntList.FindEntityByClassname( pSearch, "weapon_*", &weaponFilter ) ) != NULL )
+		// Don't try to find weapons if the timer elapsed. Probably went bad?
+		if (!m_bTimerElapsed && !me->IsPropFreak())
 		{
-			if ( pSearch )
-				pWeapons.AddToTail( pSearch );
-		}
+			CUtlVector<CBaseEntity*> pWeapons;
 
-		pWeapons.SortPredicate(
-			[&]( CBaseEntity* a, CBaseEntity* b )
+			CNotOwnedWeaponFilter weaponFilter(me);
+			CBaseEntity* pSearch = NULL;
+			while ((pSearch = gEntList.FindEntityByClassname(pSearch, "weapon_*", &weaponFilter)) != NULL)
 			{
-				float flDistA = me->GetAbsOrigin().DistToSqr( a->GetAbsOrigin() );
-				float flDistB = me->GetAbsOrigin().DistToSqr( b->GetAbsOrigin() );
-
-				return flDistA < flDistB;
+				if (pSearch)
+					pWeapons.AddToTail(pSearch);
 			}
-		);
+
+			pWeapons.SortPredicate(
+				[&](CBaseEntity* a, CBaseEntity* b)
+				{
+					float flDistA = me->GetAbsOrigin().DistToSqr(a->GetAbsOrigin());
+					float flDistB = me->GetAbsOrigin().DistToSqr(b->GetAbsOrigin());
+
+					return flDistA < flDistB;
+				}
+			);
 
 
-		// Try and find weapons we don't have above all else on the map.
-		for ( int i = 0; i < pWeapons.Size(); i++ )
-		{
-			CBaseEntity* pClosestWeapon = pWeapons[i];
-			if ( pClosestWeapon )
+			// Try and find weapons we don't have above all else on the map.
+			for (int i = 0; i < pWeapons.Size(); i++)
 			{
-				CHL2MPBotPathCost cost( me, SAFEST_ROUTE );
-				m_hTargetEntity = pClosestWeapon;
-				m_bGoingToTargetEntity = true;
-				m_vGoalPos = pClosestWeapon->WorldSpaceCenter();
-				if ( m_path.Compute( me, m_vGoalPos, cost, 0.0f, true, true ) && m_path.IsValid() && m_path.GetResult() == Path::COMPLETE_PATH )
-					return;
+				CBaseEntity* pClosestWeapon = pWeapons[i];
+				if (pClosestWeapon)
+				{
+					CHL2MPBotPathCost cost(me, SAFEST_ROUTE);
+					m_hTargetEntity = pClosestWeapon;
+					m_bGoingToTargetEntity = true;
+					m_vGoalPos = pClosestWeapon->WorldSpaceCenter();
+					if (m_path.Compute(me, m_vGoalPos, cost, 0.0f, true, true) && m_path.IsValid() && m_path.GetResult() == Path::COMPLETE_PATH)
+						return;
+				}
 			}
 		}
 	}

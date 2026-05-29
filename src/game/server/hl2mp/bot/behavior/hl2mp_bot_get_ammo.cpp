@@ -144,6 +144,24 @@ bool CHL2MPBotGetAmmo::IsPossible( CHL2MPBot *me )
 		return false;
 	}
 
+	if (me->GetPlayerClass() != CLS_FREEMAN)
+	{
+		if (!me->IsAllowedToPickupWeapons())
+		{
+			CItem* pItemEnt = dynamic_cast<CItem*>(closestAmmo);
+
+			if (pItemEnt && pItemEnt->m_bForceAllowPickup)
+			{
+				if (pItemEnt->m_iMinClassType > me->GetPlayerClass())
+					return false;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+
 	s_possibleBot = me;
 	s_possibleAmmo = closestAmmo;
 	s_possibleFrame = gpGlobals->framecount;

@@ -224,6 +224,7 @@ void CHL2MPBotManager::MaintainBotQuota()
 	int nHL2MPBotsOnGameTeams = 0;
 	int nNonHL2MPBotsOnGameTeams = 0;
 	int nSpectators = 0;
+	int nHL2MPBotsOnSpectators = 0;
 	for ( int i = 1; i <= gpGlobals->maxClients; ++i )
 	{
 		CHL2MP_Player *pPlayer = ToHL2MPPlayer( UTIL_PlayerByIndex( i ) );
@@ -244,6 +245,10 @@ void CHL2MPBotManager::MaintainBotQuota()
 			if ( pPlayer->GetTeamNumber() == TEAM_FREEMAN || pPlayer->GetTeamNumber() == TEAM_COMBINE )
 			{
 				nHL2MPBotsOnGameTeams++;
+			}
+			else if (pPlayer->GetTeamNumber() == TEAM_SPECTATOR)
+			{
+				nHL2MPBotsOnSpectators++;
 			}
 		}
 		else
@@ -294,10 +299,10 @@ void CHL2MPBotManager::MaintainBotQuota()
 	}
 
 	// add bots if necessary
-	if ( desiredBotCount > nHL2MPBotsOnGameTeams )
+	if (desiredBotCount > 0 && nHL2MPBotsOnSpectators > 0)
 	{
 		CHL2MPBot *pBot = GetAvailableBotFromPool();
-		if ( pBot == NULL )
+		if (pBot == NULL)
 		{
 			pBot = NextBotCreatePlayerBot< CHL2MPBot >( GetRandomBotName() );
 		}
@@ -313,22 +318,18 @@ void CHL2MPBotManager::MaintainBotQuota()
 				iClass = random->RandomInt(CLS_FIRST_COMBINE_CLASS, CLS_LAST_COMBINE_CLASS);
 			}
 
-			// give the bot a proper name
-			char name[256];
-			CHL2MPBot::DifficultyType skill = pBot->GetDifficulty();
-			CreateBotName( skill, name, sizeof( name ) );
-			engine->SetFakeClientConVarValue( pBot->edict(), "name", name );
+			// give the bot a proper name if we don't have one already
+			if (!pBot->GetPlayerName()[0])
+			{
+				char name[256];
+				CHL2MPBot::DifficultyType skill = pBot->GetDifficulty();
+				CreateBotName(skill, name, sizeof(name));
+				engine->SetFakeClientConVarValue(pBot->edict(), "name", name);
+			}
+
 			pBot->HandleCommand_JoinClass(iClass);
 			// team is chosen by the game.....
 		}
-	}
-	else if ( desiredBotCount < nHL2MPBotsOnGameTeams )
-	{
-		// kick a bot to maintain quota
-		
-		// attempt to kick a bot from the given team. keep the bot on the freeman team on the freeman team.
-		if ( UTIL_KickBotFromTeam( TEAM_COMBINE ) )
-			return;
 	}
 }
 
@@ -428,6 +429,9 @@ CHL2MPBot* CHL2MPBotManager::GetAvailableBotFromPool()
 			continue;
 
 		if ( ( pBot->GetFlags() & FL_FAKECLIENT ) == 0 )
+			continue;
+
+		if (pBot->GetLifeCount() == 0 && HL2MPRules()->GetState() != STATE_PREROUND)
 			continue;
 
 		if ( pBot->GetTeamNumber() == TEAM_SPECTATOR || pBot->GetTeamNumber() == TEAM_UNASSIGNED )

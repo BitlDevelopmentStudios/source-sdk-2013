@@ -299,6 +299,7 @@ void CHL2MP_Player::Spawn(void)
 
 	if (!m_bChosenClass)
 	{
+		// allows bots to join during a preround.
 		m_bInitialSpawn = true;
 		ChangeTeam(TEAM_SPECTATOR);
 	}
@@ -996,7 +997,7 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 	if (!g_Anticitizen_PR)
 		return false;
 
-	if (!m_bInitialSpawn && (GetLifeCount() == 0))
+	if (GetLifeCount() == 0)
 	{
 		ClientPrint(this, HUD_PRINTCENTER, "#Anticitizen_OutOfLives");
 		return false;

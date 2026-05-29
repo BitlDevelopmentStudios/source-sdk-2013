@@ -1525,6 +1525,8 @@ void CHL2MPBot::EquipBestWeaponForThreat( const CKnownEntity *threat )
 	if ( !pLongRange ) pLongRange = Weapon_OwnsThisType( "weapon_rpg" );
 	if ( !pLongRange ) pLongRange = Weapon_OwnsThisType( "weapon_crossbow" );
 	if ( !pLongRange ) pLongRange = Weapon_OwnsThisType( "weapon_357" );
+	if (!pLongRange) pLongRange = Weapon_OwnsThisType("weapon_frag");
+	if (!pLongRange) pLongRange = Weapon_OwnsThisType("weapon_manhack");
 
 	CBaseCombatWeapon* pMachineGun = NULL;
 	if ( !pMachineGun ) pMachineGun = Weapon_OwnsThisType( "weapon_ar2" );
@@ -2519,7 +2521,9 @@ CBaseHL2MPBludgeonWeapon* CHL2MPBot::GetBludgeonWeapon( void )
 
 	return pWeapon->ClassMatches( "weapon_crossbow" ) ||
 		   pWeapon->ClassMatches( "weapon_rpg" ) ||
-		   pWeapon->ClassMatches( "weapon_357" );
+		   pWeapon->ClassMatches( "weapon_357" ) || 
+		   pWeapon->ClassMatches("weapon_frag") || 
+		   pWeapon->ClassMatches("weapon_manhack");
 }
 
 bool CHL2MPBot::PrefersLongRange( CBaseCombatWeapon* pWeapon )
