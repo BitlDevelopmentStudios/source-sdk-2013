@@ -2280,7 +2280,7 @@ Action< CHL2MPBot > *CHL2MPBot::OpportunisticallyUseWeaponAbilities( void )
 				}
 			}
 		}
-		else if (FClassnameIs(weapon, "weapon_ar2") || FClassnameIs(weapon, "weapon_smg1") || FClassnameIs(weapon, "weapon_shotgun"))
+		else if (FClassnameIs(weapon, "weapon_ar2") || FClassnameIs(weapon, "weapon_smg1"))
 		{
 			if (GetAmmoCount(weapon->GetSecondaryAmmoType()) > 0)
 			{
