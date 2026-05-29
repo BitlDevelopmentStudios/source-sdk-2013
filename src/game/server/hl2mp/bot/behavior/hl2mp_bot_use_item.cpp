@@ -39,26 +39,6 @@ ActionResult< CHL2MPBot >	CHL2MPBotUseItem::Update( CHL2MPBot *me, float interva
 	{
 		return Done( "NULL weapon" );
 	}
-	
-	//do we have any secondary ammo for this weapon?
-	if (me->GetAmmoCount(myCurrentWeapon->GetPrimaryAmmoType()) == 0)
-	{
-		return Done( "No ammo" );
-	}
-	
-	// is the enemy in our LOS?
-	const CKnownEntity* threat = me->GetVisionInterface()->GetPrimaryKnownThreat();
-	if (threat)
-	{
-		if(!threat->IsVisibleInFOVNow())
-		{
-			return Done( "Threat not visible" );
-		}
-	}
-	else
-	{
-		return Done( "No threat" );
-	}
 
 	if ( m_cooldownTimer.HasStarted() )
 	{

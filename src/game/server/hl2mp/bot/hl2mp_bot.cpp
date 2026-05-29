@@ -2268,7 +2268,15 @@ Action< CHL2MPBot > *CHL2MPBot::OpportunisticallyUseWeaponAbilities( void )
 		// you got it!
 		if (FClassnameIs(weapon, "weapon_frag") || FClassnameIs(weapon, "weapon_manhack"))
 		{
-			return new CHL2MPBotUseItem(weapon);
+			if (GetAmmoCount(weapon->GetPrimaryAmmoType()) > 0)
+			{
+				// is the enemy in our LOS?
+				const CKnownEntity* threat = GetVisionInterface()->GetPrimaryKnownThreat();
+				if (threat && threat->IsVisibleInFOVNow())
+				{
+					return new CHL2MPBotUseItem(weapon);
+				}
+			}
 		}
 		else if (FClassnameIs(weapon, "weapon_ar2") || FClassnameIs(weapon, "weapon_smg1"))
 		{
@@ -2277,7 +2285,7 @@ Action< CHL2MPBot > *CHL2MPBot::OpportunisticallyUseWeaponAbilities( void )
 				const CKnownEntity* threat = GetVisionInterface()->GetPrimaryKnownThreat();
 				if (threat && threat->IsVisibleInFOVNow())
 				{
-					// hit a stunball or bauble
+					// shoot a grenade/ball
 					PressAltFireButton();
 				}
 			}
