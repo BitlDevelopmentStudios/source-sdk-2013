@@ -401,6 +401,8 @@ $Project "Server (ANTICITIZEN)"
 					$File "hl2mp\bot\behavior\hl2mp_bot_seek_and_destroy.h"
 					$File "hl2mp\bot\behavior\hl2mp_bot_tactical_monitor.cpp"
 					$File "hl2mp\bot\behavior\hl2mp_bot_tactical_monitor.h"
+					$File "hl2mp\bot\behavior\hl2mp_bot_use_item.cpp"
+					$File "hl2mp\bot\behavior\hl2mp_bot_use_item.h"
 				}
 
 				$Folder "Map Entities"

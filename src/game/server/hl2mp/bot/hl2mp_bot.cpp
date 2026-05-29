@@ -18,6 +18,7 @@
 #include "hl2mp/weapon_physcannon.h"
 
 #include "bot/behavior/hl2mp_bot_behavior.h"
+#include "bot/behavior/hl2mp_bot_use_item.h"
 
 ConVar hl2mp_bot_notice_gunfire_range( "hl2mp_bot_notice_gunfire_range", "3000", FCVAR_GAMEDLL );
 ConVar hl2mp_bot_notice_quiet_gunfire_range( "hl2mp_bot_notice_quiet_gunfire_range", "500", FCVAR_GAMEDLL );
@@ -1524,10 +1525,6 @@ void CHL2MPBot::EquipBestWeaponForThreat( const CKnownEntity *threat )
 	if ( !pLongRange ) pLongRange = Weapon_OwnsThisType( "weapon_rpg" );
 	if ( !pLongRange ) pLongRange = Weapon_OwnsThisType( "weapon_crossbow" );
 	if ( !pLongRange ) pLongRange = Weapon_OwnsThisType( "weapon_357" );
-	//this means that bots will consider grenades/manhacks as long range weapons.
-	//this is dumb but it allows bots to use grenades.
-	if (!pLongRange) pLongRange = Weapon_OwnsThisType("weapon_frag");
-	if (!pLongRange) pLongRange = Weapon_OwnsThisType("weapon_manhack");
 
 	CBaseCombatWeapon* pMachineGun = NULL;
 	if ( !pMachineGun ) pMachineGun = Weapon_OwnsThisType( "weapon_ar2" );
@@ -2251,7 +2248,6 @@ void CHL2MPBot::ScriptGetAllTags( HSCRIPT hTable )
 	}
 }
 
-
 //-----------------------------------------------------------------------------------------
 Action< CHL2MPBot > *CHL2MPBot::OpportunisticallyUseWeaponAbilities( void )
 {
@@ -2269,6 +2265,23 @@ Action< CHL2MPBot > *CHL2MPBot::OpportunisticallyUseWeaponAbilities( void )
 			continue;
 
 		// TODO(misyl): SMG1, AR2, Grenades here?
+		// you got it!
+		if (FClassnameIs(weapon, "weapon_frag") || FClassnameIs(weapon, "weapon_manhack"))
+		{
+			return new CHL2MPBotUseItem(weapon);
+		}
+		else if (FClassnameIs(weapon, "weapon_ar2") || FClassnameIs(weapon, "weapon_smg1"))
+		{
+			if (GetAmmoCount(weapon->GetSecondaryAmmoType()) > 0)
+			{
+				const CKnownEntity* threat = GetVisionInterface()->GetPrimaryKnownThreat();
+				if (threat && threat->IsVisibleInFOVNow())
+				{
+					// hit a stunball or bauble
+					PressAltFireButton();
+				}
+			}
+		}
 	}
 
 	return NULL;
