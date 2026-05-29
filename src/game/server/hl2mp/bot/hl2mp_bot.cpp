@@ -2237,6 +2237,9 @@ void CHL2MPBot::ScriptGetAllTags( HSCRIPT hTable )
 //-----------------------------------------------------------------------------------------
 Action< CHL2MPBot > *CHL2MPBot::OpportunisticallyUseWeaponAbilities( void )
 {
+	if (GetDifficulty() <= CHL2MPBot::DifficultyType::NORMAL)
+		return NULL;
+
 	if ( !m_opportunisticTimer.IsElapsed() )
 	{
 		return NULL;
