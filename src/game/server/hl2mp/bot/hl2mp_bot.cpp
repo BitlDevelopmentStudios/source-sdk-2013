@@ -18,6 +18,7 @@
 #include "hl2mp/weapon_physcannon.h"
 
 #include "bot/behavior/hl2mp_bot_behavior.h"
+#include "bot/behavior/hl2mp_bot_use_item.h"
 
 ConVar hl2mp_bot_notice_gunfire_range( "hl2mp_bot_notice_gunfire_range", "3000", FCVAR_GAMEDLL );
 ConVar hl2mp_bot_notice_quiet_gunfire_range( "hl2mp_bot_notice_quiet_gunfire_range", "500", FCVAR_GAMEDLL );
@@ -2249,6 +2250,23 @@ Action< CHL2MPBot > *CHL2MPBot::OpportunisticallyUseWeaponAbilities( void )
 			continue;
 
 		// TODO(misyl): SMG1, AR2, Grenades here?
+		// you got it!
+		if (FClassnameIs(weapon, "weapon_frag"))
+		{
+			return new CHL2MPBotUseItem(weapon);
+		}
+		else if (FClassnameIs(weapon, "weapon_ar2") || FClassnameIs(weapon, "weapon_smg1"))
+		{
+			if (GetAmmoCount(weapon->GetSecondaryAmmoType()) > 0)
+			{
+				const CKnownEntity* threat = GetVisionInterface()->GetPrimaryKnownThreat();
+				if (threat && threat->IsVisibleInFOVNow())
+				{
+					// hit a stunball or bauble
+					PressAltFireButton();
+				}
+			}
+		}
 	}
 
 	return NULL;
