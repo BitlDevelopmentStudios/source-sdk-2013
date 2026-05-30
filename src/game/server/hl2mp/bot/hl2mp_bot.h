@@ -64,6 +64,8 @@ public:
 	virtual void		PhysicsSimulate( void );
 	virtual void		Touch( CBaseEntity *pOther );
 	virtual void		AvoidPlayers( CUserCmd *pCmd );				// some game types allow players to pass through each other, this method pushes them apart
+	virtual void		CustomMovementAction(CUserCmd* pCmd);
+	virtual void		AvoidGrenades(CUserCmd* pCmd);
 	virtual void		UpdateOnRemove( void );
 	virtual int			ShouldTransmit( const CCheckTransmitInfo *pInfo ) OVERRIDE;
 

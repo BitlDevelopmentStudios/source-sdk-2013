@@ -236,6 +236,7 @@ public:
 	bool IsAbleToAutoCenterOnLadders( void ) const;
 
 	virtual void AvoidPlayers( CUserCmd *pCmd ) { }								// some game types allow players to pass through each other, this method pushes them apart
+	virtual void CustomMovementAction(CUserCmd* pCmd) {}
 
 public:
 	// begin INextBot ------------------------------------------------------------------------------------------------------------------
@@ -737,6 +738,7 @@ inline void NextBotPlayer< PlayerType >::PhysicsSimulate( void )
 	_NextBot_BuildUserCommand( &userCmd, angles, forwardSpeed, strafeSpeed, verticalSpeed, inputButtons, 0 );
 
 	AvoidPlayers( &userCmd );
+	CustomMovementAction(&userCmd);
 
 	// allocate a new command and add it to the player's list of command to process
 	this->ProcessUsercmds( &userCmd, 1, 1, 0, false );

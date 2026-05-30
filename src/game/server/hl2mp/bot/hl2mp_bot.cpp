@@ -19,6 +19,7 @@
 
 #include "bot/behavior/hl2mp_bot_behavior.h"
 #include "bot/behavior/hl2mp_bot_use_item.h"
+#include "hl2/grenade_frag.h"
 
 ConVar hl2mp_bot_notice_gunfire_range( "hl2mp_bot_notice_gunfire_range", "3000", FCVAR_GAMEDLL );
 ConVar hl2mp_bot_notice_quiet_gunfire_range( "hl2mp_bot_notice_quiet_gunfire_range", "500", FCVAR_GAMEDLL );
@@ -844,7 +845,6 @@ void CHL2MPBot::Touch( CBaseEntity *pOther )
 //-----------------------------------------------------------------------------------------------------
 void CHL2MPBot::AvoidPlayers( CUserCmd *pCmd )
 {
-#ifdef AVOID_PLAYERS_TEST
 	Vector forward, right;
 	EyeVectors( &forward, &right );
 
@@ -892,9 +892,99 @@ void CHL2MPBot::AvoidPlayers( CUserCmd *pCmd )
 
 	pCmd->forwardmove += ahead;
 	pCmd->sidemove += side;
-#endif
 }
 
+//--------------------------------------------------------------------------------------------------------------
+//
+// Collect all valid grenades into given vector.
+// Returns number of grenades collected.
+//
+template < typename T >
+int CollectGrenades(CUtlVector< T* >* grenadeVector, bool shouldAppend = false)
+{
+	if (!shouldAppend)
+	{
+		grenadeVector->RemoveAll();
+	}
+
+	if (g_GrenadeManager.NumFrags() == 0)
+		return 0;
+
+	for (int i = 0; i < g_GrenadeManager.NumFrags(); i++)
+	{
+		CGrenadeFrag* pFrag = g_GrenadeManager.AccessFragByIndex(i);
+
+		if (pFrag == NULL)
+			continue;
+
+		if (FNullEnt(pFrag->edict()))
+			continue;
+
+		grenadeVector->AddToTail(assert_cast<T*>(pFrag));
+	}
+
+	return grenadeVector->Count();
+}
+
+//-----------------------------------------------------------------------------------------------------
+void CHL2MPBot::AvoidGrenades(CUserCmd* pCmd)
+{
+	if (GetDifficulty() == CHL2MPBot::DifficultyType::EASY)
+		return;
+
+	// don't avoid if there are no grenades to avoid. duh.
+	if (g_GrenadeManager.NumFrags() == 0)
+		return;
+
+	Vector forward, right;
+	EyeVectors(&forward, &right);
+
+	CUtlVector< CGrenadeFrag* > grenadeVector;
+	CollectGrenades(&grenadeVector);
+
+	Vector avoidVector = vec3_origin;
+
+	//#define GRENADE_DAMAGE_RADIUS 250.0f
+	float tooClose = 250.0f;
+
+	for (int i = 0; i < grenadeVector.Count(); ++i)
+	{
+		CGrenadeFrag* them = grenadeVector[i];
+
+		if (IsInASquad())
+		{
+			continue;
+		}
+
+		Vector between = GetAbsOrigin() - them->GetAbsOrigin();
+		if (between.IsLengthLessThan(tooClose))
+		{
+			float range = between.NormalizeInPlace();
+
+			avoidVector += (1.0f - (range / tooClose)) * between;
+		}
+	}
+
+	if (avoidVector.IsZero())
+	{
+		return;
+	}
+
+	avoidVector.NormalizeInPlace();
+
+	const float maxSpeed = 50.0f;
+
+	float ahead = maxSpeed * DotProduct(forward, avoidVector);
+	float side = maxSpeed * DotProduct(right, avoidVector);
+
+	pCmd->forwardmove += ahead;
+	pCmd->sidemove += side;
+}
+
+void CHL2MPBot::CustomMovementAction(CUserCmd* pCmd)
+{
+	AvoidGrenades(pCmd);
+}
 
 //-----------------------------------------------------------------------------------------------------
 void CHL2MPBot::UpdateOnRemove( void )
@@ -1536,8 +1626,6 @@ void CHL2MPBot::EquipBestWeaponForThreat( const CKnownEntity *threat )
 	if ( !pLongRange ) pLongRange = Weapon_OwnsThisType( "weapon_rpg" );
 	if ( !pLongRange ) pLongRange = Weapon_OwnsThisType( "weapon_crossbow" );
 	if ( !pLongRange ) pLongRange = Weapon_OwnsThisType( "weapon_357" );
-	if (!pLongRange) pLongRange = Weapon_OwnsThisType("weapon_frag");
-	if (!pLongRange) pLongRange = Weapon_OwnsThisType("weapon_manhack");
 
 	CBaseCombatWeapon* pMachineGun = NULL;
 	if ( !pMachineGun ) pMachineGun = Weapon_OwnsThisType( "weapon_ar2" );
@@ -2288,9 +2376,9 @@ Action< CHL2MPBot > *CHL2MPBot::OpportunisticallyUseWeaponAbilities( void )
 			{
 				// is the enemy in our LOS?
 				const CKnownEntity* threat = GetVisionInterface()->GetPrimaryKnownThreat();
-				if (threat && threat->IsVisibleInFOVNow())
+				if (threat && threat->GetEntity() && threat->IsVisibleInFOVNow() && IsLineOfFireClear(threat->GetEntity()->WorldSpaceCenter()))
 				{
-					return new CHL2MPBotUseItem(weapon);
+					return new CHL2MPBotUseItem(weapon, false);
 				}
 			}
 		}
@@ -2299,10 +2387,9 @@ Action< CHL2MPBot > *CHL2MPBot::OpportunisticallyUseWeaponAbilities( void )
 			if (GetAmmoCount(weapon->GetSecondaryAmmoType()) > 0)
 			{
 				const CKnownEntity* threat = GetVisionInterface()->GetPrimaryKnownThreat();
-				if (threat && threat->IsVisibleInFOVNow())
+				if (threat && threat->GetEntity() && threat->IsVisibleInFOVNow() && IsLineOfFireClear(threat->GetEntity()->WorldSpaceCenter()))
 				{
-					// shoot a grenade/ball
-					PressAltFireButton();
+					return new CHL2MPBotUseItem(weapon, true);
 				}
 			}
 		}
