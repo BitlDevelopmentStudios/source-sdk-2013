@@ -92,6 +92,11 @@ ActionResult< CHL2MPBot >	CHL2MPBotSeekAndDestroy::Update( CHL2MPBot *me, float 
 		}
 	}
 
+	if (me->GetActiveWeapon() && me->GetActiveWeapon()->IsIronsighted())
+	{
+		me->ReleaseADSButton();
+	}
+
 	// move towards our seek goal
 	m_path.Update( me );
 

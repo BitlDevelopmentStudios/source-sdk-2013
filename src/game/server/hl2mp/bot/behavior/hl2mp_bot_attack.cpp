@@ -24,6 +24,7 @@ CHL2MPBotAttack::CHL2MPBotAttack( void ) : m_chasePath( ChasePath::LEAD_SUBJECT 
 ActionResult< CHL2MPBot >	CHL2MPBotAttack::OnStart( CHL2MPBot *me, Action< CHL2MPBot > *priorAction )
 {
 	m_path.SetMinLookAheadDistance( me->GetDesiredPathLookAheadRange() );
+	me->SpeakSentenceForConcept(MP_SENTENCE_GO_ALERT);
 
 	return Continue();
 }
@@ -52,7 +53,6 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 	if ( isUsingCloseRangeWeapon && threat->IsVisibleRecently() && me->IsRangeLessThan( threat->GetLastKnownPosition(), 1.1f * me->GetDesiredAttackRange() ) )
 	{
 		// circle around our victim
-		me->SpeakSentenceForConcept(MP_SENTENCE_FLANK);
 		if ( me->TransientlyConsistentRandomValue( 3.0f ) < 0.5f )
 		{
 			me->PressLeftButton();
@@ -76,6 +76,8 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 		 me->IsRangeGreaterThan( threat->GetEntity()->GetAbsOrigin(), me->GetDesiredAttackRange() ) || 
 		 !me->IsLineOfFireClear( threat->GetEntity()->EyePosition() ) )
 	{
+		me->SpeakSentenceForConcept(MP_SENTENCE_FLANK);
+
 		if ( threat->IsVisibleRecently() )
 		{
 			if ( isUsingCloseRangeWeapon )
@@ -93,6 +95,11 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 		{
 			// if we're at the threat's last known position and he's still not visible, we lost him
 			m_chasePath.Invalidate();
+
+			if (me->GetActiveWeapon() && me->GetActiveWeapon()->IsIronsighted())
+			{
+				me->ReleaseADSButton();
+			}
 
 			if ( me->IsRangeLessThan( threat->GetLastKnownPosition(), 20.0f ) )
 			{

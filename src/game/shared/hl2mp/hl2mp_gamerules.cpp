@@ -536,6 +536,8 @@ void CHL2MPRules::Think( void )
 						continue;
 
 					pPlayer->RemoveFlag(FL_FROZEN);
+					pPlayer->RemoveFlag(FL_GODMODE);
+					pPlayer->RemoveFlag(FL_NOTARGET);
 				}
 
 				CheckLastMemberLeft();
@@ -561,6 +563,8 @@ void CHL2MPRules::Think( void )
 						continue;
 
 					pPlayer->AddFlag(FL_FROZEN);
+					pPlayer->AddFlag(FL_GODMODE);
+					pPlayer->AddFlag(FL_NOTARGET);
 				}
 			}
 
@@ -625,6 +629,8 @@ void CHL2MPRules::GoToIntermission( void )
 
 		pPlayer->ShowViewPortPanel( PANEL_SCOREBOARD );
 		pPlayer->AddFlag( FL_FROZEN );
+		pPlayer->AddFlag(FL_GODMODE);
+		pPlayer->AddFlag(FL_NOTARGET);
 	}
 #endif
 	
@@ -647,6 +653,8 @@ void CHL2MPRules::LeaveIntermission(void)
 
 		pPlayer->ShowViewPortPanel(PANEL_SCOREBOARD, false);
 		pPlayer->RemoveFlag(FL_FROZEN);
+		pPlayer->RemoveFlag(FL_GODMODE);
+		pPlayer->RemoveFlag(FL_NOTARGET);
 	}
 #endif
 

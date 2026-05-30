@@ -190,6 +190,9 @@ public:
 	virtual void PressSpecialFireButton( float duration = -1.0f );
 	virtual void ReleaseSpecialFireButton( void );
 
+	virtual void PressADSButton(float duration = -1.0f);
+	virtual void ReleaseADSButton(void);
+
 	virtual void PressUseButton( float duration = -1.0f );
 	virtual void ReleaseUseButton( void );
 
@@ -248,6 +251,7 @@ protected:
 	CountdownTimer m_fireButtonTimer;
 	CountdownTimer m_meleeButtonTimer;
 	CountdownTimer m_specialFireButtonTimer;
+	CountdownTimer m_ADSButtonTimer;
 	CountdownTimer m_useButtonTimer;
 	CountdownTimer m_reloadButtonTimer;
 	CountdownTimer m_forwardButtonTimer;
@@ -368,6 +372,20 @@ inline void NextBotPlayer< PlayerType >::ReleaseSpecialFireButton( void )
 {
 	m_inputButtons &= ~IN_ATTACK3;
 	m_specialFireButtonTimer.Invalidate();
+}
+
+template < typename PlayerType >
+inline void NextBotPlayer< PlayerType >::PressADSButton(float duration = -1.0f)
+{
+	m_inputButtons |= IN_IRONSIGHT;
+	m_ADSButtonTimer.Start(duration);
+}
+
+template < typename PlayerType >
+inline void NextBotPlayer< PlayerType >::ReleaseADSButton(void)
+{
+	m_inputButtons &= ~IN_IRONSIGHT;
+	m_ADSButtonTimer.Invalidate();
 }
 
 template < typename PlayerType >
@@ -616,6 +634,9 @@ inline void NextBotPlayer< PlayerType >::PhysicsSimulate( void )
 
 		if ( !m_specialFireButtonTimer.IsElapsed() )
 			m_inputButtons |= IN_ATTACK3;
+
+		if (!m_ADSButtonTimer.IsElapsed())
+			m_inputButtons |= IN_IRONSIGHT;
 
 		if ( !m_useButtonTimer.IsElapsed() )
 			m_inputButtons |= IN_USE;

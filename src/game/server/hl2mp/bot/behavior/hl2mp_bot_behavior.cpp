@@ -558,6 +558,17 @@ void CHL2MPBotMainAction::FireWeaponAtEnemy( CHL2MPBot *me )
 		}
 	}
 
+	if (me->GetPlayerClass() > CLS_INVALID)
+	{
+		const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = me->GetPlayerClassInfo();
+
+		if (myWeapon->HasIronsights() && !myWeapon->IsIronsighted() && me->GetDifficulty() > CHL2MPBot::EASY)
+		{
+			// aim down our sights if we're able to.
+			me->PressADSButton();
+		}
+	}
+
 	if ( me->HasAttribute( CHL2MPBot::ALWAYS_FIRE_WEAPON ) )
 	{
 		me->PressFireButton();
@@ -707,6 +718,11 @@ void CHL2MPBotMainAction::Dodge( CHL2MPBot *me )
 	// don't waste time doding if we're in a hurry
 	if ( me->GetIntentionInterface()->ShouldHurry( me ) == ANSWER_YES )
 		return;
+
+	if (me->GetActiveWeapon() && me->GetActiveWeapon()->IsIronsighted())
+	{
+		me->ReleaseADSButton();
+	}
 
 	const CKnownEntity *threat = me->GetVisionInterface()->GetPrimaryKnownThreat();
 	if ( threat && threat->IsVisibleRecently() )

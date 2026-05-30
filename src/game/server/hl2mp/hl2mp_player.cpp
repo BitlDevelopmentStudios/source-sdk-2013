@@ -334,10 +334,14 @@ void CHL2MP_Player::Spawn(void)
 	if ( HL2MPRules()->IsIntermission() )
 	{
 		AddFlag( FL_FROZEN );
+		AddFlag(FL_GODMODE);
+		AddFlag(FL_NOTARGET);
 	}
 	else
 	{
 		RemoveFlag( FL_FROZEN );
+		RemoveFlag(FL_GODMODE);
+		RemoveFlag(FL_NOTARGET);
 	}
 
 	m_iSpawnInterpCounter = (m_iSpawnInterpCounter + 1) % 8;
