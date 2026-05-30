@@ -9,58 +9,61 @@
 #include "bot/behavior/hl2mp_bot_use_item.h"
 
 //---------------------------------------------------------------------------------------------
-CHL2MPBotUseItem::CHL2MPBotUseItem(CBaseHL2MPCombatWeapon* item)
+CHL2MPBotUseItem::CHL2MPBotUseItem(CBaseHL2MPCombatWeapon* item, bool altFire)
 {
 	m_item = item;
+	m_AltFire = altFire;
 }
 
 //---------------------------------------------------------------------------------------------
 ActionResult< CHL2MPBot >	CHL2MPBotUseItem::OnStart( CHL2MPBot *me, Action< CHL2MPBot > *priorAction )
 {
+	if (m_item == NULL)
+	{
+		return Done("NULL item");
+	}
+
+	if (me->Physcannon_GetHeldProp() != NULL)
+	{
+		return Done("I have a prop! :D");
+	}
+
 	// force-equip the item we're going to use
 	me->PushRequiredWeapon( m_item );
 
-	m_cooldownTimer.Start( m_item->m_flNextPrimaryAttack - gpGlobals->curtime + 0.25f );
+	CBaseHL2MPCombatWeapon* myCurrentWeapon = (CBaseHL2MPCombatWeapon*)me->GetActiveWeapon();
 
-	return Continue();
-}
-
-//---------------------------------------------------------------------------------------------
-ActionResult< CHL2MPBot >	CHL2MPBotUseItem::Update( CHL2MPBot *me, float interval )
-{
-	if ( m_item == NULL )
+	if (!myCurrentWeapon)
 	{
-		return Done( "NULL item" );
+		return Done("NULL weapon");
 	}
 
-	CBaseHL2MPCombatWeapon *myCurrentWeapon = (CBaseHL2MPCombatWeapon*)me->GetActiveWeapon();
-
-	if ( !myCurrentWeapon )
+	if (m_AltFire)
 	{
-		return Done( "NULL weapon" );
-	}
-
-	if ( m_cooldownTimer.HasStarted() )
-	{
-		if ( m_cooldownTimer.IsElapsed() )
+		if (me->GetAmmoCount(myCurrentWeapon->GetSecondaryAmmoType()) > 0)
 		{
-			// use it
-			me->PressFireButton();
-			m_cooldownTimer.Invalidate();
+			return Done("No weapon alt ammo");
 		}
 	}
-	else // used
+	else
 	{
-		return Done("Item used");
+		if (me->GetAmmoCount(myCurrentWeapon->GetPrimaryAmmoType()) > 0)
+		{
+			return Done("No weapon ammo");
+		}
 	}
 
-	return Continue();
-}
+	// use it
+	if (m_AltFire)
+	{
+		me->PressAltFireButton();
+	}
+	else
+	{
+		me->PressFireButton();
+	}
 
-
-//---------------------------------------------------------------------------------------------
-void CHL2MPBotUseItem::OnEnd( CHL2MPBot *me, Action< CHL2MPBot > *nextAction )
-{
 	me->PopRequiredWeapon();
-}
 
+	return Done("Item used");
+}

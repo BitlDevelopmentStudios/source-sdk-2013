@@ -6,11 +6,7 @@
 //=============================================================================//
 
 #include "cbase.h"
-#include "basegrenade_shared.h"
 #include "grenade_frag.h"
-#include "Sprite.h"
-#include "SpriteTrail.h"
-#include "soundent.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -28,48 +24,6 @@ ConVar sk_npc_dmg_fraggrenade	( "sk_npc_dmg_fraggrenade","0");
 ConVar sk_fraggrenade_radius	( "sk_fraggrenade_radius", "0");
 
 #define GRENADE_MODEL "models/Weapons/w_grenade.mdl"
-
-class CGrenadeFrag : public CBaseGrenade
-{
-	DECLARE_CLASS( CGrenadeFrag, CBaseGrenade );
-
-#if !defined( CLIENT_DLL )
-	DECLARE_DATADESC();
-#endif
-					
-	~CGrenadeFrag( void );
-
-public:
-	void	Spawn( void );
-	void	OnRestore( void );
-	void	Precache( void );
-	bool	CreateVPhysics( void );
-	void	CreateEffects( void );
-	void	SetTimer( float detonateDelay, float warnDelay );
-	void	SetVelocity( const Vector &velocity, const AngularImpulse &angVelocity );
-	int		OnTakeDamage( const CTakeDamageInfo &inputInfo );
-	void	BlipSound() { EmitSound( "Grenade.Blip" ); }
-	void	DelayThink();
-	void	VPhysicsUpdate( IPhysicsObject *pPhysics );
-	void	OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
-	void	SetCombineSpawned( bool combineSpawned ) { m_combineSpawned = combineSpawned; }
-	bool	IsCombineSpawned( void ) const { return m_combineSpawned; }
-	void	SetPunted( bool punt ) { m_punted = punt; }
-	bool	WasPunted( void ) const { return m_punted; }
-
-	// this function only used in episodic.
-
-	void	InputSetTimer( inputdata_t &inputdata );
-
-protected:
-	CHandle<CSprite>		m_pMainGlow;
-	CHandle<CSpriteTrail>	m_pGlowTrail;
-
-	float	m_flNextBlipTime;
-	bool	m_inSolid;
-	bool	m_combineSpawned;
-	bool	m_punted;
-};
 
 LINK_ENTITY_TO_CLASS( npc_grenade_frag, CGrenadeFrag );
 
@@ -91,12 +45,20 @@ BEGIN_DATADESC( CGrenadeFrag )
 
 END_DATADESC()
 
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+CGrenadeFrag::CGrenadeFrag(void)
+{
+	g_GrenadeManager.AddFrags(this);
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 CGrenadeFrag::~CGrenadeFrag( void )
 {
+	g_GrenadeManager.RemoveFrags(this);
 }
 
 void CGrenadeFrag::Spawn( void )
@@ -426,4 +388,58 @@ bool Fraggrenade_WasCreatedByCombine( const CBaseEntity *pEntity )
 	}
 
 	return false;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+CGrenadeManager g_GrenadeManager;
+
+//-------------------------------------
+
+CGrenadeManager::CGrenadeManager()
+{
+	m_FragGrenades.EnsureCapacity(MAX_FRAGS);
+}
+
+//-------------------------------------
+
+CGrenadeFrag** CGrenadeManager::AccessFrags()
+{
+	if (m_FragGrenades.Count())
+		return &m_FragGrenades[0];
+	return NULL;
+}
+
+//-------------------------------------
+
+CGrenadeFrag* CGrenadeManager::AccessFragByIndex(int index)
+{
+	if (m_FragGrenades.Count())
+		return m_FragGrenades[index];
+	return NULL;
+}
+
+//-------------------------------------
+
+int CGrenadeManager::NumFrags()
+{
+	return m_FragGrenades.Count();
+}
+
+//-------------------------------------
+
+void CGrenadeManager::AddFrags(CGrenadeFrag* pFrag)
+{
+	m_FragGrenades.AddToTail(pFrag);
+}
+
+//-------------------------------------
+
+void CGrenadeManager::RemoveFrags(CGrenadeFrag* pFrag)
+{
+	int i = m_FragGrenades.Find(pFrag);
+
+	if (i != -1)
+		m_FragGrenades.FastRemove(i);
 }

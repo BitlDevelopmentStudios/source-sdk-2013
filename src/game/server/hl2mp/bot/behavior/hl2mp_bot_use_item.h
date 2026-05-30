@@ -9,18 +9,16 @@
 class CHL2MPBotUseItem : public Action< CHL2MPBot >
 {
 public:
-	CHL2MPBotUseItem( CBaseHL2MPCombatWeapon* item );
+	CHL2MPBotUseItem( CBaseHL2MPCombatWeapon* item, bool altFire );
 	virtual ~CHL2MPBotUseItem() { }
 
 	virtual ActionResult< CHL2MPBot >	OnStart( CHL2MPBot *me, Action< CHL2MPBot > *priorAction );
-	virtual ActionResult< CHL2MPBot >	Update( CHL2MPBot *me, float interval );
-	virtual void					OnEnd( CHL2MPBot *me, Action< CHL2MPBot > *nextAction );
 
 	virtual const char *GetName( void ) const	{ return "UseItem"; };
 
 private:
 	CHandle< CBaseHL2MPCombatWeapon > m_item;
-	CountdownTimer m_cooldownTimer;
+	bool m_AltFire;
 };
 
 
