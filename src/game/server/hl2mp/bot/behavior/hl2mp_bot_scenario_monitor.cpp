@@ -22,6 +22,7 @@
 
 #include "bot/behavior/hl2mp_bot_scenario_monitor.h"
 
+#include "anticitizen/bot/squad/anticitizen_bot_escort_squad_leader.h"
 
 extern ConVar hl2mp_bot_health_ok_ratio;
 extern ConVar hl2mp_bot_health_critical_ratio;
@@ -41,10 +42,7 @@ Action< CHL2MPBot > *CHL2MPBotScenarioMonitor::InitialContainedAction( CHL2MPBot
 
 		// I'm in a Squad but not the leader, do "escort and support" Squad behavior
 		// until the Squad disbands, and then do my normal thing
-		//
-		// TODO: Implement this if we ever want squads in HL2MP.
-		// It's like, an MVM thing, not really useful for us.
-		//return new CHL2MPBotEscortSquadLeader( DesiredScenarioAndClassAction( me ) );
+		return new CAnticitizenBotEscortSquadLeader( DesiredScenarioAndClassAction( me ) );
 	}
 
 	return DesiredScenarioAndClassAction( me );
