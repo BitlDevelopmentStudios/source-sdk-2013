@@ -783,6 +783,8 @@ void CHL2MPBot::Spawn()
 	SetSquadFormationError( 0.0f );
 	SetBrokenFormation( false );
 
+	GenerateOrJoinGlobalSquad();
+
 	GetVisionInterface()->ForgetAllKnownEntities();
 }
 
