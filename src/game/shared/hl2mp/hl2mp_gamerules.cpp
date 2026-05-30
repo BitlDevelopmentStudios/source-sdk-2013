@@ -1297,7 +1297,7 @@ void CHL2MPRules::PlayerSpawn(CBasePlayer* pPlayer)
 
 	CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(pPlayer);
 
-	if (pBot && GetState() == STATE_PLAYING)
+	if (pBot && !pBot->IsInASquad()  && GetState() == STATE_PLAYING)
 	{
 		SetupBotSquad();
 	}
