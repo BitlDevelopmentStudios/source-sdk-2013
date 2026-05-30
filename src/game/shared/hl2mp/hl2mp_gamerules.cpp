@@ -346,9 +346,7 @@ void CHL2MPRules::CheckLastMemberLeft(void)
 			if (pPlayer->GetTeam() != pCombine)
 				continue;
 
-			pPlayer->SpeakSentence("LAST_OF_SQUAD",
-				SENTENCE_PRIORITY_INVALID,
-				SENTENCE_CRITERIA_ALWAYS);
+			pPlayer->SpeakSentence("LAST_OF_SQUAD", SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
 		}
 
 		m_bLastSquadMemberAnnounced = true;

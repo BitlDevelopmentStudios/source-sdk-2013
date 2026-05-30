@@ -1385,7 +1385,9 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 
 	DetonateTripmines();
 
-	// if we're a combine, drop a health vial or grenade on death like the actual NPC. This uses the spawning code too!
+	CBaseEntity* pAttacker = info.GetAttacker();
+
+	// if we're a combine, drop a health vial or grenade on death like the actual NPC. This uses the item spawning code too!
 	if ((GetPlayerClass() != CLS_FREEMAN))
 	{
 		CBasePlayer* pPlayer = ToBasePlayer(info.GetAttacker());
@@ -1414,6 +1416,33 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 			}
 		}
 	}
+	else
+	{
+		if (pAttacker && pAttacker->GetTeamNumber() == TEAM_COMBINE)
+		{
+			CHL2MP_Player* pPlayer = ToHL2MPPlayer(pAttacker);
+			if (pPlayer)
+			{
+				const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = pPlayer->GetPlayerClassInfo();
+				if (pPlayerClassInfo.iSentenceVoice > VOICE_TYPE_NONE)
+				{
+					const char* pSentenceName = "";
+
+					if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_METROPOLICE)
+					{
+						pSentenceName = "METROPOLICE_KILL_PLAYER";
+					}
+					else if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_SOLDIER)
+					{
+						pSentenceName = "COMBINE_PLAYER_DEAD";
+					}
+
+					// Use m_Sentences.Speak because we have custom logic here.
+					m_Sentences.Speak(pSentenceName, SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
+				}
+			}
+		}
+	}
 
 	BaseClass::Event_Killed( subinfo );
 
@@ -1424,8 +1453,6 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 			m_hRagdoll->GetBaseAnimating()->Dissolve( NULL, gpGlobals->curtime, false, ENTITY_DISSOLVE_NORMAL );
 		}
 	}
-
-	CBaseEntity *pAttacker = info.GetAttacker();
 
 	// Check for the attacker being in team Unassigned to account
 	// for non-player attackers, which are in this team by default.
