@@ -204,6 +204,7 @@ CHL2MPRules::CHL2MPRules()
 	m_bCompleteReset = false;
 	m_bChangelevelDone = false;
 	m_bHasMinPlayersToStart = false;
+	m_bLastSquadMemberAnnounced = false;
 	pFreeman = NULL;
 	m_iRoundState = STATE_PREROUND;
 	m_bStartedStartClock = false;
@@ -325,6 +326,62 @@ int CHL2MPRules::GetRemainingSoldierCount(void)
 	return iLives;
 }
 
+void CHL2MPRules::CheckLastMemberLeft(void)
+{
+#ifndef CLIENT_DLL
+	if (GetRemainingSoldierCount() == 1 && !m_bLastSquadMemberAnnounced)
+	{
+		CTeam* pCombine = g_Teams[TEAM_COMBINE];
+
+		for (int i = 0; i < MAX_PLAYERS; i++)
+		{
+			CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+
+			if (!pPlayer)
+				continue;
+
+			if (!pPlayer->IsAlive())
+				continue;
+
+			if (pPlayer->GetTeam() != pCombine)
+				continue;
+
+			pPlayer->SpeakSentence("LAST_OF_SQUAD",
+				SENTENCE_PRIORITY_INVALID,
+				SENTENCE_CRITERIA_ALWAYS);
+		}
+
+		m_bLastSquadMemberAnnounced = true;
+	}
+#endif
+}
+
+bool CHL2MPRules::IsLastMemberLeftDead(void)
+{
+#ifndef CLIENT_DLL
+	if (GetRemainingSoldierCount() == 1)
+	{
+		CTeam* pCombine = g_Teams[TEAM_COMBINE];
+
+		for (int i = 0; i < MAX_PLAYERS; i++)
+		{
+			CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+
+			if (!pPlayer)
+				continue;
+
+			if (!pPlayer->IsAlive() && (pPlayer->GetLifeCount() == 1))
+			{
+				pPlayer->SetLifeCount(0);
+				return true;
+			}
+		}
+	}
+#endif
+
+	return false;
+}
+
 void CHL2MPRules::SelectFreeman(void)
 {
 #ifndef CLIENT_DLL
@@ -389,6 +446,12 @@ int CHL2MPRules::CheckCanEndGame(void)
 	if (!IsFreemanAlive())
 	{
 		return GAME_END_FREEMANDEAD;
+	}
+
+	// Reports last soldier left, but the last soldier is dead.
+	if (GetRemainingSoldierCount() == 1 && IsLastMemberLeftDead())
+	{
+		return GAME_END_NOMORESOLDIERS;
 	}
 
 	// soldiers are dead
@@ -476,6 +539,8 @@ void CHL2MPRules::Think( void )
 
 					pPlayer->RemoveFlag(FL_FROZEN);
 				}
+
+				CheckLastMemberLeft();
 
 				m_iGameEndReason = CheckCanEndGame();
 
@@ -1134,6 +1199,7 @@ void CHL2MPRules::RestartGame(bool gameend)
 	m_bHasMinPlayersToStart = false;
 	if (gameend)
 	{
+		m_bLastSquadMemberAnnounced = false;
 		m_bStartedStartClock = false;
 	}
 	else

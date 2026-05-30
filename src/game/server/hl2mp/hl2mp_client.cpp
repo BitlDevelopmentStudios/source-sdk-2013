@@ -165,9 +165,8 @@ void respawn( CBaseEntity *pEdict, bool fCopyCorpse )
 		{
 			if (!pPlayer->m_bInitialSpawn && pPlayer->GetLifeCount() >= 0)
 			{
-				DevMsg("BEF: %i\n", pPlayer->GetLifeCount());
 				pPlayer->SetLifeCount(pPlayer->GetLifeCount() - 1);
-				DevMsg("AF: %i\n", pPlayer->GetLifeCount());
+				DevMsg("LIVES: %i\n", pPlayer->GetLifeCount());
 			}
 
 			if (pPlayer->GetLifeCount() == 0)

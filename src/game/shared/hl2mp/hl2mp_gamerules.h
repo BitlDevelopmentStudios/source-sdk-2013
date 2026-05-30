@@ -119,6 +119,8 @@ public:
 	virtual Vector VecWeaponRespawnSpot( CBaseCombatWeapon *pWeapon );
 	virtual int WeaponShouldRespawn( CBaseCombatWeapon *pWeapon );
 	virtual int GetRemainingSoldierCount(void);
+	virtual void CheckLastMemberLeft(void);
+	virtual bool IsLastMemberLeftDead(void);
 	virtual void SelectFreeman(void);
 	virtual bool IsFreemanAlive(void);
 	virtual int CheckCanEndGame(void);
@@ -183,6 +185,7 @@ private:
 	bool m_bJustEnded;
 	int m_iRoundState;
 	int m_iGameEndReason;
+	bool m_bLastSquadMemberAnnounced;
 
 #ifndef CLIENT_DLL
 	//may be disasterous
