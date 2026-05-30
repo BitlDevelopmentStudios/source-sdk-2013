@@ -831,7 +831,6 @@ void CHL2MPBot::Touch( CBaseEntity *pOther )
 //-----------------------------------------------------------------------------------------------------
 void CHL2MPBot::AvoidPlayers( CUserCmd *pCmd )
 {
-#ifdef AVOID_PLAYERS_TEST
 	Vector forward, right;
 	EyeVectors( &forward, &right );
 
@@ -879,7 +878,6 @@ void CHL2MPBot::AvoidPlayers( CUserCmd *pCmd )
 
 	pCmd->forwardmove += ahead;
 	pCmd->sidemove += side;
-#endif
 }
 
 
