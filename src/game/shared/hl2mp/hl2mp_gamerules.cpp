@@ -355,6 +355,33 @@ void CHL2MPRules::CheckLastMemberLeft(void)
 #endif
 }
 
+void CHL2MPRules::SetupBotSquad(void)
+{
+#ifndef CLIENT_DLL
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+
+		if (!pPlayer)
+			continue;
+
+		CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(pPlayer);
+
+		if (!pBot)
+			continue;
+
+		if (pBot->IsInASquad())
+			continue;
+
+		if (pBot->GetTeamNumber() != TEAM_COMBINE)
+			continue;
+
+		DevMsg("%s joined the global squad.\n", pBot->GetPlayerName());
+		pBot->GenerateOrJoinGlobalSquad();
+	}
+#endif
+}
+
 void CHL2MPRules::ResetBotSquad(void)
 {
 #ifndef CLIENT_DLL
@@ -373,6 +400,10 @@ void CHL2MPRules::ResetBotSquad(void)
 		if (!pBot->IsInASquad())
 			continue;
 
+		if (pBot->GetTeamNumber() != TEAM_COMBINE)
+			continue;
+
+		DevMsg("%s left the global squad.\n", pBot->GetPlayerName());
 		pBot->LeaveSquad();
 	}
 #endif
@@ -383,8 +414,6 @@ bool CHL2MPRules::IsLastMemberLeftDead(void)
 #ifndef CLIENT_DLL
 	if (GetRemainingSoldierCount() == 1)
 	{
-		CTeam* pCombine = g_Teams[TEAM_COMBINE];
-
 		for (int i = 0; i < MAX_PLAYERS; i++)
 		{
 			CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
@@ -590,6 +619,8 @@ void CHL2MPRules::Think( void )
 					pPlayer->AddFlag(FL_GODMODE);
 					pPlayer->AddFlag(FL_NOTARGET);
 				}
+
+				SetupBotSquad();
 			}
 
 			break;
@@ -1256,6 +1287,20 @@ void CHL2MPRules::RestartGame(bool gameend)
 void CHL2MPRules::OnNavMeshLoad( void )
 {
 	TheNavMesh->SetPlayerSpawnName( "info_player_deathmatch" );
+}
+
+//=========================================================
+//=========================================================
+void CHL2MPRules::PlayerSpawn(CBasePlayer* pPlayer)
+{
+	BaseClass::PlayerSpawn(pPlayer);
+
+	CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(pPlayer);
+
+	if (pBot && GetState() == STATE_PLAYING)
+	{
+		SetupBotSquad();
+	}
 }
 #endif
 

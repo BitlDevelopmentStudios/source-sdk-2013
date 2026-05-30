@@ -237,7 +237,7 @@ public:
 	void SetSpawner( CHL2MPBotGenerator *spawner );
 	CHL2MPBotGenerator *GetSpawner( void ) const;
 
-	void GenerateOrJoinGlobalSquad();
+	void GenerateOrJoinGlobalSquad(void);
 	void JoinSquad( CHL2MPBotSquad *squad );					// become a member of the given squad
 	void LeaveSquad( void );								// leave our current squad
 	void DeleteSquad( void );

@@ -120,6 +120,7 @@ public:
 	virtual int WeaponShouldRespawn( CBaseCombatWeapon *pWeapon );
 	virtual int GetRemainingSoldierCount(void);
 	virtual void CheckLastMemberLeft(void);
+	virtual void SetupBotSquad(void);
 	virtual void ResetBotSquad(void);
 	virtual bool IsLastMemberLeftDead(void);
 	virtual void SelectFreeman(void);
@@ -141,8 +142,6 @@ public:
 	void CleanUpMap();
 	void RestartGame(bool gameend = false);
 
-	void OnNavMeshLoad( void );
-
 	int GetState(void) { return m_iRoundState; }
 	
 #ifndef CLIENT_DLL
@@ -158,6 +157,8 @@ public:
 	const char *GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer );
 
 	virtual CHL2MP_Player* GetFreeman() { return pFreeman; }
+	void PlayerSpawn(CBasePlayer* pPlayer);
+	void OnNavMeshLoad(void);
 #endif
 
 	bool IsOfficialMap( void );

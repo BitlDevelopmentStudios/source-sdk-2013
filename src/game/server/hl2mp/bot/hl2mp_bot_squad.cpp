@@ -84,6 +84,11 @@ CHL2MPBot *CHL2MPBotSquad::GetLeader( void ) const
 	return m_leader;
 }
 
+//----------------------------------------------------------------------
+void CHL2MPBotSquad::SetLeader(CHL2MPBot* bot)
+{
+	m_leader = bot;
+}
 
 //----------------------------------------------------------------------
 void CHL2MPBotSquad::CollectMembers( CUtlVector< CHL2MPBot * > *memberVector ) const

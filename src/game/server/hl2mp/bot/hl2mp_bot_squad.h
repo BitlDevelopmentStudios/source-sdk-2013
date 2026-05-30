@@ -25,6 +25,7 @@ public:
  	int GetMemberCount( void ) const;
 
 	CHL2MPBot *GetLeader( void ) const;
+	void SetLeader(CHL2MPBot* bot);
 
 	class Iterator
 	{

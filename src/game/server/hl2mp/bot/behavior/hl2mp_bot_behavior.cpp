@@ -560,8 +560,6 @@ void CHL2MPBotMainAction::FireWeaponAtEnemy( CHL2MPBot *me )
 
 	if (me->GetPlayerClass() > CLS_INVALID)
 	{
-		const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = me->GetPlayerClassInfo();
-
 		if (myWeapon->HasIronsights() && !myWeapon->IsIronsighted() && me->GetDifficulty() > CHL2MPBot::EASY)
 		{
 			// aim down our sights if we're able to.

@@ -783,8 +783,6 @@ void CHL2MPBot::Spawn()
 	SetSquadFormationError( 0.0f );
 	SetBrokenFormation( false );
 
-	GenerateOrJoinGlobalSquad();
-
 	GetVisionInterface()->ForgetAllKnownEntities();
 }
 
@@ -821,10 +819,13 @@ void CHL2MPBot::PhysicsSimulate( void )
 
 	if ( IsInASquad() )
 	{
-		if ( GetSquad()->GetMemberCount() <= 1 || GetSquad()->GetLeader() == NULL )
+		if ( GetSquad()->GetMemberCount() <= 1 )
 		{
-			// squad has collapsed - disband it
-			LeaveSquad();
+			if (GetSquad()->GetLeader() == NULL)
+			{
+				// become the leader.
+				GetSquad()->SetLeader(this);
+			}
 		}
 	}
 }
