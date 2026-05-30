@@ -13,6 +13,7 @@
 	#include "c_te_effect_dispatch.h"
 #else
 	#include "hl2mp_player.h"
+	#include "bot/hl2mp_bot.h"
 	#include "te_effect_dispatch.h"
 	#include "grenade_frag.h"
 #endif
@@ -366,6 +367,17 @@ void CWeaponFrag::DecrementAmmo( CBaseCombatCharacter *pOwner )
 		{
 			pPlayer->SwitchToNextBestWeapon(this);
 		}
+#ifndef CLIENT_DLL
+		else
+		{
+			CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(pPlayer);
+
+			if (pBot)
+			{
+				pBot->SwitchToNextBestWeapon(this);
+			}
+		}
+#endif
 	}
 }
 
