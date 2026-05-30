@@ -490,7 +490,7 @@ void CWeaponFrag::ItemPostFrame( void )
 		//boom.
 		if (pOwner)
 		{
-			ExplosionCreate(pOwner->GetAbsOrigin(), QAngle(0, 0, 1), this, 25.0, 22.3, true);
+			ExplosionCreate(pOwner->GetAbsOrigin(), QAngle(0, 0, 1), this, 25.0, 22.3, 0);
 			DecrementAmmo(pOwner);
 		}
 #endif
