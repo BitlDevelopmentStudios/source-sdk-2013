@@ -16,6 +16,7 @@
 	#include "bot/hl2mp_bot.h"
 	#include "te_effect_dispatch.h"
 	#include "grenade_frag.h"
+	#include "explode.h"
 #endif
 
 #include "weapon_ar2.h"
@@ -26,6 +27,7 @@
 #include "tier0/memdbgon.h"
 
 #define GRENADE_TIMER	2.5f //Seconds
+#define NPC_GRENADE_TIMER		3.5f
 
 #define GRENADE_PAUSED_NO			0
 #define GRENADE_PAUSED_PRIMARY		1
@@ -75,6 +77,9 @@ public:
 
 	void	ThrowGrenade( CBasePlayer *pPlayer );
 	bool	IsPrimed( bool ) { return ( m_AttackPaused != 0 );	}
+
+	float  GetTimerTime(CHL2MP_Player* pPlayer);
+	float  GetTimerTimeBasic(CHL2MP_Player* pPlayer);
 	
 private:
 
@@ -87,6 +92,7 @@ private:
 	
 	CNetworkVar( int,	m_AttackPaused );
 	CNetworkVar( bool,	m_fDrawbackFinished );
+	CNetworkVar(float, m_flGrenadeCookTime);
 
 	CWeaponFrag( const CWeaponFrag & );
 
@@ -122,10 +128,12 @@ BEGIN_NETWORK_TABLE( CWeaponFrag, DT_WeaponFrag )
 	RecvPropBool( RECVINFO( m_bRedraw ) ),
 	RecvPropBool( RECVINFO( m_fDrawbackFinished ) ),
 	RecvPropInt( RECVINFO( m_AttackPaused ) ),
+	RecvPropFloat(RECVINFO(m_flGrenadeCookTime)),
 #else
 	SendPropBool( SENDINFO( m_bRedraw ) ),
 	SendPropBool( SENDINFO( m_fDrawbackFinished ) ),
 	SendPropInt( SENDINFO( m_AttackPaused ) ),
+	SendPropFloat(SENDINFO(m_flGrenadeCookTime)),
 #endif
 	
 END_NETWORK_TABLE()
@@ -145,6 +153,7 @@ CWeaponFrag::CWeaponFrag( void ) :
 	CBaseHL2MPCombatWeapon()
 {
 	m_bRedraw = false;
+	m_flGrenadeCookTime = -1.0f;
 }
 
 //-----------------------------------------------------------------------------
@@ -279,6 +288,39 @@ bool CWeaponFrag::Reload( void )
 	return true;
 }
 
+float CWeaponFrag::GetTimerTimeBasic(CHL2MP_Player* pPlayer)
+{
+	float timer = GRENADE_TIMER;
+
+	if (pPlayer)
+	{
+		if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
+		{
+			timer = NPC_GRENADE_TIMER;
+		}
+	}
+
+	return timer;
+}
+
+float CWeaponFrag::GetTimerTime(CHL2MP_Player* pPlayer)
+{
+	float timer = GRENADE_TIMER;
+
+	if (pPlayer)
+	{
+		if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
+		{
+			if (m_flGrenadeCookTime > -1.0f)
+			{
+				timer = NPC_GRENADE_TIMER - (NPC_GRENADE_TIMER - (m_flGrenadeCookTime - gpGlobals->curtime));
+			}
+		}
+	}
+
+	return timer;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -307,6 +349,7 @@ void CWeaponFrag::SecondaryAttack( void )
 	// Don't let weapon idle interfere in the middle of a throw!
 	m_flTimeWeaponIdle = FLT_MAX;
 	m_flNextSecondaryAttack	= FLT_MAX;
+	m_flGrenadeCookTime = gpGlobals->curtime + GetTimerTimeBasic(ToHL2MPPlayer(pPlayer));
 
 	// If I'm now out of ammo, switch away
 	if ( !HasPrimaryAmmo() )
@@ -343,6 +386,16 @@ void CWeaponFrag::PrimaryAttack( void )
 	// the player will hold the grenade.
 	m_flTimeWeaponIdle = FLT_MAX;
 	m_flNextPrimaryAttack = FLT_MAX;
+
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
+
+	if (pHL2MPPlayer)
+	{
+		if (pHL2MPPlayer->GetPlayerClass() != CLS_FREEMAN)
+		{
+			m_flGrenadeCookTime = gpGlobals->curtime + GetTimerTimeBasic(ToHL2MPPlayer(pPlayer));
+		}
+	}
 
 	// If I'm now out of ammo, switch away
 	if ( !HasPrimaryAmmo() )
@@ -386,10 +439,10 @@ void CWeaponFrag::DecrementAmmo( CBaseCombatCharacter *pOwner )
 //-----------------------------------------------------------------------------
 void CWeaponFrag::ItemPostFrame( void )
 {
+	CHL2MP_Player* pOwner = ToHL2MPPlayer(GetOwner());
+
 	if( m_fDrawbackFinished )
 	{
-		CHL2MP_Player* pOwner = ToHL2MPPlayer(GetOwner());
-
 		if (pOwner)
 		{
 			switch( m_AttackPaused )
@@ -429,6 +482,21 @@ void CWeaponFrag::ItemPostFrame( void )
 				break;
 			}
 		}
+	}
+
+	if ((m_flGrenadeCookTime > -1.0f) && (m_flGrenadeCookTime <= gpGlobals->curtime))
+	{
+#ifndef CLIENT_DLL
+		//boom.
+		if (pOwner)
+		{
+			ExplosionCreate(pOwner->GetAbsOrigin(), QAngle(0, 0, 1), this, 25.0, 22.3, true);
+			DecrementAmmo(pOwner);
+		}
+#endif
+
+		m_flGrenadeCookTime = -1.0f;
+		return;
 	}
 
 	BaseClass::ItemPostFrame();
@@ -486,7 +554,10 @@ void CWeaponFrag::ThrowGrenade( CBasePlayer *pPlayer )
 	Vector vecThrow;
 	pPlayer->GetVelocity( &vecThrow, NULL );
 	vecThrow += vForward * 1200;
-	CBaseGrenade *pGrenade = Fraggrenade_Create( vecSrc, vec3_angle, vecThrow, AngularImpulse(600,random->RandomInt(-1200,1200),0), pPlayer, GRENADE_TIMER, false );
+
+	float timer = GetTimerTime(ToHL2MPPlayer(pPlayer));
+
+	CBaseGrenade *pGrenade = Fraggrenade_Create( vecSrc, vec3_angle, vecThrow, AngularImpulse(600,random->RandomInt(-1200,1200),0), pPlayer, timer, false );
 
 	if ( pGrenade )
 	{
@@ -514,6 +585,7 @@ void CWeaponFrag::ThrowGrenade( CBasePlayer *pPlayer )
 #endif
 
 	m_bRedraw = true;
+	m_flGrenadeCookTime = -1.0f;
 
 	WeaponSound( SINGLE );
 	
@@ -542,7 +614,10 @@ void CWeaponFrag::LobGrenade( CBasePlayer *pPlayer )
 	Vector vecThrow;
 	pPlayer->GetVelocity( &vecThrow, NULL );
 	vecThrow += vForward * 350 + Vector( 0, 0, 50 );
-	CBaseGrenade *pGrenade = Fraggrenade_Create( vecSrc, vec3_angle, vecThrow, AngularImpulse(200,random->RandomInt(-600,600),0), pPlayer, GRENADE_TIMER, false );
+
+	float timer = GetTimerTime(ToHL2MPPlayer(pPlayer));
+
+	CBaseGrenade *pGrenade = Fraggrenade_Create( vecSrc, vec3_angle, vecThrow, AngularImpulse(200,random->RandomInt(-600,600),0), pPlayer, timer, false );
 
 	if ( pGrenade )
 	{
@@ -564,6 +639,7 @@ void CWeaponFrag::LobGrenade( CBasePlayer *pPlayer )
 	pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
 	m_bRedraw = true;
+	m_flGrenadeCookTime = -1.0f;
 }
 
 //-----------------------------------------------------------------------------
@@ -601,7 +677,10 @@ void CWeaponFrag::RollGrenade( CBasePlayer *pPlayer )
 	QAngle orientation(0,pPlayer->GetLocalAngles().y,-90);
 	// roll it
 	AngularImpulse rotSpeed(0,0,720);
-	CBaseGrenade *pGrenade = Fraggrenade_Create( vecSrc, orientation, vecThrow, rotSpeed, pPlayer, GRENADE_TIMER, false );
+
+	float timer = GetTimerTime(ToHL2MPPlayer(pPlayer));
+
+	CBaseGrenade *pGrenade = Fraggrenade_Create( vecSrc, orientation, vecThrow, rotSpeed, pPlayer, timer, false );
 
 	if ( pGrenade )
 	{
@@ -623,5 +702,6 @@ void CWeaponFrag::RollGrenade( CBasePlayer *pPlayer )
 	pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
 	m_bRedraw = true;
+	m_flGrenadeCookTime = -1.0f;
 }
 

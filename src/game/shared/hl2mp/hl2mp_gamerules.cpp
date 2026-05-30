@@ -619,8 +619,6 @@ void CHL2MPRules::Think( void )
 					pPlayer->AddFlag(FL_GODMODE);
 					pPlayer->AddFlag(FL_NOTARGET);
 				}
-
-				SetupBotSquad();
 			}
 
 			break;
