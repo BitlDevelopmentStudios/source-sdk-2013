@@ -120,6 +120,7 @@ public:
 	virtual int WeaponShouldRespawn( CBaseCombatWeapon *pWeapon );
 	virtual int GetRemainingSoldierCount(void);
 	virtual void CheckLastMemberLeft(void);
+	virtual void ResetBotSquad(void);
 	virtual bool IsLastMemberLeftDead(void);
 	virtual void SelectFreeman(void);
 	virtual bool IsFreemanAlive(void);

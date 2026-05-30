@@ -2069,7 +2069,10 @@ CHL2MP_Player *CHL2MPBot::GetClosestHumanLookingAtMe( int team ) const
 
 void CHL2MPBot::GenerateOrJoinGlobalSquad()
 {
-	if (HL2MPRules()->GetState() == STATE_PREROUND)
+	if ((HL2MPRules()->GetState() == STATE_PREROUND) || (HL2MPRules()->GetState() == STATE_COMPLETION))
+		return;
+
+	if (GetTeamNumber() != TEAM_COMBINE)
 		return;
 
 	if (!IsInASquad())
@@ -2081,7 +2084,7 @@ void CHL2MPBot::GenerateOrJoinGlobalSquad()
 
 			if (g_squad && GetTeam())
 			{
-				g_squad->SetFormationSize(GetTeam()->GetNumPlayers());
+				g_squad->SetFormationSize(UTIL_GetPlayerCount());
 				g_squad->SetShouldPreserveSquad(true);
 			}
 		}

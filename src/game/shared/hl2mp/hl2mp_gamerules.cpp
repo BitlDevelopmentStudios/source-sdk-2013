@@ -37,6 +37,7 @@
 	#include "hl2mp_cvars.h"
 	#include "player_resource.h"
 	#include "anticitizen_player_resource.h"
+	#include <bot/hl2mp_bot.h>
 
 extern void respawn(CBaseEntity *pEdict, bool fCopyCorpse);
 
@@ -350,6 +351,29 @@ void CHL2MPRules::CheckLastMemberLeft(void)
 		}
 
 		m_bLastSquadMemberAnnounced = true;
+	}
+#endif
+}
+
+void CHL2MPRules::ResetBotSquad(void)
+{
+#ifndef CLIENT_DLL
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+
+		if (!pPlayer)
+			continue;
+
+		CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(pPlayer);
+
+		if (!pBot)
+			continue;
+
+		if (!pBot->IsInASquad())
+			continue;
+
+		pBot->LeaveSquad();
 	}
 #endif
 }
@@ -1194,6 +1218,8 @@ void CHL2MPRules::RestartGame(bool gameend)
 	{
 		pCombine->SetScore( 0 );
 	}
+
+	ResetBotSquad();
 
 	if (gameend)
 	{
