@@ -10899,7 +10899,7 @@ REGISTER_SEND_PROXY_NON_MODIFIED_POINTER(SendProxy_SendBaseNPCGameDataTable);
 BEGIN_SEND_TABLE_NOBASE(CAI_BaseNPC, DT_BaseNPCGameData)
 	SendPropInt(SENDINFO(m_iHealth), -1, SPROP_VARINT | SPROP_CHANGES_OFTEN),
 	SendPropInt(SENDINFO(m_takedamage), 2, SPROP_UNSIGNED),
-	SendPropInt(SENDINFO(m_bloodColor), 3, SPROP_UNSIGNED),
+	SendPropInt(SENDINFO(m_bloodColor), -1, SPROP_UNSIGNED),
 	//SendPropString( SENDINFO( m_szNetname ) ),	// Transmitted by player resource now
 	SendPropInt(SENDINFO(m_nDefaultPlayerRelationship), 2, SPROP_UNSIGNED),
 END_SEND_TABLE();

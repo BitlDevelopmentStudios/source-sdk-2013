@@ -8,6 +8,8 @@
 #include "cbase.h"
 #include "c_ai_basenpc.h"
 #include "soundenvelope.h"
+#include "takedamageinfo.h"
+#include "IEffects.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -25,6 +27,8 @@ public:
 	virtual void OnDataChanged( DataUpdateType_t type );
 	virtual void UpdateOnRemove( void );
 	virtual void OnRestore();
+
+	virtual void TraceAttack(const CTakeDamageInfo& info, const Vector& vecDir, trace_t* ptr, CDmgAccumulator* pAccumulator = NULL);
 
 private:
 	C_NPC_Manhack( const C_NPC_Manhack & );
@@ -152,6 +156,22 @@ void C_NPC_Manhack::SoundInit( void )
 	}
 }
 
+void C_NPC_Manhack::TraceAttack(const CTakeDamageInfo& info, const Vector& vecDir, trace_t* ptr, CDmgAccumulator* pAccumulator)
+{
+	if (info.GetDamageType() & DMG_BULLET)
+	{
+		g_pEffects->Ricochet(ptr->endpos, ptr->plane.normal);
+	}
+
+	if (info.GetDamageType() & DMG_CLUB)
+	{
+		// Clubbed!
+//		UTIL_Smoke(GetAbsOrigin(), random->RandomInt(10, 15), 10);
+		g_pEffects->Sparks(ptr->endpos, 1, 1, &ptr->plane.normal);
+	}
+
+	BaseClass::TraceAttack(info, vecDir, ptr, pAccumulator);
+}
 
 //-----------------------------------------------------------------------------
 // Purpose:
