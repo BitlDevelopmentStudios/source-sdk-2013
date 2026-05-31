@@ -84,7 +84,7 @@ public:
 	void Event_Killed( const CTakeDamageInfo &info );
 	void StopLoopingSounds();
 
-	int  BloodColor( void ) { return DONT_BLEED; }
+	int  BloodColor( void ) { return BLOOD_COLOR_MECH; }
 	void GibMonster( void );
 
 	Class_T Classify ( void ) { return CLASS_COMBINE; }

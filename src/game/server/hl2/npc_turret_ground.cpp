@@ -93,7 +93,6 @@ void CNPC_GroundTurret::Spawn( void )
 	SetNavType( NAV_FLY );
 	SetSolid( SOLID_VPHYSICS );
 
-	SetBloodColor( DONT_BLEED );
 	m_iHealth			= 125;
 	m_flFieldOfView		= cos( ((GROUNDTURRET_VIEWCONE / 2.0f) * M_PI / 180.0f) );
 	m_NPCState			= NPC_STATE_NONE;
@@ -149,7 +148,7 @@ void CNPC_GroundTurret::Spawn( void )
 	GetAttachment( "light", vecPos );
 	m_vecLightOffset = vecPos - GetAbsOrigin();
 
-	SetBloodColor(DONT_BLEED);
+	SetBloodColor(BLOOD_COLOR_MECH);
 }
 
 //-----------------------------------------------------------------------------

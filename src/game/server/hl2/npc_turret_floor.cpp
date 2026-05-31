@@ -353,7 +353,7 @@ void CNPC_FloorTurret::Spawn( void )
 
 	SetState(NPC_STATE_IDLE);
 
-	SetBloodColor(DONT_BLEED);
+	SetBloodColor(BLOOD_COLOR_MECH);
 }
 
 //-----------------------------------------------------------------------------

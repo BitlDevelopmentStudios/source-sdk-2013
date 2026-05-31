@@ -99,7 +99,7 @@ void CNPC_BaseScanner::Spawn(void)
 
 	SetMoveType( MOVETYPE_VPHYSICS );
 
-	m_bloodColor		= DONT_BLEED;
+	m_bloodColor		= BLOOD_COLOR_MECH;
 	SetViewOffset( Vector(0, 0, 10) );		// Position of the eyes relative to NPC's origin.
 	m_flFieldOfView		= 0.2;
 	m_NPCState			= NPC_STATE_NONE;

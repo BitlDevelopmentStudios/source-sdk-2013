@@ -2455,7 +2455,7 @@ void CNPC_Manhack::Spawn(void)
 	m_bHackedByAlyx = false;
 	StopLoitering();
 
-	SetBloodColor(DONT_BLEED);
+	SetBloodColor(BLOOD_COLOR_MECH);
 }
 
 //-----------------------------------------------------------------------------

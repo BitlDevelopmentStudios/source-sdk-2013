@@ -543,7 +543,7 @@ void CCombineDropshipContainer::ThrowFlamingGib( void )
 	// Throw a flaming, smoking chunk.
 	CGib *pChunk = CREATE_ENTITY( CGib, "gib" );
 	pChunk->Spawn( "models/gibs/hgibs.mdl" );
-	pChunk->SetBloodColor( DONT_BLEED );
+	pChunk->SetBloodColor(BLOOD_COLOR_MECH);
 
 	QAngle vecSpawnAngles;
 	vecSpawnAngles.Random( -90, 90 );
