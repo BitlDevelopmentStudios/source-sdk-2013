@@ -431,7 +431,7 @@ CHL2MPBot* CHL2MPBotManager::GetAvailableBotFromPool()
 		if ( ( pBot->GetFlags() & FL_FAKECLIENT ) == 0 )
 			continue;
 
-		if (pBot->GetLifeCount() == 0 && HL2MPRules()->GetState() != STATE_PREROUND)
+		if (pBot->GetLifeCount() == 0 && (HL2MPRules()->GetState() == STATE_PREROUND) || (HL2MPRules()->GetState() == STATE_COMPLETION))
 			continue;
 
 		if ( pBot->GetTeamNumber() == TEAM_SPECTATOR || pBot->GetTeamNumber() == TEAM_UNASSIGNED )

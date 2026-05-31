@@ -1012,6 +1012,12 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 	if (!g_Anticitizen_PR)
 		return false;
 
+	if ((HL2MPRules()->GetState() == STATE_COMPLETION))
+	{
+		ClientPrint(this, HUD_PRINTCENTER, "#Anticitizen_NotNow");
+		return false;
+	}
+
 	if (GetLifeCount() == 0)
 	{
 		ClientPrint(this, HUD_PRINTCENTER, "#Anticitizen_OutOfLives");
