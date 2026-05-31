@@ -26,6 +26,7 @@ LOOKING FOR THE OLD BDS BASE WITH QUIVER FORTRESS' SOURCE CODE? Go here: https:/
 - Serverfinder/Quick Search: A quick and easy way for players to start and join servers.
 - Supports Xbox 360 achievement notifications.
 - Full support with the HL2 Survivor animation set.
+- LUX Shaders are pre-implemented, which includes fixes and improvemnts for all default shaders. Read README_LUX.md for more information. (https://github.com/LUX-Shaders-Team/LUX-Shaders)
 
 ## Additional Credits;
 The Mapbase team for MP fixes as well as their implementation of Tony Sergi's, Saul's, and SecobMod's code as well as fixes for aformentioned code.

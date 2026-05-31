@@ -1,0 +1,63 @@
+//===================== File of the LUX Shader Project =====================//
+//
+//	Initial D.	:	23.12.2023 DMY
+//	Last Change :	21.05.2026 DMY
+//
+//==========================================================================//
+
+//==========================================================================//
+//	Declare Static Combos
+//==========================================================================//
+// STATIC:	"BLENDMODULATETEXTURE"		"0..1"
+// STATIC:	"BUMPMAPPED"				"0..4" // $BumpMap, $SSBump, $Phong, $Phong and $SSBump
+// STATIC:	"BUMPMASK"					"0..1"
+// STATIC:	"EXPONENTTEXTURE"			"0..2" // $PhongExponentTexture and $PhongExponentTexture2, just $PhongExponentTexture2
+// STATIC:	"DETAILTEXTURE"				"0..2"
+// STATIC:	"XBYBASEALPHA"				"0..2"
+
+//==========================================================================//
+//	Declare Dynamic Combos
+//==========================================================================//
+// DYNAMIC: "PROJTEXSHADOWS"			"0..1"
+
+//==========================================================================//
+//	Skipping undesired Combos
+//	The Order of Static Combos and Skips has a drastic Impact on Compile Time!
+//==========================================================================//
+// SKIP: ( $BUMPMAPPED > 1 && $BUMPMASK != 0 )
+
+//==========================================================================//
+//	Unpack Combos
+//==========================================================================//
+
+// Unpack this so it's easier to use in the Shader..
+#if (BUMPMAPPED > 0)
+	#define BUMPMAPS 1
+
+	#if (BUMPMAPPED == 2)
+		#define SSBUMP 1
+	#elif (BUMPMAPPED == 3)
+		#define PHONG 1
+	#elif (BUMPMAPPED == 4)
+		#define PHONG 1
+		#define SSBUMP 1
+	#endif
+#endif
+
+// Need this for Phong Data Header
+#if (BUMPMAPPED > 2 && EXPONENTTEXTURE)
+#define PHONGEXPONENTTEXTURE
+#endif
+
+#if !BUMPMAPPED
+	#define WVT_SIMPLE 1
+#endif
+
+//==========================================================================//
+//	Common Definitions
+//==========================================================================//
+
+// We are on a Projected Texture
+#define PROJTEX 1
+
+#include "lux_worldvertextransition_main.h"

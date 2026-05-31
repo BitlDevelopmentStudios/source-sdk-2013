@@ -1,0 +1,59 @@
+//===================== File of the LUX Shader Project =====================//
+//
+//	Initial D.	:	23.01.2023 DMY
+//	Last Change :	21.05.2026 DMY
+//
+//==========================================================================//
+
+//==========================================================================//
+//	Declare Static Combos
+//==========================================================================//
+// STATIC:	"ENVMAPMODE"				"0..4"
+// STATIC:	"SELFILLUMMODE"				"0..2"
+// STATIC:	"XBYBASEALPHA"				"0..2"
+// STATIC:	"DETAILTEXTURE"				"0..1"
+// STATIC:	"LIGHTWARPTEXTURE"			"0..1"
+
+//==========================================================================//
+//	Declare Dynamic Combos
+//==========================================================================//
+// DYNAMIC: "BICUBIC_FILTERING"			"0..1"
+
+//==========================================================================//
+//	Skipping undesired Combos
+//	The Order of Static Combos and Skips has a drastic Impact on Compile Time!
+//==========================================================================//
+// SKIP: ( ($ENVMAPMODE < 3) && $SELFILLUMMODE == 2 )
+
+// I found several Community VMT's in SFM that utilize $SelfIllumMask with $BlendTintByBaseAlpha
+// Well, it's technically the correct approach, it will no longer use the $BaseTexture's Alpha Channel
+// @SKIP: ( $SELFILLUMMODE == 1 && $XBYBASEALPHA != 0 )
+
+//==========================================================================//
+//	Unpack Combos specific to this Shader
+//==========================================================================//
+#if (ENVMAPMODE > 0)
+    #define ENVMAP 1
+#else
+    #define ENVMAP 0
+#endif
+
+#if (ENVMAPMODE > 2)
+    #define ENVMAPMASK 1
+#else
+    #define ENVMAPMASK 0
+#endif
+
+#if (ENVMAPMODE == 2 || ENVMAPMODE == 4)
+    #define ENVMAPPARALLAXCORRECTION 1
+#else
+    #define ENVMAPPARALLAXCORRECTION 0
+#endif
+
+#define LMG_SIMPLE 1
+
+//==========================================================================//
+//	Call into Main Function
+//==========================================================================//
+
+#include "lux_lightmappedgeneric_main.h"

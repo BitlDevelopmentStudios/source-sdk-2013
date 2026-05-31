@@ -1,0 +1,68 @@
+//===================== File of the LUX Shader Project =====================//
+//
+//	Initial D.	:	23.12.2023 DMY
+//	Last Change :	21.05.2026 DMY
+//
+//==========================================================================//
+
+//==========================================================================//
+//	Declare Static Combos
+//==========================================================================//
+// Lighting Mode is
+// 0 = No BumpMap, 1 = BumpMap, 2 = SSBump,
+// 3 = BumpMap + Phong, 4 = BumpMap + SSBump + Phong
+// 5 = BumpMap + Phong + PhongExponentTexture, 6 = BumpMap + SSBump + Phong + PhongExponentTexture
+// This avoids a single Skip hahaha
+// STATIC:	"LIGHTING_MODE"				"0..6"
+// STATIC:	"DETAILTEXTURE"				"0..1"
+// STATIC:	"XBYBASEALPHA"				"0..2"
+
+//==========================================================================//
+//	Declare Dynamic Combos
+//==========================================================================//
+// DYNAMIC: "PROJTEXSHADOWS"			"0..1"
+
+//==========================================================================//
+//	Skipping undesired Combos
+//	The Order of Static Combos and Skips has a drastic Impact on Compile Time!
+//==========================================================================//
+// None
+
+//==========================================================================//
+//	Unpack Combos specific to this Shader
+//==========================================================================//
+
+#if (LIGHTING_MODE >= 1)
+#define LMG_SIMPLE 0
+
+	#if (LIGHTING_MODE == 2 || LIGHTING_MODE == 4 || LIGHTING_MODE == 6)
+		#define SSBUMP 1
+	#else
+		#define SSBUMP 0
+	#endif
+
+	// This is what actually enables PhongExponentTexture Behaviour
+	#if (LIGHTING_MODE > 2)
+		#define PHONG 1
+		
+		#if (LIGHTING_MODE >= 5)
+			// FIXME: This shouldn't be necessary
+			#define PHONGEXPONENTTEXTURE 1
+			#define EXPONENTTEXTURE 1
+		#endif
+	#else
+		#define PHONG 0
+	#endif
+#else
+	#define LMG_SIMPLE 1
+	#define SSBUMP 0
+	#define PHONG 0
+#endif
+
+//==========================================================================//
+//	Call into Main Function
+//==========================================================================//
+
+#define PROJTEX 1
+
+#include "lux_lightmappedgeneric_main.h"
