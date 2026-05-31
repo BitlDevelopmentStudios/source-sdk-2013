@@ -1,4 +1,4 @@
-"Resource/UI/ClassMenu_CT.res"
+"Resource/UI/ClassMenu.res"
 {
 	"class"
 	{
@@ -127,6 +127,27 @@
 		"dulltext"		"0"
 		"brighttext"		"0"
 		"command"		"joinclass 3"
+	}
+	
+	"autoselect"
+	{
+		"ControlName"		"MouseOverPanelButton"
+		"fieldName"		"autoselect"
+		"xpos"			"76"
+		"ypos"			"276"
+		"wide"			"148"
+		"tall"			"20"
+		"autoResize"		"0"
+		"pinCorner"		"2"
+		"visible"		"1"
+		"enabled"		"1"
+		"tabPosition"		"0"
+		"labelText"		"#Cstrike_Auto_Select"
+		"textAlignment"		"west"
+		"dulltext"		"0"
+		"brighttext"		"0"
+		"command"		"joinclass -2"
+		"Default"		"1"
 	}
 
 	"CancelButton"

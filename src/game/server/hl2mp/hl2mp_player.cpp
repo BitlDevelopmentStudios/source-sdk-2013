@@ -1043,13 +1043,16 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 		return false;
 	}
 
+	bool bWasRandom = false;
+
 	if (iCurClass == CLS_RAND)
 	{
+		bWasRandom = true;
 		random->SetSeed((int)gpGlobals->curtime);
 		iCurClass = random->RandomInt(CLS_FIRST_COMBINE_CLASS, CLS_LAST_COMBINE_CLASS);
 	}
 
-	if (iCurClass == GetPlayerClass())
+	if ((iCurClass == GetPlayerClass()) && !bWasRandom)
 	{
 		return false;
 	}
