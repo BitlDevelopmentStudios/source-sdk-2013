@@ -305,6 +305,14 @@ void CHL2MP_Player::Spawn(void)
 		{
 			m_bInitialSpawn = true;
 		}
+		else
+		{
+			if (m_bInitialSpawn)
+			{
+				m_bInitialSpawn = false;
+			}
+		}
+
 		ChangeTeam(TEAM_SPECTATOR);
 	}
 	else
