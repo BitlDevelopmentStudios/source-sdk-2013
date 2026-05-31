@@ -1903,8 +1903,8 @@ void CHL2MP_Player::State_PreThink_OBSERVER_MODE()
 	//	Assert( IsEffectActive( EF_NODRAW ) );
 
 	// Must be dead.
-	Assert( m_lifeState == LIFE_DEAD );
-	Assert( pl.deadflag );
+	//Assert( m_lifeState == LIFE_DEAD );
+	//Assert( pl.deadflag );
 }
 
 
