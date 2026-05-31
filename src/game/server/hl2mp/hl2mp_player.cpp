@@ -990,6 +990,12 @@ bool CHL2MP_Player::HandleCommand_JoinTeam( int team )
 		return false;
 	}
 
+	if (GetPlayerClass() == CLS_FREEMAN)
+	{
+		Warning("Cannot join another team as Freeman.\n");
+		return false;
+	}
+
 	if ( team == TEAM_SPECTATOR )
 	{
 		// Prevent this is the cvar is set
@@ -1003,14 +1009,6 @@ bool CHL2MP_Player::HandleCommand_JoinTeam( int team )
 
 		return true;
 	}
-
-#ifndef DEBUG
-	if (GetPlayerClass() == CLS_FREEMAN)
-	{
-		Warning("Cannot join another team as Freeman.\n");
-		return true;
-	}
-#endif // !DEBUG
 
 	// Switch their actual team...
 	ChangeTeam( team );
@@ -1057,7 +1055,6 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 		return false;
 	}
 	
-#ifndef DEBUG
 	if (iCurClass == CLS_FREEMAN)
 	{
 		Warning("Cleverly done, Mr. Freeman, but you're not supposed to be here.\n");
@@ -1069,17 +1066,8 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 		Warning("Dr. Freeman? Can you hear me? Do not go into the light!\n");
 		return false;
 	}
-#endif // !DEBUG
 
-#ifdef DEBUG
-	if (iCurClass == CLS_FREEMAN)
-	{
-		ChangeTeam(TEAM_FREEMAN);
-	}
-	else if (GetTeamNumber() != TEAM_COMBINE)
-#else
 	if (GetTeamNumber() != TEAM_COMBINE)
-#endif // !DEBUG
 	{
 		ChangeTeam(TEAM_COMBINE);
 	}
@@ -1111,13 +1099,11 @@ bool CHL2MP_Player::ClientCommand( const CCommand &args )
 			Warning("Player sent bad joinclass syntax\n");
 		}
 
-#ifndef DEBUG
 		if (GetPlayerClass() == CLS_FREEMAN)
 		{
 			Warning("Cannot join another class as Freeman.\n");
 			return true;
 		}
-#endif // !DEBUG
 
 		if (ShouldRunRateLimitedCommand(args))
 		{
