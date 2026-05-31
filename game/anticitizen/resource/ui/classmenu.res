@@ -149,24 +149,4 @@
 		"command"		"joinclass -2"
 		"Default"		"1"
 	}
-
-	"CancelButton"
-	{
-		"ControlName"		"Button"
-		"fieldName"		"CancelButton"
-		"xpos"			"76"
-		"ypos"			"308"
-		"wide"			"148"
-		"tall"			"20"
-		"autoResize"		"0"
-		"pinCorner"		"2"
-		"visible"		"1"
-		"enabled"		"1"
-		"tabPosition"		"0"
-		"labelText"		"#Cstrike_Cancel"
-		"textAlignment"		"west"
-		"dulltext"		"0"
-		"brighttext"		"0"
-		"Command"		"vguicancel"
-	}
 }
