@@ -184,6 +184,7 @@ private:
 	CUtlVector<EHANDLE> m_hRespawnableItemsAndWeapons;
 	bool m_bCompleteReset;
 	bool m_bHasMinPlayersToStart;
+	bool m_bReassignSpectators;
 	bool m_bStartedStartClock;
 	bool m_bJustEnded;
 	int m_iRoundState;

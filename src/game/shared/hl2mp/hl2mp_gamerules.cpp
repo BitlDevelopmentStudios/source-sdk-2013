@@ -631,7 +631,11 @@ void CHL2MPRules::Think( void )
 			}
 			else
 			{
-				ReassignSpectators();
+				if (!m_bReassignSpectators)
+				{
+					ReassignSpectators();
+					m_bReassignSpectators = true;
+				}
 
 				UTIL_ClientPrintAll(HUD_PRINTCENTER, "#Anticitizen_GameStarts", sv_startplaywaitime.GetString());
 
@@ -1281,6 +1285,7 @@ void CHL2MPRules::RestartGame(bool gameend)
 	{
 		pFreeman = NULL;
 		m_iGameEndReason = GAME_NOT_ENDED;
+		m_bReassignSpectators = false;
 	}
 
 	m_flIntermissionEndTime = 0;
