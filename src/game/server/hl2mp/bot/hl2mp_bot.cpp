@@ -797,6 +797,12 @@ void CHL2MPBot::SetMission( MissionType mission, bool resetBehaviorSystem )
 //-----------------------------------------------------------------------------------------------------
 void CHL2MPBot::PhysicsSimulate( void )
 {
+	if (GetFlags() & FL_FROZEN)
+	{
+		BaseClass::BaseClass::PhysicsSimulate();
+		return;
+	}
+
 	BaseClass::PhysicsSimulate();
 
 	if ( m_spawnArea == NULL )
