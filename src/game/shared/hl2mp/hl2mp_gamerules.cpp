@@ -447,11 +447,36 @@ void CHL2MPRules::SelectFreeman(void)
 
 	if (pPlayer)
 	{
+		pPlayer->ShowViewPortPanel(PANEL_CLASS, false);
 		pPlayer->ResetPlayerClass();
 		pPlayer->ChangeTeam(TEAM_FREEMAN);
 		pPlayer->SetPlayerClass(CLS_FREEMAN);
 		pPlayer->SetChosenClass(true);
 		pFreeman = pPlayer;
+	}
+#endif
+}
+
+void CHL2MPRules::ReassignSpectators(void)
+{
+#ifndef CLIENT_DLL
+	CTeam* pSpec = g_Teams[TEAM_SPECTATOR];
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+
+		if (!pPlayer)
+			continue;
+
+		if (!pPlayer->IsAlive())
+			continue;
+
+		if (pPlayer->GetTeam() != pSpec)
+			continue;
+
+		pPlayer->ShowViewPortPanel(PANEL_CLASS, false);
+		pPlayer->HandleCommand_JoinClass(CLS_RAND);
 	}
 #endif
 }
@@ -606,6 +631,8 @@ void CHL2MPRules::Think( void )
 			}
 			else
 			{
+				ReassignSpectators();
+
 				UTIL_ClientPrintAll(HUD_PRINTCENTER, "#Anticitizen_GameStarts", sv_startplaywaitime.GetString());
 
 				for (int i = 0; i < MAX_PLAYERS; i++)

@@ -34,6 +34,8 @@ extern IGameUIFuncs *gameuifuncs; // for key binding details
 
 #include <stdlib.h> // MAX_PATH define
 
+#include "c_hl2mp_player.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -135,6 +137,22 @@ Panel *CClassMenu::CreateControlByName(const char *controlName)
 	else
 	{
 		return BaseClass::CreateControlByName( controlName );
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CClassMenu::Update()
+{
+	C_HL2MP_Player* pPlayer = ToHL2MPPlayer(C_BasePlayer::GetLocalPlayer());
+
+	if (pPlayer)
+	{
+		if (pPlayer->GetPlayerClass() == CLS_FREEMAN)
+		{
+			Close();
+		}
 	}
 }
 

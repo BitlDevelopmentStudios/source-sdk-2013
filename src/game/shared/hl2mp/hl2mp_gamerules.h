@@ -124,6 +124,7 @@ public:
 	virtual void ResetBotSquad(void);
 	virtual bool IsLastMemberLeftDead(void);
 	virtual void SelectFreeman(void);
+	virtual void ReassignSpectators(void);
 	virtual bool IsFreemanAlive(void);
 	virtual int CheckCanEndGame(void);
 	virtual void Think( void );

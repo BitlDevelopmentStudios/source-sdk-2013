@@ -42,7 +42,7 @@ public:
 	virtual const char *GetName( void ) { return PANEL_CLASS; }
 	virtual void SetData(KeyValues *data);
 	virtual void Reset();
-	virtual void Update() {};
+	virtual void Update();
 	virtual bool NeedsUpdate( void ) { return false; }
 	virtual bool HasInputElements( void ) { return true; }
 	virtual void ShowPanel( bool bShow );
