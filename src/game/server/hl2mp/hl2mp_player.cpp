@@ -298,10 +298,13 @@ void CHL2MP_Player::Spawn(void)
 
 	BaseClass::Spawn();
 
-	if (!m_bChosenClass)
+	if (!m_bChosenClass || GetLifeCount() == 0)
 	{
 		// allows bots to join during a preround.
-		m_bInitialSpawn = true;
+		if (GetLifeCount() != 0)
+		{
+			m_bInitialSpawn = true;
+		}
 		ChangeTeam(TEAM_SPECTATOR);
 	}
 	else
