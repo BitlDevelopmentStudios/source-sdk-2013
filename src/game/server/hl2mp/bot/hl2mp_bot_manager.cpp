@@ -310,13 +310,7 @@ void CHL2MPBotManager::MaintainBotQuota()
 		{
 			pBot->SetAttribute( CHL2MPBot::QUOTA_MANANGED );
 
-			int iClass = CLS_INVALID;
-
-			if (iClass == CLS_INVALID)
-			{
-				random->SetSeed((int)gpGlobals->curtime);
-				iClass = random->RandomInt(CLS_FIRST_COMBINE_CLASS, CLS_LAST_COMBINE_CLASS);
-			}
+			int iClass = CLS_RAND;
 
 			// give the bot a proper name if we don't have one already
 			if (!pBot->GetPlayerName()[0])

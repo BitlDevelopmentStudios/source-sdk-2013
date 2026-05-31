@@ -1020,6 +1020,8 @@ bool CHL2MP_Player::HandleCommand_JoinTeam( int team )
 
 bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 {
+	int iCurClass = iclass;
+
 	if (!g_Anticitizen_PR)
 		return false;
 
@@ -1035,19 +1037,25 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 		return false;
 	}
 
-	if (iclass < 0 || iclass >= g_Anticitizen_PR->GetNumPlayerClasses())
+	if (((iCurClass < 0) && (iCurClass != CLS_RAND)) || iCurClass >= g_Anticitizen_PR->GetNumPlayerClasses())
 	{
-		Warning("HandleCommand_JoinClass( %d ) - invalid class index.\n", iclass);
+		Warning("HandleCommand_JoinClass( %d ) - invalid class index.\n", iCurClass);
 		return false;
 	}
 
-	if (iclass == GetPlayerClass())
+	if (iCurClass == CLS_RAND)
+	{
+		random->SetSeed((int)gpGlobals->curtime);
+		iCurClass = random->RandomInt(CLS_FIRST_COMBINE_CLASS, CLS_LAST_COMBINE_CLASS);
+	}
+
+	if (iCurClass == GetPlayerClass())
 	{
 		return false;
 	}
 	
 #ifndef DEBUG
-	if (iclass == CLS_FREEMAN)
+	if (iCurClass == CLS_FREEMAN)
 	{
 		Warning("Cleverly done, Mr. Freeman, but you're not supposed to be here.\n");
 		return false;
@@ -1061,7 +1069,7 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 #endif // !DEBUG
 
 #ifdef DEBUG
-	if (iclass == CLS_FREEMAN)
+	if (iCurClass == CLS_FREEMAN)
 	{
 		ChangeTeam(TEAM_FREEMAN);
 	}
@@ -1075,7 +1083,7 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 
 	// Switch their actual team...
 	RemoveAllItems(true);
-	SetPlayerClass(iclass);
+	SetPlayerClass(iCurClass);
 	m_bChosenClass = true;
 	Spawn();
 

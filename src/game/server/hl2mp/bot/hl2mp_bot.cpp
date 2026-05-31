@@ -377,8 +377,7 @@ CON_COMMAND_F( hl2mp_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 
 			if (iClass >= CLS_LAST_COMBINE_CLASS)
 			{
-				random->SetSeed((int)gpGlobals->curtime);
-				iClass = random->RandomInt(CLS_FIRST_COMBINE_CLASS, CLS_LAST_COMBINE_CLASS);
+				iClass = CLS_RAND;
 			}
 
 			pBot->HandleCommand_JoinClass(iClass);

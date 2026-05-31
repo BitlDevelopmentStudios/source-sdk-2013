@@ -11,20 +11,23 @@
 
 #define HL2MP_PUSHAWAY_THINK_INTERVAL		(1.0f / 20.0f)
 #include "studio.h"
-enum ECombineClasses
+enum Elasses
 {
+	// rand/invalid classes
+	CLS_RAND = -2,
 	CLS_INVALID = -1,
+
+	// combine classes
 	CLS_METROPOLICE,
 	CLS_COMBINE_SOLDIER,
 	CLS_COMBINE_SHOTGUNNER,
 	CLS_COMBINE_ELITE,
 
+	// first/last estimators for arrays/random
 	CLS_FIRST_COMBINE_CLASS = CLS_METROPOLICE,
-	CLS_LAST_COMBINE_CLASS = CLS_COMBINE_ELITE
-};
+	CLS_LAST_COMBINE_CLASS = CLS_COMBINE_ELITE,
 
-enum EFreemanClasses
-{
+	// rebel classes
 	CLS_FREEMAN = CLS_LAST_COMBINE_CLASS + 1
 };
 

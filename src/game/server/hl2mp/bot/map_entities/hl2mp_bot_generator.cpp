@@ -323,13 +323,7 @@ void CHL2MPBotGenerator::SpawnBot( void )
 
 		bot->SetActionPoint( dynamic_cast<CHL2MPBotActionPoint *>( m_moveGoal.Get() ) );
 
-		int iClass = CLS_INVALID;
-
-		if (iClass == CLS_INVALID)
-		{
-			random->SetSeed((int)gpGlobals->curtime);
-			iClass = random->RandomInt(CLS_FIRST_COMBINE_CLASS, CLS_LAST_COMBINE_CLASS);
-		}
+		int iClass = CLS_RAND;
 
 		bot->HandleCommand_JoinClass(iClass);
 

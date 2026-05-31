@@ -93,9 +93,8 @@ CBasePlayer *BotPutInServer( bool bFrozen, int iTeam )
 	pPlayer->ClearFlags();
 	pPlayer->AddFlag( FL_CLIENT | FL_FAKECLIENT );
 
-	random->SetSeed((int)gpGlobals->curtime);
-	int iClass = random->RandomInt(CLS_FIRST_COMBINE_CLASS, CLS_LAST_COMBINE_CLASS);
-	
+	int iClass = CLS_RAND;
+
 	pPlayer->HandleCommand_JoinClass(iClass);
 	// team is chosen by the game.....
 
