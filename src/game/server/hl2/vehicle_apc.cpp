@@ -357,7 +357,7 @@ void CPropAPC::ExplodeAndThrowChunk( const Vector &vecExplosionPos )
 	// Drop a flaming, smoking chunk.
 	CGib *pChunk = CREATE_ENTITY( CGib, "gib" );
 	pChunk->Spawn( "models/gibs/hgibs.mdl" );
-	pChunk->SetBloodColor( DONT_BLEED );
+	pChunk->SetBloodColor(BLOOD_COLOR_MECH);
 
 	QAngle vecSpawnAngles;
 	vecSpawnAngles.Random( -90, 90 );
@@ -445,7 +445,7 @@ void CPropAPC::Event_Killed( const CTakeDamageInfo &info )
 		// Throw a flaming, smoking chunk.
 		CGib *pChunk = CREATE_ENTITY( CGib, "gib" );
 		pChunk->Spawn( "models/gibs/hgibs.mdl" );
-		pChunk->SetBloodColor( DONT_BLEED );
+		pChunk->SetBloodColor(BLOOD_COLOR_MECH);
 
 		QAngle vecSpawnAngles;
 		vecSpawnAngles.Random( -90, 90 );

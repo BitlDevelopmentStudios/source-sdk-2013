@@ -28,8 +28,6 @@ public:
 	virtual void UpdateOnRemove( void );
 	virtual void OnRestore();
 
-	virtual void TraceAttack(const CTakeDamageInfo& info, const Vector& vecDir, trace_t* ptr, CDmgAccumulator* pAccumulator = NULL);
-
 private:
 	C_NPC_Manhack( const C_NPC_Manhack & );
 
@@ -154,23 +152,6 @@ void C_NPC_Manhack::SoundInit( void )
 		CSoundEnvelopeController::GetController().Play( m_pBladeSound, 0.0, m_nEnginePitch1 );
 		CSoundEnvelopeController::GetController().SoundChangeVolume( m_pBladeSound, 0.7, 2.0 );
 	}
-}
-
-void C_NPC_Manhack::TraceAttack(const CTakeDamageInfo& info, const Vector& vecDir, trace_t* ptr, CDmgAccumulator* pAccumulator)
-{
-	if (info.GetDamageType() & DMG_BULLET)
-	{
-		g_pEffects->Ricochet(ptr->endpos, ptr->plane.normal);
-	}
-
-	if (info.GetDamageType() & DMG_CLUB)
-	{
-		// Clubbed!
-//		UTIL_Smoke(GetAbsOrigin(), random->RandomInt(10, 15), 10);
-		g_pEffects->Sparks(ptr->endpos, 1, 1, &ptr->plane.normal);
-	}
-
-	BaseClass::TraceAttack(info, vecDir, ptr, pAccumulator);
 }
 
 //-----------------------------------------------------------------------------

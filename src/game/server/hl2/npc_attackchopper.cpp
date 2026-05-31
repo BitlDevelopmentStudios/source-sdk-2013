@@ -378,7 +378,7 @@ public:
 	virtual void	UpdateOnRemove();
 	virtual void	StopLoopingSounds();
 
-	int		BloodColor( void ) { return DONT_BLEED; }
+	int		BloodColor( void ) { return BLOOD_COLOR_MECH; }
 	Class_T Classify ( void ) { return CLASS_COMBINE_GUNSHIP; }
 	virtual int	OnTakeDamage_Alive( const CTakeDamageInfo &info );
 	virtual void TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator );
@@ -3343,7 +3343,7 @@ void Chopper_CreateChunk( CBaseEntity *pChopper, const Vector &vecChunkPos, cons
 	// Drop a flaming, smoking chunk.
 	CGib *pChunk = CREATE_ENTITY( CGib, "gib" );
 	pChunk->Spawn( pszChunkName );
-	pChunk->SetBloodColor( DONT_BLEED );
+	pChunk->SetBloodColor(BLOOD_COLOR_MECH);
 
 	pChunk->SetAbsOrigin( vecChunkPos );
 	pChunk->SetAbsAngles( vecChunkAngles );
