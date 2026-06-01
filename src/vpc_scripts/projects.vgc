@@ -29,6 +29,7 @@ $Project "game_shader_generic_example"
 {
 	"materialsystem\stdshaders\game_shader_generic_example_hl2mp.vpc" [$HL2MP]
 	"materialsystem\stdshaders\game_shader_generic_example_tf.vpc" [$TF]
+	"materialsystem\stdshaders\game_shader_generic_example_anticitizen.vpc" [$ANTICITIZEN]
 }
 
 // Use this project if you want to override all std shaders with your own.
@@ -37,6 +38,7 @@ $Project "game_shader_generic_std"
 {
 	"materialsystem\stdshaders\game_shader_generic_std_hl2mp.vpc" [$HL2MP]
 	"materialsystem\stdshaders\game_shader_generic_std_tf.vpc" [$TF]
+	"materialsystem\stdshaders\game_shader_generic_std_anticitizen.vpc" [$ANTICITIZEN]
 }
 
 $Project "glview"
