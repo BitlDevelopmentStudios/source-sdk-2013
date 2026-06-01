@@ -1,0 +1,59 @@
+//===================== File of the LUX Shader Project =====================//
+//
+//	Initial D.	:	31.07.2025 DMY
+//	Last Change :	22.05.2026 DMY
+//
+//==========================================================================//
+
+//==========================================================================//
+//	Declare Static Combos
+//==========================================================================//
+// STATIC:	"BLENDMODULATETEXTURE"		"0..1"
+// STATIC:	"EXPONENTTEXTURE"			"0..2" // $PhongExponentTexture and $PhongExponentTexture2, just $PhongExponentTexture2
+// STATIC:	"ENVMAPMODE"				"0..4"
+// STATIC:	"XBYBASEALPHA"				"0..2"
+// STATIC:	"DETAILTEXTURE"				"0..2"
+// STATIC:	"SSBUMP"					"0..1"
+
+//==========================================================================//
+//	Declare Dynamic Combos
+//==========================================================================//
+// No Bicubic here, the Shader is expensive enough as it is.
+
+//==========================================================================//
+//	Skipping undesired Combos
+//	The Order of Static Combos and Skips has a drastic Impact on Compile Time!
+//==========================================================================//
+// NONE
+
+//==========================================================================//
+//	Unpack Combos specific to this Shader
+//==========================================================================//
+#if (ENVMAPMODE > 0)
+    #define ENVMAP 1
+#else
+    #define ENVMAP 0
+#endif
+
+#if (ENVMAPMODE > 2)
+    #define ENVMAPMASK 1
+#else
+    #define ENVMAPMASK 0
+#endif
+
+#if (ENVMAPMODE == 2 || ENVMAPMODE == 4)
+    #define ENVMAPPARALLAXCORRECTION 1
+#else
+    #define ENVMAPPARALLAXCORRECTION 0
+#endif
+
+// Need this for Phong Data Header
+#if EXPONENTTEXTURE
+	#define PHONGEXPONENTTEXTURE
+#endif
+
+//==========================================================================//
+//	Call into Main Function
+//==========================================================================//
+
+#include "lux_worldvertextransition_main.h"
