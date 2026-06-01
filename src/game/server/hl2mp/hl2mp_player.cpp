@@ -617,6 +617,19 @@ Activity CHL2MP_Player::TranslateTeamActivity( Activity ActToTranslate )
 	return ActToTranslate;
 }
 
+void CHL2MP_Player::EquipSuit(bool bPlayEffects)
+{
+	if (GetPlayerClass() > CLS_INVALID)
+	{
+		const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
+
+		if (pPlayerClassInfo.bSuit)
+		{
+			BaseClass::EquipSuit(bPlayEffects);
+		}
+	}
+}
+
 extern ConVar hl2_normspeed;
 
 extern int	gEvilImpulse101;

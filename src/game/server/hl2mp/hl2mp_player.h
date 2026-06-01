@@ -112,6 +112,8 @@ public:
 	
 	void SetAnimation(PLAYER_ANIM playerAnim);
 	Activity TranslateTeamActivity( Activity ActToTranslate );
+
+	virtual void EquipSuit(bool bPlayEffects = true);
 	
 	float GetNextModelChangeTime( void ) { return m_flNextModelChangeTime; }
 	float GetNextTeamChangeTime( void ) { return m_flNextTeamChangeTime; }
