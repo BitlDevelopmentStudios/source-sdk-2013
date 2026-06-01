@@ -209,54 +209,68 @@ void CHL2MP_Player::Precache( void )
 
 void CHL2MP_Player::GiveAllItems( void )
 {
-	EquipSuit();
+	if (GetPlayerClass() == CLS_FREEMAN)
+	{
+		EquipSuit();
+	}
+
+	TakeHealth(GetMaxHealth(), DMG_GENERIC);
+
+	if (GetPlayerClass() == CLS_FREEMAN)
+	{
+		const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
+		SetArmorValue(pPlayerClassInfo.iSuitArmor);
+	}
 
 	CBasePlayer::GiveAmmo(255, "Pistol");
 	CBasePlayer::GiveAmmo(255, "AR2");
 	CBasePlayer::GiveAmmo(5, "AR2AltFire");
 	CBasePlayer::GiveAmmo(255, "SMG1");
-	CBasePlayer::GiveAmmo(1, "smg1_grenade");
+	CBasePlayer::GiveAmmo(3, "smg1_grenade");
 	CBasePlayer::GiveAmmo(255, "Buckshot");
 	CBasePlayer::GiveAmmo(32, "357");
 	CBasePlayer::GiveAmmo(3, "rpg_round");
 	CBasePlayer::GiveAmmo(16, "XBowBolt");
 
-	CBasePlayer::GiveAmmo(1, "grenade");
-	CBasePlayer::GiveAmmo(2, "slam");
+	CBasePlayer::GiveAmmo(3, "grenade");
+	CBasePlayer::GiveAmmo(3, "slam");
 
-	GiveNamedItem("weapon_crowbar");
-	GiveNamedItem("weapon_stunstick");
-	GiveNamedItem("weapon_pistol");
-	GiveNamedItem("weapon_357");
+	if (GetPlayerClass() ==  CLS_FREEMAN)
+	{
+		GiveNamedItem("weapon_crowbar");
+		GiveNamedItem("weapon_stunstick");
+		GiveNamedItem("weapon_pistol");
+		GiveNamedItem("weapon_357");
 
-	GiveNamedItem("weapon_smg1");
-	GiveNamedItem("weapon_ar2");
+		GiveNamedItem("weapon_smg1");
+		GiveNamedItem("weapon_ar2");
 
-	GiveNamedItem("weapon_shotgun");
-	GiveNamedItem("weapon_frag");
+		GiveNamedItem("weapon_shotgun");
+		GiveNamedItem("weapon_frag");
 
-	GiveNamedItem("weapon_crossbow");
+		GiveNamedItem("weapon_crossbow");
 
-	GiveNamedItem("weapon_rpg");
+		GiveNamedItem("weapon_rpg");
 
-	GiveNamedItem("weapon_slam");
+		GiveNamedItem("weapon_slam");
 
-	GiveNamedItem("weapon_physcannon");
+		GiveNamedItem("weapon_physcannon");
+	}
 }
 
-void CHL2MP_Player::GiveAllWeapons(void)
+void CHL2MP_Player::GiveFreemanWeapons(void)
 {
 	CBasePlayer::GiveAmmo(255, "Pistol");
 	CBasePlayer::GiveAmmo(255, "AR2");
 	CBasePlayer::GiveAmmo(5, "AR2AltFire");
 	CBasePlayer::GiveAmmo(255, "SMG1");
-	CBasePlayer::GiveAmmo(1, "smg1_grenade");
+	CBasePlayer::GiveAmmo(3, "smg1_grenade");
 	CBasePlayer::GiveAmmo(255, "Buckshot");
 	CBasePlayer::GiveAmmo(32, "357");
 	CBasePlayer::GiveAmmo(3, "rpg_round");
 	CBasePlayer::GiveAmmo(16, "XBowBolt");
 
-	CBasePlayer::GiveAmmo(1, "grenade");
+	CBasePlayer::GiveAmmo(3, "grenade");
 
 	GiveNamedItem("weapon_crowbar");
 	GiveNamedItem("weapon_pistol");
@@ -764,7 +778,7 @@ void CHL2MP_Player::LoadClass(int iClass)
 
 		if (pPlayerClassInfo.bAllWeapons)
 		{
-			GiveAllWeapons();
+			GiveFreemanWeapons();
 		}
 		else
 		{

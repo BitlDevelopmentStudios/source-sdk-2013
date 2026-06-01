@@ -108,7 +108,7 @@ public:
 	void CheatImpulseCommands( int iImpulse );
 	void CreateRagdollEntity( void );
 	void GiveAllItems( void );
-	void GiveAllWeapons(void);
+	void GiveFreemanWeapons(void);
 	
 	void SetAnimation(PLAYER_ANIM playerAnim);
 	Activity TranslateTeamActivity( Activity ActToTranslate );
