@@ -1212,7 +1212,7 @@ unsigned int CHL2GameMovement::PlayerSolidMask(bool brushOnly)
 		{
 			switch (player->GetTeamNumber())
 			{
-				case TEAM_REBELS:
+				case TEAM_FREEMAN:
 					uMask = CONTENTS_TEAM1;
 					break;
 
