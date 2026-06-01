@@ -2052,9 +2052,13 @@ void LuxVertexLitGeneric_Shader_Draw(IMaterialVar** ppParams, IShaderShadow* pSh
 			else
 			{
 				if (GetBool(PhongDisableHalfLambert))
+				{
 					bHalfLambert = false;
+				}
 				else if (lux_phong_defaulthalflambert.GetBool())
+				{
 					bHalfLambert = true;
+				}
 			}
 
 			// else it will be set to $HalfLambert. So that it can still be overriden by Materials.
