@@ -515,6 +515,8 @@ const CAnticitizen_FilePlayerClassInfo_t& CHL2MP_Player::GetPlayerClassInfo(void
 	return g_Anticitizen_PR->GetPlayerClassInfo(GetPlayerClass());
 }
 
+extern ConVar hl2mp_avoidteammates;
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : collisionGroup - 
@@ -522,20 +524,22 @@ const CAnticitizen_FilePlayerClassInfo_t& CHL2MP_Player::GetPlayerClassInfo(void
 //-----------------------------------------------------------------------------
 bool CHL2MP_Player::ShouldCollide(int collisionGroup, int contentsMask) const
 {
-	extern ConVar hl2mp_avoidteammates;
-	if ((collisionGroup == COLLISION_GROUP_PLAYER || collisionGroup == COLLISION_GROUP_PLAYER_MOVEMENT) && hl2mp_avoidteammates.GetBool())
+	if (HL2MPRules()->IsTeamplay())
 	{
-		switch (GetTeamNumber())
+		if ((collisionGroup == COLLISION_GROUP_PLAYER || collisionGroup == COLLISION_GROUP_PLAYER_MOVEMENT) && hl2mp_avoidteammates.GetBool())
 		{
-		case TEAM_FREEMAN:
-			if ((contentsMask & CONTENTS_TEAM1))
-				return false;
-			break;
+			switch (GetTeamNumber())
+			{
+			case TEAM_FREEMAN:
+				if ((contentsMask & CONTENTS_TEAM1))
+					return false;
+				break;
 
-		case TEAM_COMBINE:
-			if ((contentsMask & CONTENTS_TEAM2))
-				return false;
-			break;
+			case TEAM_COMBINE:
+				if ((contentsMask & CONTENTS_TEAM2))
+					return false;
+				break;
+			}
 		}
 	}
 
