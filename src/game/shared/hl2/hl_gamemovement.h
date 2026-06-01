@@ -49,6 +49,10 @@ public:
 
 	virtual float MaxSpeed();
 
+#ifdef HL2MP
+	virtual unsigned int PlayerSolidMask(bool brushOnly = false);
+#endif
+
 private:
 
 	// See if we are pressing use near a ladder "mount" point and if so, latch us onto the ladder

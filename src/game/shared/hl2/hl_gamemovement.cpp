@@ -10,6 +10,9 @@
 #include "hl2_shareddefs.h"
 
 #ifdef HL2MP
+
+#include "hl2mp_gamerules.h"
+
 #ifdef CLIENT_DLL
 #include "hl2mp/c_hl2mp_player.h"
 #else
@@ -1193,6 +1196,36 @@ bool CHL2GameMovement::CanAccelerate()
 	return true;
 }
 
+#ifdef HL2MP
+extern ConVar hl2mp_avoidteammates;
+
+//-----------------------------------------------------------------------------
+// Purpose: Allow bots etc to use slightly different solid masks
+//-----------------------------------------------------------------------------
+unsigned int CHL2GameMovement::PlayerSolidMask(bool brushOnly)
+{
+	unsigned int uMask = 0;
+
+	if (HL2MPRules()->IsTeamplay() && hl2mp_avoidteammates.GetBool())
+	{
+		if (player)
+		{
+			switch (player->GetTeamNumber())
+			{
+				case TEAM_REBELS:
+					uMask = CONTENTS_TEAM1;
+					break;
+
+				case TEAM_COMBINE:
+					uMask = CONTENTS_TEAM2;
+					break;
+			}
+		}
+	}
+
+	return (uMask | BaseClass::PlayerSolidMask(brushOnly));
+}
+#endif
 
 #ifndef PORTAL	// Portal inherits from this but needs to declare it's own global interface
 	// Expose our interface.
