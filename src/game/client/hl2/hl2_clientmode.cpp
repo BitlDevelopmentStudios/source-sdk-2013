@@ -14,7 +14,8 @@
 #include "tier0/memdbgon.h"
 
 // default FOV for HL2
-ConVar default_fov( "default_fov", "75", FCVAR_CHEAT );
+ConVar default_fov( "default_fov", "90", FCVAR_CHEAT );
+ConVar fov_desired("fov_desired", "90", FCVAR_ARCHIVE | FCVAR_USERINFO, "Sets the base field-of-view.", true, 20.0, true, MAX_FOV);
 
 // The current client mode. Always ClientModeNormal in HL.
 IClientMode *g_pClientMode = NULL;
