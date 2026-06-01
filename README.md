@@ -34,6 +34,8 @@ The SecobMod implementation uses code from dutchmega's Collaborate mod (https://
 Iván Bravo Bravo for the NPC AI node generation code.
 Sirmasters from BSNOOCH, for making the Mapadd code. (Part of SMMOD)
 Zeldaboy14 and ficool2 for their LUX Shaders fix.
+ficool for his Skybox patch.
+ficool2 and Totterynine for various changes from Coolsource, including a save/restore patch and a patch that fixes the cl_localnetworkbackdoor crash (https://github.com/Totterynine/cool-source-sdk)
 This repository implements fixes the VDC, including:
 https://developer.valvesoftware.com/wiki/General_SDK_Snippets_%26_Fixes
 https://developer.valvesoftware.com/wiki/Detail_props/Aspect_ratio_fix
