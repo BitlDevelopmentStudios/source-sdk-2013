@@ -213,6 +213,12 @@ bool CHL2MPBotGetHealth::IsPossible( CHL2MPBot *me )
 		hHealthKits.AddToTail( healthkit );
 	}
 
+	healthkit = NULL;
+	while ((healthkit = gEntList.FindEntityByClassname(healthkit, "item_item_crate_drop")) != NULL)
+	{
+		hHealthKits.AddToTail(healthkit);
+	}
+
 	bool bFindChargers = true;
 	bool bLowHealth = healthRatio < hl2mp_bot_health_critical_ratio.GetFloat();
 

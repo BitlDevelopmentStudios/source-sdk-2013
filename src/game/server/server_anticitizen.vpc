@@ -321,6 +321,7 @@ $Project "Server (ANTICITIZEN)"
 			$File	"$SRCDIR\game\shared\playerclass_info_parse.h"
 			$File	"$SRCDIR\game\shared\anticitizen\anticitizen_playerclass_info_parse.cpp"
 			$File	"$SRCDIR\game\shared\anticitizen\anticitizen_playerclass_info_parse.h"
+			
 			$Folder "Bots"
 			{
 				$Folder "Behaviour"
@@ -329,9 +330,11 @@ $Project "Server (ANTICITIZEN)"
 					$File	"anticitizen\bot\squad\anticitizen_bot_escort_squad_leader.h"
 				}
 			}
+			
 			$Folder	"Weapons"
 			{
 				$File	"$SRCDIR\game\shared\anticitizen\weapon_manhack.cpp"
+				$File	"$SRCDIR\game\shared\anticitizen\weapon_crate.cpp"
 			}
 		}
 

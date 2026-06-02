@@ -8,6 +8,7 @@
 #include "props.h"
 #include "items.h"
 #include "item_dynamic_resupply.h"
+#include "hl2mp_player.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -42,7 +43,7 @@ public:
 protected:
 	virtual void OnBreak( const Vector &vecVelocity, const AngularImpulse &angVel, CBaseEntity *pBreaker );
 
-private:
+public:
 	// Crate types. Add more!
 	enum CrateType_t
 	{
@@ -64,6 +65,10 @@ private:
 	CrateAppearance_t	m_CrateAppearance;
 
 	COutputEvent m_OnCacheInteraction;
+
+public:
+	virtual void SetAppearance(CrateAppearance_t appearance) { m_CrateAppearance = appearance; }
+	virtual CrateAppearance_t GetAppearance(void) { return m_CrateAppearance; }
 };
 
 
@@ -272,5 +277,105 @@ void CItem_ItemCrate::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_
 		}
 
 		TakeDamage( CTakeDamageInfo( pPhysGunUser, pPhysGunUser, GetHealth(), DMG_GENERIC ) );
+	}
+}
+
+//-----------------------------------------------------------------------------
+// A breakable crate that drops items
+//-----------------------------------------------------------------------------
+class CItem_ItemCrate_Drop : public CItem_ItemCrate
+{
+public:
+	DECLARE_CLASS(CItem_ItemCrate_Drop, CItem_ItemCrate);
+	DECLARE_DATADESC();
+
+	void Spawn(void);
+	virtual void VPhysicsCollision(int index, gamevcollisionevent_t* pEvent);
+	virtual int OnTakeDamage(const CTakeDamageInfo& info);
+
+protected:
+	virtual void OnBreak(const Vector& vecVelocity, const AngularImpulse& angVel, CBaseEntity* pBreaker);
+};
+
+LINK_ENTITY_TO_CLASS(item_item_crate_drop, CItem_ItemCrate_Drop);
+
+//-----------------------------------------------------------------------------
+// Save/load: 
+//-----------------------------------------------------------------------------
+BEGIN_DATADESC(CItem_ItemCrate_Drop)
+
+END_DATADESC()
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CItem_ItemCrate_Drop::Spawn(void)
+{
+	SetAppearance(CRATE_APPEARANCE_DEFAULT);
+	
+	if (g_pGameRules->IsAllowedToSpawn(this) == false)
+	{
+		UTIL_Remove(this);
+		return;
+	}
+
+	DisableAutoFade();
+	SetModelName(AllocPooledString(pszItemCrateModelName[GetAppearance()]));
+
+	Precache();
+	SetModel(pszItemCrateModelName[GetAppearance()]);
+	AddEFlags(EFL_NO_ROTORWASH_PUSH);
+	BaseClass::BaseClass::Spawn();
+}
+
+//-----------------------------------------------------------------------------
+// Item crates blow up immediately
+//-----------------------------------------------------------------------------
+int CItem_ItemCrate_Drop::OnTakeDamage(const CTakeDamageInfo& info)
+{
+	if ((info.GetDamageType() & DMG_BULLET) ||
+		(info.GetDamageType() & DMG_BLAST) || 
+		(info.GetDamageType() & DMG_CLUB) || 
+		(info.GetDamageType() & DMG_SLASH) || 
+		(info.GetDamageType() & DMG_DISSOLVE) || 
+		(info.GetDamageType() & DMG_BURN) ||
+		(info.GetDamageType() & DMG_SONIC) || 
+		(info.GetDamageType() & DMG_AIRBOAT))
+	{
+		CTakeDamageInfo dmgInfo = info;
+		dmgInfo.ScaleDamage(1000000.0f);
+		return BaseClass::OnTakeDamage(dmgInfo);
+	}
+
+	return BaseClass::OnTakeDamage(info);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CItem_ItemCrate_Drop::VPhysicsCollision(int index, gamevcollisionevent_t* pEvent)
+{
+	float flDamageScale = 1.0f;
+	CBaseEntity* pHitEntity = pEvent->pEntities[!index];
+	if (pHitEntity && pHitEntity->IsPlayer())
+	{
+		flDamageScale = 1000000.0f;
+	}
+
+	m_impactEnergyScale *= flDamageScale;
+	BaseClass::BaseClass::VPhysicsCollision(index, pEvent);
+	m_impactEnergyScale /= flDamageScale;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CItem_ItemCrate_Drop::OnBreak(const Vector& vecVelocity, const AngularImpulse& angImpulse, CBaseEntity* pBreaker)
+{
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(pBreaker);
+
+	if (pPlayer)
+	{
+		pPlayer->ReplenishTroopAmmoAndHealth();
 	}
 }

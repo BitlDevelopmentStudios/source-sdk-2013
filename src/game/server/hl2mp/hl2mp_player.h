@@ -109,6 +109,8 @@ public:
 	void CreateRagdollEntity( void );
 	void GiveAllItems( void );
 	void GiveFreemanWeapons(void);
+	void ReplenishTroopAmmo(void);
+	void ReplenishTroopAmmoAndHealth(void);
 	
 	void SetAnimation(PLAYER_ANIM playerAnim);
 	Activity TranslateTeamActivity( Activity ActToTranslate );

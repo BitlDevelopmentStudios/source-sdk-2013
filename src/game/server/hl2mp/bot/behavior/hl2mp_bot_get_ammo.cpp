@@ -113,6 +113,12 @@ bool CHL2MPBotGetAmmo::IsPossible( CHL2MPBot *me )
 		hAmmos.AddToTail( ammo );
 	}
 
+	ammo = NULL;
+	while ((ammo = gEntList.FindEntityByClassname(ammo, "item_item_crate_drop")) != NULL)
+	{
+		hAmmos.AddToTail(ammo);
+	}
+
 	CAmmoFilter healthFilter( me );
 	CUtlVector< CHandle< CBaseEntity > > hReachableAmmo;
 	me->SelectReachableObjects( hAmmos, &hReachableAmmo, healthFilter, me->GetLastKnownArea(), searchRange );

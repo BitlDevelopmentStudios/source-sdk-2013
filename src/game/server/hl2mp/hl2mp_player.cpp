@@ -302,6 +302,20 @@ void CHL2MP_Player::GiveFreemanWeapons(void)
 	}
 }
 
+void CHL2MP_Player::ReplenishTroopAmmo(void)
+{
+	CBasePlayer::GiveAmmo(255, "Pistol");
+	CBasePlayer::GiveAmmo(255, "AR2");
+	CBasePlayer::GiveAmmo(255, "SMG1");
+	CBasePlayer::GiveAmmo(255, "Buckshot");
+}
+
+void CHL2MP_Player::ReplenishTroopAmmoAndHealth(void)
+{
+	TakeHealth(GetMaxHealth(), DMG_GENERIC);
+	ReplenishTroopAmmo();
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Sets HL2 specific defaults.
 //-----------------------------------------------------------------------------
@@ -336,6 +350,19 @@ void CHL2MP_Player::Spawn(void)
 		if (m_bInitialSpawn)
 		{
 			m_bInitialSpawn = false;
+		}
+	}
+
+	if (GetTeamNumber() == TEAM_SPECTATOR)
+	{
+		CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(this);
+
+		if (pBot)
+		{
+			if (pBot->IsInASquad())
+			{
+				pBot->LeaveSquad();
+			}
 		}
 	}
 	
@@ -782,10 +809,7 @@ void CHL2MP_Player::LoadClass(int iClass)
 		}
 		else
 		{
-			CBasePlayer::GiveAmmo(255, "Pistol");
-			CBasePlayer::GiveAmmo(255, "AR2");
-			CBasePlayer::GiveAmmo(255, "SMG1");
-			CBasePlayer::GiveAmmo(255, "Buckshot");
+			ReplenishTroopAmmo();
 
 			if (pPlayerClassInfo.szPrimaryWeapon[0])
 			{
@@ -833,6 +857,16 @@ void CHL2MP_Player::LoadClass(int iClass)
 				{
 					CBasePlayer::GiveAmmo(pPlayerClassInfo.iManhacks, "Manhacks");
 				}
+			}
+
+			// block bots from getting the crate for now.
+			CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(this);
+
+			if (!pBot && pPlayerClassInfo.iCrates > 0)
+			{
+				GiveNamedItem("weapon_crate");
+
+				CBasePlayer::GiveAmmo((pPlayerClassInfo.iCrates - 1), "Crate");
 			}
 
 			// switch to our primary instead of the last weapon we were given.
@@ -1318,10 +1352,11 @@ void CHL2MP_Player::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecT
 		}
 
 		CBaseCombatWeapon* pManhack = Weapon_OwnsThisType("weapon_manhack");
+		CBaseCombatWeapon* pCrate = Weapon_OwnsThisType("weapon_crate");
 
-		if (GetActiveWeapon() == pManhack)
+		if ((GetActiveWeapon() == pManhack) || (GetActiveWeapon() == pCrate))
 		{
-			// refuse to spawn the manhack.
+			// refuse to spawn the manhack or crate.
 			return;
 		}
 	}

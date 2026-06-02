@@ -183,6 +183,7 @@ ConVar	sk_npc_dmg_gunship_to_plr	( "sk_npc_dmg_gunship_to_plr", "0", FCVAR_REPLI
 
 ConVar	sk_max_manhacks				("sk_max_manhacks", "0", FCVAR_REPLICATED);
 ConVar	sk_max_slam("sk_max_slam", "0", FCVAR_REPLICATED);
+ConVar	sk_max_crate("sk_max_crate", "0", FCVAR_REPLICATED);
 
 
 //-----------------------------------------------------------------------------
@@ -1871,6 +1872,7 @@ CAmmoDef *GetAmmoDef()
 #endif // HL2_EPISODIC
 		def.AddAmmoType("Manhacks", DMG_SLASH, TRACER_NONE, 0, 0, "sk_max_manhacks", 0, 0);
 		def.AddAmmoType("slam", DMG_BURN, TRACER_NONE, 0, 0, "sk_max_slam", 0, 0);
+		def.AddAmmoType("Crate", DMG_CLUB, TRACER_NONE, 0, 0, "sk_max_crate", 0, 0);
 	}
 
 	return &def;

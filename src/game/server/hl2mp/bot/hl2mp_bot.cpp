@@ -1842,6 +1842,14 @@ bool CHL2MPBot::IsCombatWeapon( CBaseHL2MPCombatWeapon *weapon ) const
 		weapon = ( CBaseHL2MPCombatWeapon * )GetActiveWeapon();
 	}
 
+	if (weapon)
+	{
+		if (FClassnameIs(weapon, "weapon_crate"))
+		{
+			return false;
+		}
+	}
+
 	return weapon != NULL;
 }
 
@@ -2404,6 +2412,55 @@ Action< CHL2MPBot > *CHL2MPBot::OpportunisticallyUseWeaponAbilities( void )
 		if ( !weapon )
 			continue;
 
+		// crate healing code. see if anyone is hurt and throw a crate at them.
+		/*if (FClassnameIs(weapon, "weapon_crate"))
+		{
+			// focus on our threat, don't toss him medkits.
+			const CKnownEntity* threat = GetVisionInterface()->GetPrimaryKnownThreat();
+			if (threat && threat->GetEntity() && threat->IsVisibleInFOVNow() && IsLineOfFireClear(threat->GetEntity()))
+				continue;
+
+			bool SquadHealing = false;
+
+			if (IsInASquad() && GetSquad())
+			{
+				if (GetSquad()->GetMemberCount() > 1)
+				{
+					SquadHealing = true;
+
+					CHL2MPBot* theMemberToBeHealed = NULL;
+
+					CUtlVector< CHL2MPBot* > rawMemberVector;
+					GetSquad()->CollectMembers(&rawMemberVector);
+
+					for (int member = 0; member < rawMemberVector.Count(); ++member)
+					{
+						CHL2MPBot* theMember = rawMemberVector[member];
+
+						if (theMember->IsSquadmate(this) && theMember->GetTeamNumber() == GetTeamNumber())
+						{
+							if (theMember->GetHealth() < theMember->GetMaxHealth())
+							{
+								theMemberToBeHealed = theMember;
+								break;
+							}
+						}
+					}
+
+					if (theMemberToBeHealed)
+					{
+						GetVisionInterface()->AddKnownEntity(theMemberToBeHealed);
+						const CKnownEntity* theToBeHealed = GetVisionInterface()->GetKnown(theMemberToBeHealed);
+
+						if (theToBeHealed && theToBeHealed->GetEntity() && theToBeHealed->IsVisibleInFOVNow() && IsLineOfFireClear(theToBeHealed->GetEntity()->WorldSpaceCenter()))
+						{
+							return new CHL2MPBotUseItem(weapon, false);
+						}
+					}
+				}
+			}
+		}*/
+
 		// TODO(misyl): SMG1, AR2, Grenades here?
 		// you got it!
 		if (FClassnameIs(weapon, "weapon_frag") || FClassnameIs(weapon, "weapon_manhack"))
@@ -2412,7 +2469,7 @@ Action< CHL2MPBot > *CHL2MPBot::OpportunisticallyUseWeaponAbilities( void )
 			{
 				// is the enemy in our LOS?
 				const CKnownEntity* threat = GetVisionInterface()->GetPrimaryKnownThreat();
-				if (threat && threat->GetEntity() && threat->IsVisibleInFOVNow() && IsLineOfFireClear(threat->GetEntity()->WorldSpaceCenter()))
+				if (threat && threat->GetEntity() && threat->IsVisibleInFOVNow() && IsLineOfFireClear(threat->GetEntity()))
 				{
 					return new CHL2MPBotUseItem(weapon, false);
 				}
@@ -2423,7 +2480,7 @@ Action< CHL2MPBot > *CHL2MPBot::OpportunisticallyUseWeaponAbilities( void )
 			if (GetAmmoCount(weapon->GetSecondaryAmmoType()) > 0)
 			{
 				const CKnownEntity* threat = GetVisionInterface()->GetPrimaryKnownThreat();
-				if (threat && threat->GetEntity() && threat->IsVisibleInFOVNow() && IsLineOfFireClear(threat->GetEntity()->WorldSpaceCenter()))
+				if (threat && threat->GetEntity() && threat->IsVisibleInFOVNow() && IsLineOfFireClear(threat->GetEntity()))
 				{
 					return new CHL2MPBotUseItem(weapon, true);
 				}
@@ -2660,7 +2717,8 @@ CBaseHL2MPBludgeonWeapon* CHL2MPBot::GetBludgeonWeapon( void )
 		   pWeapon->ClassMatches( "weapon_rpg" ) ||
 		   pWeapon->ClassMatches( "weapon_357" ) || 
 		   pWeapon->ClassMatches("weapon_frag") || 
-		   pWeapon->ClassMatches("weapon_manhack");
+		   pWeapon->ClassMatches("weapon_manhack") ||
+		   pWeapon->ClassMatches("weapon_crate");
 }
 
 bool CHL2MPBot::PrefersLongRange( CBaseCombatWeapon* pWeapon )

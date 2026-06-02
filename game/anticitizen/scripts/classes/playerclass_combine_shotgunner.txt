@@ -12,6 +12,7 @@ PlayerClassDatafile
 	"VoiceMode"			"2"
 	
 	"Grenades"			"-1"
+	"Crates"			"3"
 	"PrimaryWeapon"		"weapon_shotgun"
 	
 	"Health"			"50"
