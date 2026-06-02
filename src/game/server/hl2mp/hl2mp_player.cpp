@@ -302,18 +302,14 @@ void CHL2MP_Player::GiveFreemanWeapons(void)
 	}
 }
 
-void CHL2MP_Player::ReplenishTroopAmmo(void)
-{
-	CBasePlayer::GiveAmmo(255, "Pistol");
-	CBasePlayer::GiveAmmo(255, "AR2");
-	CBasePlayer::GiveAmmo(255, "SMG1");
-	CBasePlayer::GiveAmmo(255, "Buckshot");
-}
-
 void CHL2MP_Player::ReplenishTroopAmmoAndHealth(void)
 {
-	TakeHealth(GetMaxHealth(), DMG_GENERIC);
-	ReplenishTroopAmmo();
+	TakeHealth((GetMaxHealth() / 2), DMG_GENERIC);
+
+	CBasePlayer::GiveAmmo(128, "Pistol");
+	CBasePlayer::GiveAmmo(128, "AR2");
+	CBasePlayer::GiveAmmo(128, "SMG1");
+	CBasePlayer::GiveAmmo(128, "Buckshot");
 }
 
 //-----------------------------------------------------------------------------
@@ -809,7 +805,10 @@ void CHL2MP_Player::LoadClass(int iClass)
 		}
 		else
 		{
-			ReplenishTroopAmmo();
+			CBasePlayer::GiveAmmo(255, "Pistol");
+			CBasePlayer::GiveAmmo(255, "AR2");
+			CBasePlayer::GiveAmmo(255, "SMG1");
+			CBasePlayer::GiveAmmo(255, "Buckshot");
 
 			if (pPlayerClassInfo.szPrimaryWeapon[0])
 			{
