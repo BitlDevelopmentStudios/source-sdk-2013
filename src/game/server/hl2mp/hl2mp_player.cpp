@@ -1134,6 +1134,29 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 		return false;
 	}
 
+	if (iCurClass != GetPlayerClass())
+	{
+		// destroy any building we placed. conveniently they are all npcs.
+		for (int i = 0; i < g_AI_Manager.NumAIs(); i++)
+		{
+			CAI_BaseNPC* pCandidate = g_AI_Manager.AccessAIs()[i];
+
+			if (!pCandidate)
+				continue;
+
+			if (!pCandidate->IsAlive())
+				continue;
+
+			if (!pCandidate->GetOwnerEntity())
+				continue;
+
+			if (pCandidate->GetOwnerEntity() == this)
+			{
+				UTIL_Remove(pCandidate);
+			}
+		}
+	}
+
 	if (GetTeamNumber() != TEAM_COMBINE)
 	{
 		ChangeTeam(TEAM_COMBINE);

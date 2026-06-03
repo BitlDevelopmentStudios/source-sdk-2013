@@ -295,16 +295,13 @@ void CWeaponTurret::SpawnTurret(void)
 
 #ifndef CLIENT_DLL
 	CNPC_FloorTurret* pTurret = dynamic_cast<CNPC_FloorTurret*>(CreateEntityByName("npc_turret_floor"));
-	if (pTurret)
+	if (pTurret && pHologram)
 	{
 		pTurret->SetName(AllocPooledString("spawnedTurret"));
 		pTurret->SetOwnerEntity(pOwner);
 		pTurret->Spawn();
-		if (pHologram)
-		{
-			pTurret->Teleport(&pHologram->GetAbsOrigin(), &pHologram->GetAbsAngles(), NULL);
-		}
 		pTurret->Activate();
+		pTurret->Teleport(&pHologram->GetAbsOrigin(), &pHologram->GetAbsAngles(), NULL);
 		// not needed, but allows the manhack to work properly when playing as freeman.
 		pTurret->ChangeTeam(pOwner->GetTeamNumber());
 
