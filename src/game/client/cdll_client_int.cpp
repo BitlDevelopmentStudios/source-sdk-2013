@@ -1236,19 +1236,28 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 		iDXLevel = CommandLine()->ParmValue("-dxlevel", iDXLevel);
 	}
 
+	int easterEgg = random->RandomInt(1, 5);
+	const char* szDXName = "DirectX ";
+
+	if (easterEgg == 5)
+	{
+		szDXName = "D3D_";
+	}
+
 	// Don't want the game running less than the defined DX level.
 	if (g_pMaterialSystemHardwareConfig->GetDXSupportLevel() < iDXLevel)
 	{
 		// We know they were running at least the minimum level when the game started...we check the 
 		// value in ClientDLL_Init()...so they must be messing with their DirectX settings.
-		Error("%s has a minimum requirement of DirectX %s to run properly. Please update your drivers if you know your graphics card supports this.", szGameName, szDXLevel);
+		Error("%s has a minimum requirement of %s%s to run properly. Please update your drivers if you know your graphics card supports this.", szGameName, szDXName, szDXLevel);
 		return false;
 	}
 	else
 	{
 		// ugh again
 		float curDXLevel = (float)(g_pMaterialSystemHardwareConfig->GetDXSupportLevel() / 10);
-		Msg("Game's minimum DirectX is %s. Running on DirectX %.1f.\n", szDXLevel, curDXLevel);
+
+		Msg("Game requires %s%s. Running on %s%.1f.\n", szDXName, szDXLevel, szDXName, curDXLevel);
 	}
 
 	// Add the client systems.	
