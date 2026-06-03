@@ -48,6 +48,8 @@ public:
 		virtual	int	ObjectCaps( void );
 	#endif
 
+	void	Precache(void);
+
 	// All predicted weapons need to implement and return true
 	virtual bool	IsPredicted() const;
 
@@ -58,6 +60,7 @@ public:
 	
 	CHL2MPSWeaponInfo const	&GetHL2MPWpnData() const;
 
+	void CreateMuzzleSmokeEffect();
 
 	virtual void FireBullets( const FireBulletsInfo_t &info );
 	virtual void FallInit( void );

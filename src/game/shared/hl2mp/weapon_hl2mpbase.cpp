@@ -10,6 +10,7 @@
 #include "takedamageinfo.h"
 #include "ammodef.h"
 #include "hl2mp_gamerules.h"
+#include "particle_parse.h"
 
 
 #ifdef CLIENT_DLL
@@ -100,10 +101,31 @@ CWeaponHL2MPBase::CWeaponHL2MPBase()
 	m_flNextResetCheckTime = 0.0f;
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CWeaponHL2MPBase::Precache(void)
+{
+	PrecacheParticleSystem("weapon_muzzle_smoke");
+
+	BaseClass::Precache();
+}
 
 bool CWeaponHL2MPBase::IsPredicted() const
 { 
 	return true;
+}
+
+void CWeaponHL2MPBase::CreateMuzzleSmokeEffect()
+{
+	if (GetPlayerOwner())
+	{
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, GetPlayerOwner()->GetViewModel(), "muzzle", true);
+	}
+	else
+	{
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+	}
 }
 
 //Tony; override for animation purposes.

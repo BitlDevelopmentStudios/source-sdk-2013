@@ -48,6 +48,8 @@ public:
 	void					ImpactTrace(trace_t* pTrace, int iDamageType, const char* pCustomImpactName);
 	virtual bool			IsPlayerAlly(C_BasePlayer* pPlayer = NULL);
 	virtual bool			IsNeutralTo(C_BasePlayer* pPlayer = NULL);
+	virtual void			FireBullets(const FireBulletsInfo_t& info);
+	virtual void			Precache(void);
 
 private:
 	C_AI_BaseNPC( const C_AI_BaseNPC & ); // not defined, not accessible

@@ -289,3 +289,24 @@ bool C_AI_BaseNPC::IsNeutralTo(C_BasePlayer* pPlayer)
 
 	return (m_nDefaultPlayerRelationship == GR_NOTTEAMMATE);
 }
+
+void C_AI_BaseNPC::FireBullets(const FireBulletsInfo_t& info)
+{
+	if (!GetActiveWeapon())
+	{
+		int iMuzzle = LookupAttachment("muzzle");
+
+		if (iMuzzle)
+		{
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+		}
+	}
+
+	BaseClass::FireBullets(info);
+}
+
+void C_AI_BaseNPC::Precache(void)
+{
+	PrecacheParticleSystem("weapon_muzzle_smoke");
+	BaseClass::Precache();
+}

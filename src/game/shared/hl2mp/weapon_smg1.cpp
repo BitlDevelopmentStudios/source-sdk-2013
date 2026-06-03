@@ -178,6 +178,8 @@ void CWeaponSMG1::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, Vector& 
 	// FIXME: use the returned number of bullets to account for >10hz firerate
 	WeaponSoundRealtime(SINGLE_NPC);
 
+	CreateMuzzleSmokeEffect();
+
 	CSoundEnt::InsertSound(SOUND_COMBAT | SOUND_CONTEXT_GUNFIRE, pOperator->GetAbsOrigin(), SOUNDENT_VOLUME_MACHINEGUN, 0.2, pOperator, SOUNDENT_CHANNEL_WEAPON, pOperator->GetEnemy());
 	pOperator->FireBullets(1, vecShootOrigin, vecShootDir, VECTOR_CONE_PRECALCULATED,
 		MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 2, entindex(), 0);

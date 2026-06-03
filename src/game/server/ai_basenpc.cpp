@@ -1453,6 +1453,16 @@ void CAI_BaseNPC::FireBullets( const FireBulletsInfo_t &info )
 		TheNextBots().OnWeaponFired(this, GetActiveWeapon());
 #endif
 
+	if (!GetActiveWeapon())
+	{
+		int iMuzzle = LookupAttachment("muzzle");
+
+		if (iMuzzle)
+		{
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+		}
+	}
+
 #ifdef HL2_DLL
 	// If we're shooting at a bullseye, become perfectly accurate if the bullseye demands it
 	if ( GetEnemy() && GetEnemy()->Classify() == CLASS_BULLSEYE )
@@ -11013,6 +11023,8 @@ void CAI_BaseNPC::Precache( void )
 	PrecacheScriptSound( "AI_BaseNPC.BodyDrop_Heavy" );
 	PrecacheScriptSound( "AI_BaseNPC.BodyDrop_Light" );
 	PrecacheScriptSound( "AI_BaseNPC.SentenceStop" );
+
+	PrecacheParticleSystem("weapon_muzzle_smoke");
 
 	BaseClass::Precache();
 }

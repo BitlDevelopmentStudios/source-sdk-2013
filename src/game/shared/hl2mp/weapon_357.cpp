@@ -158,6 +158,8 @@ void CWeapon357::PrimaryAttack( void )
 	Vector vecSrc		= pPlayer->Weapon_ShootPosition();
 	Vector vecAiming	= pPlayer->GetAutoaimVector( AUTOAIM_5DEGREES );	
 
+	CreateMuzzleSmokeEffect();
+
 	FireBulletsInfo_t info( 1, vecSrc, vecAiming, vec3_origin, MAX_TRACE_LENGTH, m_iPrimaryAmmoType );
 	info.m_pAttacker = pPlayer;
 

@@ -202,6 +202,8 @@ void CWeaponShotgun::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, bool 
 		vecShootDir = npc->GetActualShootTrajectory(vecShootOrigin);
 	}
 
+	CreateMuzzleSmokeEffect();
+
 	pOperator->FireBullets(8, vecShootOrigin, vecShootDir, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 0);
 }
 
@@ -439,6 +441,8 @@ void CWeaponShotgun::PrimaryAttack( void )
 
 	// player "shoot" animation
 	pPlayer->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
+
+	CreateMuzzleSmokeEffect();
 
 	Vector	vecSrc		= pPlayer->Weapon_ShootPosition( );
 	Vector	vecAiming	= pPlayer->GetAutoaimVector( AUTOAIM_10DEGREES );	

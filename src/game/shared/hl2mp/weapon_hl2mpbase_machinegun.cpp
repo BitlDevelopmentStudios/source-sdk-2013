@@ -94,6 +94,8 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 		m_iClip1 -= iBulletsToFire;
 	}
 
+	CreateMuzzleSmokeEffect();
+
 	CHL2MP_Player *pHL2MPPlayer = ToHL2MPPlayer( pPlayer );
 
 		// Fire the bullets

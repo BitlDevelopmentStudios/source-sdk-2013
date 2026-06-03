@@ -44,6 +44,7 @@
 #endif
 
 #include "vprof.h"
+#include "particle_parse.h" 
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -1721,6 +1722,12 @@ bool CBaseCombatWeapon::Holster( CBaseCombatWeapon *pSwitchingTo )
 	m_bInReload = false; 
 	m_bFiringWholeClip = false;
 
+	CBasePlayer* pPlayer = ToBasePlayer(GetOwner()); // Weapon Smoke effect fix
+	if (pPlayer)
+	{
+		StopParticleEffects(pPlayer->GetViewModel()); // Weapon Smoke effect fix
+	}
+
 	// kill any think functions
 	SetThink(NULL);
 
@@ -1736,7 +1743,7 @@ bool CBaseCombatWeapon::Holster( CBaseCombatWeapon *pSwitchingTo )
 		flSequenceDuration = SequenceDuration();
 	}
 
-	CBaseCombatCharacter *pOwner = GetOwner();
+	CBaseCombatCharacter* pOwner = GetOwner();
 	if (pOwner)
 	{
 		pOwner->SetNextAttack( gpGlobals->curtime + flSequenceDuration );
