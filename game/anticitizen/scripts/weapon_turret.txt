@@ -6,7 +6,7 @@ WeaponData
 	"playermodel"			"models/weapons/w_turret.mdl"
 	"anim_prefix"			"turret"
 	"bucket"				"5"
-	"bucket_position"		"1"
+	"bucket_position"		"2"
 
 	"clip_size"				"-1"
 	"clip2_size"			"-1"

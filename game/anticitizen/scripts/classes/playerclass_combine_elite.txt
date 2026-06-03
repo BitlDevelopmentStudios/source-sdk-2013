@@ -13,6 +13,7 @@ PlayerClassDatafile
 	
 	"CombineBalls"		"-1"
 	"Crates"			"3"
+	
 	"PrimaryWeapon"		"weapon_ar2"
 	
 	"Health"			"70"

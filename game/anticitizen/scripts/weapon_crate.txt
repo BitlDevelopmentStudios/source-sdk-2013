@@ -6,7 +6,7 @@ WeaponData
 	"playermodel"			"models/weapons/w_crate.mdl"
 	"anim_prefix"			"crate"
 	"bucket"				"5"
-	"bucket_position"		"0"
+	"bucket_position"		"1"
 
 	"clip_size"				"-1"
 	"clip2_size"			"-1"

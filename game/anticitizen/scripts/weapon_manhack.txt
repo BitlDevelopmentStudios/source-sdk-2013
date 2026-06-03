@@ -5,8 +5,8 @@ WeaponData
 	"viewmodel"				"models/weapons/c_manhack.mdl"
 	"playermodel"			"models/weapons/w_manhack.mdl"
 	"anim_prefix"			"Manhack"
-	"bucket"				"4"
-	"bucket_position"		"3"
+	"bucket"				"5"
+	"bucket_position"		"0"
 
 	"clip_size"				"-1"
 	"clip2_size"			"-1"

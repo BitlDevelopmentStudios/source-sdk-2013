@@ -11,7 +11,6 @@ PlayerClassDatafile
 	"VoiceMode"			"1"
 	
 	"Manhacks"			"-1"
-	"Crates"			"3"
 	
 	"PrimaryWeapon"		"weapon_smg1"
 	"SecondaryWeapon"	"weapon_pistol"
