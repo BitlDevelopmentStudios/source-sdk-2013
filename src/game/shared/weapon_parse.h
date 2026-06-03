@@ -112,11 +112,16 @@ public:
 	bool					m_bAllowFlipping;	// False to disallow flipping the model, regardless of whether
 												// it is built left or right handed.
 
+
 	Vector					vecIronsightPosOffset;
 	QAngle					angIronsightAngOffset;
 	float					flIronsightFOVOffset;
 	bool					m_bHasIronsights;
 	int						iClassTypeToADS;
+
+	Vector					vecAdjustPosOffset;
+	QAngle					angAdjustAngOffset;
+
 
 // CLIENT DLL
 	// Sprite data, read from the data file

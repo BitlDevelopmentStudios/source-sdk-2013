@@ -445,7 +445,7 @@ void FileWeaponInfo_t::Parse( KeyValues *pKeyValuesData, const char *szWeaponNam
 	else
 		Q_strncpy( szAmmo2, pAmmo, sizeof( szAmmo2 )  );
 	iAmmo2Type = GetAmmoDef()->Index( szAmmo2 );
-
+	
 	KeyValues* pSights = pKeyValuesData->FindKey("IronSight");
 	if (pSights)
 	{
@@ -471,6 +471,24 @@ void FileWeaponInfo_t::Parse( KeyValues *pKeyValuesData, const char *szWeaponNam
 		flIronsightFOVOffset = 0.0f;
 		iClassTypeToADS = 0;
 		m_bHasIronsights = false;
+	}
+		
+	//Adjust
+	KeyValues* pAdjust = pKeyValuesData->FindKey("Adjust");
+	if (pAdjust)
+	{
+		vecAdjustPosOffset.x = pAdjust->GetFloat("forward", 0.0f);
+		vecAdjustPosOffset.y = pAdjust->GetFloat("right", 0.0f);
+		vecAdjustPosOffset.z = pAdjust->GetFloat("up", 0.0f);
+
+		angAdjustAngOffset[PITCH] = pAdjust->GetFloat("pitch", 0.0f);
+		angAdjustAngOffset[YAW] = pAdjust->GetFloat("yaw", 0.0f);
+		angAdjustAngOffset[ROLL] = pAdjust->GetFloat("roll", 0.0f);
+	}
+	else
+	{
+		vecAdjustPosOffset = vec3_origin;
+		angAdjustAngOffset.Init();
 	}
 
 	// Now read the weapon sounds
