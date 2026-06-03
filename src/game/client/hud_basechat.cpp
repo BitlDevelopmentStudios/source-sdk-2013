@@ -49,6 +49,7 @@ Color g_ColorGreen( 153, 255, 153, 255 );
 Color g_ColorDarkGreen( 64, 255, 64, 255 );
 Color g_ColorYellow( 255, 178, 0, 255 );
 Color g_ColorGrey( 204, 204, 204, 255 );
+Color g_ColorWhite(255, 255, 255, 255);
 
 // converts all '\r' characters to '\n', so that the engine can deal with the properly
 // returns a pointer to str
@@ -1332,7 +1333,7 @@ void CBaseHudChat::SetCustomColor( const char *pszColorName )
 //-----------------------------------------------------------------------------
 Color CBaseHudChat::GetDefaultTextColor( void )
 {
-	return g_ColorYellow;
+	return g_ColorWhite;
 }
 
 //-----------------------------------------------------------------------------
@@ -1347,7 +1348,7 @@ Color CBaseHudChat::GetClientColor( int clientIndex )
 		return g_ColorGrey;
 	}
 
-	return g_ColorYellow;
+	return g_ColorWhite;
 }
 
 //-----------------------------------------------------------------------------
