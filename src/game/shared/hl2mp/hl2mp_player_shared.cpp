@@ -111,25 +111,41 @@ Vector CHL2MP_Player::GetAttackSpread( CBaseCombatWeapon *pWeapon, CBaseEntity *
 
 		if (GetPlayerClass() != CLS_FREEMAN)
 		{
-			float groundspeed = Vector2DLength(g_pMoveData->m_vecVelocity.AsVector2D());
-			bool movingalongground = ((GetFlags() & FL_ONGROUND) && groundspeed > 0.0001f);
+			const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
 
-			if (!(GetFlags() & FL_ONGROUND))
+			if (info.iClassType < CLS_TYPE_HIGH_TIER)
 			{
-				proficiency = WEAPON_PROFICIENCY_AVERAGE;
-			}
-			else if (movingalongground)
-			{
-				proficiency = WEAPON_PROFICIENCY_GOOD;
+				float groundspeed = Vector2DLength(g_pMoveData->m_vecVelocity.AsVector2D());
+				bool movingalongground = ((GetFlags() & FL_ONGROUND) && groundspeed > 0.0001f);
+
+				if (!(GetFlags() & FL_ONGROUND))
+				{
+					proficiency = WEAPON_PROFICIENCY_AVERAGE;
+				}
+				else if (movingalongground)
+				{
+					proficiency = WEAPON_PROFICIENCY_GOOD;
+				}
+				else
+				{
+					proficiency = WEAPON_PROFICIENCY_VERY_GOOD;
+				}
+
+				if (pWeapon->IsIronsighted())
+				{
+					proficiency = WEAPON_PROFICIENCY_PERFECT;
+				}
 			}
 			else
 			{
-				proficiency = WEAPON_PROFICIENCY_VERY_GOOD;
-			}
-
-			if (pWeapon->IsIronsighted())
-			{
-				proficiency = WEAPON_PROFICIENCY_PERFECT;
+				if (pWeapon->IsIronsighted())
+				{
+					proficiency = WEAPON_PROFICIENCY_PERFECT;
+				}
+				else
+				{
+					proficiency = WEAPON_PROFICIENCY_VERY_GOOD;
+				}
 			}
 		}
 
