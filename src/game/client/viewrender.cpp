@@ -2226,22 +2226,6 @@ void CViewRender::RenderView( const CViewSetup &viewRender, int nClearFlags, int
 	VPROF( "CViewRender::RenderView" );
 	tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s", __FUNCTION__ );
 
-	// Don't want TF2 running less than DX 8
-	if ( g_pMaterialSystemHardwareConfig->GetDXSupportLevel() < 80 )
-	{
-		// We know they were running at least 8.0 when the game started...we check the 
-		// value in ClientDLL_Init()...so they must be messing with their DirectX settings.
-#ifdef TF_CLIENT_DLL
-		static bool bFirstTime = true;
-		if (bFirstTime)
-		{
-			bFirstTime = false;
-			Msg("This game has a minimum requirement of DirectX 8.0 to run properly.\n");
-		}
-		return;
-#endif
-	}
-
 	CMatRenderContextPtr pRenderContext( materials );
 	ITexture *saveRenderTarget = pRenderContext->GetRenderTarget();
 	pRenderContext.SafeRelease(); // don't want to hold for long periods in case in a locking active share thread mode

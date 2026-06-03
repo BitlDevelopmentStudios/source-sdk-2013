@@ -21,15 +21,15 @@ $Macro	FBXLIB_DEBUG	"$FBXDIR\lib\vs2010\x64\release\libfbxsdk-mt.lib"	[$WIN64 &&
 // VS 2012 and VS 2013 don't like mixing debug and release libraries and the libfbxsdk libraries trigger
 // lots of failures as soon as we start mixing so we need to use the DLL version. Also, the latest
 // fbxsdk doesn't support VS 2013 yet, so DLL isolation is required.
-$Macro	FBXLIB_RELEASE	"$FBXDIR\lib\vs2012\x86\release\libfbxsdk.lib"	[$WIN32 && ($VS2012 || $VS2013) && !$VS2022]
-$Macro	FBXLIB_RELEASE	"$FBXDIR\lib\vs2012\x64\release\libfbxsdk.lib"	[$WIN64 && ($VS2012 || $VS2013) && !$VS2022]
-$Macro	FBXLIB_DEBUG	"$FBXDIR\lib\vs2012\x86\release\libfbxsdk.lib"	[$WIN32 && ($VS2012 || $VS2013) && !$VS2022]
-$Macro	FBXLIB_DEBUG	"$FBXDIR\lib\vs2012\x64\release\libfbxsdk.lib"	[$WIN64 && ($VS2012 || $VS2013) && !$VS2022]
+$Macro	FBXLIB_RELEASE	"$FBXDIR\lib\vs2012\x86\release\libfbxsdk.lib"	[$WIN32 && ($VS2012 || $VS2013) && !$VS2017 && !$VS2019 && !$VS2022 && !$VS2026]
+$Macro	FBXLIB_RELEASE	"$FBXDIR\lib\vs2012\x64\release\libfbxsdk.lib"	[$WIN64 && ($VS2012 || $VS2013) && !$VS2017 && !$VS2019 && !$VS2022 && !$VS2026]
+$Macro	FBXLIB_DEBUG	"$FBXDIR\lib\vs2012\x86\release\libfbxsdk.lib"	[$WIN32 && ($VS2012 || $VS2013) && !$VS2017 && !$VS2019 && !$VS2022 && !$VS2026]
+$Macro	FBXLIB_DEBUG	"$FBXDIR\lib\vs2012\x64\release\libfbxsdk.lib"	[$WIN64 && ($VS2012 || $VS2013) && !$VS2017 && !$VS2019 && !$VS2022 && !$VS2026]
 
-$Macro	FBXLIB_RELEASE	"$FBXDIR\lib\vs2017\x86\release\libfbxsdk.lib"	[$WIN32 && $VS2022]
-$Macro	FBXLIB_RELEASE	"$FBXDIR\lib\vs2017\x64\release\libfbxsdk.lib"	[$WIN64 && $VS2022]
-$Macro	FBXLIB_DEBUG	"$FBXDIR\lib\vs2017\x86\release\libfbxsdk.lib"	[$WIN32 && $VS2022]
-$Macro	FBXLIB_DEBUG	"$FBXDIR\lib\vs2017\x64\release\libfbxsdk.lib"	[$WIN64 && $VS2022]
+$Macro	FBXLIB_RELEASE	"$FBXDIR\lib\vs2017\x86\release\libfbxsdk.lib"	[$WIN32 && ($VS2017 || $VS2019 || $VS2022 || $VS2026) && !$VS2012 && !$VS2013]
+$Macro	FBXLIB_RELEASE	"$FBXDIR\lib\vs2017\x64\release\libfbxsdk.lib"	[$WIN64 && ($VS2017 || $VS2019 || $VS2022 || $VS2026) && !$VS2012 && !$VS2013]
+$Macro	FBXLIB_DEBUG	"$FBXDIR\lib\vs2017\x86\release\libfbxsdk.lib"	[$WIN32 && ($VS2017 || $VS2019 || $VS2022 || $VS2026) && !$VS2012 && !$VS2013]
+$Macro	FBXLIB_DEBUG	"$FBXDIR\lib\vs2017\x64\release\libfbxsdk.lib"	[$WIN64 && ($VS2017 || $VS2019 || $VS2022 || $VS2026) && !$VS2012 && !$VS2013]
 
 $Configuration "Release"
 {

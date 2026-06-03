@@ -525,6 +525,10 @@ static ConVar s_CV_ShowParticleCounts("showparticlecounts", "0", 0, "Display num
 static ConVar s_cl_team("cl_team", "default", FCVAR_USERINFO|FCVAR_ARCHIVE, "Default team when joining a game");
 static ConVar s_cl_class("cl_class", "default", FCVAR_USERINFO|FCVAR_ARCHIVE, "Default class when joining a game");
 
+ConVar cl_backgroundmap_music("cl_backgroundmap_music", "1", FCVAR_ARCHIVE);
+ConVar cl_backgroundmap_music_volume("cl_backgroundmap_music_volume", "1.0", FCVAR_ARCHIVE);
+ConVar cl_backgroundmap_music_duck("cl_backgroundmap_music_duck", "1.0", FCVAR_ARCHIVE);
+
 #ifdef HL1MP_CLIENT_DLL
 static ConVar s_cl_load_hl1_content("cl_load_hl1_content", "0", FCVAR_ARCHIVE, "Mount the content from Half-Life: Source if possible");
 #endif
@@ -1195,11 +1199,70 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	if (!ParticleMgr()->Init(MAX_TOTAL_PARTICLES, materials))
 		return false;
 
-
 	if (!VGui_Startup( appSystemFactory ))
 		return false;
 
 	vgui::VGui_InitMatSysInterfacesList( "ClientDLL", &appSystemFactory, 1 );
+
+	const char* szGameName = "Half-Life 2";
+	int iDXLevel = 0;
+	const char* szDXLevel = "7.0";
+
+	KeyValuesAD pModData("GameInfo");
+	if (pModData->LoadFromFile(g_pFullFileSystem, "gameinfo.txt"))
+	{
+		szGameName = pModData->GetString("game", "Half-Life 2");
+		szDXLevel = pModData->GetString("DXLevel", "7.0");
+	}
+
+	// here, check the GPU.
+	if (!g_pMaterialSystemHardwareConfig->SupportsShaderModel_3_0())
+	{
+		Error("%s requires your graphics card to have Shader Model 3.0 support to run properly due to updated shaders. Please update your drivers if you know your graphics card supports this.", szGameName);
+		return false;
+	}
+	else
+	{
+		Msg("Graphics card supports Shader Model 3.0.\n");
+	}
+
+	// ugh.
+	iDXLevel = (Q_atoi(szDXLevel) * 10);
+
+	// sdk 2013 only supports DX 9.5
+	if (iDXLevel > 98)
+	{
+		iDXLevel = 98;
+	}
+
+	if (CommandLine()->FindParm("-dxlevel"))
+	{
+		iDXLevel = CommandLine()->ParmValue("-dxlevel", iDXLevel);
+	}
+
+	int easterEgg = random->RandomInt(1, 5);
+	const char* szDXName = "DirectX ";
+
+	if (easterEgg == 5)
+	{
+		szDXName = "D3D_";
+	}
+
+	// Don't want the game running less than the defined DX level.
+	if (g_pMaterialSystemHardwareConfig->GetDXSupportLevel() < iDXLevel)
+	{
+		// We know they were running at least the minimum level when the game started...we check the 
+		// value in ClientDLL_Init()...so they must be messing with their DirectX settings.
+		Error("%s has a minimum requirement of %s%s to run properly. Please update your drivers if you know your graphics card supports this.", szGameName, szDXName, szDXLevel);
+		return false;
+	}
+	else
+	{
+		// ugh again
+		float curDXLevel = (float)(g_pMaterialSystemHardwareConfig->GetDXSupportLevel() / 10);
+
+		Msg("Game requires %s%s. Running on %s%.1f.\n", szDXName, szDXLevel, szDXName, curDXLevel);
+	}
 
 	// Add the client systems.	
 	
@@ -1219,8 +1282,7 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	IGameSystem::Add( MumbleSystem() );
 	IGameSystem::Add( SteamShareSystem() );
 
-	if (g_pMaterialSystemHardwareConfig->SupportsShaderModel_3_0())
-		ApplyShaderConstantHack();
+	ApplyShaderConstantHack();
 
 	#if defined( TF_CLIENT_DLL )
 	IGameSystem::Add( CustomTextureToolCacheGameSystem() );
@@ -1884,6 +1946,81 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 #endif
 }
 
+int StartBackgroundMapMusic(float flVolume)
+{
+	/* mostly from GameUI */
+	int nBackgroundMusicGUID = 0;
+	char path[512];
+	Q_snprintf(path, sizeof(path), "sound/ui/gamestartup*.mp3");
+	Q_FixSlashes(path);
+	CUtlVector<char*> fileNames;
+	FileFindHandle_t fh;
+
+	char const* fn = g_pFullFileSystem->FindFirstEx(path, "MOD", &fh);
+	if (fn)
+	{
+		do
+		{
+			char ext[10];
+			Q_ExtractFileExtension(fn, ext, sizeof(ext));
+
+			if (!Q_stricmp(ext, "mp3"))
+			{
+				char temp[512];
+				{
+					Q_snprintf(temp, sizeof(temp), "ui/%s", fn);
+				}
+
+				char* found = new char[strlen(temp) + 1];
+				Q_strncpy(found, temp, strlen(temp) + 1);
+
+				Q_FixSlashes(found);
+				fileNames.AddToTail(found);
+			}
+
+			fn = g_pFullFileSystem->FindNext(fh);
+
+		} while (fn);
+
+		g_pFullFileSystem->FindClose(fh);
+	}
+
+	if (!fileNames.Count())
+	{
+		DevWarning("No music files can be found.\n");
+		return 0;
+	}
+
+	// HACK
+	int m_nRandomSeed = RandomInt(0, 9999);
+	CUniformRandomStream randomize;
+	randomize.SetSeed(m_nRandomSeed);
+	int index = randomize.RandomInt(0, fileNames.Count() - 1);
+
+	const char* pSoundFile = NULL;
+
+	if (fileNames.IsValidIndex(index) && fileNames[index])
+		pSoundFile = fileNames[index];
+
+	if (!pSoundFile)
+	{
+		DevWarning("Music file cannot be loaded.\n");
+		return 0;
+	}
+	else
+	{
+		DevMsg("Now playing: %s\n", pSoundFile);
+	}
+
+	//play sound here
+	//mixes too loud against soft ui sounds
+	enginesound->EmitAmbientSound(pSoundFile, cl_backgroundmap_music_duck.GetFloat() * flVolume);
+	nBackgroundMusicGUID = enginesound->GetGuidForLastSoundEmitted();
+
+	fileNames.PurgeAndDeleteElements();
+
+	return (nBackgroundMusicGUID);
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: Per level init
@@ -1893,6 +2030,19 @@ void CHLClient::LevelInitPostEntity( )
 	IGameSystem::LevelInitPostEntityAllSystems();
 	C_PhysPropClientside::RecreateAll();
 	internalCenterPrint->Clear();
+
+	if (cl_backgroundmap_music.GetBool() && engine->IsLevelMainMenuBackground())
+	{
+		int id = StartBackgroundMapMusic(cl_backgroundmap_music_volume.GetFloat());
+		if (id > 0)
+		{
+			DevMsg("Music playing on ID: %i\n", id);
+		}
+		else
+		{
+			DevWarning("No music is playing\n");
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
