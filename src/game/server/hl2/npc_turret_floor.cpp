@@ -215,6 +215,9 @@ void CNPC_FloorTurret::UpdateOnRemove( void )
 		m_hEyeGlow = NULL;
 	}
 
+	StopSound("NPC_FloorTurret.AlarmPing");
+	StopSound("NPC_FloorTurret.Alarm");
+
 	BaseClass::UpdateOnRemove();
 }
 
