@@ -13,6 +13,7 @@ PlayerClassDatafile
 	
 	"Grenades"			"-1"
 	"Crates"			"3"
+	"Turrets"			"3"
 	"PrimaryWeapon"		"weapon_shotgun"
 	
 	"Health"			"50"

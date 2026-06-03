@@ -51,6 +51,7 @@ void CAnticitizen_FilePlayerClassInfo_t::Parse(KeyValues* pKeyValuesData, const 
 	iCombineBalls = pKeyValuesData->GetInt("CombineBalls", 0);
 	iManhacks = pKeyValuesData->GetInt("Manhacks", 0);
 	iCrates = pKeyValuesData->GetInt("Crates", 0);
+	iTurret = pKeyValuesData->GetInt("Turrets", 0);
 
 	if (bSuit)
 	{

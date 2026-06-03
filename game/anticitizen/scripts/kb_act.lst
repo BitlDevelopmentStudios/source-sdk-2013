@@ -47,6 +47,7 @@
 "use weapon_rpg"		"#HL2_RPG_Menu"
 "use weapon_manhack"	"#HL2_Manhack_Menu"
 "use weapon_crate"		"#HL2_Crate_Menu"
+"use weapon_turret"		"#HL2_Turret_Menu"
 "blank"			"=========================="
 "blank"			"#Valve_Communication_Title"
 "blank"			"=========================="

@@ -83,6 +83,7 @@ public:
 	int						iCombineBalls;
 	int						iManhacks;
 	int						iCrates;
+	int						iTurret;
 
 	bool					bAllWeapons;
 	bool					bSPMovement;

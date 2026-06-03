@@ -868,6 +868,13 @@ void CHL2MP_Player::LoadClass(int iClass)
 				CBasePlayer::GiveAmmo((pPlayerClassInfo.iCrates - 1), "Crate");
 			}
 
+			if (!pBot && pPlayerClassInfo.iTurret > 0)
+			{
+				GiveNamedItem("weapon_turret");
+
+				CBasePlayer::GiveAmmo((pPlayerClassInfo.iTurret - 1), "Turret");
+			}
+
 			// switch to our primary instead of the last weapon we were given.
 			if (pPlayerClassInfo.szPrimaryWeapon[0])
 			{
@@ -1352,8 +1359,11 @@ void CHL2MP_Player::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecT
 
 		CBaseCombatWeapon* pManhack = Weapon_OwnsThisType("weapon_manhack");
 		CBaseCombatWeapon* pCrate = Weapon_OwnsThisType("weapon_crate");
+		CBaseCombatWeapon* pTurret = Weapon_OwnsThisType("weapon_turret");
 
-		if ((GetActiveWeapon() == pManhack) || (GetActiveWeapon() == pCrate))
+		if ((GetActiveWeapon() == pManhack) || 
+			(GetActiveWeapon() == pCrate) || 
+			(GetActiveWeapon() == pTurret))
 		{
 			// refuse to spawn the manhack or crate.
 			return;

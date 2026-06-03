@@ -1844,7 +1844,8 @@ bool CHL2MPBot::IsCombatWeapon( CBaseHL2MPCombatWeapon *weapon ) const
 
 	if (weapon)
 	{
-		if (FClassnameIs(weapon, "weapon_crate"))
+		if (FClassnameIs(weapon, "weapon_crate") ||
+			FClassnameIs(weapon, "weapon_turret"))
 		{
 			return false;
 		}
@@ -2718,7 +2719,8 @@ CBaseHL2MPBludgeonWeapon* CHL2MPBot::GetBludgeonWeapon( void )
 		   pWeapon->ClassMatches( "weapon_357" ) || 
 		   pWeapon->ClassMatches("weapon_frag") || 
 		   pWeapon->ClassMatches("weapon_manhack") ||
-		   pWeapon->ClassMatches("weapon_crate");
+		   pWeapon->ClassMatches("weapon_crate") || 
+		   pWeapon->ClassMatches("weapon_turret");
 }
 
 bool CHL2MPBot::PrefersLongRange( CBaseCombatWeapon* pWeapon )
