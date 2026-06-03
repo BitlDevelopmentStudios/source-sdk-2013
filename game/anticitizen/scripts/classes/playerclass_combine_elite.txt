@@ -12,7 +12,6 @@ PlayerClassDatafile
 	"VoiceMode"			"2"
 	
 	"CombineBalls"		"-1"
-	"Crates"			"3"
 	
 	"PrimaryWeapon"		"weapon_ar2"
 	
