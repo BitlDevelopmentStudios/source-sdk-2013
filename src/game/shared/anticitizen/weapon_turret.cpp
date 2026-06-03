@@ -145,6 +145,8 @@ public:
 	void				DecrementAmmo(CBaseCombatCharacter* pOwner);
 
 private:
+	bool				m_bDeployed;
+
 #ifndef CLIENT_DLL
 	CHandle<CTurretHologram>	pHologram;
 #endif
@@ -241,13 +243,7 @@ bool CWeaponTurret::Deploy(void)
 	}
 
 	m_bLowered = false;
-
-#ifndef CLIENT_DLL
-	if (!pHologram)
-	{
-		StartHologram();
-	}
-#endif
+	m_bDeployed = true;
 
 	return bResult;
 }
@@ -271,6 +267,13 @@ void CWeaponTurret::ItemPostFrame(void)
 	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
 	if (!pOwner)
 		return;
+
+#ifndef CLIENT_DLL
+	if (m_bDeployed && !pHologram)
+	{
+		StartHologram();
+	}
+#endif
 
 	MoveHologram();
 
@@ -427,6 +430,9 @@ void CWeaponTurret::StartHologram(void)
 void CWeaponTurret::MoveHologram(void)
 {
 #ifndef CLIENT_DLL
+	if (!m_bDeployed)
+		return;
+
 	if (m_flNextHologramMove > gpGlobals->curtime)
 		return;
 
