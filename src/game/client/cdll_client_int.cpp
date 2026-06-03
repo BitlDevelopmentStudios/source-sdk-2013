@@ -525,6 +525,10 @@ static ConVar s_CV_ShowParticleCounts("showparticlecounts", "0", 0, "Display num
 static ConVar s_cl_team("cl_team", "default", FCVAR_USERINFO|FCVAR_ARCHIVE, "Default team when joining a game");
 static ConVar s_cl_class("cl_class", "default", FCVAR_USERINFO|FCVAR_ARCHIVE, "Default class when joining a game");
 
+ConVar cl_backgroundmap_music("cl_backgroundmap_music", "1", FCVAR_ARCHIVE);
+ConVar cl_backgroundmap_music_volume("cl_backgroundmap_music_volume", "1.0", FCVAR_ARCHIVE);
+ConVar cl_backgroundmap_music_duck("cl_backgroundmap_music_duck", "1.0", FCVAR_ARCHIVE);
+
 #ifdef HL1MP_CLIENT_DLL
 static ConVar s_cl_load_hl1_content("cl_load_hl1_content", "0", FCVAR_ARCHIVE, "Mount the content from Half-Life: Source if possible");
 #endif
@@ -1942,6 +1946,81 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 #endif
 }
 
+int StartBackgroundMapMusic(float flVolume)
+{
+	/* mostly from GameUI */
+	int nBackgroundMusicGUID = 0;
+	char path[512];
+	Q_snprintf(path, sizeof(path), "sound/ui/gamestartup*.mp3");
+	Q_FixSlashes(path);
+	CUtlVector<char*> fileNames;
+	FileFindHandle_t fh;
+
+	char const* fn = g_pFullFileSystem->FindFirstEx(path, "MOD", &fh);
+	if (fn)
+	{
+		do
+		{
+			char ext[10];
+			Q_ExtractFileExtension(fn, ext, sizeof(ext));
+
+			if (!Q_stricmp(ext, "mp3"))
+			{
+				char temp[512];
+				{
+					Q_snprintf(temp, sizeof(temp), "ui/%s", fn);
+				}
+
+				char* found = new char[strlen(temp) + 1];
+				Q_strncpy(found, temp, strlen(temp) + 1);
+
+				Q_FixSlashes(found);
+				fileNames.AddToTail(found);
+			}
+
+			fn = g_pFullFileSystem->FindNext(fh);
+
+		} while (fn);
+
+		g_pFullFileSystem->FindClose(fh);
+	}
+
+	if (!fileNames.Count())
+	{
+		DevWarning("No music files can be found.\n");
+		return 0;
+	}
+
+	// HACK
+	int m_nRandomSeed = RandomInt(0, 9999);
+	CUniformRandomStream randomize;
+	randomize.SetSeed(m_nRandomSeed);
+	int index = randomize.RandomInt(0, fileNames.Count() - 1);
+
+	const char* pSoundFile = NULL;
+
+	if (fileNames.IsValidIndex(index) && fileNames[index])
+		pSoundFile = fileNames[index];
+
+	if (!pSoundFile)
+	{
+		DevWarning("Music file cannot be loaded.\n");
+		return 0;
+	}
+	else
+	{
+		DevMsg("Now playing: %s\n", pSoundFile);
+	}
+
+	//play sound here
+	//mixes too loud against soft ui sounds
+	enginesound->EmitAmbientSound(pSoundFile, cl_backgroundmap_music_duck.GetFloat() * flVolume);
+	nBackgroundMusicGUID = enginesound->GetGuidForLastSoundEmitted();
+
+	fileNames.PurgeAndDeleteElements();
+
+	return (nBackgroundMusicGUID);
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: Per level init
@@ -1951,6 +2030,19 @@ void CHLClient::LevelInitPostEntity( )
 	IGameSystem::LevelInitPostEntityAllSystems();
 	C_PhysPropClientside::RecreateAll();
 	internalCenterPrint->Clear();
+
+	if (cl_backgroundmap_music.GetBool() && engine->IsLevelMainMenuBackground())
+	{
+		int id = StartBackgroundMapMusic(cl_backgroundmap_music_volume.GetFloat());
+		if (id > 0)
+		{
+			DevMsg("Music playing on ID: %i\n", id);
+		}
+		else
+		{
+			DevWarning("No music is playing\n");
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
