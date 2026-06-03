@@ -17,6 +17,7 @@
 	advcrosshair 			1
 	supportsvr				0
 	ReplayRequired 			1
+	DXLevel 				"8.0"
 
 	DependsOnAppID 			440
 

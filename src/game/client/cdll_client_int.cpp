@@ -1200,19 +1200,55 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 
 	vgui::VGui_InitMatSysInterfacesList( "ClientDLL", &appSystemFactory, 1 );
 
+	const char* szGameName = "Half-Life 2";
+	int iDXLevel = 0;
+	const char* szDXLevel = "7.0";
+
+	KeyValuesAD pModData("GameInfo");
+	if (pModData->LoadFromFile(g_pFullFileSystem, "gameinfo.txt"))
+	{
+		szGameName = pModData->GetString("game", "Half-Life 2");
+		szDXLevel = pModData->GetString("DXLevel", "7.0");
+	}
+
 	// here, check the GPU.
 	if (!g_pMaterialSystemHardwareConfig->SupportsShaderModel_3_0())
 	{
-		const char* szGameName = "Half-Life 2";
-
-		KeyValuesAD pModData("GameInfo");
-		if (pModData->LoadFromFile(g_pFullFileSystem, "gameinfo.txt"))
-		{
-			szGameName = pModData->GetString("game");
-		}
-
-		Error("%s requires your graphics card to have Shader Model 3.0 support to run properly due to updated shaders. Please update your drivers if you know your graphics card supports this.\n", szGameName);
+		Error("%s requires your graphics card to have Shader Model 3.0 support to run properly due to updated shaders. Please update your drivers if you know your graphics card supports this.", szGameName);
 		return false;
+	}
+	else
+	{
+		Msg("Graphics card supports Shader Model 3.0.\n");
+	}
+
+	// ugh.
+	iDXLevel = (Q_atoi(szDXLevel) * 10);
+
+	// sdk 2013 only supports DX 9.5
+	if (iDXLevel > 98)
+	{
+		iDXLevel = 98;
+	}
+
+	if (CommandLine()->FindParm("-dxlevel"))
+	{
+		iDXLevel = CommandLine()->ParmValue("-dxlevel", iDXLevel);
+	}
+
+	// Don't want the game running less than the defined DX level.
+	if (g_pMaterialSystemHardwareConfig->GetDXSupportLevel() < iDXLevel)
+	{
+		// We know they were running at least the minimum level when the game started...we check the 
+		// value in ClientDLL_Init()...so they must be messing with their DirectX settings.
+		Error("%s has a minimum requirement of DirectX %s to run properly. Please update your drivers if you know your graphics card supports this.", szGameName, szDXLevel);
+		return false;
+	}
+	else
+	{
+		// ugh again
+		float curDXLevel = (float)(g_pMaterialSystemHardwareConfig->GetDXSupportLevel() / 10);
+		Msg("Game's minimum DirectX is %s. Running on DirectX %.1f.\n", szDXLevel, curDXLevel);
 	}
 
 	// Add the client systems.	
