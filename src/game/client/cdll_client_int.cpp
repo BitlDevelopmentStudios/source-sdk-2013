@@ -1195,11 +1195,25 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	if (!ParticleMgr()->Init(MAX_TOTAL_PARTICLES, materials))
 		return false;
 
-
 	if (!VGui_Startup( appSystemFactory ))
 		return false;
 
 	vgui::VGui_InitMatSysInterfacesList( "ClientDLL", &appSystemFactory, 1 );
+
+	// here, check the GPU.
+	if (!g_pMaterialSystemHardwareConfig->SupportsShaderModel_3_0())
+	{
+		const char* szGameName = "Half-Life 2";
+
+		KeyValuesAD pModData("GameInfo");
+		if (pModData->LoadFromFile(g_pFullFileSystem, "gameinfo.txt"))
+		{
+			szGameName = pModData->GetString("game");
+		}
+
+		Error("%s requires your graphics card to have Shader Model 3.0 support to run properly due to updated shaders. Please update your drivers if you know your graphics card supports this.\n", szGameName);
+		return false;
+	}
 
 	// Add the client systems.	
 	
@@ -1219,8 +1233,7 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	IGameSystem::Add( MumbleSystem() );
 	IGameSystem::Add( SteamShareSystem() );
 
-	if (g_pMaterialSystemHardwareConfig->SupportsShaderModel_3_0())
-		ApplyShaderConstantHack();
+	ApplyShaderConstantHack();
 
 	#if defined( TF_CLIENT_DLL )
 	IGameSystem::Add( CustomTextureToolCacheGameSystem() );
