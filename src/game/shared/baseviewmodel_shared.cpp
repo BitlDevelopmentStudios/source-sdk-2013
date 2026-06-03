@@ -382,6 +382,24 @@ void CBaseViewModel::SendViewModelMatchingSequence( int sequence )
 #include "ivieweffects.h"
 #endif
 
+void CBaseViewModel::CalcAdjustedView(Vector& pos, QAngle& ang)
+{
+	CBaseCombatWeapon* pWeapon = GetOwningWeapon();
+
+	if (!pWeapon)
+		return;
+
+	Vector vForward, vRight, vUp, vOffset;
+	AngleVectors(ang, &vForward, &vRight, &vUp);
+	vOffset = pWeapon->GetAdjustPositionOffset();
+
+	pos += vForward * vOffset.x;
+	pos += vRight * vOffset.y;
+	pos += vUp * vOffset.z;
+	ang += pWeapon->GetAdjustAngleOffset();
+	//fov is handled by CBaseCombatWeapon
+}
+
 void CBaseViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePosition, const QAngle& eyeAngles )
 {
 	// UNDONE: Calc this on the server?  Disabled for now as it seems unnecessary to have this info on the server
@@ -394,6 +412,8 @@ void CBaseViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePos
 	//Allow weapon lagging
 	if ( pWeapon != NULL )
 	{
+		CalcAdjustedView(vmorigin, vmangles);
+
 #if defined( CLIENT_DLL )
 		if ( !prediction->InPrediction() )
 #endif

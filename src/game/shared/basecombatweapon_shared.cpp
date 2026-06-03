@@ -420,6 +420,16 @@ bool CBaseCombatWeapon::UsesClipsForAmmo2( void ) const
 	return ( GetMaxClip2() != WEAPON_NOCLIP );
 }
 
+Vector CBaseCombatWeapon::GetAdjustPositionOffset(void) const
+{
+	return GetWpnData().vecAdjustPosOffset;
+}
+
+QAngle CBaseCombatWeapon::GetAdjustAngleOffset(void) const
+{
+	return GetWpnData().angAdjustAngOffset;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

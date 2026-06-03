@@ -446,6 +446,24 @@ void FileWeaponInfo_t::Parse( KeyValues *pKeyValuesData, const char *szWeaponNam
 		Q_strncpy( szAmmo2, pAmmo, sizeof( szAmmo2 )  );
 	iAmmo2Type = GetAmmoDef()->Index( szAmmo2 );
 
+	//Adjust
+	KeyValues* pAdjust = pKeyValuesData->FindKey("Adjust");
+	if (pAdjust)
+	{
+		vecAdjustPosOffset.x = pAdjust->GetFloat("forward", 0.0f);
+		vecAdjustPosOffset.y = pAdjust->GetFloat("right", 0.0f);
+		vecAdjustPosOffset.z = pAdjust->GetFloat("up", 0.0f);
+
+		angAdjustAngOffset[PITCH] = pAdjust->GetFloat("pitch", 0.0f);
+		angAdjustAngOffset[YAW] = pAdjust->GetFloat("yaw", 0.0f);
+		angAdjustAngOffset[ROLL] = pAdjust->GetFloat("roll", 0.0f);
+	}
+	else
+	{
+		vecAdjustPosOffset = vec3_origin;
+		angAdjustAngOffset.Init();
+	}
+
 	// Now read the weapon sounds
 	memset( aShootSounds, 0, sizeof( aShootSounds ) );
 	KeyValues *pSoundData = pKeyValuesData->FindKey( "SoundData" );
