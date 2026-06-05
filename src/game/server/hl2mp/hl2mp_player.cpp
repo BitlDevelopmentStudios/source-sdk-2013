@@ -1085,6 +1085,8 @@ bool CHL2MP_Player::HandleCommand_JoinTeam( int team )
 	return true;
 }
 
+extern void respawn(CBaseEntity* pEdict, bool fCopyCorpse);
+
 bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 {
 	int iCurClass = iclass;
@@ -1168,7 +1170,15 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 	RemoveAllItems(true);
 	SetPlayerClass(iCurClass);
 	m_bChosenClass = true;
-	Spawn();
+
+	if (IsAlive())
+	{
+		Spawn();
+	}
+	else
+	{
+		respawn(this, false);
+	}
 
 	return true;
 }
