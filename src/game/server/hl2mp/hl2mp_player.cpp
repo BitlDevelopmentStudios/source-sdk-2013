@@ -322,6 +322,8 @@ void CHL2MP_Player::Spawn(void)
 
 	BaseClass::Spawn();
 
+	SetFOV(this, 0, 0.0f);
+
 	if (!m_bChosenClass || GetLifeCount() == 0)
 	{
 		// allows bots to join during a preround.
