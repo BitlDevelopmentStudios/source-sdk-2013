@@ -26,6 +26,7 @@
 #include "eventqueue.h"
 #include "physics_collisionevent.h"
 #include "gamestats.h"
+#include "hl2mp_player.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -347,7 +348,7 @@ bool CPropCombineBall::CreateVPhysics()
 	pPhysicsObject->SetDamping( &flDamping, &flAngDamping );
 	pPhysicsObject->SetInertia( Vector( 1e30, 1e30, 1e30 ) );
 
-	if( WasFiredByNPC() )
+	if( WasFiredByNPC() || WasFiredByFakeNPC())
 	{
 		// Don't do impact damage. Just touch them and do your dissolve damage and move on.
 		PhysSetGameFlags( pPhysicsObject, FVPHYSICS_NO_NPC_IMPACT_DMG );
@@ -535,6 +536,24 @@ void CPropCombineBall::SetMass( float mass )
 		pObj->SetMass( mass );
 		pObj->SetInertia( Vector( 500, 500, 500 ) );
 	}
+}
+
+bool CPropCombineBall::WasFiredByFakeNPC() const
+{
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwnerEntity());
+
+	// fake it.
+	if (pPlayer && pPlayer->GetPlayerClass() != CLS_FREEMAN)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool CPropCombineBall::WasFiredByNPC() const
+{ 
+	return (GetOwnerEntity() && GetOwnerEntity()->IsNPC()); 
 }
 
 //-----------------------------------------------------------------------------
@@ -1222,7 +1241,7 @@ void CPropCombineBall::OnHitEntity( CBaseEntity *pHitEntity, float flSpeed, int 
 	{
 		if ( pHitEntity->PassesDamageFilter( info ) )
 		{
-			if( WasFiredByNPC() || m_nMaxBounces == -1 )
+			if( WasFiredByNPC() || WasFiredByFakeNPC() || m_nMaxBounces == -1 )
 			{
 				// Since Combine balls fired by NPCs do a metered dose of damage per impact, we have to ignore touches
 				// for a little while after we hit someone, or the ball will immediately touch them again and do more
