@@ -1552,6 +1552,9 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 					// Use m_Sentences.Speak because we have custom logic here.
 					m_Sentences.Speak(pSentenceName, SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
 				}
+
+				// this killer becomes freeman next round.
+				HL2MPRules()->SetNextPlayerToBecomeFreeman(pPlayer);
 			}
 		}
 	}

@@ -52,6 +52,8 @@ ConVar sv_minplayerstostart("sv_minplayerstostart", "2", FCVAR_GAMEDLL | FCVAR_N
 ConVar sv_startwaitime("sv_startwaitime", "30", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 ConVar sv_startplaywaitime("sv_startplaywaitime", "5", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 
+ConVar sv_freemanroundlimit("sv_freemanroundlimit", "3", FCVAR_GAMEDLL | FCVAR_NOTIFY);
+
 extern ConVar mp_chattime;
 
 extern CBaseEntity	 *g_pLastCombineSpawn;
@@ -200,6 +202,8 @@ CHL2MPRules::CHL2MPRules()
 
 	m_flIntermissionEndTime = 0.0f;
 	m_flGameStartTime = 0;
+	// the init state is round 1.
+	m_iRounds = 1;
 
 	m_hRespawnableItemsAndWeapons.RemoveAll();
 	m_bCompleteReset = false;
@@ -207,6 +211,7 @@ CHL2MPRules::CHL2MPRules()
 	m_bHasMinPlayersToStart = false;
 	m_bLastSquadMemberAnnounced = false;
 	pFreeman = NULL;
+	pNextPlayerToBecomeFreeman = NULL;
 	m_iRoundState = STATE_PREROUND;
 	m_bStartedStartClock = false;
 
@@ -445,6 +450,14 @@ void CHL2MPRules::SelectFreeman(void)
 
 	CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(iRandPlayer));
 
+	if (pNextPlayerToBecomeFreeman)
+	{
+		if (!pNextPlayerToBecomeFreeman->IsDisconnecting())
+		{
+			pPlayer = pNextPlayerToBecomeFreeman;
+		}
+	}
+
 	if (pPlayer)
 	{
 		pPlayer->ShowViewPortPanel(PANEL_CLASS, false);
@@ -452,6 +465,17 @@ void CHL2MPRules::SelectFreeman(void)
 		pPlayer->ChangeTeam(TEAM_FREEMAN);
 		pPlayer->SetPlayerClass(CLS_FREEMAN);
 		pPlayer->SetChosenClass(true);
+
+		// if we joined the class after someone disconnected, respawn us now.
+		if (m_iRoundState == STATE_PLAYING)
+		{
+			// forcefully set our lives to one.
+			const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = pPlayer->GetPlayerClassInfo();
+			pPlayer->SetLifeCount(pPlayerClassInfo.iLives);
+			pPlayer->RemoveAllItems(true);
+			pPlayer->Spawn();
+		}
+
 		pFreeman = pPlayer;
 	}
 #endif
@@ -663,6 +687,7 @@ void CHL2MPRules::Think( void )
 				{
 					m_bJustEnded = true;
 					m_iRoundState = STATE_PREROUND;
+					m_iRounds++;
 				}
 				else
 				{
@@ -964,30 +989,34 @@ int CHL2MPRules::WeaponShouldRespawn( CBaseCombatWeapon *pWeapon )
 void CHL2MPRules::ClientDisconnected( edict_t *pClient )
 {
 #ifndef CLIENT_DLL
-	// Msg( "CLIENT DISCONNECTED, REMOVING FROM TEAM.\n" );
-
 	CBasePlayer *pPlayer = (CBasePlayer *)CBaseEntity::Instance( pClient );
 	if (pPlayer)
 	{
+		pPlayer->SetConnected(PlayerDisconnecting);
+
 		// Remove the player from his team
 		if (pPlayer->GetTeam())
 		{
 			pPlayer->GetTeam()->RemovePlayer(pPlayer);
 		}
 
+		if (pPlayer == pNextPlayerToBecomeFreeman)
+		{
+			pNextPlayerToBecomeFreeman = NULL;
+		}
+
 		if (pPlayer == pFreeman)
 		{
 			pFreeman = NULL;
 
-			if (!g_fGameOver)
+			if ((m_iRoundState == STATE_PREROUND) || (m_iRoundState == STATE_PLAYING))
 			{
 				SelectFreeman();
 			}
 		}
 	}
 
-	BaseClass::ClientDisconnected( pClient );
-
+	BaseClass::ClientDisconnected(pClient);
 #endif
 }
 
@@ -1284,6 +1313,11 @@ void CHL2MPRules::RestartGame(bool gameend)
 	if (gameend)
 	{
 		pFreeman = NULL;
+		int freemanroundlimit = sv_freemanroundlimit.GetInt();
+		if ((freemanroundlimit > 0) && (m_iRounds >= freemanroundlimit))
+		{
+			pNextPlayerToBecomeFreeman = NULL;
+		}
 		m_iGameEndReason = GAME_NOT_ENDED;
 		m_bReassignSpectators = false;
 	}

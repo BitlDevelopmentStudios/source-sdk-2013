@@ -158,6 +158,7 @@ public:
 	const char *GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer );
 
 	virtual CHL2MP_Player* GetFreeman() { return pFreeman; }
+	void SetNextPlayerToBecomeFreeman(CHL2MP_Player* pPlayer) { pNextPlayerToBecomeFreeman = pPlayer; }
 	void PlayerSpawn(CBasePlayer* pPlayer);
 	void OnNavMeshLoad(void);
 #endif
@@ -188,12 +189,14 @@ private:
 	bool m_bStartedStartClock;
 	bool m_bJustEnded;
 	int m_iRoundState;
+	int m_iRounds;
 	int m_iGameEndReason;
 	bool m_bLastSquadMemberAnnounced;
 
 #ifndef CLIENT_DLL
 	//may be disasterous
 	CHL2MP_Player* pFreeman;
+	CHL2MP_Player* pNextPlayerToBecomeFreeman;
 	bool m_bChangelevelDone;
 #endif
 };

@@ -2099,7 +2099,7 @@ void CHL2MPBot::GenerateOrJoinGlobalSquad()
 
 			if (g_squad && GetTeam())
 			{
-				g_squad->SetFormationSize(UTIL_GetPlayerCount());
+				g_squad->SetFormationSize(MAX_PLAYERS);
 				g_squad->SetShouldPreserveSquad(true);
 			}
 		}
