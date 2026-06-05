@@ -42,7 +42,8 @@
 
 #define	MAX_COMBINEBALL_RADIUS	12
 
-ConVar	sk_npc_dmg_combineball( "sk_npc_dmg_combineball","15", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_combineball("sk_npc_dmg_combineball", "15", FCVAR_REPLICATED);
+ConVar	sk_plr_dmg_combineball( "sk_plr_dmg_combineball","75", FCVAR_REPLICATED);
 ConVar	sk_combineball_guidefactor( "sk_combineball_guidefactor","0.5", FCVAR_REPLICATED);
 ConVar	sk_combine_ball_search_radius( "sk_combine_ball_search_radius", "512", FCVAR_REPLICATED);
 ConVar	sk_combineball_seek_angle( "sk_combineball_seek_angle","15.0", FCVAR_REPLICATED);
@@ -1223,7 +1224,7 @@ void CPropCombineBall::OnHitEntity( CBaseEntity *pHitEntity, float flSpeed, int 
 		return;
 	}
 
-	CTakeDamageInfo info( this, GetOwnerEntity(), GetAbsVelocity(), GetAbsOrigin(), sk_npc_dmg_combineball.GetFloat(), DMG_DISSOLVE );
+	CTakeDamageInfo info( this, GetOwnerEntity(), GetAbsVelocity(), GetAbsOrigin(), WasFiredByFakeNPC() ? sk_plr_dmg_combineball.GetFloat() : sk_npc_dmg_combineball.GetFloat(), DMG_DISSOLVE);
 
 	bool bIsDissolving = (pHitEntity->GetFlags() & FL_DISSOLVING) != 0;
 	bool bShouldHit = pHitEntity->PassesDamageFilter( info );
@@ -1265,6 +1266,15 @@ void CPropCombineBall::OnHitEntity( CBaseEntity *pHitEntity, float flSpeed, int 
 					}
 
 					pHitEntity->TakeDamage( info );
+
+					if ((m_nState != STATE_HOLDING))
+					{
+						CBasePlayer* pPlayer = ToBasePlayer(GetOwnerEntity());
+						if (pPlayer && UTIL_IsAR2CombineBall(this) && ToBaseCombatCharacter(pHitEntity))
+						{
+							gamestats->Event_WeaponHit(pPlayer, false, "weapon_ar2", info);
+						}
+					}
 				}
 			}
 			else
