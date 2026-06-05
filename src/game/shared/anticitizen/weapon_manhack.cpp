@@ -224,13 +224,6 @@ bool CWeaponManhack::Deploy( void )
 
 	if (pOwner)
 	{
-		CBaseViewModel* vm = pOwner->GetViewModel();
-
-		if (vm != NULL)
-		{
-			vm->SetBodygroup(0, 0);
-		}
-
 		if (pOwner->GetAmmoCount(GetPrimaryAmmoType()) == 1)
 		{
 			pOwner->SetBodygroup(1, 0);
@@ -253,13 +246,6 @@ bool CWeaponManhack::Holster( CBaseCombatWeapon *pSwitchingTo )
 
 	if (pOwner)
 	{
-		CBaseViewModel* vm = pOwner->GetViewModel();
-
-		if (vm != NULL)
-		{
-			vm->SetBodygroup(0, 0);
-		}
-
 		if (pOwner->GetAmmoCount(GetPrimaryAmmoType()) == 1)
 		{
 			pOwner->SetBodygroup(1, 1);
@@ -280,18 +266,6 @@ bool CWeaponManhack::Reload( void )
 
 	if ( ( m_bRedraw ) && ( m_flNextPrimaryAttack <= gpGlobals->curtime ) && ( m_flNextSecondaryAttack <= gpGlobals->curtime ) )
 	{
-		CHL2MP_Player* pOwner = ToHL2MPPlayer(GetOwner());
-
-		if (pOwner)
-		{
-			CBaseViewModel* vm = pOwner->GetViewModel();
-
-			if (vm != NULL)
-			{
-				vm->SetBodygroup(0, 0);
-			}
-		}
-
 		//Redraw the weapon
 		SendWeaponAnim( ACT_VM_DRAW );
 
@@ -372,13 +346,6 @@ void CWeaponManhack::ItemPostFrame( void )
 
 		if (pOwner)
 		{
-			CBaseViewModel* vm = pOwner->GetViewModel();
-
-			if (vm != NULL)
-			{
-				vm->SetBodygroup(0, 1);
-			}
-
 			switch( m_AttackPaused )
 			{
 			case MANHACK_PAUSED_PRIMARY:
