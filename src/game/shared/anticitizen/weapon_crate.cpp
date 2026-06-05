@@ -214,6 +214,16 @@ void CWeaponCrate::PrimaryAttack( void )
 	{
 		pPlayer->SwitchToNextBestWeapon( this );
 	}
+
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(GetOwner());
+
+	if (pHL2MPPlayer)
+	{
+		if (pHL2MPPlayer->GetPlayerClass() != CLS_FREEMAN)
+		{
+			pHL2MPPlayer->SwitchToNextBestWeapon(this);
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -223,16 +233,6 @@ void CWeaponCrate::PrimaryAttack( void )
 void CWeaponCrate::DecrementAmmo( CBaseCombatCharacter *pOwner )
 {
 	pOwner->RemoveAmmo( 1, m_iPrimaryAmmoType );
-
-	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
-
-	if (pPlayer)
-	{
-		if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
-		{
-			pPlayer->SwitchToNextBestWeapon(this);
-		}
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -241,11 +241,6 @@ void CWeaponCrate::DecrementAmmo( CBaseCombatCharacter *pOwner )
 void CWeaponCrate::ItemPostFrame( void )
 {
 	BaseClass::ItemPostFrame();
-
-	if ( IsViewModelSequenceFinished() )
-	{
-		Reload();
-	}
 }
 
 // check a throw from vecSrc.  If not valid, move the position back along the line to vecEye

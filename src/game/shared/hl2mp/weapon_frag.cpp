@@ -377,27 +377,6 @@ void CWeaponFrag::PrimaryAttack( void )
 void CWeaponFrag::DecrementAmmo( CBaseCombatCharacter *pOwner )
 {
 	pOwner->RemoveAmmo( 1, m_iPrimaryAmmoType );
-
-	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
-
-	if (pPlayer)
-	{
-		if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
-		{
-			pPlayer->SwitchToNextBestWeapon(this);
-		}
-#ifndef CLIENT_DLL
-		else
-		{
-			CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(pPlayer);
-
-			if (pBot)
-			{
-				pBot->SwitchToNextBestWeapon(this);
-			}
-		}
-#endif
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -457,6 +436,27 @@ void CWeaponFrag::ItemPostFrame( void )
 		if ( IsViewModelSequenceFinished() )
 		{
 			Reload();
+
+			CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(GetOwner());
+
+			if (pHL2MPPlayer)
+			{
+				if (pHL2MPPlayer->GetPlayerClass() != CLS_FREEMAN)
+				{
+					pHL2MPPlayer->SwitchToNextBestWeapon(this);
+				}
+#ifndef CLIENT_DLL
+				else
+				{
+					CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(pHL2MPPlayer);
+
+					if (pBot)
+					{
+						pBot->SwitchToNextBestWeapon(this);
+					}
+				}
+#endif
+			}
 		}
 	}
 }

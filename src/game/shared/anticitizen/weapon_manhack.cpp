@@ -323,16 +323,6 @@ void CWeaponManhack::PrimaryAttack( void )
 void CWeaponManhack::DecrementAmmo( CBaseCombatCharacter *pOwner )
 {
 	pOwner->RemoveAmmo( 1, m_iPrimaryAmmoType );
-
-	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
-
-	if (pPlayer)
-	{
-		if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
-		{
-			pPlayer->SwitchToNextBestWeapon(this);
-		}
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -392,6 +382,16 @@ void CWeaponManhack::ItemPostFrame( void )
 		if ( IsViewModelSequenceFinished() )
 		{
 			Reload();
+
+			CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(GetOwner());
+
+			if (pHL2MPPlayer)
+			{
+				if (pHL2MPPlayer->GetPlayerClass() != CLS_FREEMAN)
+				{
+					pHL2MPPlayer->SwitchToNextBestWeapon(this);
+				}
+			}
 		}
 	}
 }
