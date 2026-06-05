@@ -560,10 +560,18 @@ void CHL2MPBotMainAction::FireWeaponAtEnemy( CHL2MPBot *me )
 
 	if (me->GetPlayerClass() > CLS_INVALID)
 	{
-		if (myWeapon->HasIronsights() && !myWeapon->IsIronsighted() && me->GetDifficulty() > CHL2MPBot::EASY)
+		const CKnownEntity* known = me->GetVisionInterface()->GetPrimaryKnownThreat();
+
+		if (known)
 		{
-			// aim down our sights if we're able to.
-			me->PressADSButton();
+			if (known->IsVisibleInFOVNow())
+			{
+				if (myWeapon->HasIronsights() && !myWeapon->IsIronsighted() && me->GetDifficulty() > CHL2MPBot::EASY)
+				{
+					// aim down our sights if we're able to.
+					me->PressADSButton(5.0f);
+				}
+			}
 		}
 	}
 

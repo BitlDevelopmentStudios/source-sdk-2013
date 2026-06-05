@@ -20,60 +20,36 @@
 
 "NPC_MetroPolice.ADSIn"
 {
-	"channel"		"CHAN_BODY"
-	"volume"		"0.55"
-	"pitch"		"95, 105"
+	"channel"	"CHAN_ITEM"
+	"volume"	"0.8"
+	"soundlevel"  "SNDLVL_75dB"
 
-	"soundlevel"	"SNDLVL_NORM"
-
-	"rndwave"
-	{
-		"wave"	"npc/metropolice/gear4.wav"
-		"wave"	"npc/metropolice/gear5.wav"
-	}
+	"wave"	"player/ironsight_on.wav"
 }
 
 "NPC_MetroPolice.ADSOut"
 {
-	"channel"		"CHAN_BODY"
-	"volume"		"0.55"
-	"pitch"		"95, 105"
+	"channel"	"CHAN_ITEM"
+	"volume"	"0.8"
+	"soundlevel"  "SNDLVL_75dB"
 
-	"soundlevel"	"SNDLVL_NORM"
-
-	"rndwave"
-	{
-		"wave"	"npc/metropolice/gear3.wav"
-		"wave"	"npc/metropolice/gear6.wav"
-	}
+	"wave"	"player/ironsight_off.wav"
 }
 
 "NPC_CombineS.ADSIn"
 {
-	"channel"		"CHAN_BODY"
-	"volume"		"0.75"
-	"pitch"		"95, 105"
+	"channel"	"CHAN_ITEM"
+	"volume"	"0.8"
+	"soundlevel"  "SNDLVL_75dB"
 
-	"soundlevel"	"SNDLVL_NORM"
-
-	"rndwave"
-	{
-		"wave"	"npc/combine_soldier/gear4.wav"
-		"wave"	"npc/combine_soldier/gear5.wav"
-	}
+	"wave"	"player/ironsight_on.wav"
 }
 
 "NPC_CombineS.ADSOut"
 {
-	"channel"		"CHAN_BODY"
-	"volume"		"0.75"
-	"pitch"		"95, 105"
+	"channel"	"CHAN_ITEM"
+	"volume"	"0.8"
+	"soundlevel"  "SNDLVL_75dB"
 
-	"soundlevel"	"SNDLVL_NORM"
-
-	"rndwave"
-	{
-		"wave"	"npc/combine_soldier/gear3.wav"
-		"wave"	"npc/combine_soldier/gear6.wav"
-	}
+	"wave"	"player/ironsight_off.wav"
 }
