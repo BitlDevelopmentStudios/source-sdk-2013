@@ -48,14 +48,37 @@ public:
 		C_BasePlayer* pLocalPlayer = C_BasePlayer::GetLocalPlayer();
 		if (pLocalPlayer)
 		{
-			int iTeamNumber = pLocalPlayer->GetTeamNumber();
-			Color c = GameResources()->GetTeamColor(iTeamNumber);
-			c.SetColor(c.r(), c.g(), c.b(), 100);
-			BaseClass::SetFgColor(c);
+			BaseClass::SetFgColor(GetTeamColor(pLocalPlayer));
 			return;
 		}
 
 		BaseClass::SetFgColor(color);
+	}
+
+	virtual Color GetFgColor() OVERRIDE
+	{
+		C_BasePlayer* pLocalPlayer = C_BasePlayer::GetLocalPlayer();
+		if (pLocalPlayer)
+		{
+			return GetTeamColor(pLocalPlayer);
+		}
+
+		return BaseClass::GetFgColor();
+	}
+
+private:
+	Color GetTeamColor(C_BasePlayer* pLocalPlayer)
+	{
+		if (pLocalPlayer)
+		{
+			int iTeamNumber = pLocalPlayer->GetTeamNumber();
+			Color c = GameResources()->GetTeamColor(iTeamNumber);
+			c.SetColor(c.r(), c.g(), c.b(), 100);
+			BaseClass::SetFgColor(c);
+			return c;
+		}
+
+		return BaseClass::GetFgColor();
 	}
 };
 
