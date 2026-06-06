@@ -19,6 +19,8 @@
 #define PLAYER_UNCONNECTED_NAME	"unconnected"
 #define PLAYER_ERROR_NAME		"ERRORNAME"
 
+#define COLOR_COMBINE	Color(70, 197, 212, 255)
+
 class C_PlayerResource : public C_BaseEntity, public IGameResources
 {
 	DECLARE_CLASS( C_PlayerResource, C_BaseEntity );

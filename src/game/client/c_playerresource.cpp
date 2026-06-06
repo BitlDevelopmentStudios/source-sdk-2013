@@ -75,7 +75,7 @@ C_PlayerResource::C_PlayerResource()
 	}
 
 #ifdef HL2MP
-	m_Colors[TEAM_COMBINE] = COLOR_BLUE;
+	m_Colors[TEAM_COMBINE] = COLOR_COMBINE;
 	m_Colors[TEAM_FREEMAN] = COLOR_HL2_DEF_BGCOLOR;
 	m_Colors[TEAM_UNASSIGNED] = COLOR_WHITE;
 #endif
