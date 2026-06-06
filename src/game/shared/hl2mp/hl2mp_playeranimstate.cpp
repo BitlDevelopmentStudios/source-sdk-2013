@@ -423,43 +423,47 @@ bool CHL2MPPlayerAnimState::SetupPoseParameters( CStudioHdr *pStudioHdr )
 // Purpose: Override for backpeddling
 // Input  : dt - 
 //-----------------------------------------------------------------------------
-float SnapYawTo( float flValue );
 void CHL2MPPlayerAnimState::ComputePoseParam_MoveYaw( CStudioHdr *pStudioHdr )
 {
 	// Get the estimated movement yaw.
-	BaseClass::EstimateYaw();
+	EstimateYaw();
 
-	// view direction relative to movement
-	float flYaw;	 
+	// Get the view yaw.
+	float flAngle = AngleNormalize(m_flEyeYaw);
 
-	QAngle	angles = GetBasePlayer()->GetLocalAngles();
-	float ang = angles[ YAW ];
-	if ( ang > 180.0f )
-	{
-		ang -= 360.0f;
-	}
-	else if ( ang < -180.0f )
-	{
-		ang += 360.0f;
-	}
+	// Calc side to side turning - the view vs. movement yaw.
+	float flYaw = flAngle - m_PoseParameterData.m_flEstimateYaw;
+	flYaw = AngleNormalize(-flYaw);
 
-	// calc side to side turning
-	flYaw = ang - m_PoseParameterData.m_flEstimateYaw;
-	// Invert for mapping into 8way blend
-	flYaw = -flYaw;
-	flYaw = flYaw - (int)(flYaw / 360) * 360;
+	// Get the current speed the character is running.
+	bool bIsMoving = false;
 
-	if (flYaw < -180)
+	// Get the player's current velocity and speed.
+	Vector vecVelocity;
+	GetOuterAbsVelocity(vecVelocity);
+	float flSpeed = vecVelocity.Length2D();
+
+	if (flSpeed > MOVING_MINIMUM_SPEED)
 	{
-		flYaw = flYaw + 360;
-	}
-	else if (flYaw > 180)
-	{
-		flYaw = flYaw - 360;
+		bIsMoving = true;
 	}
 
-	//Tony; oops, i inverted this previously above.
-	GetBasePlayer()->SetPoseParameter( pStudioHdr, m_PoseParameterData.m_iMoveY, flYaw );
+	// Setup the 9-way blend parameters based on our speed and direction.
+	Vector2D vecCurrentMoveYaw(0.0f, 0.0f);
+	if (bIsMoving)
+	{
+		GetMovementFlags(pStudioHdr);
+
+		// find what speed was actually authored
+		GetBasePlayer()->SetPoseParameter(pStudioHdr, m_PoseParameterData.m_iMoveY, flYaw);
+	}
+	else
+	{
+		// Set the 9-way blend movement pose parameters.
+		GetBasePlayer()->SetPoseParameter(pStudioHdr, m_PoseParameterData.m_iMoveY, 0.0f);
+	}
+
+	m_DebugAnimData.m_vecMoveYaw = vecCurrentMoveYaw;
 }
 
 //-----------------------------------------------------------------------------
