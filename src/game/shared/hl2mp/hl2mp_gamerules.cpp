@@ -731,6 +731,15 @@ void CHL2MPRules::Think( void )
 					if (pFreeman)
 					{
 						m_uiLastFreemanID = pFreeman->GetSteamIDAsUInt64();
+
+						// the freeman is wise enough that we may choose him again.
+						// hopefully he will not abuse this power.
+						if (m_iGameEndReason == GAME_END_NOMORESOLDIERS)
+						{
+							CSteamID id;
+							pFreeman->GetSteamID(&id);
+							pNextPlayerToBecomeFreeman = ToHL2MPPlayer(UTIL_PlayerBySteamID(id));
+						}
 					}
 
 					UTIL_ClientPrintAll(HUD_PRINTCENTER, szPhrase, mp_chattime.GetString());
