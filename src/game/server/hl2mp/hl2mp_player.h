@@ -110,6 +110,8 @@ public:
 	void GiveAllItems( void );
 	void GiveFreemanWeapons(void);
 	void ReplenishTroopAmmoAndHealth(void);
+
+	void SayFreemanLowHealthLine(void);
 	
 	void SetAnimation(PLAYER_ANIM playerAnim);
 	Activity TranslateTeamActivity( Activity ActToTranslate );
@@ -195,6 +197,7 @@ protected:
 
 public:
 	bool m_bInitialSpawn;
+	bool m_bFreemanAtLowHealth;
 
 private:
 	CPlayer_Sentence< CHL2MP_Player > m_Sentences;

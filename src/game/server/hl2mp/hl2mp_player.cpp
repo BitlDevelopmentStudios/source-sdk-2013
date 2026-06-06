@@ -1562,7 +1562,7 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 					}
 
 					// Use m_Sentences.Speak because we have custom logic here.
-					m_Sentences.Speak(pSentenceName, SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
+					pPlayer->SpeakSentence(pSentenceName, SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
 				}
 
 				// this killer becomes freeman next round.
@@ -1616,6 +1616,24 @@ int CHL2MP_Player::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 
 int CHL2MP_Player::OnTakeDamage_Alive(const CTakeDamageInfo& info)
 {
+	// allow the attacker to play the low health sound.
+	CBaseEntity* pAttacker = info.GetAttacker();
+	if (pAttacker)
+	{
+		if (pAttacker->IsPlayer())
+		{
+			CHL2MP_Player* pPlayer = ToHL2MPPlayer(pAttacker);
+
+			if (pPlayer)
+			{
+				if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
+				{
+					pPlayer->SayFreemanLowHealthLine();
+				}
+			}
+		}
+	}
+
 	if (GetPlayerClass() > CLS_INVALID)
 	{
 		const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
@@ -1634,12 +1652,39 @@ int CHL2MP_Player::OnTakeDamage_Alive(const CTakeDamageInfo& info)
 				}
 			}
 
-			return BaseClass::BaseClass::OnTakeDamage_Alive(info);;
+			return BaseClass::BaseClass::OnTakeDamage_Alive(info);
 		}
 	}
 
 	// Call the base class implementation
 	return BaseClass::OnTakeDamage_Alive(info);
+}
+
+void CHL2MP_Player::SayFreemanLowHealthLine(void)
+{
+	if (!HL2MPRules()->GetFreeman())
+		return;
+
+	bool bFreemanLowHealth = (HL2MPRules()->GetFreeman()->GetHealth() <= 20);
+
+	if (!bFreemanLowHealth)
+	{
+		if (m_bFreemanAtLowHealth)
+		{
+			m_bFreemanAtLowHealth = false;
+		}
+
+		return;
+	}
+
+	if (m_bFreemanAtLowHealth)
+		return;
+
+	if (bFreemanLowHealth)
+	{
+		SpeakSentence("PLAYERHIT", SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
+		m_bFreemanAtLowHealth = true;
+	}
 }
 
 //-----------------------------------------------------------------------------
