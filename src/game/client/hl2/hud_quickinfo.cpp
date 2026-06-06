@@ -337,7 +337,7 @@ void CHUDQuickInfo::Paint()
 	}
 	else
 	{
-		float healthPerc = (float) health / (float) player->GetMaxHealth();
+		float healthPerc = (float)health / 100.0f;
 		healthPerc = clamp( healthPerc, 0.0f, 1.0f );
 
 		Color healthColor = m_warnHealth ? gHUD.m_clrCaution : gHUD.m_clrNormal;
