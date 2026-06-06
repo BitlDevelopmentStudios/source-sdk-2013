@@ -73,8 +73,7 @@ private:
 		{
 			int iTeamNumber = pLocalPlayer->GetTeamNumber();
 			Color c = GameResources()->GetTeamColor(iTeamNumber);
-			c.SetColor(c.r(), c.g(), c.b(), 100);
-			BaseClass::SetFgColor(c);
+			//c.SetColor(c.r(), c.g(), c.b(), 100);
 			return c;
 		}
 
