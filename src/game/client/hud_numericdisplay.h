@@ -10,15 +10,15 @@
 #pragma once
 #endif
 
-#include <vgui_controls/Panel.h>
+#include "game_controls/panel_teamcolored.h"
 
 //-----------------------------------------------------------------------------
 // Purpose: Base class for all the hud elements that are just a numeric display
 //			with some options for text and icons
 //-----------------------------------------------------------------------------
-class CHudNumericDisplay : public vgui::Panel
+class CHudNumericDisplay : public CPanelTeamColored
 {
-	DECLARE_CLASS_SIMPLE( CHudNumericDisplay, vgui::Panel );
+	DECLARE_CLASS_SIMPLE( CHudNumericDisplay, CPanelTeamColored);
 
 public:
 	CHudNumericDisplay(vgui::Panel *parent, const char *name);
