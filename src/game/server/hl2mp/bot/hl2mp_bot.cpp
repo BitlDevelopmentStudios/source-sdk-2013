@@ -862,7 +862,6 @@ void CHL2MPBot::AvoidPlayers( CUserCmd *pCmd )
 	Vector avoidVector = vec3_origin;
 
 	float tooClose = 50.0f;
-	float tooCloseSquadMember = 25.0f;
 
 	for ( int i = 0; i < playerVector.Count(); ++i )
 	{
@@ -871,14 +870,6 @@ void CHL2MPBot::AvoidPlayers( CUserCmd *pCmd )
 		if ( IsSelf( them ) )
 		{
 			continue;
-		}
-
-		if ( IsInASquad() )
-		{
-			// Why do we want to skip evaluation if we're in a squad?
-			// The squad members won't always be moving in the same direction/area and walk into eachother, ignoring them seems silly!
-			// -Ratchet
-			tooClose = tooCloseSquadMember;
 		}
 
 		Vector between = GetAbsOrigin() - them->GetAbsOrigin();
