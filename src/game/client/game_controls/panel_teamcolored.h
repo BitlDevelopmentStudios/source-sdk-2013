@@ -16,6 +16,8 @@
 #include <vgui_controls/Panel.h>
 #include <vgui_controls/EditablePanel.h>
 #include <vgui_controls/Frame.h>
+#include <vgui_controls/Label.h>
+#include <vgui_controls/Button.h>
 
 //-----------------------------------------------------------------------------
 // Purpose: Allows HUD elements to use team colors.
@@ -180,5 +182,120 @@ private:
 		return BaseClass::GetFgColor();
 	}
 };
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+class CLabelTeamColored : public vgui::Label
+{
+	DECLARE_CLASS_SIMPLE(CLabelTeamColored, vgui::Label);
+
+public:
+	CLabelTeamColored(Panel* parent, const char* panelName, const char* text) : BaseClass(parent, panelName, text)
+	{
+
+	}
+
+	CLabelTeamColored(Panel* parent, const char* panelName, const wchar_t* wszText) : BaseClass(parent, panelName, wszText)
+	{
+
+	}
+
+	virtual void SetFgColor(Color color) OVERRIDE
+	{
+		C_BasePlayer* pLocalPlayer = C_BasePlayer::GetLocalPlayer();
+		if (pLocalPlayer)
+		{
+			BaseClass::SetFgColor(GetTeamColor(pLocalPlayer));
+			return;
+		}
+
+		BaseClass::SetFgColor(color);
+	}
+
+	virtual Color GetFgColor() OVERRIDE
+	{
+		C_BasePlayer* pLocalPlayer = C_BasePlayer::GetLocalPlayer();
+		if (pLocalPlayer)
+		{
+			return GetTeamColor(pLocalPlayer);
+		}
+
+		return BaseClass::GetFgColor();
+	}
+
+private:
+	Color GetTeamColor(C_BasePlayer* pLocalPlayer)
+	{
+		if (pLocalPlayer)
+		{
+			int iTeamNumber = pLocalPlayer->GetTeamNumber();
+			Color c = GameResources()->GetTeamColor(iTeamNumber);
+			return c;
+		}
+
+		return BaseClass::GetFgColor();
+	}
+};
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+class CButtonTeamColored : public vgui::Button
+{
+	DECLARE_CLASS_SIMPLE(CButtonTeamColored, vgui::Button);
+
+public:
+	CButtonTeamColored(Panel* parent, const char* panelName, const char* text, Panel* pActionSignalTarget = NULL, const char* pCmd = NULL) : BaseClass(parent, panelName, text, pActionSignalTarget, pCmd)
+	{
+
+	}
+
+	CButtonTeamColored(Panel* parent, const char* panelName, const wchar_t* text, Panel* pActionSignalTarget = NULL, const char* pCmd = NULL) : BaseClass(parent, panelName, text, pActionSignalTarget, pCmd)
+	{
+
+	}
+
+	virtual void SetFgColor(Color color) OVERRIDE
+	{
+		C_BasePlayer* pLocalPlayer = C_BasePlayer::GetLocalPlayer();
+		if (pLocalPlayer)
+		{
+			BaseClass::SetFgColor(GetTeamColor(pLocalPlayer));
+			return;
+		}
+
+		BaseClass::SetFgColor(color);
+	}
+
+	virtual Color GetFgColor() OVERRIDE
+	{
+		C_BasePlayer* pLocalPlayer = C_BasePlayer::GetLocalPlayer();
+		if (pLocalPlayer)
+		{
+			return GetTeamColor(pLocalPlayer);
+		}
+
+		return BaseClass::GetFgColor();
+	}
+
+private:
+	Color GetTeamColor(C_BasePlayer* pLocalPlayer)
+	{
+		if (pLocalPlayer)
+		{
+			int iTeamNumber = pLocalPlayer->GetTeamNumber();
+			Color c = GameResources()->GetTeamColor(iTeamNumber);
+			return c;
+		}
+
+		return BaseClass::GetFgColor();
+	}
+};
+
+DECLARE_BUILD_FACTORY(CPanelTeamColored);
+DECLARE_BUILD_FACTORY(CEditablePanelTeamColored);
+DECLARE_BUILD_FACTORY_DEFAULT_TEXT(CLabelTeamColored, CLabelTeamColored);
+DECLARE_BUILD_FACTORY_DEFAULT_TEXT(CButtonTeamColored, CButtonTeamColored);
 
 #endif // HUD_NUMERICDISPLAY_H
