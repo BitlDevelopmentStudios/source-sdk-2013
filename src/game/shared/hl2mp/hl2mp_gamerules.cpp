@@ -477,16 +477,6 @@ void CHL2MPRules::SelectFreeman(void)
 		pPlayer->SetPlayerClass(CLS_FREEMAN);
 		pPlayer->SetChosenClass(true);
 
-		// if we joined the class after someone disconnected, respawn us now.
-		if (m_iRoundState == STATE_PLAYING)
-		{
-			// forcefully set our lives to one.
-			const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = pPlayer->GetPlayerClassInfo();
-			pPlayer->SetLifeCount(pPlayerClassInfo.iLives);
-			pPlayer->RemoveAllItems(true);
-			pPlayer->Spawn();
-		}
-
 		m_uiFreemanID = pPlayer->GetSteamIDAsUInt64();
 
 		if (m_uiFreemanID == m_uiLastFreemanID)
@@ -530,11 +520,15 @@ void CHL2MPRules::ReassignSpectators(void)
 bool CHL2MPRules::IsFreemanAlive(void)
 {
 #ifndef CLIENT_DLL
+	if (!pFreeman)
+		return false;
+
 	if (pFreeman)
 	{
-		// don't end if a freeman player disconnects.
 		if (pFreeman->IsDisconnecting())
-			return true;
+		{
+			return false;
+		}
 
 		if (!pFreeman->IsAlive())
 		{
@@ -729,7 +723,7 @@ void CHL2MPRules::Think( void )
 							break;
 					}
 
-					if (pFreeman)
+					if (pFreeman && !pFreeman->IsDisconnecting())
 					{
 						m_uiLastFreemanID = pFreeman->GetSteamIDAsUInt64();
 
@@ -1045,11 +1039,6 @@ void CHL2MPRules::ClientDisconnected( edict_t *pClient )
 		if (pPlayer == pFreeman)
 		{
 			pFreeman = NULL;
-
-			if ((m_iRoundState == STATE_PREROUND) || (m_iRoundState == STATE_PLAYING))
-			{
-				SelectFreeman();
-			}
 		}
 	}
 
