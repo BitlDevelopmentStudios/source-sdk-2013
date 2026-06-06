@@ -17,7 +17,7 @@
 #include <vgui/ISurface.h>
 #include <vgui/ISystem.h>
 #include <vgui_controls/AnimationController.h>
-#include <vgui_controls/Panel.h>
+#include "game_controls/panel_teamcolored.h"
 
 #include "vgui/ILocalize.h"
 
@@ -46,9 +46,9 @@ ConVar hud_showemptyweaponslots( "hud_showemptyweaponslots", "1", FCVAR_ARCHIVE,
 //-----------------------------------------------------------------------------
 // Purpose: hl2 weapon selection hud element
 //-----------------------------------------------------------------------------
-class CHudWeaponSelection : public CBaseHudWeaponSelection, public vgui::Panel
+class CHudWeaponSelection : public CPanelTeamColored, public CBaseHudWeaponSelection
 {
-	DECLARE_CLASS_SIMPLE( CHudWeaponSelection, vgui::Panel );
+	DECLARE_CLASS_SIMPLE( CHudWeaponSelection, CPanelTeamColored);
 
 public:
 	CHudWeaponSelection(const char *pElementName );
