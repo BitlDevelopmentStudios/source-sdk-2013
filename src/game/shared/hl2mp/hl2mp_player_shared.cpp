@@ -547,12 +547,12 @@ bool CHL2MP_Player::ShouldCollide(int collisionGroup, int contentsMask) const
 			switch (GetTeamNumber())
 			{
 			case TEAM_FREEMAN:
-				if ((contentsMask & CONTENTS_TEAM1))
+				if (!(contentsMask & CONTENTS_TEAM1))
 					return false;
 				break;
 
 			case TEAM_COMBINE:
-				if ((contentsMask & CONTENTS_TEAM2))
+				if (!(contentsMask & CONTENTS_TEAM2))
 					return false;
 				break;
 			}
