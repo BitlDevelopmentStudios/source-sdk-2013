@@ -48,7 +48,6 @@ public:
 private:
 
 	bool						SetupPoseParameters( CStudioHdr *pStudioHdr );
-	virtual void				EstimateYaw( void );
 	virtual void				ComputePoseParam_MoveYaw( CStudioHdr *pStudioHdr );
 	virtual void				ComputePoseParam_AimPitch( CStudioHdr *pStudioHdr );
 	virtual void				ComputePoseParam_AimYaw( CStudioHdr *pStudioHdr );

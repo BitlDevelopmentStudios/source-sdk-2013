@@ -22,6 +22,14 @@
 	#include "hl_movedata.h"
 #endif
 
+#ifdef HL2MP
+#ifdef CLIENT_DLL
+#include "c_hl2mp_player.h"
+#else
+#include "hl2mp_player.h"
+#endif
+#endif
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -2424,7 +2432,19 @@ bool CGameMovement::CheckJumpButton( void )
 	
 	player->PlayStepSound( (Vector &)mv->GetAbsOrigin(), player->m_pSurfaceData, 1.0, true );
 	
-	MoveHelper()->PlayerSetAnimation( PLAYER_JUMP );
+#ifdef HL2MP
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(player);
+	if (pHL2MPPlayer)
+	{
+		pHL2MPPlayer->DoAnimationEvent(PLAYERANIMEVENT_JUMP);
+	}
+	else
+	{
+		MoveHelper()->PlayerSetAnimation(PLAYER_JUMP);
+	}
+#else
+	MoveHelper()->PlayerSetAnimation(PLAYER_JUMP);
+#endif
 
 	float flGroundFactor = 1.0f;
 	if (player->m_pSurfaceData)
