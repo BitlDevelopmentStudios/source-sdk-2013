@@ -12,7 +12,7 @@
 #include "hudelement.h"
 #include "ehandle.h"
 
-#include <vgui_controls/Panel.h>
+#include "game_controls/panel_teamcolored.h"
 
 enum 
 {
@@ -33,9 +33,9 @@ class C_BaseCombatWeapon;
 //-----------------------------------------------------------------------------
 // Purpose: Used to draw the history of ammo / weapon / item pickups by the player
 //-----------------------------------------------------------------------------
-class CHudHistoryResource : public CHudElement, public vgui::Panel
+class CHudHistoryResource : public CHudElement, public CPanelTeamColored
 {
-	DECLARE_CLASS_SIMPLE( CHudHistoryResource, vgui::Panel );
+	DECLARE_CLASS_SIMPLE( CHudHistoryResource, CPanelTeamColored);
 private:
 	struct HIST_ITEM 
 	{

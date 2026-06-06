@@ -12,7 +12,7 @@
 #include "engine/IEngineSound.h"
 #include "vgui_controls/AnimationController.h"
 #include "vgui_controls/Controls.h"
-#include "vgui_controls/Panel.h"
+#include "game_controls/panel_teamcolored.h"
 #include "vgui/ISurface.h"
 #include "../hud_crosshair.h"
 #include "VGuiMatSurface/IMatSystemSurface.h"
@@ -46,9 +46,9 @@ CHUDQuickInfo
 
 using namespace vgui;
 
-class CHUDQuickInfo : public CHudElement, public vgui::Panel
+class CHUDQuickInfo : public CHudElement, public CPanelTeamColored
 {
-	DECLARE_CLASS_SIMPLE( CHUDQuickInfo, vgui::Panel );
+	DECLARE_CLASS_SIMPLE( CHUDQuickInfo, CPanelTeamColored);
 public:
 	CHUDQuickInfo( const char *pElementName );
 	void Init( void );
@@ -314,7 +314,7 @@ void CHUDQuickInfo::Paint()
 		}
 	}
 
-	Color clrNormal = gHUD.m_clrNormal;
+	Color clrNormal = GetFgColor();
 	clrNormal[3] = 255 * scalar;
 	m_icon_c->DrawSelf( xCenter, yCenter, clrNormal );
 
@@ -340,7 +340,7 @@ void CHUDQuickInfo::Paint()
 		float healthPerc = (float) health / (float) player->GetMaxHealth();
 		healthPerc = clamp( healthPerc, 0.0f, 1.0f );
 
-		Color healthColor = m_warnHealth ? gHUD.m_clrCaution : gHUD.m_clrNormal;
+		Color healthColor = m_warnHealth ? gHUD.m_clrCaution : GetFgColor();
 		
 		if ( m_warnHealth )
 		{
@@ -373,7 +373,7 @@ void CHUDQuickInfo::Paint()
 			ammoPerc = clamp( ammoPerc, 0.0f, 1.0f );
 		}
 
-		Color ammoColor = m_warnAmmo ? gHUD.m_clrCaution : gHUD.m_clrNormal;
+		Color ammoColor = m_warnAmmo ? gHUD.m_clrCaution : GetFgColor();
 		
 		if ( m_warnAmmo )
 		{

@@ -516,7 +516,7 @@ event AmmoSecondaryEmpty
 // current weapon has been changed
 event WeaponChanged
 {
-	Animate HudAmmo		BgColor		"250 220 0 80"	Linear	0.0		0.1
+	Animate HudAmmo		BgColor		"220 220 220 80"	Linear	0.0		0.1
 	Animate HudAmmo		BgColor		"BgColor"		Deaccel	0.1		1.0
 	Animate HudAmmo		FgColor		"BrightFg"		Linear	0.0		0.1
 	Animate HudAmmo		FgColor		"FgColor"		Linear	0.2		1.5
@@ -553,7 +553,7 @@ event WeaponUsesSecondaryAmmo
 	StopPanelAnimations HudAmmoSecondary 0.0
 	//StopPanelAnimations HudAmmo 0.0
 
-	Animate HudAmmoSecondary	BgColor		"250 220 0 60"	Linear	0.0		0.1
+	Animate HudAmmoSecondary	BgColor		"220 220 220 60"	Linear	0.0		0.1
 	Animate HudAmmoSecondary	BgColor		"BgColor"		Deaccel	0.1		1.0
 	Animate HudAmmoSecondary	FgColor		"BrightFg"	Linear	0.0		0.1
 	Animate HudAmmoSecondary	FgColor		"FgColor"		Linear	0.2		1.5

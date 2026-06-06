@@ -155,12 +155,9 @@ private:
 	CPanelAnimationVar( float, m_flAlphaOverride, "Alpha", "0" );
 	CPanelAnimationVar( float, m_flSelectionAlphaOverride, "SelectionAlpha", "0" );
 
-	CPanelAnimationVar( Color, m_TextColor, "TextColor", "SelectionTextFg" );
-	CPanelAnimationVar( Color, m_NumberColor, "NumberColor", "SelectionNumberFg" );
 	CPanelAnimationVar( Color, m_EmptyBoxColor, "EmptyBoxColor", "SelectionEmptyBoxBg" );
 	CPanelAnimationVar( Color, m_BoxColor, "BoxColor", "SelectionBoxBg" );
 	CPanelAnimationVar( Color, m_SelectedBoxColor, "SelectedBoxColor", "SelectionSelectedBoxBg" );
-	CPanelAnimationVar( Color, m_SelectedFgColor, "SelectedFgColor", "FgColor" );
 	CPanelAnimationVar( Color, m_BrightBoxColor, "SelectedFgColor", "BgColor" );
 
 	CPanelAnimationVar( float, m_flWeaponPickupGrowTime, "SelectionGrowTime", "0.1" );
@@ -764,7 +761,7 @@ void CHudWeaponSelection::Paint()
 //-----------------------------------------------------------------------------
 void CHudWeaponSelection::DrawLargeWeaponBox( C_BaseCombatWeapon *pWeapon, bool bSelected, int xpos, int ypos, int boxWide, int boxTall, Color selectedColor, float alpha, int number )
 {
-	Color col = bSelected ? m_SelectedFgColor : GetFgColor();
+	Color col = GetFgColor();
 	
 	switch ( hud_fastswitch.GetInt() )
 	{
@@ -917,7 +914,8 @@ void CHudWeaponSelection::DrawLargeWeaponBox( C_BaseCombatWeapon *pWeapon, bool 
 	}
 
 	// draw text
-	col = m_TextColor;
+	col = GetFgColor();
+	col[3] *= (alpha / 255.0f);
 	const FileWeaponInfo_t &weaponInfo = pWeapon->GetWpnData();
 
 	if ( bSelected )
@@ -1020,7 +1018,7 @@ void CHudWeaponSelection::DrawBox(int x, int y, int wide, int tall, Color color,
 	// draw the number
 	if (number >= 0)
 	{
-		Color numberColor = m_NumberColor;
+		Color numberColor = GetFgColor();
 		numberColor[3] *= normalizedAlpha / 255.0f;
 		surface()->DrawSetTextColor(numberColor);
 		surface()->DrawSetTextFont(m_hNumberFont);
