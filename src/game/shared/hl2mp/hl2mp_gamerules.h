@@ -158,7 +158,10 @@ public:
 	const char *GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer );
 
 	virtual CHL2MP_Player* GetFreeman() { return pFreeman; }
-	void SetNextPlayerToBecomeFreeman(CHL2MP_Player* pPlayer) { pNextPlayerToBecomeFreeman = pPlayer; }
+	void SetNextPlayerToBecomeFreeman(CHL2MP_Player* pPlayer) 
+	{ 
+		pNextPlayerToBecomeFreeman = pPlayer; 
+	}
 	void PlayerSpawn(CBasePlayer* pPlayer);
 	void OnNavMeshLoad(void);
 #endif
@@ -198,6 +201,9 @@ private:
 	CHL2MP_Player* pFreeman;
 	CHL2MP_Player* pNextPlayerToBecomeFreeman;
 	bool m_bChangelevelDone;
+	uint64 m_uiFreemanID;
+	uint64 m_uiLastFreemanID;
+	int m_iNumTimesFreemanIDShowedUpIFuckingHateThis;
 #endif
 };
 

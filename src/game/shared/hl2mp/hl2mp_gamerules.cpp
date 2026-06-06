@@ -214,6 +214,9 @@ CHL2MPRules::CHL2MPRules()
 	pNextPlayerToBecomeFreeman = NULL;
 	m_iRoundState = STATE_PREROUND;
 	m_bStartedStartClock = false;
+	m_uiFreemanID = 0;
+	m_uiLastFreemanID = 0;
+	m_iNumTimesFreemanIDShowedUpIFuckingHateThis = 0;
 
 #endif
 }
@@ -460,6 +463,14 @@ void CHL2MPRules::SelectFreeman(void)
 
 	if (pPlayer)
 	{
+		if (pPlayer->GetActiveWeapon())
+		{
+			if (pPlayer->GetActiveWeapon()->IsIronsighted())
+			{
+				pPlayer->GetActiveWeapon()->DisableIronsights();
+			}
+		}
+
 		pPlayer->ShowViewPortPanel(PANEL_CLASS, false);
 		pPlayer->ResetPlayerClass();
 		pPlayer->ChangeTeam(TEAM_FREEMAN);
@@ -474,6 +485,17 @@ void CHL2MPRules::SelectFreeman(void)
 			pPlayer->SetLifeCount(pPlayerClassInfo.iLives);
 			pPlayer->RemoveAllItems(true);
 			pPlayer->Spawn();
+		}
+
+		m_uiFreemanID = pPlayer->GetSteamIDAsUInt64();
+
+		if (m_uiFreemanID == m_uiLastFreemanID)
+		{
+			m_iNumTimesFreemanIDShowedUpIFuckingHateThis += 1;
+		}
+		else
+		{
+			m_iNumTimesFreemanIDShowedUpIFuckingHateThis = 0;
 		}
 
 		pFreeman = pPlayer;
@@ -704,6 +726,11 @@ void CHL2MPRules::Think( void )
 						case GAME_END_NOMORESOLDIERS:
 							szPhrase = "#Anticitizen_SoldiersDead";
 							break;
+					}
+
+					if (pFreeman)
+					{
+						m_uiLastFreemanID = pFreeman->GetSteamIDAsUInt64();
 					}
 
 					UTIL_ClientPrintAll(HUD_PRINTCENTER, szPhrase, mp_chattime.GetString());
@@ -1319,11 +1346,15 @@ void CHL2MPRules::RestartGame(bool gameend)
 	if (gameend)
 	{
 		pFreeman = NULL;
+		m_uiFreemanID = 0;
+
 		int freemanroundlimit = sv_freemanroundlimit.GetInt();
-		if ((freemanroundlimit > 0) && (m_iRounds >= freemanroundlimit))
+		if ((freemanroundlimit > 0) && (m_iNumTimesFreemanIDShowedUpIFuckingHateThis >= freemanroundlimit))
 		{
 			pNextPlayerToBecomeFreeman = NULL;
+			m_iNumTimesFreemanIDShowedUpIFuckingHateThis = 0;
 		}
+
 		m_iGameEndReason = GAME_NOT_ENDED;
 		m_bReassignSpectators = false;
 	}
