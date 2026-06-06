@@ -49,7 +49,9 @@ public:
 		if (pLocalPlayer)
 		{
 			int iTeamNumber = pLocalPlayer->GetTeamNumber();
-			BaseClass::SetFgColor(GameResources()->GetTeamColor(iTeamNumber));
+			Color c = GameResources()->GetTeamColor(iTeamNumber);
+			c.SetColor(c.r(), c.g(), c.b(), 100);
+			BaseClass::SetFgColor(c);
 			return;
 		}
 
