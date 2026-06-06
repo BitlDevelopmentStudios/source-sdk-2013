@@ -617,7 +617,7 @@ void CHL2MPRules::Think( void )
 					m_bStartedStartClock = true;
 				}
 
-				if (m_flGameStartTime < gpGlobals->curtime)
+				if (m_bStartedStartClock && (m_flGameStartTime < gpGlobals->curtime))
 				{
 					m_iRoundState = STATE_PLAYING;
 
@@ -643,6 +643,7 @@ void CHL2MPRules::Think( void )
 			{
 				UTIL_ClientPrintAll(HUD_PRINTCENTER, "#Anticitizen_WaitingforPlayers");
 				m_flGameStartTime = -1;
+				m_bStartedStartClock = false;
 			}
 
 			break;
