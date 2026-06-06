@@ -570,6 +570,11 @@ typedef enum
 #define COLOR_WHITE		Color(255, 255, 255, 255)
 #define COLOR_BLACK		Color(0, 0, 0, 255)
 
+// HL2 style colors.
+#define COLOR_HL2_YELLOWISH	Color(255, 160, 0, 255)
+#define COLOR_HL2_NORMAL	Color(255, 208, 64, 255)
+#define COLOR_HL2_CAUTION	Color(255, 48, 0, 255)
+
 // All NPCs need this data
 enum
 {
