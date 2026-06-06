@@ -479,6 +479,13 @@ void CHL2MP_Player::PostThink( void )
 	m_angEyeAngles = EyeAngles();
 	m_PlayerAnimState->Update(m_angEyeAngles[YAW], m_angEyeAngles[PITCH]);
 
+	if (IsAlive() && m_cycleLatchTimer.IsElapsed())
+	{
+		m_cycleLatchTimer.Start(CYCLELATCH_UPDATE_INTERVAL);
+		// Compress the cycle into 4 bits. Can represent 0.0625 in steps which is enough.
+		m_cycleLatch.GetForModify() = 16 * GetCycle();
+	}
+
 	if ((GetPlayerClass() > CLS_INVALID))
 	{
 		// do not use the timer unless the diffoculty is higher.
@@ -487,7 +494,7 @@ void CHL2MP_Player::PostThink( void )
 		if (pBot)
 		{
 			if (pBot->GetDifficulty() <= CHL2MPBot::DifficultyType::NORMAL)
-				goto cyclelatch;
+				return;
 		}
 
 		const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
@@ -557,14 +564,6 @@ void CHL2MP_Player::PostThink( void )
 				}
 			}
 		}
-	}
-	
-cyclelatch:
-	if (IsAlive() && m_cycleLatchTimer.IsElapsed())
-	{
-		m_cycleLatchTimer.Start(CYCLELATCH_UPDATE_INTERVAL);
-		// Compress the cycle into 4 bits. Can represent 0.0625 in steps which is enough.
-		m_cycleLatch.GetForModify() = 16 * GetCycle();
 	}
 }
 
