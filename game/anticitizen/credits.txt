@@ -8,6 +8,8 @@ Klow on the Combine Overwiki for the following SVG conversions of the following 
 
 Facepunch Studios for the c_weapon HEV arms and animations.
 
+Maestra Fénix for her custom loading screen (https://developer.valvesoftware.com/wiki/Custom_loading_screen).
+
 bossn00b for the true combine c_hands and metropolice c_hands.
 cblp_soñador for the hand texture.
 https://steamcommunity.com/sharedfiles/filedetails/?id=2860571852
