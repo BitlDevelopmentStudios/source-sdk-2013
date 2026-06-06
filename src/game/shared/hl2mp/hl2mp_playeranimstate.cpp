@@ -418,82 +418,7 @@ bool CHL2MPPlayerAnimState::SetupPoseParameters( CStudioHdr *pStudioHdr )
 
 	return true;
 }
-float SnapYawTo( float flValue );
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CHL2MPPlayerAnimState::EstimateYaw( void )
-{
-	// Get the frame time.
-	float flDeltaTime = gpGlobals->frametime;
-	if ( flDeltaTime == 0.0f )
-		return;
 
-#if 0 // 9way
-	// Get the player's velocity and angles.
-	Vector vecEstVelocity;
-	GetOuterAbsVelocity( vecEstVelocity );
-	QAngle angles = GetBasePlayer()->GetLocalAngles();
-
-	// If we are not moving, sync up the feet and eyes slowly.
-	if ( vecEstVelocity.x == 0.0f && vecEstVelocity.y == 0.0f )
-	{
-		float flYawDelta = angles[YAW] - m_PoseParameterData.m_flEstimateYaw;
-		flYawDelta = AngleNormalize( flYawDelta );
-
-		if ( flDeltaTime < 0.25f )
-		{
-			flYawDelta *= ( flDeltaTime * 4.0f );
-		}
-		else
-		{
-			flYawDelta *= flDeltaTime;
-		}
-
-		m_PoseParameterData.m_flEstimateYaw += flYawDelta;
-		AngleNormalize( m_PoseParameterData.m_flEstimateYaw );
-	}
-	else
-	{
-		m_PoseParameterData.m_flEstimateYaw = ( atan2( vecEstVelocity.y, vecEstVelocity.x ) * 180.0f / M_PI );
-		m_PoseParameterData.m_flEstimateYaw = clamp( m_PoseParameterData.m_flEstimateYaw, -180.0f, 180.0f );
-	}
-#else
-	float dt = gpGlobals->frametime;
-
-	// Get the player's velocity and angles.
-	Vector vecEstVelocity;
-	GetOuterAbsVelocity( vecEstVelocity );
-	QAngle angles = GetBasePlayer()->GetLocalAngles();
-
-	if ( vecEstVelocity.y == 0 && vecEstVelocity.x == 0 )
-	{
-		float flYawDiff = angles[YAW] - m_PoseParameterData.m_flEstimateYaw;
-		flYawDiff = flYawDiff - (int)(flYawDiff / 360) * 360;
-		if (flYawDiff > 180)
-			flYawDiff -= 360;
-		if (flYawDiff < -180)
-			flYawDiff += 360;
-
-		if (dt < 0.25)
-			flYawDiff *= dt * 4;
-		else
-			flYawDiff *= dt;
-
-		m_PoseParameterData.m_flEstimateYaw += flYawDiff;
-		m_PoseParameterData.m_flEstimateYaw = m_PoseParameterData.m_flEstimateYaw - (int)(m_PoseParameterData.m_flEstimateYaw / 360) * 360;
-	}
-	else
-	{
-		m_PoseParameterData.m_flEstimateYaw = (atan2(vecEstVelocity.y, vecEstVelocity.x) * 180 / M_PI);
-
-		if (m_PoseParameterData.m_flEstimateYaw > 180)
-			m_PoseParameterData.m_flEstimateYaw = 180;
-		else if (m_PoseParameterData.m_flEstimateYaw < -180)
-			m_PoseParameterData.m_flEstimateYaw = -180;
-	}
-#endif
-}
 //-----------------------------------------------------------------------------
 // Purpose: Override for backpeddling
 // Input  : dt - 
@@ -502,38 +427,8 @@ float SnapYawTo( float flValue );
 void CHL2MPPlayerAnimState::ComputePoseParam_MoveYaw( CStudioHdr *pStudioHdr )
 {
 	// Get the estimated movement yaw.
-	EstimateYaw();
+	BaseClass::EstimateYaw();
 
-#if 0 // 9way
-	ConVarRef mp_slammoveyaw("mp_slammoveyaw");
-
-	// Get the view yaw.
-	float flAngle = AngleNormalize( m_flEyeYaw );
-
-	// Calc side to side turning - the view vs. movement yaw.
-	float flYaw = flAngle - m_PoseParameterData.m_flEstimateYaw;
-	flYaw = AngleNormalize( -flYaw );
-
-	// Get the current speed the character is running.
-	bool bIsMoving;
-	float flPlaybackRate = 	CalcMovementPlaybackRate( &bIsMoving );
-
-	// Setup the 9-way blend parameters based on our speed and direction.
-	Vector2D vecCurrentMoveYaw( 0.0f, 0.0f );
-	if ( bIsMoving )
-	{
-		if ( mp_slammoveyaw.GetBool() )
-			flYaw = SnapYawTo( flYaw );
-
-		vecCurrentMoveYaw.x = cos( DEG2RAD( flYaw ) ) * flPlaybackRate;
-		vecCurrentMoveYaw.y = -sin( DEG2RAD( flYaw ) ) * flPlaybackRate;
-	}
-
-	GetBasePlayer()->SetPoseParameter( pStudioHdr, m_PoseParameterData.m_iMoveX, vecCurrentMoveYaw.x );
-	GetBasePlayer()->SetPoseParameter( pStudioHdr, m_PoseParameterData.m_iMoveY, vecCurrentMoveYaw.y );
-
-	m_DebugAnimData.m_vecMoveYaw = vecCurrentMoveYaw;
-#else
 	// view direction relative to movement
 	float flYaw;	 
 
@@ -565,9 +460,6 @@ void CHL2MPPlayerAnimState::ComputePoseParam_MoveYaw( CStudioHdr *pStudioHdr )
 
 	//Tony; oops, i inverted this previously above.
 	GetBasePlayer()->SetPoseParameter( pStudioHdr, m_PoseParameterData.m_iMoveY, flYaw );
-
-#endif
-	
 }
 
 //-----------------------------------------------------------------------------

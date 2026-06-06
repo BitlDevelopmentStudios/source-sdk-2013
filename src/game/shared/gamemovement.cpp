@@ -22,11 +22,17 @@
 	#include "hl_movedata.h"
 #endif
 
+#ifdef HL2MP
 #ifdef CLIENT_DLL
 #include "c_hl2mp_player.h"
-#include "c_anticitizen_player_resource.h"
 #else
 #include "hl2mp_player.h"
+#endif
+#endif
+
+#ifdef CLIENT_DLL
+#include "c_anticitizen_player_resource.h"
+#else
 #include "anticitizen_player_resource.h"
 #endif
 
@@ -2451,7 +2457,19 @@ bool CGameMovement::CheckJumpButton( void )
 	
 	player->PlayStepSound( (Vector &)mv->GetAbsOrigin(), player->m_pSurfaceData, 1.0, true );
 	
-	MoveHelper()->PlayerSetAnimation( PLAYER_JUMP );
+#ifdef HL2MP
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(player);
+	if (pHL2MPPlayer)
+	{
+		pHL2MPPlayer->DoAnimationEvent(PLAYERANIMEVENT_JUMP);
+	}
+	else
+	{
+		MoveHelper()->PlayerSetAnimation(PLAYER_JUMP);
+	}
+#else
+	MoveHelper()->PlayerSetAnimation(PLAYER_JUMP);
+#endif
 
 	float flGroundFactor = 1.0f;
 	if (player->m_pSurfaceData)
@@ -2495,7 +2513,6 @@ bool CGameMovement::CheckJumpButton( void )
 	}
 
 	// Add a little forward velocity based on your current forward velocity - if you are not sprinting.
-	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(player);
 	if (pHL2MPPlayer)
 	{
 		if (pHL2MPPlayer->GetPlayerClass() > CLS_INVALID)
