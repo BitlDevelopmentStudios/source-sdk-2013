@@ -20,7 +20,7 @@
 
 "NPC_MetroPolice.ADSIn"
 {
-	"channel"	"CHAN_ITEM"
+	"channel"	"CHAN_STATIC"
 	"volume"	"0.8"
 	"soundlevel"  "SNDLVL_75dB"
 
@@ -29,7 +29,7 @@
 
 "NPC_MetroPolice.ADSOut"
 {
-	"channel"	"CHAN_ITEM"
+	"channel"	"CHAN_STATIC"
 	"volume"	"0.8"
 	"soundlevel"  "SNDLVL_75dB"
 
@@ -38,7 +38,7 @@
 
 "NPC_CombineS.ADSIn"
 {
-	"channel"	"CHAN_ITEM"
+	"channel"	"CHAN_STATIC"
 	"volume"	"0.8"
 	"soundlevel"  "SNDLVL_75dB"
 
@@ -47,7 +47,7 @@
 
 "NPC_CombineS.ADSOut"
 {
-	"channel"	"CHAN_ITEM"
+	"channel"	"CHAN_STATIC"
 	"volume"	"0.8"
 	"soundlevel"  "SNDLVL_75dB"
 
