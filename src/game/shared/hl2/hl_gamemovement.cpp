@@ -1213,11 +1213,11 @@ unsigned int CHL2GameMovement::PlayerSolidMask(bool brushOnly)
 			switch (player->GetTeamNumber())
 			{
 				case TEAM_FREEMAN:
-					uMask = CONTENTS_TEAM1;
+					uMask = CONTENTS_TEAM2;
 					break;
 
 				case TEAM_COMBINE:
-					uMask = CONTENTS_TEAM2;
+					uMask = CONTENTS_TEAM1;
 					break;
 			}
 		}
