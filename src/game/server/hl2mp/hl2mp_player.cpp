@@ -486,7 +486,7 @@ void CHL2MP_Player::PostThink( void )
 		m_cycleLatch.GetForModify() = 16 * GetCycle();
 	}
 
-	if ((GetPlayerClass() > CLS_INVALID))
+	if (GetPlayerClass() > CLS_INVALID)
 	{
 		// do not use the timer unless the diffoculty is higher.
 		CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(this);
