@@ -1553,11 +1553,11 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 
 					if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_METROPOLICE)
 					{
-						pSentenceName = "METROPOLICE_KILL_PLAYER";
+						pSentenceName = "KILL_PLAYER";
 					}
 					else if (pPlayerClassInfo.iSentenceVoice == VOICE_TYPE_SOLDIER)
 					{
-						pSentenceName = "COMBINE_PLAYER_DEAD";
+						pSentenceName = "PLAYER_DEAD";
 					}
 
 					// Use m_Sentences.Speak because we have custom logic here.
