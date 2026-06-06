@@ -175,7 +175,22 @@ void CTargetID::Paint()
 
 			if ( bShowHealth )
 			{
-				_snwprintf( wszHealthText, ARRAYSIZE(wszHealthText) - 1, L"%.0f%%",  ((float)pPlayer->GetHealth() / (float)pPlayer->GetMaxHealth() ) );
+				float healthPerc = (float)pPlayer->GetHealth() / 100.0f;
+				healthPerc = clamp(healthPerc, 0.0f, 1.0f);
+
+				CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
+
+				if (pHL2MPPlayer)
+				{
+					if (pHL2MPPlayer->GetPlayerClass() > CLS_INVALID)
+					{
+						const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = pHL2MPPlayer->GetPlayerClassInfo();
+
+						healthPerc = (float)pPlayer->GetHealth() / (float)pPlayerClassInfo.iHealth;
+					}
+				}
+
+				_snwprintf( wszHealthText, ARRAYSIZE(wszHealthText) - 1, L"%.0f%%", (healthPerc * 100));
 				wszHealthText[ ARRAYSIZE(wszHealthText)-1 ] = '\0';
 			}
 		}

@@ -16,6 +16,7 @@
 #include "vgui/ISurface.h"
 #include "../hud_crosshair.h"
 #include "VGuiMatSurface/IMatSystemSurface.h"
+#include "hl2mp/c_hl2mp_player.h"
 
 #ifdef SIXENSE
 #include "sixense/in_sixense.h"
@@ -338,6 +339,19 @@ void CHUDQuickInfo::Paint()
 	else
 	{
 		float healthPerc = (float)health / 100.0f;
+
+		CHL2MP_Player *pHL2MPPlayer = ToHL2MPPlayer(player);
+
+		if (pHL2MPPlayer)
+		{
+			if (pHL2MPPlayer->GetPlayerClass() > CLS_INVALID)
+			{
+				const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = pHL2MPPlayer->GetPlayerClassInfo();
+
+				healthPerc = (float)health / (float)pPlayerClassInfo.iHealth;
+			}
+		}
+
 		healthPerc = clamp( healthPerc, 0.0f, 1.0f );
 
 		Color healthColor = m_warnHealth ? gHUD.m_clrCaution : GetFgColor();
