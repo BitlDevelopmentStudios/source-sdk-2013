@@ -2,7 +2,7 @@
 {
 	"infolabel"
 	{
-		"ControlName"		"Label"
+		"ControlName"		"CLabelTeamColored"
 		"fieldName"		"infolabel"
 		"xpos"			"0"
 		"ypos"			"50"

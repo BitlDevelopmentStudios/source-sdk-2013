@@ -12,7 +12,7 @@
 #endif
 
 #include <vgui/IScheme.h>
-#include <vgui_controls/Button.h>
+#include "game_controls/panel_teamcolored.h"
 #include <vgui/KeyCode.h>
 #include <filesystem.h>
 
@@ -28,14 +28,14 @@ extern vgui::Button *g_lastButton;
 // must at least inherit from vgui::EditablePanel to support LoadControlSettings
 //-----------------------------------------------------------------------------
 template <class T>
-class MouseOverButton : public vgui::Button
+class MouseOverButton : public CButtonTeamColored
 {
 private:
-	DECLARE_CLASS_SIMPLE( MouseOverButton, vgui::Button );
+	DECLARE_CLASS_SIMPLE( MouseOverButton, CButtonTeamColored);
 	
 public:
 	MouseOverButton(vgui::Panel *parent, const char *panelName, T *templatePanel ) :
-					Button( parent, panelName, "MouseOverButton")
+					BaseClass( parent, panelName, "MouseOverButton")
 	{
 		m_pPanel = new T( parent, NULL );
 		m_pPanel ->SetVisible( false );

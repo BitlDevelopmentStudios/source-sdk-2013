@@ -2,7 +2,7 @@
 {
 	"classNameLabel"
 	{
-		"ControlName"		"Label"
+		"ControlName"		"CLabelTeamColored"
 		"fieldName"		"classNameLabel"
 		"xpos"			"10"
 		"ypos"			"18"

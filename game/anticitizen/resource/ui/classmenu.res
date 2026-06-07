@@ -17,7 +17,7 @@
 
 	"joinClass"
 	{
-		"ControlName"		"Label"
+		"ControlName"		"CLabelTeamColored"
 		"fieldName"		"joinClass"
 		"xpos"		"76"
 		"ypos"		"22"

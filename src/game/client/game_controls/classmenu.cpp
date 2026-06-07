@@ -21,8 +21,6 @@
 #include <filesystem.h>
 
 #include <vgui_controls/TextEntry.h>
-#include <vgui_controls/Button.h>
-#include <vgui_controls/Panel.h>
 #include "inputsystem/iinputsystem.h"
 
 #include "cdll_util.h"
@@ -52,7 +50,7 @@ ConVar hud_classautokill( "hud_classautokill", "0", HUD_CLASSAUTOKILL_FLAGS, "Au
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
-CClassMenu::CClassMenu(IViewPort *pViewPort) : Frame(NULL, PANEL_CLASS)
+CClassMenu::CClassMenu(IViewPort *pViewPort) : BaseClass(NULL, PANEL_CLASS)
 {
 	m_pViewPort = pViewPort;
 	m_iScoreBoardKey = BUTTON_CODE_INVALID; // this is looked up in Activate()
@@ -79,7 +77,7 @@ CClassMenu::CClassMenu(IViewPort *pViewPort) : Frame(NULL, PANEL_CLASS)
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
-CClassMenu::CClassMenu(IViewPort *pViewPort, const char *panelName) : Frame(NULL, panelName)
+CClassMenu::CClassMenu(IViewPort *pViewPort, const char *panelName) : BaseClass(NULL, panelName)
 {
 	m_pViewPort = pViewPort;
 	m_iScoreBoardKey = BUTTON_CODE_INVALID; // this is looked up in Activate()

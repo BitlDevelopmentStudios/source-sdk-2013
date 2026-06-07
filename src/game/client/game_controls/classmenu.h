@@ -11,8 +11,7 @@
 #pragma once
 #endif
 
-#include <vgui_controls/Frame.h>
-#include <vgui_controls/Button.h>
+#include "game_controls/panel_teamcolored.h"
 #include <vgui_controls/HTML.h>
 #include <utlvector.h>
 #include <vgui/ILocalize.h>
@@ -29,10 +28,10 @@ namespace vgui
 //-----------------------------------------------------------------------------
 // Purpose: Draws the class menu
 //-----------------------------------------------------------------------------
-class CClassMenu : public vgui::Frame, public IViewPortPanel
+class CClassMenu : public CFrameTeamColored, public IViewPortPanel
 {
 private:
-	DECLARE_CLASS_SIMPLE( CClassMenu, vgui::Frame );
+	DECLARE_CLASS_SIMPLE( CClassMenu, CFrameTeamColored);
 
 public:
 	CClassMenu(IViewPort *pViewPort);
