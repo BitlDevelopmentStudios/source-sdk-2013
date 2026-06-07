@@ -12,4 +12,3 @@ DECLARE_BUILD_FACTORY(CEditablePanelTeamColored);
 DECLARE_BUILD_FACTORY(CFrameTeamColored);
 DECLARE_BUILD_FACTORY_DEFAULT_TEXT(CLabelTeamColored, CLabelTeamColored);
 DECLARE_BUILD_FACTORY_DEFAULT_TEXT(CButtonTeamColored, CButtonTeamColored);
-DECLARE_BUILD_FACTORY(CRichTextTeamColored);
