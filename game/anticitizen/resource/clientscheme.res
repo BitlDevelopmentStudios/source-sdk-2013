@@ -53,9 +53,9 @@ Scheme
 		// weapon selection colors
 		"SelectionNumberFg"		"255 220 0 255"
 		"SelectionTextFg"		"255 220 0 255"
-		"SelectionEmptyBoxBg" 	"0 0 0 80"
-		"SelectionBoxBg" 		"0 0 0 80"
-		"SelectionSelectedBoxBg" "0 0 0 80"
+		"SelectionEmptyBoxBg" 	"0 0 0 180"
+		"SelectionBoxBg" 		"0 0 0 180"
+		"SelectionSelectedBoxBg" "0 0 0 180"
 		
 		"ZoomReticleColor"	"255 220 0 255"
 
@@ -246,8 +246,8 @@ Scheme
 		// weapon selection colors
 		"SelectionNumberFg"		"255 220 0 200"
 		"SelectionTextFg"		"255 220 0 200"
-		"SelectionEmptyBoxBg" 	"0 0 0 80"
-		"SelectionBoxBg" 		"0 0 0 80"
+		"SelectionEmptyBoxBg" 	"0 0 0 180"
+		"SelectionBoxBg" 		"0 0 0 180"
 		"SelectionSelectedBoxBg" "0 0 0 180"
 
 		// Hint message colors
