@@ -33,6 +33,7 @@ The Mapbase team for MP fixes as well as their implementation of Tony Sergi's, S
 The SecobMod implementation uses code from dutchmega's Collaborate mod (https://developer.valvesoftware.com/wiki/Collaborate)
 Iván Bravo Bravo for the NPC AI node generation code.
 Sirmasters from BSNOOCH, for making the Mapadd code. (Part of SMMOD)
+Saul Rennison for his RTT shadow angle code (https://developer.valvesoftware.com/wiki/Dynamic_RTT_shadow_angles_in_Orange_Box_branch)
 Zeldaboy14 and ficool2 for their LUX Shaders fix.
 ficool for his Skybox patch.
 ficool2 and Totterynine for various changes from Coolsource, including a save/restore patch and a patch that fixes the cl_localnetworkbackdoor crash (https://github.com/Totterynine/cool-source-sdk)

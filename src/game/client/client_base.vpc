@@ -417,6 +417,8 @@ $Project
 		$File	"$SRCDIR\public\haptics\haptic_utils.cpp"	[$WINDOWS&&!$X360]
 
 		$File	"$SRCDIR\game\shared\secure_command_line.cpp"
+		$File	"worldlight.cpp"
+		$File	"worldlight.h"
 		
 		$Folder	"ServerFinder"
 		{
