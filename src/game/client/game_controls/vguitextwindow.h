@@ -11,8 +11,7 @@
 #pragma once
 #endif
 
-#include <vgui_controls/Frame.h>
-#include <vgui_controls/Button.h>
+#include "game_controls/panel_teamcolored.h"
 #include <vgui_controls/HTML.h>
 
 #include <game/client/iviewport.h>
@@ -98,8 +97,8 @@ protected:
 	};
 	CMOTDHTML		*m_pHTMLMessage;
 	
-	vgui::Button	*m_pOK;
-	vgui::Label		*m_pTitleLabel;
+	CButtonTeamColored *m_pOK;
+	CLabelTeamColored *m_pTitleLabel;
 };
 
 

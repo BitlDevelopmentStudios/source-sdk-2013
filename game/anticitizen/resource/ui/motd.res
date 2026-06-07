@@ -2,7 +2,7 @@
 {
 	"ClientMOTD"
 	{
-		"ControlName"		"Frame"
+		"ControlName"		"CFrameTeamColored"
 		"fieldName"		"ClientMOTD"
 		"xpos"		"0"
 		"ypos"		"0"
@@ -31,7 +31,7 @@
 	}
 	"ok"
 	{
-		"ControlName"		"Button"
+		"ControlName"		"CButtonTeamColored"
 		"fieldName"		"ok"
 		"xpos"		"76"
 		"ypos"		"364"
@@ -51,7 +51,7 @@
 	}
 	"serverName"
 	{
-		"ControlName"		"Label"
+		"ControlName"		"CLabelTeamColored"
 		"fieldName"		"serverName"
 		"xpos"		"84"
 		"ypos"		"72"

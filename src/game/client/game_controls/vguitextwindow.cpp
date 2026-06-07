@@ -103,8 +103,8 @@ CTextWindow::CTextWindow(IViewPort *pViewPort) : Frame(NULL, PANEL_INFO	)
 
 	m_pTextMessage = new TextEntry( this, "TextMessage" );
 	m_pHTMLMessage = new CMOTDHTML( this,"HTMLMessage" );
-	m_pTitleLabel  = new Label( this, "MessageTitle", "Message Title" );
-	m_pOK		   = new Button(this, "ok", "#PropertyDialog_OK");
+	m_pTitleLabel  = new CLabelTeamColored( this, "MessageTitle", "Message Title" );
+	m_pOK		   = new CButtonTeamColored(this, "ok", "#PropertyDialog_OK");
 
 	m_pOK->SetCommand("okay");
 	m_pTextMessage->SetMultiline( true );
