@@ -18,6 +18,7 @@
 #include <vgui_controls/Frame.h>
 #include <vgui_controls/Label.h>
 #include <vgui_controls/Button.h>
+#include <vgui_controls/RichText.h>
 
 //-----------------------------------------------------------------------------
 // Purpose: Allows HUD elements to use team colors.
@@ -252,6 +253,53 @@ public:
 	}
 
 	CButtonTeamColored(Panel* parent, const char* panelName, const wchar_t* text, Panel* pActionSignalTarget = NULL, const char* pCmd = NULL) : BaseClass(parent, panelName, text, pActionSignalTarget, pCmd)
+	{
+
+	}
+
+	virtual void SetFgColor(Color color) OVERRIDE
+	{
+		C_BasePlayer* pLocalPlayer = C_BasePlayer::GetLocalPlayer();
+		if (pLocalPlayer)
+		{
+			BaseClass::SetFgColor(GetTeamColor(pLocalPlayer));
+			return;
+		}
+
+		BaseClass::SetFgColor(color);
+	}
+
+	virtual Color GetFgColor() OVERRIDE
+	{
+		C_BasePlayer* pLocalPlayer = C_BasePlayer::GetLocalPlayer();
+		if (pLocalPlayer)
+		{
+			return GetTeamColor(pLocalPlayer);
+		}
+
+		return BaseClass::GetFgColor();
+	}
+
+private:
+	Color GetTeamColor(C_BasePlayer* pLocalPlayer)
+	{
+		if (pLocalPlayer)
+		{
+			int iTeamNumber = pLocalPlayer->GetTeamNumber();
+			Color c = GameResources()->GetTeamColor(iTeamNumber);
+			return c;
+		}
+
+		return BaseClass::GetFgColor();
+	}
+};
+
+class CRichTextTeamColored : public vgui::RichText
+{
+	DECLARE_CLASS_SIMPLE(CRichTextTeamColored, vgui::RichText);
+
+public:
+	CRichTextTeamColored(Panel* parent, const char* panelName) : BaseClass(parent, panelName)
 	{
 
 	}
