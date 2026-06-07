@@ -90,6 +90,9 @@ void VCollideWireframe_ChangeCallback( IConVar *pConVar, char const *pOldString,
 
 ConVar vcollide_wireframe( "vcollide_wireframe", "0", FCVAR_CHEAT, "Render physics collision models in wireframe", VCollideWireframe_ChangeCallback );
 
+ConVar r_new_muzzle_dlight("r_new_muzzle_dlight", "1", FCVAR_NONE);
+ConVar r_new_muzzle_dlight_color_mode("r_new_muzzle_dlight_color_mode", "0", FCVAR_NONE);
+
 bool C_AnimationLayer::IsActive( void )
 {
 	return (m_nOrder != C_BaseAnimatingOverlay::MAX_OVERLAYS);
@@ -3526,20 +3529,64 @@ void C_BaseAnimating::ProcessMuzzleFlashEvent()
 		//FIXME: We should really use a named attachment for this
 		if ( m_Attachments.Count() > 0 )
 		{
-			Vector vAttachment;
-			QAngle dummyAngles;
-			GetAttachment( 1, vAttachment, dummyAngles );
+			if (r_new_muzzle_dlight.GetInt() > 0)
+			{
+				Vector vAttachment, vAng;
+				QAngle angles;
+				GetAttachment(1, vAttachment, angles); // set 1 instead of "attachment"
+				AngleVectors(angles, &vAng);
+				vAttachment += vAng * 2;
 
-			// Make an elight
-			dlight_t *el = effects->CL_AllocElight( LIGHT_INDEX_MUZZLEFLASH + index );
-			el->origin = vAttachment;
-			el->radius = random->RandomInt( 32, 64 ); 
-			el->decay = el->radius / 0.05f;
-			el->die = gpGlobals->curtime + 0.05f;
-			el->color.r = 255;
-			el->color.g = 192;
-			el->color.b = 64;
-			el->color.exponent = 5;
+				dlight_t* dl = effects->CL_AllocDlight(index);
+				dl->origin = vAttachment;
+
+				// Original color values
+				int originalR = 255;
+				int originalG = 192;
+				int originalB = 64;
+
+				if (r_new_muzzle_dlight_color_mode.GetInt() == 1)
+				{
+					originalR = 231;
+					originalG = 219;
+					originalB = 14;
+				}
+				else if (r_new_muzzle_dlight_color_mode.GetInt() == 2)
+				{
+					originalR = 252;
+					originalG = 238;
+					originalB = 128;
+				}
+
+				// remove color randomization. looks bad on any different color.
+				dl->color.r = originalR;
+				dl->color.g = originalG;
+				dl->color.b = originalB;
+
+				// Randomize the die value by +/- 0.01
+				dl->die = gpGlobals->curtime + 0.05f + random->RandomFloat(-0.01f, 0.01f);
+				dl->radius = random->RandomFloat(245.0f, 256.0f);
+
+				// Randomize the decay value
+				dl->decay = random->RandomFloat(400.0f, 600.0f);
+			}
+			else
+			{
+				Vector vAttachment;
+				QAngle dummyAngles;
+				GetAttachment(1, vAttachment, dummyAngles);
+
+				// Make an elight
+				dlight_t* el = effects->CL_AllocElight(LIGHT_INDEX_MUZZLEFLASH + index);
+				el->origin = vAttachment;
+				el->radius = random->RandomInt(32, 64);
+				el->decay = el->radius / 0.05f;
+				el->die = gpGlobals->curtime + 0.05f;
+				el->color.r = 255;
+				el->color.g = 192;
+				el->color.b = 64;
+				el->color.exponent = 5;
+			}
 		}
 	}
 }
