@@ -60,6 +60,7 @@ public:
 		SetHullSizeNormal();
 
 		AddEFlags(EFL_DIRTY_ABSTRANSFORM);
+		AddEffects(EF_NOSHADOW);
 		SetModel(FLOOR_TURRET_MODEL);
 
 		SetThink(&CTurretHologram::OnThink);
