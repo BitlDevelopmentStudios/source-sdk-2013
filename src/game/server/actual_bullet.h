@@ -14,7 +14,6 @@ class CActualBullet : public CBaseAnimating
 public:
 	void Start(void);
 	void Think(void);
-	void Stop(void);
 
 	Vector m_vecDir;
 	int m_Speed;

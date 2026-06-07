@@ -17,6 +17,7 @@ void CActualBullet::Start(void)
 	SetNextThink(gpGlobals->curtime);
 	SetOwnerEntity(info.m_pAttacker);
 }
+
 void CActualBullet::Think(void)
 {
 	SetNextThink(gpGlobals->curtime + 0.05f);
@@ -45,16 +46,11 @@ void CActualBullet::Think(void)
 		info2.m_iAmmoType = info.m_iAmmoType;
 		info2.m_iTracerFreq = 0;
 		GetOwnerEntity()->FireBullets(info2);
-		Stop();
+		SetThink(NULL);
+		UTIL_Remove(this);
 	}
 	else
 	{
 		SetAbsOrigin(vecEnd);
 	}
-}
-
-void CActualBullet::Stop(void)
-{
-	SetThink(NULL);
-	UTIL_Remove(this);
 }
