@@ -627,5 +627,19 @@ void CHL2MPClientScoreBoardDialog::UpdatePlayerInfo()
 		m_pPlayerList->SetSelectedItem(selectedRow);
 	}
 
-	
+	// update the team color used for the header.
+	if (GameResources())
+	{
+		Color c = GameResources()->GetTeamColor(pPlayer->GetTeamNumber());
+
+		m_pPlayerList->SetSectionFgColor(0, c);
+
+		Panel* control = FindChildByName("ServerName");
+		if (control)
+		{
+			control->SetFgColor(c);
+		}
+
+		m_borderColor = c;
+	}
 }

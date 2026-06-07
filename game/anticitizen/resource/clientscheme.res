@@ -39,10 +39,10 @@ Scheme
 	{
 		"FgColor"			"255 220 0 100"
 		"FgColor_vrmode"	"255 220 0 200"
-		"BgColor"			"0 0 0 76"
+		"BgColor"			"0 0 0 180"
 
 		"Panel.FgColor"			"255 220 0 100"
-		"Panel.BgColor"			"0 0 0 76"
+		"Panel.BgColor"			"0 0 0 180"
 		
 		"BrightFg"		"255 220 0 255"
 
@@ -191,7 +191,7 @@ Scheme
 		SectionedListPanel.DividerColor		"Black"
 		SectionedListPanel.TextColor		"Orange"
 		SectionedListPanel.BrightTextColor	"Orange"
-		SectionedListPanel.BgColor			"TransparentLightBlack"
+		SectionedListPanel.BgColor			"0 0 0 180"
 		SectionedListPanel.SelectedTextColor			"Black"
 		SectionedListPanel.SelectedBgColor				"Red"
 		SectionedListPanel.OutOfFocusSelectedTextColor	"Black"
@@ -248,7 +248,7 @@ Scheme
 		"SelectionTextFg"		"255 220 0 200"
 		"SelectionEmptyBoxBg" 	"0 0 0 80"
 		"SelectionBoxBg" 		"0 0 0 80"
-		"SelectionSelectedBoxBg" "0 0 0 190"
+		"SelectionSelectedBoxBg" "0 0 0 180"
 
 		// Hint message colors
 		"HintMessageFg"			"255 255 255 255"
