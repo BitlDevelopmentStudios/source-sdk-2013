@@ -33,13 +33,16 @@ The Mapbase team for MP fixes as well as their implementation of Tony Sergi's, S
 The SecobMod implementation uses code from dutchmega's Collaborate mod (https://developer.valvesoftware.com/wiki/Collaborate)
 Iván Bravo Bravo for the NPC AI node generation code.
 Sirmasters from BSNOOCH, for making the Mapadd code. (Part of SMMOD)
+Saul Rennison for his RTT shadow angle code (https://developer.valvesoftware.com/wiki/Dynamic_RTT_shadow_angles_in_Orange_Box_branch)
 Zeldaboy14 and ficool2 for their LUX Shaders fix.
 ficool for his Skybox patch.
 ficool2 and Totterynine for various changes from Coolsource, including a save/restore patch and a patch that fixes the cl_localnetworkbackdoor crash (https://github.com/Totterynine/cool-source-sdk)
-This repository implements fixes the VDC, including:
+This repository implements fixes and improvments from the VDC, including:
 https://developer.valvesoftware.com/wiki/General_SDK_Snippets_%26_Fixes
 https://developer.valvesoftware.com/wiki/Detail_props/Aspect_ratio_fix
 https://developer.valvesoftware.com/wiki/Env_projectedtexture/fixes
+https://developer.valvesoftware.com/wiki/Muzzle_Flash_Lighting
+https://developer.valvesoftware.com/wiki/Simple_Projectile_Bullets (partial implementation)
 
 ## Setup:
 Read Autumn/Misyl's setup guide at README_FROG.md for detailed setup.
