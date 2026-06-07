@@ -24,6 +24,8 @@ Scheme
 		"Black"				"0 0 0 196"
 		"TransparentBlack"	"0 0 0 196"
 		"TransparentLightBlack"	"0 0 0 90"
+		
+		"White"				"255 255 255 255"
 
 		"Blank"				"0 0 0 0"
 		"ForTesting"		"255 0 0 32"
@@ -171,16 +173,16 @@ Scheme
 		RadioButton.TextColor			"Orange"
 		RadioButton.SelectedTextColor	"Orange"
 
-		RichText.TextColor				"Orange"
+		RichText.TextColor				"White"
 		RichText.BgColor				"Blank"
-		RichText.SelectedTextColor		"Orange"
+		RichText.SelectedTextColor		"White"
 		RichText.SelectedBgColor		"Blank"
 
-				ScrollBarButton.FgColor				"Orange"
+		ScrollBarButton.FgColor				"White"
 		ScrollBarButton.BgColor				"Blank"
-		ScrollBarButton.ArmedFgColor		"Orange"
+		ScrollBarButton.ArmedFgColor		"Red"
 		ScrollBarButton.ArmedBgColor		"Blank"
-		ScrollBarButton.DepressedFgColor	"Orange"
+		ScrollBarButton.DepressedFgColor	"Red"
 		ScrollBarButton.DepressedBgColor	"Blank"
 
 		ScrollBarSlider.FgColor				"Blank"		// nob color
