@@ -90,8 +90,8 @@ void VCollideWireframe_ChangeCallback( IConVar *pConVar, char const *pOldString,
 
 ConVar vcollide_wireframe( "vcollide_wireframe", "0", FCVAR_CHEAT, "Render physics collision models in wireframe", VCollideWireframe_ChangeCallback );
 
-ConVar r_new_muzzle_dlight("r_new_muzzle_dlight", "1", FCVAR_NONE);
-ConVar r_new_muzzle_dlight_color_mode("r_new_muzzle_dlight_color_mode", "0", FCVAR_NONE);
+ConVar r_new_muzzle_dlight("r_new_muzzle_dlight", "1", FCVAR_ARCHIVE);
+ConVar r_new_muzzle_dlight_color_mode("r_new_muzzle_dlight_color_mode", "0", FCVAR_ARCHIVE);
 
 bool C_AnimationLayer::IsActive( void )
 {
