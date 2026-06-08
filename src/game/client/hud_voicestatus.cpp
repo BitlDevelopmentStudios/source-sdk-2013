@@ -82,6 +82,23 @@ void CHudVoiceSelfStatus::Paint()
 	int x, y, w, h;
 	GetBounds( x, y, w, h );
 
+	// Draw our icon
+	if (GameResources())
+	{
+		C_BasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
+		Color TeamColor = Color(255, 255, 255, 255);
+		if (pPlayer)
+		{
+			TeamColor = GameResources()->GetTeamColor(pPlayer->GetTeamNumber());
+		}
+
+		m_clrIcon = TeamColor;
+	}
+	else
+	{
+		m_clrIcon = Color(255, 255, 255, 255);
+	}
+
 	m_pVoiceIcon->DrawSelf( 0, 0, w, h, m_clrIcon );
 }
 

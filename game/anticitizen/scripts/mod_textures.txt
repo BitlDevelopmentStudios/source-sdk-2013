@@ -218,7 +218,7 @@
 		}
 		"voice_self"
 		{
-				"file"		"voice/icntlk_local"
+				"file"		"voice/icntlk_sv"
 				"x"		"0"
 				"y"		"0"
 				"width"		"32"

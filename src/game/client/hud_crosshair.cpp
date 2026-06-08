@@ -138,8 +138,11 @@ extern ConVar cl_crosshair_red;
 extern ConVar cl_crosshair_green;
 extern ConVar cl_crosshair_blue;
 extern ConVar cl_crosshair_scale;
+#else
+ConVar cl_crosshair_red("cl_crosshair_red", "200", FCVAR_ARCHIVE);
+ConVar cl_crosshair_green("cl_crosshair_green", "200", FCVAR_ARCHIVE);
+ConVar cl_crosshair_blue("cl_crosshair_blue", "200", FCVAR_ARCHIVE);
 #endif
-
 
 void CHudCrosshair::GetDrawPosition ( float *pX, float *pY, bool *pbBehindCamera, QAngle angleCrosshairOffset )
 {
@@ -259,11 +262,9 @@ void CHudCrosshair::Paint( void )
 	}
 
 	float flPlayerScale = 1.0f;
+	Color clr(cl_crosshair_red.GetInt(), cl_crosshair_green.GetInt(), cl_crosshair_blue.GetInt(), 255);
 #ifdef TF_CLIENT_DLL
-	Color clr( cl_crosshair_red.GetInt(), cl_crosshair_green.GetInt(), cl_crosshair_blue.GetInt(), 255 );
 	flPlayerScale = cl_crosshair_scale.GetFloat() / 32.0f;  // the player can change the scale in the options/multiplayer tab
-#else
-	Color clr = m_clrCrosshair;
 #endif
 	float flWidth = flWeaponScale * flPlayerScale * (float)iTextureW;
 	float flHeight = flWeaponScale * flPlayerScale * (float)iTextureH;
