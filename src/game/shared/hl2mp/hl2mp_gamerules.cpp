@@ -298,9 +298,9 @@ bool CHL2MPRules::IsIntermission( void )
 {
 #ifndef CLIENT_DLL
 	return m_flIntermissionEndTime > gpGlobals->curtime;
+#else
+	return m_flGameEndTime > gpGlobals->curtime;
 #endif
-
-	return false;
 }
 
 void CHL2MPRules::PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &info )

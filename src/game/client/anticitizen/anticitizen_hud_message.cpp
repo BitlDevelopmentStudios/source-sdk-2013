@@ -51,12 +51,12 @@ private:
 	float		m_flStartTime;	// When the message was recevied
 	float		m_flDuration;	// Duration of the message
 
-	CPanelAnimationVar(int, m_iTextX, "textx", "32");
-	CPanelAnimationVar(int, m_iTextY, "texty", "8");
-	CPanelAnimationVar(int, m_iIconX, "iconx", "0");
-	CPanelAnimationVar(int, m_iIconY, "icony", "0");
-	CPanelAnimationVar(int, m_iIconW, "iconw", "32");
-	CPanelAnimationVar(int, m_iIconH, "iconh", "32");
+	CPanelAnimationVarAliasType(float, m_iTextX, "textx", "32", "proportional_float");
+	CPanelAnimationVarAliasType(float, m_iTextY, "texty", "8", "proportional_float");
+	CPanelAnimationVarAliasType(float, m_iIconX, "iconx", "0", "proportional_float");
+	CPanelAnimationVarAliasType(float, m_iIconY, "icony", "0", "proportional_float");
+	CPanelAnimationVarAliasType(float, m_iIconW, "iconw", "32", "proportional_float");
+	CPanelAnimationVarAliasType(float, m_iIconH, "iconh", "32", "proportional_float");
 	CPanelAnimationVar(vgui::HFont, m_hMessageFont, "MessageFont", "Default");
 };
 
