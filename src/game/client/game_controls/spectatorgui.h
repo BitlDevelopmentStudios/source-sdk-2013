@@ -13,9 +13,7 @@
 
 #include <vgui/IScheme.h>
 #include <vgui/KeyCode.h>
-#include <vgui_controls/Frame.h>
-#include <vgui_controls/EditablePanel.h>
-#include <vgui_controls/Button.h>
+#include "game_controls/panel_teamcolored.h"
 #include <vgui_controls/ComboBox.h>
 #include <igameevents.h>
 #include "GameEventListener.h"
@@ -40,9 +38,9 @@ class IBaseFileSystem;
 //-----------------------------------------------------------------------------
 // Purpose: Spectator UI
 //-----------------------------------------------------------------------------
-class CSpectatorGUI : public vgui::EditablePanel, public IViewPortPanel
+class CSpectatorGUI : public CEditablePanelTeamColored, public IViewPortPanel
 {
-	DECLARE_CLASS_SIMPLE( CSpectatorGUI, vgui::EditablePanel );
+	DECLARE_CLASS_SIMPLE( CSpectatorGUI, CEditablePanelTeamColored);
 
 public:
 	CSpectatorGUI( IViewPort *pViewPort );
@@ -93,7 +91,7 @@ protected:
 	vgui::Panel *m_pBottomBarBlank;
 
 	vgui::ImagePanel *m_pBannerImage;
-	vgui::Label *m_pPlayerLabel;
+	CLabelTeamColored *m_pPlayerLabel;
 
 	IViewPort *m_pViewPort;
 

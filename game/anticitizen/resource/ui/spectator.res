@@ -41,7 +41,7 @@
 	}
 	"playerlabel"
 	{
-		"ControlName"	"Label"
+		"ControlName"	"CLabelTeamColored"
 		"fieldName"		"playerlabel"
 		"xpos"			"c-175"
 		"ypos"			"441"
@@ -73,7 +73,7 @@
 	}
 	"timerclock"
 	{
-		"ControlName"	"Label"
+		"ControlName"	"CLabelTeamColored"
 		"fieldName"		"timerclock"
 		"xpos"			"r86"
 		"ypos"			"24"
@@ -91,7 +91,7 @@
 	}
 	"timerlabel"
 	{
-		"ControlName"	"Label"
+		"ControlName"	"CLabelTeamColored"
 		"fieldName"		"timerlabel"
 		"xpos"			"r69"
 		"ypos"			"26"
@@ -108,7 +108,7 @@
 	}
 	"extrainfo"
 	{
-		"ControlName"	"Label"
+		"ControlName"	"CLabelTeamColored"
 		"fieldName"		"extrainfo"
 		"xpos"			"r86"
 		"ypos"			"12"
@@ -125,7 +125,7 @@
 	}
 	"titlelabel"
 	{
-		"ControlName"	"Label"
+		"ControlName"	"CLabelTeamColored"
 		"fieldName"		"titlelabel"
 		"xpos"			"16"
 		"ypos"			"16"

@@ -405,7 +405,7 @@ void CSpectatorMenu::Update( void )
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
-CSpectatorGUI::CSpectatorGUI(IViewPort *pViewPort) : EditablePanel( NULL, PANEL_SPECGUI )
+CSpectatorGUI::CSpectatorGUI(IViewPort *pViewPort) : CEditablePanelTeamColored( NULL, PANEL_SPECGUI )
 {
 // 	m_bHelpShown = false;
 //	m_bInsetVisible = false;
@@ -429,7 +429,7 @@ CSpectatorGUI::CSpectatorGUI(IViewPort *pViewPort) : EditablePanel( NULL, PANEL_
  	m_pBottomBarBlank = new Panel( this, "bottombarblank" );
 
 	// m_pBannerImage = new ImagePanel( m_pTopBar, NULL );
-	m_pPlayerLabel = new Label( this, "playerlabel", "" );
+	m_pPlayerLabel = new CLabelTeamColored( this, "playerlabel", "" );
 	m_pPlayerLabel->SetVisible( false );
 	TextImage *image = m_pPlayerLabel->GetTextImage();
 	if ( image )
@@ -557,7 +557,7 @@ void CSpectatorGUI::SetLogoImage(const char *image)
 //-----------------------------------------------------------------------------
 void CSpectatorGUI::SetLabelText(const char *textEntryName, const char *text)
 {
-	Label *entry = dynamic_cast<Label *>(FindChildByName(textEntryName));
+	CLabelTeamColored *entry = dynamic_cast<CLabelTeamColored*>(FindChildByName(textEntryName));
 	if (entry)
 	{
 		entry->SetText(text);
@@ -569,7 +569,7 @@ void CSpectatorGUI::SetLabelText(const char *textEntryName, const char *text)
 //-----------------------------------------------------------------------------
 void CSpectatorGUI::SetLabelText(const char *textEntryName, wchar_t *text)
 {
-	Label *entry = dynamic_cast<Label *>(FindChildByName(textEntryName));
+	CLabelTeamColored *entry = dynamic_cast<CLabelTeamColored *>(FindChildByName(textEntryName));
 	if (entry)
 	{
 		entry->SetText(text);
@@ -581,7 +581,7 @@ void CSpectatorGUI::SetLabelText(const char *textEntryName, wchar_t *text)
 //-----------------------------------------------------------------------------
 void CSpectatorGUI::MoveLabelToFront(const char *textEntryName)
 {
-	Label *entry = dynamic_cast<Label *>(FindChildByName(textEntryName));
+	CLabelTeamColored *entry = dynamic_cast<CLabelTeamColored*>(FindChildByName(textEntryName));
 	if (entry)
 	{
 		entry->MoveToFront();
