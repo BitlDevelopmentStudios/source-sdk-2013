@@ -8,7 +8,7 @@
 //
 // Health.cpp
 //
-// implementation of CHudTimer class
+// implementation of CHudTroops class
 //
 #include "cbase.h"
 #include "hud.h"
@@ -27,68 +27,49 @@
 using namespace vgui;
 
 #include "hudelement.h"
-#include "hud_basetimer.h"
+#include "hud_numericdisplay.h"
 #include "hl2mp/hl2mp_gamerules.h"
 
 #include "convar.h"
 
-#include "engine/IEngineSound.h"
-
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-#define INIT_TIMER -1
+#define INIT_HEALTH -1
 
 //-----------------------------------------------------------------------------
 // Purpose: Health panel
 //-----------------------------------------------------------------------------
-class CHudTimer : public CHudElement, public CHudBaseTimer
+class CHudTroops : public CHudElement, public CHudNumericDisplay
 {
-	DECLARE_CLASS_SIMPLE(CHudTimer, CHudBaseTimer);
+	DECLARE_CLASS_SIMPLE( CHudTroops, CHudNumericDisplay );
 
 public:
-	CHudTimer(const char* pElementName);
-	virtual void Init(void);
-	virtual void VidInit(void);
-	virtual void Reset(void);
+	CHudTroops( const char *pElementName );
+	virtual void Init( void );
+	virtual void VidInit( void );
+	virtual void Reset( void );
 	virtual void OnThink();
 
 private:
 	// old variables
-};
+	int		m_iTroops;
+};	
 
-DECLARE_HUDELEMENT(CHudTimer);
+DECLARE_HUDELEMENT( CHudTroops );
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
-CHudTimer::CHudTimer(const char* pElementName) : CHudElement(pElementName), CHudBaseTimer(NULL, "HudTimer")
+CHudTroops::CHudTroops( const char *pElementName ) : CHudElement( pElementName ), CHudNumericDisplay(NULL, "HudTroops")
 {
+	SetHiddenBits( 0 );
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CHudTimer::Init()
-{
-	Reset();
-	g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("TimerInit");
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CHudTimer::Reset()
-{
-	SetMinutes(INIT_TIMER);
-	SetSeconds(INIT_TIMER);
-	SetAlpha(255);
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-void CHudTimer::VidInit()
+void CHudTroops::Init()
 {
 	Reset();
 }
@@ -96,60 +77,59 @@ void CHudTimer::VidInit()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CHudTimer::OnThink()
+void CHudTroops::Reset()
+{
+	m_iTroops = INIT_HEALTH;
+
+	wchar_t *tempString = g_pVGuiLocalize->Find("#Anticitizen_RemainingTroops");
+
+	if (tempString)
+	{
+		SetLabelText(tempString);
+	}
+	else
+	{
+		SetLabelText(L"SOLDIERS REMAINING");
+	}
+	
+	SetDisplayValue(m_iTroops);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CHudTroops::VidInit()
+{
+	Reset();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CHudTroops::OnThink()
 {
 	if (!HL2MPRules())
 		return;
 
+	// only show if there's no timer.
 	float flCurTime = HL2MPRules()->GetMapRemainingTime();
-	if (flCurTime > 0)
+	if (flCurTime <= 0 && (HL2MPRules()->GetRemainingSoldierCount() > 0) && (HL2MPRules()->GetTimerState() != TIMERSTATE_NONE))
 	{
 		SetAlpha(255);
-		int iRemain = (int)flCurTime;
-		int iMinutes, iSeconds;
-		iMinutes = iRemain / 60;
-		iSeconds = iRemain % 60;
-		SetMinutes(iMinutes);
-		SetSeconds(iSeconds);
+		
+		int newTroops = HL2MPRules()->GetRemainingSoldierCount();
+		// Never below zero
+		newTroops = MAX( HL2MPRules()->GetRemainingSoldierCount(), 0);
 
-		if (iMinutes == 0 && iSeconds < 30)
+		// Only update the fade if we've changed health
+		if ( newTroops == m_iTroops )
 		{
-			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("TimerBelow30");
-		}
-		else
-		{
-			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("TimerAbove30");
+			return;
 		}
 
-		// now, we set the label text depending on the type of timer.
+		m_iTroops = newTroops;
 
-		const char *szLabel = "";
-
-		switch (HL2MPRules()->GetTimerState())
-		{
-			case TIMERSTATE_ROUNDSTART:
-				szLabel = "#Anticitizen_TimerRound";
-				break;
-			case TIMERSTATE_GAMESTART:
-				szLabel = "#Anticitizen_TimerGame";
-				break;
-			case TIMERSTATE_RESTART:
-				szLabel = "#Anticitizen_TimerRestart";
-				break;
-		}
-
-		wchar_t wchText[256];	// Unicode text buffer
-		const wchar_t* pchFmt = g_pVGuiLocalize->Find(szLabel);
-		if (pchFmt && pchFmt[0])
-		{
-			Q_wcsncpy(wchText, pchFmt, sizeof(wchText));
-		}
-		else
-		{
-			g_pVGuiLocalize->ConvertANSIToUnicode(szLabel, wchText, sizeof(wchText));
-		}
-
-		SetLabelText(wchText);
+		SetDisplayValue(m_iTroops);
 	}
 	else
 	{

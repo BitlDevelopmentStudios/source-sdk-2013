@@ -159,6 +159,7 @@ $Project "Client (ANTICITIZEN)"
 			$File	"voice_menu.cpp"
 			$File	"anticitizen\anticitizen_hud_message.cpp"
 			$File	"anticitizen\anticitizen_hud_timer.cpp"
+			$File	"anticitizen\anticitizen_hud_troops.cpp"
 			
 			$Folder	"Weapons"
 			{

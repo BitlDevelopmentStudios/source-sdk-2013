@@ -70,14 +70,18 @@ REGISTER_GAMERULES_CLASS( CHL2MPRules );
 BEGIN_NETWORK_TABLE_NOBASE( CHL2MPRules, DT_HL2MPRules )
 #ifdef CLIENT_DLL
 RecvPropBool(RECVINFO(m_bTeamPlayEnabled)),
+RecvPropBool(RECVINFO(m_bIsInIntermission)),
 RecvPropFloat(RECVINFO(m_flGameStartTime)),
 RecvPropFloat(RECVINFO(m_flGameEndTime)),
 RecvPropInt(RECVINFO(m_iTimerType)),
+RecvPropInt(RECVINFO(m_iSoldiers)),
 #else
 SendPropBool(SENDINFO(m_bTeamPlayEnabled)),
+SendPropBool(SENDINFO(m_bIsInIntermission)),
 SendPropFloat(SENDINFO(m_flGameStartTime)),
 SendPropFloat(SENDINFO(m_flGameEndTime)),
 SendPropInt(SENDINFO(m_iTimerType)),
+SendPropInt(SENDINFO(m_iSoldiers))
 #endif
 END_NETWORK_TABLE()
 
@@ -212,9 +216,11 @@ CHL2MPRules::CHL2MPRules()
 	}
 
 	m_flIntermissionEndTime = 0.0f;
+	m_bIsInIntermission = false;
 	m_flGameStartTime = 0;
 	m_flGameEndTime = 0;
 	m_iTimerType = TIMERSTATE_NONE;
+	m_iSoldiers = 0;
 	// the init state is round 1.
 	m_iRounds = 1;
 
@@ -296,11 +302,7 @@ float CHL2MPRules::FlWeaponRespawnTime( CBaseCombatWeapon *pWeapon )
 
 bool CHL2MPRules::IsIntermission( void )
 {
-#ifndef CLIENT_DLL
-	return m_flIntermissionEndTime > gpGlobals->curtime;
-#else
-	return m_flGameEndTime > gpGlobals->curtime;
-#endif
+	return m_bIsInIntermission;
 }
 
 void CHL2MPRules::PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &info )
@@ -309,17 +311,27 @@ void CHL2MPRules::PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &inf
 	if ( IsIntermission() )
 		return;
 
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pVictim);
+	if (pHL2MPPlayer)
+	{
+		if (!pHL2MPPlayer->m_bInitialSpawn && pHL2MPPlayer->GetLifeCount() >= 0)
+		{
+			pHL2MPPlayer->SetLifeCount(pHL2MPPlayer->GetLifeCount() - 1);
+			DevMsg("LIVES: %i\n", pHL2MPPlayer->GetLifeCount());
+		}
+	}
+
 	BaseClass::PlayerKilled( pVictim, info );
 #endif
 }
 
 int CHL2MPRules::GetRemainingSoldierCount(void)
 {
-#ifdef  CLIENT_DLL
-	C_Team* pCombine = GetGlobalTeam(TEAM_COMBINE);
-#else
+#ifndef  CLIENT_DLL
+	if ((m_iRoundState == STATE_PREROUND) || (m_iRoundState == STATE_COMPLETION))
+		return 0;
+
 	CTeam* pCombine = g_Teams[TEAM_COMBINE];
-#endif //  CLIENT_DLL
 	int iLives = 0;
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
@@ -335,17 +347,16 @@ int CHL2MPRules::GetRemainingSoldierCount(void)
 		if (pPlayer->GetTeam() != pCombine)
 			continue;
 
-#ifdef  CLIENT_DLL
-		if (pPlayer->GetLifeCount() > 0)
-#else
 		if (!pPlayer->m_bInitialSpawn && (pPlayer->GetLifeCount() > 0))
-#endif //  CLIENT_DLL
 		{
 			iLives += pPlayer->GetLifeCount();
 		}
 	}
 
-	return iLives;
+	m_iSoldiers = iLives;
+#endif
+
+	return m_iSoldiers;
 }
 
 void CHL2MPRules::CheckLastMemberLeft(void)
@@ -428,30 +439,6 @@ void CHL2MPRules::ResetBotSquad(void)
 		pBot->LeaveSquad();
 	}
 #endif
-}
-
-bool CHL2MPRules::IsLastMemberLeftDead(void)
-{
-#ifndef CLIENT_DLL
-	if (GetRemainingSoldierCount() == 1)
-	{
-		for (int i = 0; i < MAX_PLAYERS; i++)
-		{
-			CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
-
-			if (!pPlayer)
-				continue;
-
-			if (!pPlayer->IsAlive() && (pPlayer->GetLifeCount() == 1))
-			{
-				pPlayer->SetLifeCount(0);
-				return true;
-			}
-		}
-	}
-#endif
-
-	return false;
 }
 
 void CHL2MPRules::SelectFreeman(void)
@@ -577,12 +564,6 @@ int CHL2MPRules::CheckCanEndGame(void)
 		return GAME_END_FREEMANDEAD;
 	}
 
-	// Reports last soldier left, but the last soldier is dead.
-	if (GetRemainingSoldierCount() == 1 && IsLastMemberLeftDead())
-	{
-		return GAME_END_NOMORESOLDIERS;
-	}
-
 	// soldiers are dead
 	if (GetRemainingSoldierCount() == 0)
 	{
@@ -643,13 +624,13 @@ void CHL2MPRules::Think( void )
 				}
 				else
 				{
-					SendHudMessage(NULL, "#Anticitizen_RoundStarting", sv_startwaitime.GetFloat());
+					SendHudMessage(NULL, "#Anticitizen_RoundStarting", 0.5f);
 					m_iTimerType = TIMERSTATE_ROUNDSTART;
 				}
 			}
 			else
 			{
-				SendHudMessage(NULL, "#Anticitizen_WaitingforPlayers", (float)INT_MAX);
+				SendHudMessage(NULL, "#Anticitizen_WaitingforPlayers", 0.5f);
 				m_flGameStartTime = -1;
 				m_iTimerType = TIMERSTATE_NONE;
 				m_bStartedStartClock = false;
@@ -674,8 +655,6 @@ void CHL2MPRules::Think( void )
 					pPlayer->RemoveFlag(FL_NOTARGET);
 				}
 
-				CheckLastMemberLeft();
-
 				m_iGameEndReason = CheckCanEndGame();
 
 				if (!g_fGameOver && (m_iGameEndReason > GAME_NOT_ENDED))
@@ -693,7 +672,7 @@ void CHL2MPRules::Think( void )
 					m_bReassignSpectators = true;
 				}
 
-				SendHudMessage(NULL, "#Anticitizen_GameStarting", sv_startplaywaitime.GetFloat());
+				SendHudMessage(NULL, "#Anticitizen_GameStarting", 0.5f);
 				m_iTimerType = TIMERSTATE_GAMESTART;
 
 				for (int i = 0; i < MAX_PLAYERS; i++)
@@ -753,7 +732,7 @@ void CHL2MPRules::Think( void )
 						}
 					}
 
-					SendHudMessage(NULL, szPhrase, mp_chattime.GetFloat());
+					SendHudMessage(NULL, szPhrase, 0.5f);
 				}
 			}
 
@@ -776,6 +755,7 @@ void CHL2MPRules::GoToIntermission( void )
 
 	m_flGameEndTime = m_flIntermissionEndTime = gpGlobals->curtime + mp_chattime.GetInt();
 	m_iTimerType = TIMERSTATE_RESTART;
+	m_bIsInIntermission = true;
 
 	for ( int i = 0; i < MAX_PLAYERS; i++ )
 	{
@@ -1402,13 +1382,15 @@ void CHL2MPRules::RestartGame(bool gameend)
 	}
 
 	m_flIntermissionEndTime = 0;
+	m_bIsInIntermission = false;
 	m_flGameEndTime = 0;
-	m_iTimerType = TIMERSTATE_NONE;
 	m_bHasMinPlayersToStart = false;
+	m_iTimerType = TIMERSTATE_NONE;
 	if (gameend)
 	{
 		m_bLastSquadMemberAnnounced = false;
 		m_bStartedStartClock = false;
+		m_iSoldiers = 0;
 	}
 	else
 	{
@@ -1475,6 +1457,8 @@ void CHL2MPRules::PlayerSpawn(CBasePlayer* pPlayer)
 	{
 		SetupBotSquad();
 	}
+
+	CheckLastMemberLeft();
 }
 #endif
 

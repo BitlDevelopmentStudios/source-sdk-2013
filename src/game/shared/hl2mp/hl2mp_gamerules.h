@@ -52,7 +52,7 @@ enum
 	TIMERSTATE_NONE,
 	TIMERSTATE_ROUNDSTART,
 	TIMERSTATE_GAMESTART,
-	TIMERSTATE_RESTART
+	TIMERSTATE_RESTART,
 };
 
 #ifdef CLIENT_DLL
@@ -130,7 +130,6 @@ public:
 	virtual void CheckLastMemberLeft(void);
 	virtual void SetupBotSquad(void);
 	virtual void ResetBotSquad(void);
-	virtual bool IsLastMemberLeftDead(void);
 	virtual void SelectFreeman(void);
 	virtual void ReassignSpectators(void);
 	virtual bool IsFreemanAlive(void);
@@ -199,9 +198,11 @@ public:
 private:
 	
 	CNetworkVar( bool, m_bTeamPlayEnabled );
+	CNetworkVar( bool, m_bIsInIntermission );
 	CNetworkVar( float, m_flGameStartTime );
 	CNetworkVar( float, m_flGameEndTime );
 	CNetworkVar( int, m_iTimerType );
+	CNetworkVar(int, m_iSoldiers);
 	CUtlVector<EHANDLE> m_hRespawnableItemsAndWeapons;
 	bool m_bCompleteReset;
 	bool m_bHasMinPlayersToStart;

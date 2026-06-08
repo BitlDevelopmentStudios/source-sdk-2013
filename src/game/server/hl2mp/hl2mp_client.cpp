@@ -163,12 +163,6 @@ void respawn( CBaseEntity *pEdict, bool fCopyCorpse )
 	{
 		if (gpGlobals->curtime > pPlayer->GetDeathTime() + DEATH_ANIMATION_TIME)
 		{
-			if (!pPlayer->m_bInitialSpawn && pPlayer->GetLifeCount() >= 0)
-			{
-				pPlayer->SetLifeCount(pPlayer->GetLifeCount() - 1);
-				DevMsg("LIVES: %i\n", pPlayer->GetLifeCount());
-			}
-
 			if (pPlayer->GetLifeCount() == 0)
 			{
 				pPlayer->ResetPlayerClass();
