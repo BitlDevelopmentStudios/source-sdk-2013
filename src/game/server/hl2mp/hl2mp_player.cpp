@@ -142,6 +142,46 @@ END_SCRIPTDESC();
 
 #pragma warning( disable : 4355 )
 
+CON_COMMAND(timeleft, "prints the time remaining in the match")
+{
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_GetCommandClient());
+
+	int iTimeRemaining = (int)HL2MPRules()->GetMapRemainingTime();
+
+	if (iTimeRemaining == 0)
+	{
+		if (pPlayer)
+		{
+			ClientPrint(pPlayer, HUD_PRINTTALK, "This game has no timelimit.");
+		}
+		else
+		{
+			Msg("* No Time Limit *\n");
+		}
+	}
+	else
+	{
+		int iMinutes, iSeconds;
+		iMinutes = iTimeRemaining / 60;
+		iSeconds = iTimeRemaining % 60;
+
+		char minutes[8];
+		char seconds[8];
+
+		Q_snprintf(minutes, sizeof(minutes), "%d", iMinutes);
+		Q_snprintf(seconds, sizeof(seconds), "%2.2d", iSeconds);
+
+		if (pPlayer)
+		{
+			ClientPrint(pPlayer, HUD_PRINTTALK, "Time left in map: %s1:%s2", minutes, seconds);
+		}
+		else
+		{
+			Msg("Time Remaining:  %s:%s\n", minutes, seconds);
+		}
+	}
+}
+
 CHL2MP_Player::CHL2MP_Player()
 {
 	//Tony; create our player animation state.

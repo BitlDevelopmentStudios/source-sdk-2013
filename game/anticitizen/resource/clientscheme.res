@@ -920,13 +920,50 @@ Scheme
 				"additive"	"1"
 			}
 		}
-
-		"HudNumbersTimer"
+		
+		"HudNumbersDeathNotice"
 		{
 			"1"
 			{
 				"name"		"GorDIN"
 				"tall"		"15"
+				"weight"	"0"
+				"antialias" "1"
+				"additive"	"1"
+			}
+		}
+
+		"HudNumbersTimer"
+		{
+			"1"
+			{
+				"name"		"Verdana"
+				"tall"		"24"
+				"weight"	"0"
+				"antialias" "1"
+				"additive"	"1"
+			}
+		}
+		
+		"HudNumbersGlowTimer"
+		{
+			"1"
+			{
+				"name"		"Verdana"
+				"tall"		"24"
+				"weight"	"0"
+				"blur"        "4"
+				"antialias" "1"
+				"additive"	"1"
+			}
+		}
+		
+		"HudNumbersSmallTimer"
+		{
+			"1"
+			{
+				"name"		"Verdana"
+				"tall"		"24"
 				"weight"	"0"
 				"antialias" "1"
 				"additive"	"1"

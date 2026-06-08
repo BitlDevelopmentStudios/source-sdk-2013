@@ -47,6 +47,14 @@ enum
 	GAME_END_NOMORESOLDIERS
 };
 
+enum
+{
+	TIMERSTATE_NONE,
+	TIMERSTATE_ROUNDSTART,
+	TIMERSTATE_GAMESTART,
+	TIMERSTATE_RESTART
+};
+
 #ifdef CLIENT_DLL
 	#define CHL2MPRules C_HL2MPRules
 	#define CHL2MPGameRulesProxy C_HL2MPGameRulesProxy
@@ -164,6 +172,9 @@ public:
 	}
 	void PlayerSpawn(CBasePlayer* pPlayer);
 	void OnNavMeshLoad(void);
+
+	void SendHudMessage(CBasePlayer* pToPlayer, const char* text, float flDuration = 5.0f);
+	void SendHudMessage(CBasePlayer* pToPlayer, string_t text, float flDuration = 5.0f);
 #endif
 
 	bool IsOfficialMap( void );
@@ -180,11 +191,17 @@ public:
 	virtual bool IsConnectedUserInfoChangeAllowed( CBasePlayer *pPlayer );
 
 	bool	MegaPhyscannonActive(void) { return false; }
+
+	float GetMapRemainingTime();
+
+	int GetTimerState() { return m_iTimerType; }
 	
 private:
 	
 	CNetworkVar( bool, m_bTeamPlayEnabled );
 	CNetworkVar( float, m_flGameStartTime );
+	CNetworkVar( float, m_flGameEndTime );
+	CNetworkVar( int, m_iTimerType );
 	CUtlVector<EHANDLE> m_hRespawnableItemsAndWeapons;
 	bool m_bCompleteReset;
 	bool m_bHasMinPlayersToStart;

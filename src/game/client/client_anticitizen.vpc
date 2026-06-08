@@ -157,6 +157,8 @@ $Project "Client (ANTICITIZEN)"
 			$File	"$SRCDIR\game\shared\anticitizen\anticitizen_playerclass_info_parse.cpp"
 			$File	"$SRCDIR\game\shared\anticitizen\anticitizen_playerclass_info_parse.h"
 			$File	"voice_menu.cpp"
+			$File	"anticitizen\anticitizen_hud_message.cpp"
+			$File	"anticitizen\anticitizen_hud_timer.cpp"
 			
 			$Folder	"Weapons"
 			{

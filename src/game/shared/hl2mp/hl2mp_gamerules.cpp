@@ -10,6 +10,7 @@
 #include "gameeventdefs.h"
 #include <KeyValues.h>
 #include "ammodef.h"
+#include "fmtstr.h"
 
 #ifdef CLIENT_DLL
 	#include "c_hl2mp_player.h"
@@ -67,8 +68,18 @@ ConVar hl2mp_avoidteammates("hl2mp_avoidteammates", "1", FCVAR_REPLICATED, "If e
 REGISTER_GAMERULES_CLASS( CHL2MPRules );
 
 BEGIN_NETWORK_TABLE_NOBASE( CHL2MPRules, DT_HL2MPRules )
+#ifdef CLIENT_DLL
+RecvPropBool(RECVINFO(m_bTeamPlayEnabled)),
+RecvPropFloat(RECVINFO(m_flGameStartTime)),
+RecvPropFloat(RECVINFO(m_flGameEndTime)),
+RecvPropInt(RECVINFO(m_iTimerType)),
+#else
+SendPropBool(SENDINFO(m_bTeamPlayEnabled)),
+SendPropFloat(SENDINFO(m_flGameStartTime)),
+SendPropFloat(SENDINFO(m_flGameEndTime)),
+SendPropInt(SENDINFO(m_iTimerType)),
+#endif
 END_NETWORK_TABLE()
-
 
 LINK_ENTITY_TO_CLASS( hl2mp_gamerules, CHL2MPGameRulesProxy );
 IMPLEMENT_NETWORKCLASS_ALIASED( HL2MPGameRulesProxy, DT_HL2MPGameRulesProxy )
@@ -202,6 +213,8 @@ CHL2MPRules::CHL2MPRules()
 
 	m_flIntermissionEndTime = 0.0f;
 	m_flGameStartTime = 0;
+	m_flGameEndTime = 0;
+	m_iTimerType = TIMERSTATE_NONE;
 	// the init state is round 1.
 	m_iRounds = 1;
 
@@ -630,13 +643,15 @@ void CHL2MPRules::Think( void )
 				}
 				else
 				{
-					UTIL_ClientPrintAll(HUD_PRINTCENTER, "#Anticitizen_RoundStarts", sv_startwaitime.GetString());
+					SendHudMessage(NULL, "#Anticitizen_RoundStarting", sv_startwaitime.GetFloat());
+					m_iTimerType = TIMERSTATE_ROUNDSTART;
 				}
 			}
 			else
 			{
-				UTIL_ClientPrintAll(HUD_PRINTCENTER, "#Anticitizen_WaitingforPlayers");
+				SendHudMessage(NULL, "#Anticitizen_WaitingforPlayers", (float)INT_MAX);
 				m_flGameStartTime = -1;
+				m_iTimerType = TIMERSTATE_NONE;
 				m_bStartedStartClock = false;
 			}
 
@@ -678,7 +693,8 @@ void CHL2MPRules::Think( void )
 					m_bReassignSpectators = true;
 				}
 
-				UTIL_ClientPrintAll(HUD_PRINTCENTER, "#Anticitizen_GameStarts", sv_startplaywaitime.GetString());
+				SendHudMessage(NULL, "#Anticitizen_GameStarting", sv_startplaywaitime.GetFloat());
+				m_iTimerType = TIMERSTATE_GAMESTART;
 
 				for (int i = 0; i < MAX_PLAYERS; i++)
 				{
@@ -737,7 +753,7 @@ void CHL2MPRules::Think( void )
 						}
 					}
 
-					UTIL_ClientPrintAll(HUD_PRINTCENTER, szPhrase, mp_chattime.GetString());
+					SendHudMessage(NULL, szPhrase, mp_chattime.GetFloat());
 				}
 			}
 
@@ -758,7 +774,8 @@ void CHL2MPRules::GoToIntermission( void )
 
 	g_fGameOver = true;
 
-	m_flIntermissionEndTime = gpGlobals->curtime + mp_chattime.GetInt();
+	m_flGameEndTime = m_flIntermissionEndTime = gpGlobals->curtime + mp_chattime.GetInt();
+	m_iTimerType = TIMERSTATE_RESTART;
 
 	for ( int i = 0; i < MAX_PLAYERS; i++ )
 	{
@@ -1199,13 +1216,39 @@ int CHL2MPRules::PlayerRelationship( CBaseEntity *pPlayer, CBaseEntity *pTarget 
 
 const char *CHL2MPRules::GetGameDescription( void )
 { 
-	return "Team Deathmatch";
+	return "ANTICITIZEN ONE";
 } 
 
 bool CHL2MPRules::IsConnectedUserInfoChangeAllowed( CBasePlayer *pPlayer )
 {
 	return true;
 }
+
+float CHL2MPRules::GetMapRemainingTime()
+{
+	float timeleft = 0.0f;
+	// timelimit is in minutes
+
+	if (IsIntermission())
+	{
+		// if timelimit is disabled, return 0
+		if (m_flGameEndTime <= 0)
+			return 0;
+
+		timeleft = (m_flGameEndTime - gpGlobals->curtime);
+	}
+	else
+	{
+		// if timelimit is disabled, return 0
+		if (m_flGameStartTime <= 0)
+			return 0;
+
+		timeleft = (m_flGameStartTime - gpGlobals->curtime);
+	}
+
+	return timeleft;
+}
+
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -1359,6 +1402,8 @@ void CHL2MPRules::RestartGame(bool gameend)
 	}
 
 	m_flIntermissionEndTime = 0;
+	m_flGameEndTime = 0;
+	m_iTimerType = TIMERSTATE_NONE;
 	m_bHasMinPlayersToStart = false;
 	if (gameend)
 	{
@@ -1384,6 +1429,35 @@ void CHL2MPRules::RestartGame(bool gameend)
 }
 
 #ifdef GAME_DLL
+void CHL2MPRules::SendHudMessage(CBasePlayer* pToPlayer, const char* text, float flDuration)
+{
+	SendHudMessage(pToPlayer, MAKE_STRING(text), flDuration);
+}
+
+void CHL2MPRules::SendHudMessage(CBasePlayer* pToPlayer, string_t text, float flDuration)
+{
+	CRecipientFilter filter;
+
+	if (pToPlayer)
+	{
+		filter.AddRecipient(pToPlayer);
+	}
+	else
+	{
+		filter.AddAllPlayers();
+	}
+
+	filter.MakeReliable();
+
+	// Start the message block
+	UserMessageBegin(filter, "GameMessage");
+		// Send our text to the client
+		WRITE_STRING(STRING(text));
+		WRITE_FLOAT(flDuration);
+	// End the message block
+	MessageEnd();
+}
+
 void CHL2MPRules::OnNavMeshLoad( void )
 {
 	TheNavMesh->SetPlayerSpawnName( "info_player_deathmatch" );

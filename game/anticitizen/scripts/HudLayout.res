@@ -394,6 +394,7 @@
 		"enabled" "1"
 		"wide"	 "640"
 		"tall"	 "480"
+		"TextFont" "HudNumbersDeathNotice"
 	}
 
 	HudVehicle
@@ -759,5 +760,44 @@
 		"enabled"		"1"
 		"bgcolor_override"	"0 0 0 0"
 		"PaintBackgroundType"	"0" // rounded corners
-	}	
+	}
+	
+	HudGameMessage
+	{
+		"fieldName" "HudGameMessage"
+		"visible" "0"
+		"enabled" "0"
+		"xpos"	 "16"
+		"ypos"	"410" [!$DECK]
+		"ypos"	"400" [$DECK]
+		"wide"	 "128"
+		"tall"	 "16"
+		"PaintBackgroundType"	"2"
+		"textx" "48"
+		"texty" "6"
+		"iconx" "10"
+		"icony" "2"
+		"iconw" "32"
+		"iconh" "32"
+	}
+	
+	HudTimer
+    {
+        "fieldName"   "HudTimer"
+        "xpos"    "c-40"
+		"ypos"	"428" [!$DECK]
+		"ypos"	"418" [$DECK]
+        "wide"  "76"
+        "tall"  "36"
+        "visible" "0"
+        "enabled" "1"
+        "PaintBackgroundType" "2"
+        "text_xpos" "2"
+		"text_ypos" "2"
+		"digit_xpos" "0"
+		"digit_ypos" "10"
+		"NumberFont"	"HudNumbersTimer"
+		"NumberGlowFont"	"HudNumbersGlowTimer"
+		"SmallNumberFont"	"HudNumbersSmallTimer"
+    }	
 }

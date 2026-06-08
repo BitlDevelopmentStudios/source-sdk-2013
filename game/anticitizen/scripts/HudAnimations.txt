@@ -860,3 +860,12 @@ event HideVoteBackgrounds
 	Animate		LabelOption5	Alpha	255 Linear	0.0 0.001
 }
 
+event TimerBelow30
+{
+  Animate HudTimer FgColor    "255 48 0 255" Linear  0.0  0.0
+}
+
+event TimerAbove30
+{
+  Animate HudTimer FgColor    "FgColor" Linear  0.0  0.0
+}
