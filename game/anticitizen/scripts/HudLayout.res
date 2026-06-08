@@ -767,8 +767,9 @@
 		"fieldName" "HudGameMessage"
 		"visible" "0"
 		"enabled" "0"
-		"xpos"	 "16"
-		"ypos"	"20"
+		"xpos"	"r150"
+		"ypos"	"410" [!$DECK]
+		"ypos"	"400" [$DECK]
 		"wide"	 "134"
 		"tall"	 "16"
 		"PaintBackgroundType"	"2"
@@ -783,8 +784,10 @@
 	HudTimer
     {
         "fieldName"   "HudTimer"
-        "xpos"    "16"
-		"ypos"	"40"
+        "xpos"  "r100" [!$DECK]
+		"xpos"  "r106" [$DECK]
+		"ypos"	"375" [!$DECK]
+		"ypos"	"400" [$DECK]
 		"wide"	"85"
 		"tall"  "30"
         "visible" "0"
