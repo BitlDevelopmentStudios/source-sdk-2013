@@ -130,7 +130,7 @@ $sequence "draw" {
 	fadein 0.2
 	fadeout 0.2
 	snap
-	fps 30
+	fps 60
 }
 
 $sequence "holster" {
@@ -138,5 +138,5 @@ $sequence "holster" {
 	activity "ACT_VM_HOLSTER" 1
 	fadein 0.2
 	fadeout 0.2
-	fps 30
+	fps 60
 }
