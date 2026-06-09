@@ -75,4 +75,5 @@ game_sounds_manifest
 	"precache_file"		"scripts/npc_sounds_gman.txt"
 
 	"precache_file"		"scripts/game_sounds_anticitizen.txt"
+	"precache_file"		"scripts/game_sounds_anticitizen_announcer.txt"
 }

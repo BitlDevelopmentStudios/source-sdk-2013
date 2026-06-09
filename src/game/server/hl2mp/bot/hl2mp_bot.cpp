@@ -39,8 +39,6 @@ extern ConVar hl2mp_bot_difficulty;
 extern ConVar hl2mp_bot_farthest_visible_theater_sample_count;
 extern ConVar hl2mp_bot_path_lookahead_range;
 
-CHL2MPBotSquad* g_squad;
-
 //-----------------------------------------------------------------------------------------------------
 bool IsTeamName( const char *string )
 {
@@ -2075,35 +2073,6 @@ CHL2MP_Player *CHL2MPBot::GetClosestHumanLookingAtMe( int team ) const
 	}
 
 	return close;
-}
-
-void CHL2MPBot::GenerateOrJoinGlobalSquad()
-{
-	if ((HL2MPRules()->GetState() == STATE_PREROUND) || (HL2MPRules()->GetState() == STATE_COMPLETION))
-		return;
-
-	if (GetTeamNumber() != TEAM_COMBINE)
-		return;
-
-	if (!IsInASquad())
-	{
-		// create the squad
-		if (!g_squad)
-		{
-			g_squad = new CHL2MPBotSquad;
-
-			if (g_squad && GetTeam())
-			{
-				g_squad->SetFormationSize(MAX_PLAYERS);
-				g_squad->SetShouldPreserveSquad(true);
-			}
-		}
-
-		if (g_squad)
-		{
-			JoinSquad(g_squad);
-		}
-	}
 }
 
 //-----------------------------------------------------------------------------------------------------

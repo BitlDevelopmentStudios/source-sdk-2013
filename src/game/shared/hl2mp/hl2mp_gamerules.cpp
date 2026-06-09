@@ -233,6 +233,8 @@ CHL2MPRules::CHL2MPRules()
 	pNextPlayerToBecomeFreeman = NULL;
 	m_iRoundState = STATE_PREROUND;
 	m_bStartedStartClock = false;
+	m_bAnnouncedGameStart = false;
+	m_bAnnouncedGameEnd = false;
 	m_uiFreemanID = 0;
 	m_uiLastFreemanID = 0;
 	m_iNumTimesFreemanIDShowedUpIFuckingHateThis = 0;
@@ -387,60 +389,6 @@ void CHL2MPRules::CheckLastMemberLeft(void)
 #endif
 }
 
-void CHL2MPRules::SetupBotSquad(void)
-{
-#ifndef CLIENT_DLL
-	for (int i = 0; i < MAX_PLAYERS; i++)
-	{
-		CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
-
-		if (!pPlayer)
-			continue;
-
-		CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(pPlayer);
-
-		if (!pBot)
-			continue;
-
-		if (pBot->IsInASquad())
-			continue;
-
-		if (pBot->GetTeamNumber() != TEAM_COMBINE)
-			continue;
-
-		DevMsg("%s joined the global squad.\n", pBot->GetPlayerName());
-		pBot->GenerateOrJoinGlobalSquad();
-	}
-#endif
-}
-
-void CHL2MPRules::ResetBotSquad(void)
-{
-#ifndef CLIENT_DLL
-	for (int i = 0; i < MAX_PLAYERS; i++)
-	{
-		CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
-
-		if (!pPlayer)
-			continue;
-
-		CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(pPlayer);
-
-		if (!pBot)
-			continue;
-
-		if (!pBot->IsInASquad())
-			continue;
-
-		if (pBot->GetTeamNumber() != TEAM_COMBINE)
-			continue;
-
-		DevMsg("%s left the global squad.\n", pBot->GetPlayerName());
-		pBot->LeaveSquad();
-	}
-#endif
-}
-
 void CHL2MPRules::SelectFreeman(void)
 {
 #ifndef CLIENT_DLL
@@ -573,6 +521,103 @@ int CHL2MPRules::CheckCanEndGame(void)
 	return GAME_NOT_ENDED;
 }
 
+void CHL2MPRules::Announce(bool gameend)
+{
+#ifndef CLIENT_DLL
+	if (!gameend)
+	{
+		if (!m_bAnnouncedGameStart)
+		{
+			for (int i = 0; i < MAX_PLAYERS; i++)
+			{
+				CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+
+				if (!pPlayer)
+					continue;
+
+				CSingleUserRecipientFilter user(pPlayer);
+				user.UsePredictionRules();
+				EmitSound_t params;
+
+				if (pPlayer->GetTeamNumber() == TEAM_COMBINE)
+				{
+					params.m_pSoundName = "Announcer.RoundStart.Combine";
+				}
+				else if (pPlayer->GetTeamNumber() == TEAM_FREEMAN)
+				{
+					params.m_pSoundName = "Announcer.RoundStart.Freeman";
+				}
+
+				pPlayer->EmitSound(user, pPlayer->entindex(), params);
+			}
+
+			m_bAnnouncedGameStart = true;
+		}
+	}
+	else
+	{
+		if (!m_bAnnouncedGameEnd)
+		{
+			bool bFreemanLost = false;
+			bool bCombineLost = false;
+
+			switch (m_iGameEndReason)
+			{
+				case GAME_END_FREEMANDEAD:
+				{
+					bFreemanLost = true;
+					break;
+				}
+				case GAME_END_NOMORESOLDIERS:
+				{
+					bCombineLost = true;
+					break;
+				}
+			}
+
+			for (int i = 0; i < MAX_PLAYERS; i++)
+			{
+				CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+
+				if (!pPlayer)
+					continue;
+
+				CSingleUserRecipientFilter user(pPlayer);
+				user.UsePredictionRules();
+				EmitSound_t params;
+
+				if (pPlayer->GetTeamNumber() == TEAM_COMBINE)
+				{
+					if (bCombineLost)
+					{
+						params.m_pSoundName = "Announcer.RoundEnd.Lose.Combine";
+					}
+					else
+					{
+						params.m_pSoundName = "Announcer.RoundEnd.Win.Combine";
+					}
+				}
+				else if (pPlayer->GetTeamNumber() == TEAM_FREEMAN)
+				{
+					if (bFreemanLost)
+					{
+						params.m_pSoundName = "Announcer.RoundEnd.Lose.Freeman";
+					}
+					else
+					{
+						params.m_pSoundName = "Announcer.RoundEnd.Win.Freeman";
+					}
+				}
+
+				pPlayer->EmitSound(user, pPlayer->entindex(), params);
+			}
+		
+			m_bAnnouncedGameEnd = true;
+		}
+	}
+#endif
+}
+
 void CHL2MPRules::Think( void )
 {
 
@@ -655,6 +700,8 @@ void CHL2MPRules::Think( void )
 					pPlayer->RemoveFlag(FL_NOTARGET);
 				}
 
+				Announce();
+
 				m_iGameEndReason = CheckCanEndGame();
 
 				if (!g_fGameOver && (m_iGameEndReason > GAME_NOT_ENDED))
@@ -731,6 +778,8 @@ void CHL2MPRules::Think( void )
 							pNextPlayerToBecomeFreeman = ToHL2MPPlayer(UTIL_PlayerBySteamID(id));
 						}
 					}
+
+					Announce(true);
 
 					SendHudMessage(NULL, szPhrase, 0.5f);
 				}
@@ -1236,6 +1285,13 @@ float CHL2MPRules::GetMapRemainingTime()
 void CHL2MPRules::Precache( void )
 {
 	CBaseEntity::PrecacheScriptSound( "AlyxEmp.Charge" );
+
+	CBaseEntity::PrecacheScriptSound("Announcer.RoundStart.Freeman");
+	CBaseEntity::PrecacheScriptSound("Announcer.RoundStart.Combine");
+	CBaseEntity::PrecacheScriptSound("Announcer.RoundEnd.Lose.Freeman");
+	CBaseEntity::PrecacheScriptSound("Announcer.RoundEnd.Win.Freeman");
+	CBaseEntity::PrecacheScriptSound("Announcer.RoundEnd.Lose.Combine");
+	CBaseEntity::PrecacheScriptSound("Announcer.RoundEnd.Win.Combine");
 }
 
 #ifdef GAME_DLL
@@ -1363,8 +1419,6 @@ void CHL2MPRules::RestartGame(bool gameend)
 		pCombine->SetScore( 0 );
 	}
 
-	ResetBotSquad();
-
 	if (gameend)
 	{
 		pFreeman = NULL;
@@ -1379,6 +1433,9 @@ void CHL2MPRules::RestartGame(bool gameend)
 
 		m_iGameEndReason = GAME_NOT_ENDED;
 		m_bReassignSpectators = false;
+
+		m_bAnnouncedGameStart = false;
+		m_bAnnouncedGameEnd = false;
 	}
 
 	m_flIntermissionEndTime = 0;
@@ -1450,13 +1507,6 @@ void CHL2MPRules::OnNavMeshLoad( void )
 void CHL2MPRules::PlayerSpawn(CBasePlayer* pPlayer)
 {
 	BaseClass::PlayerSpawn(pPlayer);
-
-	CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(pPlayer);
-
-	if (pBot && !pBot->IsInASquad()  && GetState() == STATE_PLAYING)
-	{
-		SetupBotSquad();
-	}
 
 	CheckLastMemberLeft();
 }

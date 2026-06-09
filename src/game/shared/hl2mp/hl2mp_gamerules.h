@@ -128,8 +128,6 @@ public:
 	virtual int WeaponShouldRespawn( CBaseCombatWeapon *pWeapon );
 	virtual int GetRemainingSoldierCount(void);
 	virtual void CheckLastMemberLeft(void);
-	virtual void SetupBotSquad(void);
-	virtual void ResetBotSquad(void);
 	virtual void SelectFreeman(void);
 	virtual void ReassignSpectators(void);
 	virtual bool IsFreemanAlive(void);
@@ -194,6 +192,8 @@ public:
 	float GetMapRemainingTime();
 
 	int GetTimerState() { return m_iTimerType; }
+
+	void Announce(bool gameend = false);
 	
 private:
 	
@@ -213,6 +213,8 @@ private:
 	int m_iRounds;
 	int m_iGameEndReason;
 	bool m_bLastSquadMemberAnnounced;
+	bool m_bAnnouncedGameStart;
+	bool m_bAnnouncedGameEnd;
 
 #ifndef CLIENT_DLL
 	//may be disasterous

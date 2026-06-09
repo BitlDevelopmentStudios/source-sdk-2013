@@ -1,0 +1,130 @@
+"Announcer.RoundStart.Freeman"
+{
+	"channel"		"CHAN_VOICE2"
+	"volume"		"VOL_NORM"
+	"pitch"		"PITCH_NORM"
+
+	"soundlevel"	"SNDLVL_NONE"
+
+	"rndwave"
+	{
+		"wave"	"vo/anticitizen/roundstart/freeman/anticitizen_roundstart_freeman01.wav"
+		"wave"	"vo/anticitizen/roundstart/freeman/anticitizen_roundstart_freeman02.wav"
+		"wave"	"vo/anticitizen/roundstart/freeman/anticitizen_roundstart_freeman03.wav"
+		"wave"	"vo/anticitizen/roundstart/freeman/anticitizen_roundstart_freeman04.wav"
+		"wave"	"vo/anticitizen/roundstart/freeman/anticitizen_roundstart_freeman05.wav"
+		"wave"	"vo/anticitizen/roundstart/freeman/anticitizen_roundstart_freeman06.wav"
+		"wave"	"vo/anticitizen/roundstart/freeman/anticitizen_roundstart_freeman07.wav"
+		"wave"	"vo/anticitizen/roundstart/freeman/anticitizen_roundstart_freeman08.wav"
+		"wave"	"vo/anticitizen/roundstart/freeman/anticitizen_roundstart_freeman09.wav"
+		"wave"	"vo/anticitizen/roundstart/freeman/anticitizen_roundstart_freeman10.wav"
+		"wave"	"vo/anticitizen/roundstart/freeman/anticitizen_roundstart_freeman11.wav"
+	}
+}
+
+"Announcer.RoundStart.Combine"
+{
+	"channel"		"CHAN_VOICE2"
+	"volume"		"VOL_NORM"
+	"pitch"		"PITCH_NORM"
+
+	"soundlevel"	"SNDLVL_NONE"
+
+	"rndwave"
+	{
+		"wave"	"vo/anticitizen/roundstart/combine/anticitizen_roundstart_combine01.wav"
+		"wave"	"vo/anticitizen/roundstart/combine/anticitizen_roundstart_combine02.wav"
+		"wave"	"vo/anticitizen/roundstart/combine/anticitizen_roundstart_combine03.wav"
+		"wave"	"vo/anticitizen/roundstart/combine/anticitizen_roundstart_combine04.wav"
+		"wave"	"vo/anticitizen/roundstart/combine/anticitizen_roundstart_combine05.wav"
+		"wave"	"vo/anticitizen/roundstart/combine/anticitizen_roundstart_combine06.wav"
+	}
+}
+
+
+"Announcer.RoundEnd.Lose.Freeman"
+{
+	"channel"		"CHAN_VOICE2"
+	"volume"		"VOL_NORM"
+	"pitch"		"PITCH_NORM"
+
+	"soundlevel"	"SNDLVL_NONE"
+
+	"rndwave"
+	{
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman01.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman02.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman03.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman04.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman05.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman06.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman07.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman08.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman09.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman10.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman11.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman12.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman13.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman14.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman15.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman16.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman17.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman18.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman19.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman21.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman22.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman23.wav"
+		"wave"	"vo/anticitizen/roundend/lose/freeman/anticitizen_lose_freeman24.wav"
+	}
+}
+
+"Announcer.RoundEnd.Win.Freeman"
+{
+	"channel"		"CHAN_VOICE2"
+	"volume"		"VOL_NORM"
+	"pitch"		"PITCH_NORM"
+
+	"soundlevel"	"SNDLVL_NONE"
+
+	"rndwave"
+	{
+		"wave"	"vo/anticitizen/roundend/win/freeman/anticitizen_win_freeman01.wav"
+		"wave"	"vo/anticitizen/roundend/win/freeman/anticitizen_win_freeman02.wav"
+		"wave"	"vo/anticitizen/roundend/win/freeman/anticitizen_win_freeman03.wav"
+		"wave"	"vo/anticitizen/roundend/win/freeman/anticitizen_win_freeman04.wav"
+		"wave"	"vo/anticitizen/roundend/win/freeman/anticitizen_win_freeman05.wav"
+		"wave"	"vo/anticitizen/roundend/win/freeman/anticitizen_win_freeman06.wav"
+		"wave"	"vo/anticitizen/roundend/win/freeman/anticitizen_win_freeman07.wav"
+	}
+}
+
+"Announcer.RoundEnd.Lose.Combine"
+{
+	"channel"		"CHAN_VOICE2"
+	"volume"		"VOL_NORM"
+	"pitch"		"PITCH_NORM"
+
+	"soundlevel"	"SNDLVL_NONE"
+
+	"rndwave"
+	{
+		"wave"	"vo/anticitizen/roundend/lose/combine/anticitizen_lose_combine01.wav"
+		"wave"	"vo/anticitizen/roundend/lose/combine/anticitizen_lose_combine02.wav"
+		"wave"	"vo/anticitizen/roundend/lose/combine/anticitizen_lose_combine03.wav"
+		"wave"	"vo/anticitizen/roundend/lose/combine/anticitizen_lose_combine04.wav"
+	}
+}
+
+"Announcer.RoundEnd.Win.Combine"
+{
+	"channel"		"CHAN_VOICE2"
+	"volume"		"VOL_NORM"
+	"pitch"		"PITCH_NORM"
+
+	"soundlevel"	"SNDLVL_NONE"
+
+	"rndwave"
+	{
+		"wave"	"vo/anticitizen/roundend/win/combine/anticitizen_win_combine01.wav"
+	}
+}
