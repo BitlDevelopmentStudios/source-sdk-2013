@@ -41,7 +41,7 @@
 	}
 	"playerlabel"
 	{
-		"ControlName"	"CLabelTeamColored"
+		"ControlName"	"Label"
 		"fieldName"		"playerlabel"
 		"xpos"			"c-175"
 		"ypos"			"441"
