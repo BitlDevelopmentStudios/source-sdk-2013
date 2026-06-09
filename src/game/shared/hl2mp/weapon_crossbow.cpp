@@ -430,7 +430,7 @@ private:
 	};
 
 	void	CreateChargerEffects( void );
-	void	SetChargerState( ChargerState_t state );
+	void	SetChargerState( ChargerState_t state, bool bGettingOutOfZoom = false );
 	void	DoLoadEffect( void );
 
 	DECLARE_ACTTABLE();
@@ -732,12 +732,17 @@ void CWeaponCrossbow::ToggleZoom( void )
 		if ( pPlayer->SetFOV( this, 0, 0.2f ) )
 		{
 			m_bInZoom = false;
+			SetChargerState(m_nChargeState, true);
 		}
 	}
 	else
 	{
 		if ( pPlayer->SetFOV( this, 20, 0.1f ) )
 		{
+			if (m_hChargerSprite)
+			{
+				m_hChargerSprite->SetBrightness(0);
+			}
 			m_bInZoom = true;
 		}
 	}
@@ -794,6 +799,9 @@ void CWeaponCrossbow::SetSkin( int skinNum )
 //-----------------------------------------------------------------------------
 void CWeaponCrossbow::DoLoadEffect( void )
 {
+	if (m_bInZoom)
+		return;
+
 	SetSkin(BOLT_SKIN_GLOW);
 
 	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
@@ -824,6 +832,7 @@ void CWeaponCrossbow::DoLoadEffect( void )
 	DispatchEffect("CrossbowLoad", data, filter);
 
 #ifndef CLIENT_DLL
+
 	CSprite* pBlast = CSprite::SpriteCreate(CROSSBOW_GLOW_SPRITE2, GetAbsOrigin(), false);
 
 	if (pBlast)
@@ -842,13 +851,13 @@ void CWeaponCrossbow::DoLoadEffect( void )
 // Purpose: 
 // Input  : state - 
 //-----------------------------------------------------------------------------
-void CWeaponCrossbow::SetChargerState( ChargerState_t state )
+void CWeaponCrossbow::SetChargerState( ChargerState_t state, bool bGettingOutOfZoom )
 {
 	// Make sure we're setup
 	CreateChargerEffects();
 
 	// Don't do this twice
-	if ( state == m_nChargeState )
+	if ( (state == m_nChargeState) && !bGettingOutOfZoom)
 		return;
 
 	m_nChargeState = state;
@@ -866,53 +875,65 @@ void CWeaponCrossbow::SetChargerState( ChargerState_t state )
 #ifndef CLIENT_DLL
 	case CHARGER_STATE_START_CHARGE:
 		{
-			if ( m_hChargerSprite == NULL )
-				break;
-			
-			m_hChargerSprite->SetBrightness( 32, 0.5f );
-			m_hChargerSprite->SetScale( 0.025f, 0.5f );
-			m_hChargerSprite->TurnOn();
+			if (!m_bInZoom)
+			{
+				if (m_hChargerSprite == NULL)
+					break;
+
+				m_hChargerSprite->SetBrightness(32, 0.5f);
+				m_hChargerSprite->SetScale(0.025f, 0.5f);
+				m_hChargerSprite->TurnOn();
+			}
 		}
 
 		break;
 
 	case CHARGER_STATE_READY:
 		{
-			// Get fully charged
-			if ( m_hChargerSprite == NULL )
-				break;
-			
-			m_hChargerSprite->SetBrightness( 80, 1.0f );
-			m_hChargerSprite->SetScale( 0.1f, 0.5f );
-			m_hChargerSprite->TurnOn();
+			if (!m_bInZoom)
+			{
+				// Get fully charged
+				if (m_hChargerSprite == NULL)
+					break;
+
+				m_hChargerSprite->SetBrightness(80, 1.0f);
+				m_hChargerSprite->SetScale(0.1f, 0.5f);
+				m_hChargerSprite->TurnOn();
+			}
 		}
 
 		break;
 
 	case CHARGER_STATE_DISCHARGE:
 		{
-			SetSkin( BOLT_SKIN_NORMAL );
-			
-			if ( m_hChargerSprite == NULL )
-				break;
-			
-			m_hChargerSprite->SetBrightness( 0 );
-			m_hChargerSprite->TurnOff();
+			if (!m_bInZoom)
+			{
+				SetSkin(BOLT_SKIN_NORMAL);
+
+				if (m_hChargerSprite == NULL)
+					break;
+
+				m_hChargerSprite->SetBrightness(0);
+				m_hChargerSprite->TurnOff();
+			}
 		}
 
 		break;
 #endif
 	case CHARGER_STATE_OFF:
 		{
-			SetSkin( BOLT_SKIN_NORMAL );
+			if (!m_bInZoom)
+			{
+				SetSkin(BOLT_SKIN_NORMAL);
 
 #ifndef CLIENT_DLL
-			if ( m_hChargerSprite == NULL )
-				break;
-			
-			m_hChargerSprite->SetBrightness( 0 );
-			m_hChargerSprite->TurnOff();
+				if (m_hChargerSprite == NULL)
+					break;
+
+				m_hChargerSprite->SetBrightness(0);
+				m_hChargerSprite->TurnOff();
 #endif
+			}
 		}
 		break;
 
