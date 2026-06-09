@@ -38,6 +38,8 @@
 		"wave"	"vo/anticitizen/roundstart/combine/anticitizen_roundstart_combine04.wav"
 		"wave"	"vo/anticitizen/roundstart/combine/anticitizen_roundstart_combine05.wav"
 		"wave"	"vo/anticitizen/roundstart/combine/anticitizen_roundstart_combine06.wav"
+		"wave"	"vo/anticitizen/roundstart/combine/anticitizen_roundstart_combine07.wav"
+		"wave"	"vo/anticitizen/roundstart/combine/anticitizen_roundstart_combine08.wav"
 	}
 }
 
@@ -112,6 +114,9 @@
 		"wave"	"vo/anticitizen/roundend/lose/combine/anticitizen_lose_combine02.wav"
 		"wave"	"vo/anticitizen/roundend/lose/combine/anticitizen_lose_combine03.wav"
 		"wave"	"vo/anticitizen/roundend/lose/combine/anticitizen_lose_combine04.wav"
+		"wave"	"vo/anticitizen/roundend/lose/combine/anticitizen_lose_combine05.wav"
+		"wave"	"vo/anticitizen/roundend/lose/combine/anticitizen_lose_combine06.wav"
+		"wave"	"vo/anticitizen/roundend/lose/combine/anticitizen_lose_combine07.wav"
 	}
 }
 
@@ -126,5 +131,9 @@
 	"rndwave"
 	{
 		"wave"	"vo/anticitizen/roundend/win/combine/anticitizen_win_combine01.wav"
+		"wave"	"vo/anticitizen/roundend/win/combine/anticitizen_win_combine02.wav"
+		"wave"	"vo/anticitizen/roundend/win/combine/anticitizen_win_combine03.wav"
+		"wave"	"vo/anticitizen/roundend/win/combine/anticitizen_win_combine04.wav"
+		"wave"	"vo/anticitizen/roundend/win/combine/anticitizen_win_combine05.wav"
 	}
 }
