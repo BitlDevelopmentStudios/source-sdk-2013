@@ -731,6 +731,7 @@ void CTFPlayerModelPanel::SwitchHeldItemTo( CEconItemView *pItem )
 	}
 
 	// update poseparam
+	SetPoseParameters( NULL, 0 );
 	if ( pItem->GetStaticData()->GetNumPlayerPoseParameters( m_iTeam ) > 0 )
 	{
 		for ( int iPlayerPoseParam=0; iPlayerPoseParam < pItem->GetStaticData()->GetNumPlayerPoseParameters( m_iTeam ); ++iPlayerPoseParam )
@@ -738,10 +739,6 @@ void CTFPlayerModelPanel::SwitchHeldItemTo( CEconItemView *pItem )
 			poseparamtable_t *pPoseParam = pItem->GetStaticData()->GetPlayerPoseParameters( m_iTeam, iPlayerPoseParam );
 			SetPoseParameterByName( pPoseParam->strName, pPoseParam->flValue );
 		}
-	}
-	else
-	{
-		SetPoseParameterByName( "r_hand_grip", 0.f );
 	}
 
 	// Clear out taunt particles
@@ -1847,11 +1844,11 @@ void CTFPlayerModelPanel::UpdateTauntEffects(
 		m_aParticleSystems[SYSTEM_TAUNT] = CreateParticleData( strParticleName.String() );
 	}
 
-	matrix3x4_t matAttachToWorld;
-	SetIdentityMatrix( matAttachToWorld );
+	Vector vecBonePos;
+	MatrixPosition( *pWorldMatrix, vecBonePos );
 
 	CUtlVector< int > vecAttachments;
-	m_aParticleSystems[SYSTEM_TAUNT]->UpdateControlPoints( pStudioHdr, &matAttachToWorld, vecAttachments, 0, m_vecPlayerPos );
+	m_aParticleSystems[SYSTEM_TAUNT]->UpdateControlPoints( pStudioHdr, pWorldMatrix, vecAttachments, 0, m_vecPlayerPos - vecBonePos );
 }
 
 //-----------------------------------------------------------------------------

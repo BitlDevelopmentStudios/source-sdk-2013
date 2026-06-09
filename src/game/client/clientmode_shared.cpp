@@ -91,6 +91,7 @@ ConVar cl_drawhud( "cl_drawhud", "1", FCVAR_CHEAT, "Enable the rendering of the 
 ConVar hud_takesshots( "hud_takesshots", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Auto-save a scoreboard screenshot at the end of a map." );
 ConVar hud_freezecamhide( "hud_freezecamhide", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Hide the HUD during freeze-cam" );
 ConVar cl_show_num_particle_systems( "cl_show_num_particle_systems", "0", FCVAR_CLIENTDLL, "Display the number of active particle systems." );
+ConVar cl_delete_temp_files( "cl_delete_temp_files", "1", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Delete custom player sprays and other temp files during shutdown" );
 
 extern ConVar v_viewmodel_fov;
 extern ConVar voice_modenable;
@@ -441,6 +442,12 @@ void ClientModeShared::VGui_Shutdown()
 //-----------------------------------------------------------------------------
 void ClientModeShared::Shutdown()
 {
+	if( cl_delete_temp_files.GetBool() )
+	{
+		RemoveFilesInPath( "materials/temp" );
+		RemoveFilesInPath( "download/user_custom" );
+		RemoveFilesInPath( "sound/temp" );
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -842,6 +849,12 @@ bool ClientModeShared::DoPostScreenSpaceEffects( const CViewSetup *pSetup )
 			return false;
 	}
 #endif 
+
+	// TF2 does this conditionally, so make sure to respect that here
+#ifndef TF_CLIENT_DLL
+	g_GlowObjectManager.RenderGlowEffects( pSetup, 0 );
+#endif
+
 	return true;
 }
 
@@ -1628,4 +1641,31 @@ void ClientModeShared::DeactivateInGameVGuiContext()
 }
 
 
+//----------------------------------------------------------------------------
+void ClientModeShared::RemoveFilesInPath( const char* pszPath ) const
+{
+	FileFindHandle_t hFind = NULL;
 
+	const char* pszSearch = CFmtStr( "%s/*", pszPath );
+	char const* szFileName = g_pFullFileSystem->FindFirstEx( pszSearch, "MOD", &hFind );
+	while( szFileName )
+	{
+		if( szFileName[ 0 ] != '.' )
+		{
+			CFmtStr fmtFilename( "%s/%s", pszPath, szFileName );
+
+			if( g_pFullFileSystem->IsDirectory( fmtFilename, "MOD" ) )
+			{
+				RemoveFilesInPath( fmtFilename );
+			}
+			else
+			{
+				g_pFullFileSystem->RemoveFile( fmtFilename, "MOD" );
+			}
+		}
+
+		szFileName = g_pFullFileSystem->FindNext( hFind );
+	}
+
+	g_pFullFileSystem->FindClose( hFind );
+}

@@ -7847,6 +7847,23 @@ BEGIN_ENT_SCRIPTDESC( CBasePlayer, CBaseCombatCharacter, "The player entity." )
 	DEFINE_SCRIPTFUNC( SetScriptOverlayMaterial, "Sets a view overlay material" )
 	DEFINE_SCRIPTFUNC( GetScriptOverlayMaterialEx, "Gets a view overlay material by index" )
 	DEFINE_SCRIPTFUNC( SetScriptOverlayMaterialEx, "Sets a view overlay material by index" )
+
+	DEFINE_SCRIPTFUNC_NAMED( ScriptGetActiveWeapon, "GetActiveWeapon", "Get the player's current weapon" )
+	DEFINE_SCRIPTFUNC_WRAPPED( Weapon_ShootPosition, "" ) // Needs this slim wrapper or the world falls apart on MSVC.
+	DEFINE_SCRIPTFUNC_WRAPPED( Weapon_CanUse, "" )
+	DEFINE_SCRIPTFUNC_WRAPPED( Weapon_Equip, "" )
+	DEFINE_SCRIPTFUNC_WRAPPED( Weapon_Drop, "" )
+	DEFINE_SCRIPTFUNC_WRAPPED( Weapon_DropEx, "" )
+	DEFINE_SCRIPTFUNC_WRAPPED( Weapon_Switch, "" )
+	DEFINE_SCRIPTFUNC_WRAPPED( Weapon_SetLast, "" )
+	DEFINE_SCRIPTFUNC_WRAPPED( GetLastWeapon, "" )
+
+	DEFINE_SCRIPTFUNC_WRAPPED( IsFakeClient, "" )
+
+	DEFINE_SCRIPTFUNC( AddHudHideFlags, "Hides a hud element based on Constants.FHideHUD." )
+	DEFINE_SCRIPTFUNC( RemoveHudHideFlags, "Unhides a hud element based on Constants.FHideHUD." )
+	DEFINE_SCRIPTFUNC( SetHudHideFlags, "Force hud hide flags to a value" )
+	DEFINE_SCRIPTFUNC( GetHudHideFlags, "Gets current hidden hud elements" )
 END_SCRIPTDESC();
 
 void CStripWeapons::InputStripWeapons(inputdata_t &data)
@@ -9734,7 +9751,74 @@ void CBasePlayer::AdjustDrownDmg( int nAmount )
 	}
 }
 
+HSCRIPT	CBasePlayer::ScriptGetActiveWeapon() 
+{ 
+	return ToHScript( GetActiveWeapon() ); 
+}
 
+Vector CBasePlayer::ScriptWeapon_ShootPosition()
+{
+	return this->Weapon_ShootPosition();
+}
+
+bool CBasePlayer::ScriptWeapon_CanUse( HSCRIPT hWeapon )
+{
+	CBaseCombatWeapon *pCombatWeapon = ScriptToEntClass< CBaseCombatWeapon >( hWeapon );
+	if ( !pCombatWeapon )
+		return false;
+
+	return this->Weapon_CanUse( pCombatWeapon );
+}
+
+void CBasePlayer::ScriptWeapon_Equip( HSCRIPT hWeapon )
+{
+	CBaseCombatWeapon *pCombatWeapon = ScriptToEntClass< CBaseCombatWeapon >( hWeapon );
+	if ( !pCombatWeapon )
+		return;
+
+	this->Weapon_Equip( pCombatWeapon );
+}
+
+void CBasePlayer::ScriptWeapon_Drop( HSCRIPT hWeapon )
+{
+	CBaseCombatWeapon *pCombatWeapon = ScriptToEntClass< CBaseCombatWeapon >( hWeapon );
+	if ( !pCombatWeapon )
+		return;
+
+	this->Weapon_Drop( pCombatWeapon, NULL, NULL );
+}
+
+void CBasePlayer::ScriptWeapon_DropEx( HSCRIPT hWeapon, Vector vecTarget, Vector vecVelocity )
+{
+	CBaseCombatWeapon *pCombatWeapon = ScriptToEntClass< CBaseCombatWeapon >( hWeapon );
+	if ( !pCombatWeapon )
+		return;
+
+	this->Weapon_Drop( pCombatWeapon, &vecTarget, &vecVelocity );
+}
+
+void CBasePlayer::ScriptWeapon_Switch( HSCRIPT hWeapon )
+{
+	CBaseCombatWeapon *pCombatWeapon = ScriptToEntClass< CBaseCombatWeapon >( hWeapon );
+	if ( !pCombatWeapon )
+		return;
+
+	this->Weapon_Switch( pCombatWeapon );
+}
+
+void CBasePlayer::ScriptWeapon_SetLast( HSCRIPT hWeapon )
+{
+	CBaseCombatWeapon *pCombatWeapon = ScriptToEntClass< CBaseCombatWeapon >( hWeapon );
+	if ( !pCombatWeapon )
+		return;
+
+	this->Weapon_SetLast( pCombatWeapon );
+}
+
+HSCRIPT	CBasePlayer::ScriptGetLastWeapon()
+{
+	return ToHScript( this->GetLastWeapon() );
+}
 
 #if !defined(NO_STEAM)
 //-----------------------------------------------------------------------------
