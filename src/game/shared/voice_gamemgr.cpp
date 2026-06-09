@@ -236,20 +236,8 @@ void CVoiceGameMgr::UpdateMasks()
 				if( pEnt && pEnt->IsPlayer() && CheckProximity( pPlayer->GetAbsOrigin().DistTo( pEnt->GetAbsOrigin() ) ) &&
 					( bAllTalk || m_pHelper->CanPlayerHearPlayer( pPlayer, ( CBasePlayer* )pEnt, bProximity ) ) )
 				{
-					CBasePlayer* pOtherPlayer = (CBasePlayer*)pOtherEnt;
-
-					if (!pOtherPlayer->IsMuted())
-					{
-						if (bAllTalk || m_pHelper->CanPlayerHearPlayer(pPlayer, pOtherPlayer, bProximity))
-						{
-							gameRulesMask[iOtherClient] = true;
-							ProximityMask[iOtherClient] = bProximity;
-						}
-					}
-					else
-					{
-						g_BanMasks[iClient][iOtherClient] = true;
-					}
+					gameRulesMask[iOtherClient] = true;
+					ProximityMask[iOtherClient] = bProximity;
 				}
 			}
 		}
