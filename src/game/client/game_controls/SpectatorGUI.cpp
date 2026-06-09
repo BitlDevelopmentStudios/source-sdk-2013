@@ -429,7 +429,7 @@ CSpectatorGUI::CSpectatorGUI(IViewPort *pViewPort) : CEditablePanelTeamColored( 
  	m_pBottomBarBlank = new Panel( this, "bottombarblank" );
 
 	// m_pBannerImage = new ImagePanel( m_pTopBar, NULL );
-	m_pPlayerLabel = new CLabelTeamColored( this, "playerlabel", "" );
+	m_pPlayerLabel = new Label( this, "playerlabel", "" );
 	m_pPlayerLabel->SetVisible( false );
 	TextImage *image = m_pPlayerLabel->GetTextImage();
 	if ( image )
