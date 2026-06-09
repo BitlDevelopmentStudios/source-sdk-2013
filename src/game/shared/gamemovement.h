@@ -150,6 +150,8 @@ protected:
 	// Handle movement in noclip mode.
 	void			FullNoClipMove( float factor, float maxacceleration );
 
+	void			PreventBunnyJumping();
+
 	// Returns true if he started a jump (ie: should he play the jump animation)?
 	virtual bool	CheckJumpButton( void );	// Overridden by each game.
 

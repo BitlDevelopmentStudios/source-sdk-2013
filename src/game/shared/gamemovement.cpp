@@ -2383,6 +2383,29 @@ void CGameMovement::PlaySwimSound()
 	MoveHelper()->StartSound( mv->GetAbsOrigin(), "Player.Swim" );
 }
 
+// Only allow bunny jumping up to 1.2x server / player maxspeed setting
+#define BUNNYJUMP_MAX_SPEED_FACTOR 1.1f
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CGameMovement::PreventBunnyJumping()
+{
+	// Speed at which bunny jumping is limited
+	float maxscaledspeed = BUNNYJUMP_MAX_SPEED_FACTOR * player->m_flMaxspeed;
+	if (maxscaledspeed <= 0.0f)
+		return;
+
+	// Current player speed
+	float spd = mv->m_vecVelocity.Length();
+	if (spd <= maxscaledspeed)
+		return;
+
+	// Apply this cropping fraction to velocity
+	float fraction = (maxscaledspeed / spd);
+
+	mv->m_vecVelocity *= fraction;
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -2451,6 +2474,21 @@ bool CGameMovement::CheckJumpButton( void )
 	if ( player->m_Local.m_flDuckJumpTime > 0.0f )
 		return false;
 
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(player);
+
+	// Add a little forward velocity based on your current forward velocity - if you are not sprinting.
+	if (pHL2MPPlayer)
+	{
+		if (pHL2MPPlayer->GetPlayerClass() > CLS_INVALID)
+		{
+			const CAnticitizen_FilePlayerClassInfo_t& info = pHL2MPPlayer->GetPlayerClassInfo();
+
+			if (!info.bSPMovement)
+			{
+				PreventBunnyJumping();
+			}
+		}
+	}
 
 	// In the air now.
     SetGroundEntity( NULL );
@@ -2458,7 +2496,6 @@ bool CGameMovement::CheckJumpButton( void )
 	player->PlayStepSound( (Vector &)mv->GetAbsOrigin(), player->m_pSurfaceData, 1.0, true );
 	
 #ifdef HL2MP
-	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(player);
 	if (pHL2MPPlayer)
 	{
 		pHL2MPPlayer->DoAnimationEvent(PLAYERANIMEVENT_JUMP);
