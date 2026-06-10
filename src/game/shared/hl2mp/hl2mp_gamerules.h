@@ -55,11 +55,6 @@ enum
 	TIMERSTATE_RESTART,
 };
 
-enum
-{
-	ANTICITIZEN_COLLISIONGROUP_TURRETS = LAST_HL2_COLLISION_GROUP,
-};
-
 #ifdef CLIENT_DLL
 	#define CHL2MPRules C_HL2MPRules
 	#define CHL2MPGameRulesProxy C_HL2MPGameRulesProxy

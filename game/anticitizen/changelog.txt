@@ -1,0 +1,14 @@
+Alpha Technical Test v2:
+- Hid the "Remaining soldiers" counter on the Combine side in favor of a life counter.
+- Changed Freeman's outline color to make him easier to identify in Spectator view at round end.
+- Manhacks and Turrets can now collide with their owners.
+- Turrets are now harder to knock down.
+
+Alpha Technical Test v1.1:
+- Improved Discord RPC.
+
+Alpha Technical Test v1:
+- Initial public release
+
+Private Pre-Alpha:
+- Initial private release

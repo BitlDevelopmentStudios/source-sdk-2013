@@ -302,14 +302,21 @@ void CWeaponTurret::SpawnTurret(void)
 	if (pTurret && pHologram)
 	{
 		pTurret->SetName(AllocPooledString("spawnedTurret"));
-		pTurret->SetOwnerEntity(pOwner);
+		//pTurret->SetOwnerEntity(pOwner);
 		pTurret->AddSpawnFlags(SF_FLOOR_TURRET_AUTOACTIVATE);
 		pTurret->Spawn();
+
+		//our mass is increased to prevent us getting knocked over as easily.
+		IPhysicsObject* pPhys = pTurret->VPhysicsGetObject();
+		if (pPhys != NULL)
+		{
+			pPhys->SetMass(pPhys->GetMass() * 4.0f);
+		}
+
 		pTurret->Activate();
 		pTurret->Teleport(&pHologram->GetAbsOrigin(), &pHologram->GetAbsAngles(), NULL);
 		// not needed, but allows the manhack to work properly when playing as freeman.
 		pTurret->ChangeTeam(pOwner->GetTeamNumber());
-		pTurret->SetCollisionGroup(ANTICITIZEN_COLLISIONGROUP_TURRETS);
 
 		WeaponSound(SPECIAL1);
 	}
