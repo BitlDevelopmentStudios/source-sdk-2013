@@ -279,17 +279,6 @@ void CWallHealth::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE u
 	if ( !pActivator->IsPlayer() )
 		return;
 
-	// Only usable if you have the HEV suit on
-	if (!((CBasePlayer*)pActivator)->IsSuitEquipped())
-	{
-		if (m_flSoundTime <= gpGlobals->curtime)
-		{
-			m_flSoundTime = gpGlobals->curtime + 0.62;
-			EmitSound("WallHealth.Deny");
-		}
-		return;
-	}
-
 	CBasePlayer *pPlayer = dynamic_cast<CBasePlayer *>(pActivator);
 
 	// Reset to a state of continuous use.
@@ -557,17 +546,6 @@ void CNewWallHealth::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYP
 
 	// Reset to a state of continuous use.
 	m_iCaps = FCAP_CONTINUOUS_USE;
-
-	// Only usable if you have the HEV suit on
-	if (!pPlayer->IsSuitEquipped())
-	{
-		if (m_flSoundTime <= gpGlobals->curtime)
-		{
-			m_flSoundTime = gpGlobals->curtime + 0.62;
-			EmitSound("WallHealth.Deny");
-		}
-		return;
-	}
 
 	if ( m_iOn )
 	{

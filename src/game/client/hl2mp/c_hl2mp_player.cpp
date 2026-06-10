@@ -18,6 +18,7 @@
 #include "c_basetempentity.h"
 #include "prediction.h"
 #include "bone_setup.h"
+#include "iviewrender.h"
 
 // Don't alias here
 #if defined( CHL2MP_Player )
@@ -302,6 +303,30 @@ void C_HL2MP_Player::UpdateLookAt( void )
 	m_flCurrentHeadPitch = ApproachAngle( desired, m_flCurrentHeadPitch, 130 * gpGlobals->frametime );
 	m_flCurrentHeadPitch = AngleNormalize( m_flCurrentHeadPitch );
 	SetPoseParameter( m_headPitchPoseParam, m_flCurrentHeadPitch );
+}
+
+void C_HL2MP_Player::DrawOverlay(void)
+{
+	if (GetTeamNumber() == TEAM_COMBINE)
+	{
+		if (GetPlayerClass() > CLS_METROPOLICE)
+		{
+			// Bring up the current overlay
+			IMaterial* pMaterial = materials->FindMaterial("effects/combine_binocoverlay_muted", TEXTURE_GROUP_CLIENT_EFFECTS, false);
+			if (!IsErrorMaterial(pMaterial))
+			{
+				view->SetScreenOverlayMaterial(pMaterial);
+			}
+		}
+		else
+		{
+			view->SetScreenOverlayMaterial(NULL);
+		}
+	}
+	else
+	{
+		view->SetScreenOverlayMaterial(NULL);
+	}
 }
 
 void C_HL2MP_Player::ClientThink( void )

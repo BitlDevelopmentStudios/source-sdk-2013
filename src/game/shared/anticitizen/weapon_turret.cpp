@@ -300,6 +300,7 @@ void CWeaponTurret::SpawnTurret(void)
 	{
 		pTurret->SetName(AllocPooledString("spawnedTurret"));
 		pTurret->SetOwnerEntity(pOwner);
+		pTurret->AddSpawnFlags(SF_FLOOR_TURRET_AUTOACTIVATE);
 		pTurret->Spawn();
 		pTurret->Activate();
 		pTurret->Teleport(&pHologram->GetAbsOrigin(), &pHologram->GetAbsAngles(), NULL);

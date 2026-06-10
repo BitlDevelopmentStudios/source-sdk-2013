@@ -12,7 +12,7 @@ PlayerClassDatafile
 	"VoiceMode"			"2"
 	
 	"Grenades"			"-1"
-	"Turrets"			"2"
+	"Turrets"			"4"
 	
 	"PrimaryWeapon"		"weapon_shotgun"
 	

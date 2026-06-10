@@ -63,6 +63,7 @@ public:
 
 	Vector GetAttackSpread( CBaseCombatWeapon *pWeapon, CBaseEntity *pTarget = NULL );
 
+	void DrawOverlay(void);
 
 	// Should this object cast shadows?
 	virtual ShadowType_t		ShadowCastType( void );

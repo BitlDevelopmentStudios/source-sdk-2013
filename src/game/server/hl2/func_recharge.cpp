@@ -18,6 +18,7 @@
 #include "player.h"
 #include "engine/IEngineSound.h"
 #include "in_buttons.h"
+#include "ammodef.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -156,12 +157,7 @@ int CRecharge::DrawDebugTextOverlays(void)
 //-----------------------------------------------------------------------------
 float CRecharge::MaxJuice()	const
 {
-	if ( HasSpawnFlags( SF_CITADEL_RECHARGER ) )
-	{
-		return sk_suitcharger_citadel.GetFloat();
-	}
-	
-	return sk_suitcharger.GetFloat();
+	return sk_suitcharger_citadel.GetFloat();
 }
 
 
@@ -206,14 +202,20 @@ void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 		return;
 
 	// Only usable if you have the HEV suit on
-	if ( !((CBasePlayer *)pActivator)->IsSuitEquipped() )
+	CBasePlayer* pPlayer = ((CBasePlayer*)pActivator);
+	if (!(pPlayer->IsSuitEquipped()))
 	{
-		if (m_flSoundTime <= gpGlobals->curtime)
+		bool bIsFullOnAmmo = (pPlayer->GetAmmoCount("AR2") == GetAmmoDef()->MaxCarry(GetAmmoDef()->Index("AR2")));
+
+		if (!pPlayer->Weapon_OwnsThisType("weapon_ar2") || bIsFullOnAmmo)
 		{
-			m_flSoundTime = gpGlobals->curtime + 0.62;
-			EmitSound( "SuitRecharge.Deny" );
+			if (m_flSoundTime <= gpGlobals->curtime)
+			{
+				m_flSoundTime = gpGlobals->curtime + 0.62;
+				EmitSound("SuitRecharge.Deny");
+			}
+			return;
 		}
-		return;
 	}
 
 	// if there is no juice left, turn it off
@@ -272,25 +274,32 @@ void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 
 	CBasePlayer *pl = (CBasePlayer *) m_hActivator.Get();
 
-	// charge the player
-	int nMaxArmor = 100;
-	int nIncrementArmor = 1;
-	if ( HasSpawnFlags(	SF_CITADEL_RECHARGER ) )
+	if (pl->IsSuitEquipped())
 	{
-		nMaxArmor = sk_suitcharger_citadel_maxarmor.GetInt();
-		nIncrementArmor = 10;
+		// charge the player
+		// SF_CITADEL_RECHARGER represents all chargers for gordon
+		int nMaxArmor = sk_suitcharger_citadel_maxarmor.GetInt();
+		int nIncrementArmor = 10;
 
 		// Also give health for the citadel version.
-		if( pActivator->GetHealth() < pActivator->GetMaxHealth() )
+		if (pActivator->GetHealth() < pActivator->GetMaxHealth())
 		{
-			pActivator->TakeHealth( 5, DMG_GENERIC );
+			pActivator->TakeHealth(5, DMG_GENERIC);
+		}
+
+		if (pl->ArmorValue() < nMaxArmor)
+		{
+			UpdateJuice(m_iJuice - nIncrementArmor);
+			pl->IncrementArmorValue(nIncrementArmor, nMaxArmor);
 		}
 	}
-
-	if (pl->ArmorValue() < nMaxArmor)
+	else
 	{
-		UpdateJuice( m_iJuice - nIncrementArmor );
-		pl->IncrementArmorValue( nIncrementArmor, nMaxArmor );
+		// if unarmored, "charge" our pulse rifles instead
+		int nIncrementArmor = 20;
+		// LIE.
+		UpdateJuice(m_iJuice - 5);
+		pPlayer->GiveAmmo(nIncrementArmor, GetAmmoDef()->Index("AR2"));
 	}
 
 	// Send the output.
@@ -453,13 +462,7 @@ void CNewRecharge::SetInitialCharge( void )
 		return;
 	}
 
-	if ( HasSpawnFlags( SF_CITADEL_RECHARGER ) )
-	{
-		m_iMaxJuice =  sk_suitcharger_citadel.GetFloat();
-		return;
-	}
-
-	m_iMaxJuice =  sk_suitcharger.GetFloat();
+	m_iMaxJuice = sk_suitcharger_citadel.GetFloat();
 }
 
 void CNewRecharge::Spawn()
@@ -595,6 +598,21 @@ void CNewRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 
 	CBasePlayer *pPlayer = static_cast<CBasePlayer *>(pActivator);
 
+	if (!(pPlayer->IsSuitEquipped()))
+	{
+		bool bIsFullOnAmmo = (pPlayer->GetAmmoCount("AR2") == GetAmmoDef()->MaxCarry(GetAmmoDef()->Index("AR2")));
+
+		if (!pPlayer->Weapon_OwnsThisType("weapon_ar2") || bIsFullOnAmmo)
+		{
+			if (m_flSoundTime <= gpGlobals->curtime)
+			{
+				m_flSoundTime = gpGlobals->curtime + 0.62;
+				EmitSound("SuitRecharge.Deny");
+			}
+			return;
+		}
+	}
+
 	// Reset to a state of continuous use.
 	m_iCaps = FCAP_CONTINUOUS_USE;
 
@@ -603,22 +621,13 @@ void CNewRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 		float flCharges = CHARGES_PER_SECOND;
 		float flCalls = CALLS_PER_SECOND;
 
-		if ( HasSpawnFlags( SF_CITADEL_RECHARGER ) )
-			 flCharges = CITADEL_CHARGES_PER_SECOND;
+		if (pPlayer->IsSuitEquipped())
+		{
+			flCharges = CITADEL_CHARGES_PER_SECOND;
+		}
 
 		m_flJuice -= flCharges / flCalls;		
 		StudioFrameAdvance();
-	}
-
-	// Only usable if you have the HEV suit on
-	if ( !pPlayer->IsSuitEquipped() )
-	{
-		if (m_flSoundTime <= gpGlobals->curtime)
-		{
-			m_flSoundTime = gpGlobals->curtime + 0.62;
-			EmitSound( "SuitRecharge.Deny" );
-		}
-		return;
 	}
 
 	// if there is no juice left, turn it off
@@ -643,42 +652,30 @@ void CNewRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 	}
 
 	// Get our maximum armor value
-	int nMaxArmor = 100;
-	if ( HasSpawnFlags(	SF_CITADEL_RECHARGER ) )
-	{
-		nMaxArmor = sk_suitcharger_citadel_maxarmor.GetInt();
-	}
-	
-	int nIncrementArmor = 1;
+	int nMaxArmor = sk_suitcharger_citadel_maxarmor.GetInt();
+	int nIncrementArmor = 10;
 
-	// The citadel charger gives more per charge and also gives health
-	if ( HasSpawnFlags(	SF_CITADEL_RECHARGER ) )
+	// Also give health for the citadel version.
+	if (pActivator->GetHealth() < pActivator->GetMaxHealth() && m_flNextCharge < gpGlobals->curtime)
 	{
-		nIncrementArmor = 10;
-		
-#ifdef HL2MP
-		nIncrementArmor = 2;
-#endif
-
-		// Also give health for the citadel version.
-		if ( pActivator->GetHealth() < pActivator->GetMaxHealth() && m_flNextCharge < gpGlobals->curtime )
-		{
-			pActivator->TakeHealth( 5, DMG_GENERIC );
-		}
+		pActivator->TakeHealth(5, DMG_GENERIC);
 	}
 
-	// If we're over our limit, debounce our keys
-	if ( pPlayer->ArmorValue() >= nMaxArmor)
+	if (pPlayer->IsSuitEquipped())
 	{
-		// Citadel charger must also be at max health
-		if ( !HasSpawnFlags(SF_CITADEL_RECHARGER) || ( HasSpawnFlags( SF_CITADEL_RECHARGER ) && pActivator->GetHealth() >= pActivator->GetMaxHealth() ) )
+		// If we're over our limit, debounce our keys
+		if (pPlayer->ArmorValue() >= nMaxArmor)
 		{
-			// Make the user re-use me to get started drawing health.
-			pPlayer->m_afButtonPressed &= ~IN_USE;
-			m_iCaps = FCAP_IMPULSE_USE;
-			
-			EmitSound( "SuitRecharge.Deny" );
-			return;
+			// Citadel charger must also be at max health
+			if (pActivator->GetHealth() >= pActivator->GetMaxHealth())
+			{
+				// Make the user re-use me to get started drawing health.
+				pPlayer->m_afButtonPressed &= ~IN_USE;
+				m_iCaps = FCAP_IMPULSE_USE;
+
+				EmitSound("SuitRecharge.Deny");
+				return;
+			}
 		}
 	}
 
@@ -708,11 +705,22 @@ void CNewRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 		EmitSound( filter, entindex(), "SuitRecharge.ChargingLoop" );
 	}
 
-	// Give armor if we need it
-	if ( pPlayer->ArmorValue() < nMaxArmor )
+	if (pPlayer->IsSuitEquipped())
 	{
-		UpdateJuice( m_iJuice - nIncrementArmor );
-		pPlayer->IncrementArmorValue( nIncrementArmor, nMaxArmor );
+		// Give armor if we need it
+		if (pPlayer->ArmorValue() < nMaxArmor)
+		{
+			UpdateJuice(m_iJuice - nIncrementArmor);
+			pPlayer->IncrementArmorValue(nIncrementArmor, nMaxArmor);
+		}
+	}
+	else
+	{
+		// if unarmored, "charge" our pulse rifles instead
+		int nIncrementArmor = 20;
+		// LIE.
+		UpdateJuice(m_iJuice - 5);
+		pPlayer->GiveAmmo(nIncrementArmor, GetAmmoDef()->Index("AR2"));
 	}
 
 	// Send the output.

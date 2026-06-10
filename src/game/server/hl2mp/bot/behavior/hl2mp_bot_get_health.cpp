@@ -310,11 +310,6 @@ ActionResult< CHL2MPBot >	CHL2MPBotGetHealth::OnStart( CHL2MPBot *me, Action< CH
 //---------------------------------------------------------------------------------------------
 ActionResult< CHL2MPBot >	CHL2MPBotGetHealth::Update( CHL2MPBot *me, float interval )
 {
-	if (me->GetPlayerClass() != CLS_FREEMAN)
-	{
-		return Done("Cannot use health chargers");
-	}
-
 	if ( m_healthKit == NULL || ( m_healthKit->IsEffectActive( EF_NODRAW ) ) )
 	{
 		return Done( "Health kit I was going for has been taken" );

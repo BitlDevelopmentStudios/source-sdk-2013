@@ -31,6 +31,8 @@
 #include "ilagcompensationmanager.h"
 #include "bot/hl2mp_bot.h"
 
+#include "igameresources.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -238,6 +240,7 @@ void CHL2MP_Player::Precache( void )
 	BaseClass::Precache();
 
 	PrecacheModel ( "sprites/glow01.vmt" );
+	PrecacheModel("effects/combine_binocoverlay_muted.vmt");
 
 	PrecacheFootStepSounds();
 	PrecacheADSSounds();
@@ -389,17 +392,12 @@ void CHL2MP_Player::Spawn(void)
 		}
 	}
 
-	if (GetTeamNumber() == TEAM_SPECTATOR)
+	if (GetTeamNumber() == TEAM_FREEMAN)
 	{
-		CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(this);
-
-		if (pBot)
-		{
-			if (pBot->IsInASquad())
-			{
-				pBot->LeaveSquad();
-			}
-		}
+		ToggleGlow(true);
+		SetGlowMode(1);
+		Color teamColor = COLOR_HL2_DEF_BGCOLOR;
+		SetGlowColor(teamColor.r(), teamColor.g(), teamColor.b(), teamColor.a());
 	}
 	
 	if ( !IsObserver() )
@@ -1615,6 +1613,8 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 			}
 		}
 	}
+
+	ToggleGlow(false);
 
 	BaseClass::Event_Killed( subinfo );
 
