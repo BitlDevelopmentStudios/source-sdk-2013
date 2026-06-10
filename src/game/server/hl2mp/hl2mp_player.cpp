@@ -396,7 +396,7 @@ void CHL2MP_Player::Spawn(void)
 	{
 		ToggleGlow(true);
 		SetGlowMode(1);
-		Color teamColor = COLOR_HL2_DEF_BGCOLOR;
+		Color teamColor = COLOR_RED;
 		SetGlowColor(teamColor.r(), teamColor.g(), teamColor.b(), teamColor.a());
 	}
 	
