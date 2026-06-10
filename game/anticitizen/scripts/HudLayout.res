@@ -820,5 +820,25 @@
 		"text_ypos" "20"
 		"digit_xpos" "95"
 		"digit_ypos" "2"
-	}	
+	}
+	
+	HudLives
+	{
+		"fieldName" "HudLives"
+		"xpos"  "r150" [!$DECK]
+		"xpos"  "r156" [$DECK]
+		"ypos"	"390" [!$DECK]
+		"ypos"	"400" [$DECK]
+		"wide"	"130"
+		"tall"  "36"
+		"visible" "1"
+		"enabled" "1"
+
+		"PaintBackgroundType"	"2"
+
+		"text_xpos" "8"
+		"text_ypos" "20"
+		"digit_xpos" "95"
+		"digit_ypos" "2"
+	}
 }

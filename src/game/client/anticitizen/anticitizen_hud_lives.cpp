@@ -8,7 +8,7 @@
 //
 // Health.cpp
 //
-// implementation of CHudTroops class
+// implementation of CHudLives class
 //
 #include "cbase.h"
 #include "hud.h"
@@ -41,12 +41,12 @@ using namespace vgui;
 //-----------------------------------------------------------------------------
 // Purpose: Health panel
 //-----------------------------------------------------------------------------
-class CHudTroops : public CHudElement, public CHudNumericDisplay
+class CHudLives : public CHudElement, public CHudNumericDisplay
 {
-	DECLARE_CLASS_SIMPLE( CHudTroops, CHudNumericDisplay );
+	DECLARE_CLASS_SIMPLE( CHudLives, CHudNumericDisplay );
 
 public:
-	CHudTroops( const char *pElementName );
+	CHudLives( const char *pElementName );
 	virtual void Init( void );
 	virtual void VidInit( void );
 	virtual void Reset( void );
@@ -54,23 +54,23 @@ public:
 
 private:
 	// old variables
-	int		m_iTroops;
+	int		m_iLives;
 };	
 
-DECLARE_HUDELEMENT( CHudTroops );
+DECLARE_HUDELEMENT( CHudLives );
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
-CHudTroops::CHudTroops( const char *pElementName ) : CHudElement( pElementName ), CHudNumericDisplay(NULL, "HudTroops")
+CHudLives::CHudLives( const char *pElementName ) : CHudElement( pElementName ), CHudNumericDisplay(NULL, "HudLives")
 {
-	SetHiddenBits( 0 );
+	SetHiddenBits( HIDEHUD_PLAYERDEAD );
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CHudTroops::Init()
+void CHudLives::Init()
 {
 	Reset();
 }
@@ -78,11 +78,11 @@ void CHudTroops::Init()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CHudTroops::Reset()
+void CHudLives::Reset()
 {
-	m_iTroops = INIT_HEALTH;
+	m_iLives = INIT_HEALTH;
 
-	wchar_t *tempString = g_pVGuiLocalize->Find("#Anticitizen_RemainingTroops");
+	wchar_t *tempString = g_pVGuiLocalize->Find("#Anticitizen_Lives");
 
 	if (tempString)
 	{
@@ -90,16 +90,16 @@ void CHudTroops::Reset()
 	}
 	else
 	{
-		SetLabelText(L"SOLDIERS REMAINING");
+		SetLabelText(L"LIVES");
 	}
 	
-	SetDisplayValue(m_iTroops);
+	SetDisplayValue(m_iLives);
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CHudTroops::VidInit()
+void CHudLives::VidInit()
 {
 	Reset();
 }
@@ -107,7 +107,7 @@ void CHudTroops::VidInit()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CHudTroops::OnThink()
+void CHudLives::OnThink()
 {
 	if (!HL2MPRules())
 		return;
@@ -115,23 +115,23 @@ void CHudTroops::OnThink()
 	// only show if there's no timer.
 	float flCurTime = HL2MPRules()->GetMapRemainingTime();
 	C_HL2MP_Player* local = ToHL2MPPlayer(C_BasePlayer::GetLocalPlayer());
-	if (flCurTime <= 0 && (local && ((local->GetTeamNumber() == TEAM_FREEMAN) || (local->GetTeamNumber() == TEAM_SPECTATOR))) && (HL2MPRules()->GetRemainingSoldierCount() > 0) && (HL2MPRules()->GetTimerState() != TIMERSTATE_NONE))
+	if (flCurTime <= 0 && (local && (local->GetTeamNumber() == TEAM_COMBINE) && (local->GetLifeCount() > 0)) && (HL2MPRules()->GetTimerState() != TIMERSTATE_NONE))
 	{
 		SetAlpha(255);
-		
-		int newTroops = HL2MPRules()->GetRemainingSoldierCount();
+
+		int newLives = local->GetLifeCount();
 		// Never below zero
-		newTroops = MAX(HL2MPRules()->GetRemainingSoldierCount(), 0);
+		newLives = MAX(local->GetLifeCount(), 0);
 
 		// Only update the fade if we've changed health
-		if (newTroops == m_iTroops)
+		if (newLives == m_iLives)
 		{
 			return;
 		}
 
-		m_iTroops = newTroops;
+		m_iLives = newLives;
 
-		SetDisplayValue(m_iTroops);
+		SetDisplayValue(m_iLives);
 	}
 	else
 	{
