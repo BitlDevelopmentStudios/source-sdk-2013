@@ -17,6 +17,8 @@
 // TODO: Find out A way for VPC to allow string preprocessors so I don't have to do shit like this again...
 #if defined( TF_CLIENT_DLL )
 #define DISCORD_APPID "1472369971517718670"
+#elif defined( ANTICITIZEN )
+#define DISCORD_APPID "1385409586474909716"
 #elif defined( HL2MP )
 #define DISCORD_APPID "1472371769250807849"
 #else

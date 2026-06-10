@@ -15,6 +15,8 @@
 
 #if defined ( TF2_CLIENT_DLL )
 #define DISCORDRPC_GAMELOGO_TEXT "Team Fortress 2 Icon"
+#elif defined ( ANTICITIZEN )
+#define DISCORDRPC_GAMELOGO_TEXT "ANTICITIZEN ONE"
 #elif defined ( HL2MP )
 #define DISCORDRPC_GAMELOGO_TEXT "Half-Life 2 Icon"
 #else
