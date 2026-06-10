@@ -309,6 +309,7 @@ void CWeaponTurret::SpawnTurret(void)
 		pTurret->Teleport(&pHologram->GetAbsOrigin(), &pHologram->GetAbsAngles(), NULL);
 		// not needed, but allows the manhack to work properly when playing as freeman.
 		pTurret->ChangeTeam(pOwner->GetTeamNumber());
+		pTurret->SetCollisionGroup(ANTICITIZEN_COLLISIONGROUP_TURRETS);
 
 		WeaponSound(SPECIAL1);
 	}
