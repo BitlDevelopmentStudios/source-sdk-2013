@@ -6,6 +6,7 @@ Alpha Technical Test v2:
 - Combine transhuman soldiers now have a graphical UI overlay.
 - Fixed a problem where batteries don't apply when under 200 armor.
 - Made it so Gordon bots can use suit chargers when they're at low health (as they also give health since they're the citadel chargers).
+- Removed the MOTD.
 
 Alpha Technical Test v1.1:
 - Improved Discord RPC.
