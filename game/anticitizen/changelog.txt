@@ -3,6 +3,9 @@ Alpha Technical Test v2:
 - Changed Freeman's outline color to make him easier to identify in Spectator view at round end.
 - Manhacks and Turrets can now collide with their owners.
 - Turrets are now harder to knock down.
+- Combine transhuman soldiers now have a graphical UI overlay.
+- Fixed a problem where batteries don't apply when under 200 armor.
+- Made it so Gordon bots can use suit chargers when they're at low health (as they also give health since they're the citadel chargers).
 
 Alpha Technical Test v1.1:
 - Improved Discord RPC.

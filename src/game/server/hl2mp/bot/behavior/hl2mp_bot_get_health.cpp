@@ -4,6 +4,7 @@
 #include "hl2mp_gamerules.h"
 #include "bot/hl2mp_bot.h"
 #include "item_healthkit.h"
+#include "func_recharge.h"
 #include "bot/behavior/hl2mp_bot_get_health.h"
 
 extern ConVar hl2mp_bot_path_lookahead_range;
@@ -70,6 +71,29 @@ public:
 					return false;
 
 				return true;
+			}
+
+			if (m_me->GetPlayerClass() == CLS_FREEMAN)
+			{
+				if (candidate->ClassMatches("func_recharge"))
+				{
+					// needs to have juice
+					CRecharge* pWallHealth = dynamic_cast<CRecharge*>(candidate);
+					if (pWallHealth && pWallHealth->GetJuice() == 0)
+						return false;
+
+					return true;
+				}
+
+				if (candidate->ClassMatches("item_suitcharger"))
+				{
+					// needs to have juice
+					CNewRecharge* pWallHealth = dynamic_cast<CNewRecharge*>(candidate);
+					if (pWallHealth && pWallHealth->GetJuice() == 0)
+						return false;
+
+					return true;
+				}
 			}
 		}
 
@@ -217,6 +241,21 @@ bool CHL2MPBotGetHealth::IsPossible( CHL2MPBot *me )
 	while ((healthkit = gEntList.FindEntityByClassname(healthkit, "item_item_crate_drop")) != NULL)
 	{
 		hHealthKits.AddToTail(healthkit);
+	}
+
+	if (me->GetPlayerClass() == CLS_FREEMAN)
+	{
+		healthkit = NULL;
+		while ((healthkit = gEntList.FindEntityByClassname(healthkit, "func_recharge")) != NULL)
+		{
+			hHealthKits.AddToTail(healthkit);
+		}
+
+		healthkit = NULL;
+		while ((healthkit = gEntList.FindEntityByClassname(healthkit, "item_suitcharger")) != NULL)
+		{
+			hHealthKits.AddToTail(healthkit);
+		}
 	}
 
 	bool bFindChargers = true;

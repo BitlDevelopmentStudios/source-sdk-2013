@@ -33,6 +33,8 @@
 
 ConVar sv_infinite_aux_power( "sv_infinite_aux_power", "0", FCVAR_CHEAT | FCVAR_REPLICATED );
 
+ConVar cl_combineoverlay("cl_combineoverlay", "1", FCVAR_ARCHIVE);
+
 LINK_ENTITY_TO_CLASS( player, C_HL2MP_Player );
 
 BEGIN_RECV_TABLE_NOBASE(C_HL2MP_Player, DT_HL2MPLocalPlayerExclusive)
@@ -307,25 +309,31 @@ void C_HL2MP_Player::UpdateLookAt( void )
 
 void C_HL2MP_Player::DrawOverlay(void)
 {
-	if (GetTeamNumber() == TEAM_COMBINE)
+	if (cl_combineoverlay.GetBool())
+		return;
+
+	if (IsLocalPlayer())
 	{
-		if (GetPlayerClass() > CLS_METROPOLICE)
+		if (GetTeamNumber() == TEAM_COMBINE)
 		{
-			// Bring up the current overlay
-			IMaterial* pMaterial = materials->FindMaterial("effects/combine_binocoverlay_muted", TEXTURE_GROUP_CLIENT_EFFECTS, false);
-			if (!IsErrorMaterial(pMaterial))
+			if (GetPlayerClass() > CLS_METROPOLICE)
 			{
-				view->SetScreenOverlayMaterial(pMaterial);
+				// Bring up the current overlay
+				IMaterial* pMaterial = materials->FindMaterial("effects/combine_binocoverlay_muted", TEXTURE_GROUP_CLIENT_EFFECTS, false);
+				if (!IsErrorMaterial(pMaterial))
+				{
+					view->SetScreenOverlayMaterial(pMaterial);
+				}
+			}
+			else
+			{
+				view->SetScreenOverlayMaterial(NULL);
 			}
 		}
 		else
 		{
 			view->SetScreenOverlayMaterial(NULL);
 		}
-	}
-	else
-	{
-		view->SetScreenOverlayMaterial(NULL);
 	}
 }
 
@@ -369,6 +377,8 @@ void C_HL2MP_Player::ClientThink( void )
 	}
 
 	UpdateIDTarget();
+
+	DrawOverlay();
 }
 
 //-----------------------------------------------------------------------------
@@ -414,6 +424,8 @@ void C_HL2MP_Player::DoImpactEffect( trace_t &tr, int nDamageType )
 void C_HL2MP_Player::PreThink( void )
 {
 	BaseClass::PreThink();
+
+	DrawOverlay();
 }
 
 const QAngle &C_HL2MP_Player::EyeAngles()
@@ -748,6 +760,8 @@ void C_HL2MP_Player::OnDataChanged( DataUpdateType_t type )
 	{
 		SetNextClientThink( CLIENT_THINK_ALWAYS );
 	}
+
+	DrawOverlay();
 
 	UpdateVisibility();
 }
