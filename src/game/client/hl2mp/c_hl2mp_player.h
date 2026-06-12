@@ -70,6 +70,7 @@ public:
 	virtual C_BaseAnimating *BecomeRagdollOnClient();
 	virtual const QAngle& GetRenderAngles();
 	virtual bool ShouldDraw( void );
+	virtual void OnPreDataChanged(DataUpdateType_t updateType);
 	virtual void OnDataChanged( DataUpdateType_t type );
 	virtual float GetFOV( void );
 	virtual CStudioHdr *OnNewModel( void );
@@ -88,6 +89,7 @@ public:
 	IRagdoll* GetRepresentativeRagdoll() const;
 	virtual void CalcView( Vector &eyeOrigin, QAngle &eyeAngles, float &zNear, float &zFar, float &fov );
 	virtual const QAngle& EyeAngles( void );
+	virtual void ClientPlayerRespawn(void);
 
 	void SuitPower_Update( void );
 	bool SuitPower_Drain( float flPower ); // consume some of the suit's power.
@@ -175,6 +177,9 @@ private:
 	float m_flCurrentHeadPitch;
 
 	int	  m_iIDEntIndex;
+
+	int	  m_iSpawnCounter;
+	int	  m_iOldSpawnCounter;
 
 	CountdownTimer m_blinkTimer;
 

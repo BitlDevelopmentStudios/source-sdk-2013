@@ -217,6 +217,7 @@ private:
 	int m_iModelType;
 	CNetworkVar( int, m_iSpawnInterpCounter );
 	CNetworkVar( int, m_iPlayerSoundType );
+	CNetworkVar(bool, m_iSpawnCounter);
 
 	float m_flNextModelChangeTime;
 	float m_flNextTeamChangeTime;

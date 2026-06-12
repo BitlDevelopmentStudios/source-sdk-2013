@@ -132,6 +132,8 @@ IMPLEMENT_SERVERCLASS_ST(CHL2MP_Player, DT_HL2MP_Player)
 	SendPropEHandle(SENDINFO(m_hRagdoll)),
 	SendPropInt(SENDINFO(m_iSpawnInterpCounter), 4),
 	SendPropInt(SENDINFO(m_iPlayerSoundType), 3),
+
+	SendPropInt(SENDINFO(m_iSpawnCounter)),
 END_SEND_TABLE()
 
 BEGIN_DATADESC( CHL2MP_Player )
@@ -411,6 +413,8 @@ void CHL2MP_Player::Spawn(void)
 	m_nRenderFX = kRenderNormal;
 
 	m_flNextPainSoundTime = 0;
+	m_iSpawnCounter = !m_iSpawnCounter;
+
 	m_Local.m_iHideHUD = 0;
 	
 	AddFlag(FL_ONGROUND); // set the player on the ground at the start of the round.
