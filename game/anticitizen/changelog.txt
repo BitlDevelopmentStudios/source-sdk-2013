@@ -8,6 +8,7 @@ Alpha Technical Test v2:
 - Made it so Gordon bots can use suit chargers when they're at low health (as they also give health since they're the citadel chargers).
 - Removed the MOTD.
 - Fixed a bug where the Player ID UI would remain on screen after respawning.
+- Fixed a bug where the RPG laser sometimes still shows up after dropping the weapon.
 
 Alpha Technical Test v1.1:
 - Improved Discord RPC.
