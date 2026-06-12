@@ -1765,7 +1765,13 @@ void CWeaponRPG::ItemPostFrame( void )
 	CBasePlayer *pPlayer = ToBasePlayer( GetOwner() );
 	
 	if ( pPlayer == NULL )
+	{
+		if (m_bGuiding)
+		{
+			StopGuiding();
+		}
 		return;
+	}
 
 	//If we're pulling the weapon out for the first time, wait to draw the laser
 	if ( ( m_bInitialStateUpdate ) && ( GetActivity() != ACT_VM_DRAW ) )
