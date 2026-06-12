@@ -7,6 +7,7 @@ Alpha Technical Test v2:
 - Fixed a problem where batteries don't apply when under 200 armor.
 - Made it so Gordon bots can use suit chargers when they're at low health (as they also give health since they're the citadel chargers).
 - Removed the MOTD.
+- Fixed a bug where the Player ID UI would remain on screen after respawning.
 
 Alpha Technical Test v1.1:
 - Improved Discord RPC.
