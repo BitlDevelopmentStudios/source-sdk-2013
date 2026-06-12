@@ -942,27 +942,6 @@ void ClientModeShared::LevelInit( const char *newmap )
 	// Reset any player explosion/shock effects
 	CLocalPlayerFilter filter;
 	enginesound->SetPlayerDSP( filter, 0, true );
-
-	// Fenix: Custom background loading screens - decides if use a loading screen for a map or a default one
-#ifdef _WIN32
-	char szMapBgName[MAX_PATH];
-#else	// !_WIN32
-	char szMapBgName[PATH_MAX];
-#endif	// _WIN32
-
-	Q_snprintf(szMapBgName, sizeof(szMapBgName), "vgui/loading/maps/%s", newmap);
-
-	pMatMapBg = materials->FindMaterial(szMapBgName, TEXTURE_GROUP_OTHER);
-
-	if (!pMatMapBg->IsErrorMaterial())
-	{
-		Q_snprintf(szMapBgName, sizeof(szMapBgName), "loading/maps/%s", newmap);
-		pPanelBg->SetNewBackgroundImage(szMapBgName);
-	}
-	else
-	{
-		pPanelBg->SetNewBackgroundImage("loading/default");
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1045,6 +1024,7 @@ void ClientModeShared::Layout()
 		m_nRootSize[ 1 ] = tall;
 
 		m_pViewport->SetBounds(0, 0, wide, tall);
+
 		if ( changed )
 		{
 			ReloadScheme(false);

@@ -28,13 +28,19 @@ public:
 	CMapLoadBG( char const *panelName );
 	~CMapLoadBG();
 
-	void SetNewBackgroundImage( char const *imageName );
+	void Paint();
 
 protected:
 	void ApplySchemeSettings( vgui::IScheme *pScheme );
+	void ResizePanel(void);
+	void UpdateMainBackground(void);
+	void SetRandBackgroundImage(bool bIsWidescreen);
 
 private:
+	MESSAGE_FUNC(OnActivate, "activate");
+
 	vgui::ImagePanel *m_pBackground;
+	const char* m_szImagePath;
 };
 
 #endif	// !MAPLOAD_BACKGROUND_H
