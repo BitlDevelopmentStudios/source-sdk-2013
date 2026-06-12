@@ -57,6 +57,7 @@ IMPLEMENT_CLIENTCLASS_DT(C_HL2MP_Player, DT_HL2MP_Player, CHL2MP_Player)
 	RecvPropInt(RECVINFO(m_iPlayerSoundType)),
 
 	RecvPropBool(RECVINFO(m_fIsWalking)),
+	RecvPropInt(RECVINFO(m_iSpawnCounter)),
 END_RECV_TABLE()
 
 BEGIN_PREDICTION_DATA(C_HL2MP_Player)
@@ -121,6 +122,11 @@ C_HL2MP_Player::~C_HL2MP_Player( void )
 {
 	ReleaseFlashlight();
 	m_PlayerAnimState->Release();
+}
+
+void C_HL2MP_Player::ClientPlayerRespawn(void)
+{
+	m_iIDEntIndex = 0;
 }
 
 int C_HL2MP_Player::GetIDTarget() const
@@ -696,6 +702,16 @@ void C_HL2MP_Player::NotifyShouldTransmit( ShouldTransmitState_t state )
 	BaseClass::NotifyShouldTransmit( state );
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void C_HL2MP_Player::OnPreDataChanged(DataUpdateType_t updateType)
+{
+	BaseClass::OnPreDataChanged(updateType);
+
+	m_iOldSpawnCounter = m_iSpawnCounter;
+}
+
 void C_HL2MP_Player::OnDataChanged( DataUpdateType_t type )
 {
 	BaseClass::OnDataChanged( type );
@@ -703,6 +719,12 @@ void C_HL2MP_Player::OnDataChanged( DataUpdateType_t type )
 	if ( type == DATA_UPDATE_CREATED )
 	{
 		SetNextClientThink( CLIENT_THINK_ALWAYS );
+	}
+
+	if (m_iOldSpawnCounter != m_iSpawnCounter)
+	{
+		//we respawned. call the respawn function.
+		ClientPlayerRespawn();
 	}
 
 	UpdateVisibility();
