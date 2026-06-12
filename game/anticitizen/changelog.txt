@@ -9,6 +9,7 @@ Alpha Technical Test v2:
 - Removed the MOTD.
 - Fixed a bug where the Player ID UI would remain on screen after respawning.
 - Fixed a bug where the RPG laser sometimes still shows up after dropping the weapon.
+- Fixed the loading background not changing size when changing resolutions.
 
 Alpha Technical Test v1.1:
 - Improved Discord RPC.
