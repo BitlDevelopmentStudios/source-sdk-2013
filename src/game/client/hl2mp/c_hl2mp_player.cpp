@@ -309,7 +309,7 @@ void C_HL2MP_Player::UpdateLookAt( void )
 
 void C_HL2MP_Player::DrawOverlay(void)
 {
-	if (cl_combineoverlay.GetBool())
+	if (!cl_combineoverlay.GetBool())
 		return;
 
 	if (IsLocalPlayer())
