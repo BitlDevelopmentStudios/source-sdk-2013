@@ -1758,6 +1758,22 @@ bool CWeaponRPG::Lower( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+void CWeaponRPG::ItemPreFrame(void)
+{
+	BaseClass::ItemPreFrame();
+
+	CBasePlayer* pPlayer = ToBasePlayer(GetOwner());
+
+	if (pPlayer == NULL)
+	{
+		StopGuiding();
+		//return;
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
 void CWeaponRPG::ItemPostFrame( void )
 {
 	BaseClass::ItemPostFrame();
@@ -1766,10 +1782,7 @@ void CWeaponRPG::ItemPostFrame( void )
 	
 	if ( pPlayer == NULL )
 	{
-		if (m_bGuiding)
-		{
-			StopGuiding();
-		}
+		StopGuiding();
 		return;
 	}
 
@@ -2408,6 +2421,17 @@ void CWeaponRPG::NotifyShouldTransmit( ShouldTransmitState_t state )
 		{
 			m_pBeam->brightness = 0.0f;
 		}
+	}
+}
+
+void CWeaponRPG::ClientThink(void)
+{
+	CBasePlayer* pPlayer = ToBasePlayer(GetOwner());
+
+	if (pPlayer == NULL)
+	{
+		StopGuiding();
+		//return;
 	}
 }
 
