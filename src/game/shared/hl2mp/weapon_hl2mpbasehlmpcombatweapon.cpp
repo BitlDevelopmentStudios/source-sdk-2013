@@ -20,12 +20,12 @@ IMPLEMENT_NETWORKCLASS_ALIASED( BaseHL2MPCombatWeapon , DT_BaseHL2MPCombatWeapon
 BEGIN_NETWORK_TABLE( CBaseHL2MPCombatWeapon , DT_BaseHL2MPCombatWeapon )
 #if !defined( CLIENT_DLL )
 //	SendPropInt( SENDINFO( m_bReflectViewModelAnimations ), 1, SPROP_UNSIGNED ),
-	SendPropInt(SENDINFO(m_iPrimaryAttacks),
-	SendPropInt(SENDINFO(m_iSecondaryAttacks),
+	SendPropInt(SENDINFO(m_iPrimaryAttacks)),
+	SendPropInt(SENDINFO(m_iSecondaryAttacks)),
 #else
 //	RecvPropInt( RECVINFO( m_bReflectViewModelAnimations ) ),
-	RecvPropInt(RECVINFO(m_iPrimaryAttacks),
-	RecvPropInt(RECVINFO(m_iSecondaryAttacks),
+	RecvPropInt(RECVINFO(m_iPrimaryAttacks)),
+	RecvPropInt(RECVINFO(m_iSecondaryAttacks)),
 #endif
 END_NETWORK_TABLE()
 
