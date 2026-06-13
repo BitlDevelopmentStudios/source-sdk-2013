@@ -199,6 +199,7 @@ public:
 
 	void	PrimaryAttack( void );
 	virtual float GetFireRate( void ) { return 1; };
+	void	ItemPreFrame(void);
 	void	ItemPostFrame( void );
 
 	void	Activate( void );
@@ -264,6 +265,7 @@ public:
 	// We need to render opaque and translucent pieces
 	virtual RenderGroup_t	GetRenderGroup( void ) {	return RENDER_GROUP_TWOPASS;	}
 
+	virtual void	ClientThink(void);
 	virtual void	NotifyShouldTransmit( ShouldTransmitState_t state );
 	virtual int		DrawModel( int flags );
 	virtual void	ViewModelDrawn( C_BaseViewModel *pBaseViewModel );
