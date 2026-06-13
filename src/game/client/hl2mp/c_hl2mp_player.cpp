@@ -188,8 +188,11 @@ void C_HL2MP_Player::TraceAttack( const CTakeDamageInfo &info, const Vector &vec
 
 		if ( pAttacker )
 		{
-			if ( HL2MPRules()->IsTeamplay() && pAttacker->InSameTeam( this ) == true )
-				return;
+			if (pAttacker->InSameTeam(this) == true)
+			{
+				if (!friendlyfire.GetInt() && HL2MPRules()->PlayerRelationship(this, info.GetAttacker()) == GR_TEAMMATE)
+					return;
+			}
 		}
 
 		if ( blood != DONT_BLEED )
