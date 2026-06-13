@@ -14,6 +14,7 @@
 #include "baseachievement.h"
 #include "hl2mp_player_shared.h"
 #include "c_hl2mp_player.h"
+#include "hl2mp_gamerules.h"
 
 CAchievementMgr g_AchievementMgrAnticitizen;	// global achievement mgr for HL2
 
@@ -104,4 +105,125 @@ protected:
 	//earned through entity/s itself
 };
 DECLARE_ACHIEVEMENT(CAchievementKillCombineGravityGun, ACHIEVEMENT_ANTICITIZEN_KILL_COMBINE_GRAVITYGUN, "ANTICITIZEN_KILL_COMBINE_GRAVITYGUN", 10);
+
+class CAchievementCombineFriendlyFire : public CBaseAchievement
+{
+protected:
+	virtual void Init()
+	{
+		SetFlags(ACH_SAVE_GLOBAL | ACH_LISTEN_KILL_EVENTS | ACH_FILTER_ATTACKER_IS_PLAYER);
+		SetGoal(1);
+	}
+
+	virtual void Event_EntityKilled(CBaseEntity* pVictim, CBaseEntity* pAttacker, CBaseEntity* pInflictor, IGameEvent* event)
+	{
+		if (!pVictim || !pVictim->IsPlayer())
+			return;
+
+		if (pAttacker == C_BasePlayer::GetLocalPlayer())
+		{
+			// friendly fire kills
+			if (pVictim->GetTeamNumber() == pAttacker->GetTeamNumber())
+			{
+				// we killed a soldier
+				IncrementCount();
+			}
+		}
+	}
+};
+DECLARE_ACHIEVEMENT(CAchievementCombineFriendlyFire, ACHIEVEMENT_ANTICITIZEN_KILL_COMBINE_FRIENDLYFIRE, "ANTICITIZEN_KILL_COMBINE_FRIENDLYFIRE", 1);
+
+class CAchievementKillMilestone_Base : public CBaseAchievement
+{
+public:
+	virtual void Setup(int goal, int attackerTeam)
+	{
+		SetFlags(ACH_SAVE_GLOBAL | ACH_LISTEN_PLAYER_KILL_ENEMY_EVENTS);
+		SetGoal(goal);
+		m_iTeamNumber = attackerTeam;
+	}
+
+	virtual void Event_EntityKilled(CBaseEntity* pVictim, CBaseEntity* pAttacker, CBaseEntity* pInflictor, IGameEvent* event)
+	{
+		if (!pVictim || !pVictim->IsPlayer())
+			return;
+
+		if (pAttacker == C_BasePlayer::GetLocalPlayer())
+		{
+			// no friendly fire kills
+			if (pVictim->GetTeamNumber() != pAttacker->GetTeamNumber())
+			{
+				CHL2MP_Player* pHL2MPAttacker = ToHL2MPPlayer(pAttacker);
+				if (pHL2MPAttacker && (pHL2MPAttacker->GetTeamNumber() == m_iTeamNumber))
+				{
+					// we killed a soldier
+					IncrementCount();
+				}
+			}
+		}
+	}
+
+private:
+	int m_iTeamNumber;
+};
+
+class CAchievementCombineKillMilestone1 : public CAchievementKillMilestone_Base
+{
+protected:
+	virtual void Init()
+	{
+		Setup(25, TEAM_COMBINE);
+	}
+};
+DECLARE_ACHIEVEMENT(CAchievementCombineKillMilestone1, ACHIEVEMENT_ANTICITIZEN_COMBINE_MILESTONE_1, "ANTICITIZEN_COMBINE_MILESTONE_1", 10);
+
+class CAchievementCombineKillMilestone2 : public CAchievementKillMilestone_Base
+{
+protected:
+	virtual void Init()
+	{
+		Setup(50, TEAM_COMBINE);
+	}
+};
+DECLARE_ACHIEVEMENT(CAchievementCombineKillMilestone2, ACHIEVEMENT_ANTICITIZEN_COMBINE_MILESTONE_2, "ANTICITIZEN_COMBINE_MILESTONE_2", 10);
+
+class CAchievementCombineKillMilestone3 : public CAchievementKillMilestone_Base
+{
+protected:
+	virtual void Init()
+	{
+		Setup(75, TEAM_COMBINE);
+	}
+};
+DECLARE_ACHIEVEMENT(CAchievementCombineKillMilestone3, ACHIEVEMENT_ANTICITIZEN_COMBINE_MILESTONE_3, "ANTICITIZEN_COMBINE_MILESTONE_3", 10);
+
+class CAchievementFreemanKillMilestone1 : public CAchievementKillMilestone_Base
+{
+protected:
+	virtual void Init()
+	{
+		Setup(25, TEAM_FREEMAN);
+	}
+};
+DECLARE_ACHIEVEMENT(CAchievementFreemanKillMilestone1, ACHIEVEMENT_ANTICITIZEN_FREEMAN_MILESTONE_1, "ANTICITIZEN_FREEMAN_MILESTONE_1", 10);
+
+class CAchievementFreemanKillMilestone2 : public CAchievementKillMilestone_Base
+{
+protected:
+	virtual void Init()
+	{
+		Setup(50, TEAM_FREEMAN);
+	}
+};
+DECLARE_ACHIEVEMENT(CAchievementFreemanKillMilestone2, ACHIEVEMENT_ANTICITIZEN_FREEMAN_MILESTONE_2, "ANTICITIZEN_FREEMAN_MILESTONE_2", 10);
+
+class CAchievementFreemanKillMilestone3 : public CAchievementKillMilestone_Base
+{
+protected:
+	virtual void Init()
+	{
+		Setup(75, TEAM_FREEMAN);
+	}
+};
+DECLARE_ACHIEVEMENT(CAchievementFreemanKillMilestone3, ACHIEVEMENT_ANTICITIZEN_FREEMAN_MILESTONE_3, "ANTICITIZEN_FREEMAN_MILESTONE_3", 10);
 #endif // GAME_DLL
