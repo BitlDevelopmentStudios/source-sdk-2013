@@ -416,6 +416,8 @@ void CWeaponManhack::CheckThrowPosition( CBasePlayer *pPlayer, const Vector &vec
 //-----------------------------------------------------------------------------
 void CWeaponManhack::ThrowGrenade( CBasePlayer *pPlayer )
 {
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
+
 #ifndef CLIENT_DLL
 	CNPC_Manhack* pManhack = dynamic_cast<CNPC_Manhack*>(CreateEntityByName("npc_manhack"));
 	if (pManhack)
@@ -451,8 +453,6 @@ void CWeaponManhack::ThrowGrenade( CBasePlayer *pPlayer )
 		}
 	}
 
-	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
-
 	if (pHL2MPPlayer)
 	{
 		pHL2MPPlayer->SpeakSentence("DEPLOY_MANHACK");
@@ -465,7 +465,6 @@ void CWeaponManhack::ThrowGrenade( CBasePlayer *pPlayer )
 	WeaponSound( SINGLE );
 	
 	// player "shoot" animation
-	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
 	if (pHL2MPPlayer)
 	{
 		pHL2MPPlayer->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);

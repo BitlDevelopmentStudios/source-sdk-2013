@@ -14,7 +14,6 @@
 #include "baseachievement.h"
 #include "hl2mp_player_shared.h"
 #include "c_hl2mp_player.h"
-#include "hl2mp_gamerules.h"
 
 CAchievementMgr g_AchievementMgrAnticitizen;	// global achievement mgr for HL2
 
@@ -49,32 +48,11 @@ class CAchievementKillFreemanInLessTime : public CBaseAchievement
 protected:
 	virtual void Init()
 	{
-		SetFlags(ACH_SAVE_GLOBAL | ACH_LISTEN_PLAYER_KILL_ENEMY_EVENTS);
+		SetFlags(ACH_SAVE_GLOBAL);
 		SetGoal(1);
 	}
 
-	virtual void Event_EntityKilled(CBaseEntity* pVictim, CBaseEntity* pAttacker, CBaseEntity* pInflictor, IGameEvent* event)
-	{
-		if (!pVictim || !pVictim->IsPlayer())
-			return;
-
-		if (HL2MPRules()->GetTimeSinceGameStart() < 30.0f)
-		{
-			if (pAttacker == C_BasePlayer::GetLocalPlayer())
-			{
-				// no friendly fire kills
-				if (pVictim->GetTeamNumber() != pAttacker->GetTeamNumber())
-				{
-					CHL2MP_Player* pHL2MPVictim = ToHL2MPPlayer(pVictim);
-					if (pHL2MPVictim && (pHL2MPVictim->GetPlayerClass() == CLS_FREEMAN))
-					{
-						// we killed a soldier
-						IncrementCount();
-					}
-				}
-			}
-		}
-	}
+	//earned through entity/s itself
 };
 DECLARE_ACHIEVEMENT(CAchievementKillFreemanInLessTime, ACHIEVEMENT_ANTICITIZEN_KILL_FREEMAN_LESSTIME, "ANTICITIZEN_KILL_FREEMAN_LESSTIME", 10);
 
@@ -113,4 +91,17 @@ protected:
 	}
 };
 DECLARE_ACHIEVEMENT(CAchievementKillCombineWithCrowbar, ACHIEVEMENT_ANTICITIZEN_KILL_COMBINE_CROWBAR, "ANTICITIZEN_KILL_COMBINE_CROWBAR", 10);
+
+class CAchievementKillCombineGravityGun : public CBaseAchievement
+{
+protected:
+	virtual void Init()
+	{
+		SetFlags(ACH_SAVE_GLOBAL);
+		SetGoal(1);
+	}
+
+	//earned through entity/s itself
+};
+DECLARE_ACHIEVEMENT(CAchievementKillCombineGravityGun, ACHIEVEMENT_ANTICITIZEN_KILL_COMBINE_GRAVITYGUN, "ANTICITIZEN_KILL_COMBINE_GRAVITYGUN", 10);
 #endif // GAME_DLL

@@ -12,6 +12,8 @@
 #include "ammodef.h"
 #include "fmtstr.h"
 #include "achievements_anticitizen.h"
+#include "achievementmgr.h"
+#include "weapon_hl2mpbasehlmpcombatweapon.h"
 
 #ifdef CLIENT_DLL
 	#include "c_hl2mp_player.h"
@@ -32,14 +34,13 @@
 	#include "voice_gamemgr.h"
 	#include "iscorer.h"
 	#include "hl2mp_player.h"
-	#include "weapon_hl2mpbasehlmpcombatweapon.h"
 	#include "team.h"
 	#include "voice_gamemgr.h"
 	#include "hl2mp_gameinterface.h"
 	#include "hl2mp_cvars.h"
 	#include "player_resource.h"
 	#include "anticitizen_player_resource.h"
-	#include <bot/hl2mp_bot.h>
+	#include "bot/hl2mp_bot.h"
 
 extern void respawn(CBaseEntity *pEdict, bool fCopyCorpse);
 
@@ -252,17 +253,17 @@ CHL2MPRules::CHL2MPRules()
 //			weapons (except grav gun).  If bBulletOnly is true, only counts
 //			attacks with ammo that does bullet damage.
 //-----------------------------------------------------------------------------
-int CalcFreemanAttacks(CBasePlayer *pFreeman, bool bBulletOnly)
+int CalcPlayerAttacks(CBasePlayer *pPlayer, bool bBulletOnly)
 {
 	CAmmoDef* pAmmoDef = GetAmmoDef();
-	if (!pFreeman || !pAmmoDef)
+	if (!pPlayer || !pAmmoDef)
 		return 0;
 
 	int iTotalAttacks = 0;
-	int iWeapons = pFreeman->WeaponCount();
+	int iWeapons = pPlayer->WeaponCount();
 	for (int i = 0; i < iWeapons; i++)
 	{
-		CBaseHL2MPCombatWeapon* pWeapon = dynamic_cast<CBaseHL2MPCombatWeapon*>(pFreeman->GetWeapon(i));
+		CBaseHL2MPCombatWeapon* pWeapon = dynamic_cast<CBaseHL2MPCombatWeapon*>(pPlayer->GetWeapon(i));
 		if (pWeapon)
 		{
 			// add primary attacks if we were asked for all attacks, or only if it uses bullet ammo if we were asked to count bullet attacks
@@ -282,12 +283,16 @@ int CalcFreemanAttacks(CBasePlayer *pFreeman, bool bBulletOnly)
 
 int CHL2MPRules::GetFreemanBulletsShot()
 {
+#ifndef CLIENT_DLL
 	if (!pFreeman)
 		return -1;
 
 	// get # of attacks w/bullet weapons
-	int iBulletAttackCount = CalcFreemanAttacks(pFreeman, true);
+	int iBulletAttackCount = CalcPlayerAttacks(pFreeman, true);
 	return iBulletAttackCount;
+#else
+	return 0;
+#endif
 }
 
 const CViewVectors* CHL2MPRules::GetViewVectors()const
@@ -705,6 +710,20 @@ void CHL2MPRules::AwardGameEndAchievements()
 				if (!bCombineLost)
 				{
 					achID = ACHIEVEMENT_ANTICITIZEN_KILL_FREEMAN;
+
+					// award the time achievement if we already got the first one.
+					CAchievementMgr* pAchievementMgr = dynamic_cast<CAchievementMgr*>(engine->GetAchievementMgr());
+					if (pAchievementMgr)
+					{
+						IAchievement* pAchievement = pAchievementMgr->GetAchievementByID(achID);
+						if (pAchievement && pAchievement->IsAchieved())
+						{
+							if (HL2MPRules()->GetTimeSinceGameStart() < 30.0f)
+							{
+								achID = ACHIEVEMENT_ANTICITIZEN_KILL_FREEMAN_LESSTIME;
+							}
+						}
+					}
 				}
 				else
 				{
@@ -716,6 +735,20 @@ void CHL2MPRules::AwardGameEndAchievements()
 				if (!bFreemanLost)
 				{
 					achID = ACHIEVEMENT_ANTICITIZEN_KILL_COMBINE;
+
+					// award the gravity gun achievement if we already got the first one.
+					CAchievementMgr* pAchievementMgr = dynamic_cast<CAchievementMgr*>(engine->GetAchievementMgr());
+					if (pAchievementMgr)
+					{
+						IAchievement* pAchievement = pAchievementMgr->GetAchievementByID(achID);
+						if (pAchievement && pAchievement->IsAchieved())
+						{
+							if (GetFreemanBulletsShot() == 0)
+							{
+								achID = ACHIEVEMENT_ANTICITIZEN_KILL_COMBINE_GRAVITYGUN;
+							}
+						}
+					}
 				}
 				else
 				{
