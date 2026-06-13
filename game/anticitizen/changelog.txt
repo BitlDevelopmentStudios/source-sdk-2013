@@ -13,6 +13,7 @@ Alpha Technical Test v2:
 - Fixed a bug where player glows persist between rounds.
 - Elites now drop AR2 Alt Fire on death.
 - Increased the damage of Elite Combine Energy Balls from 50 to 75.
+- Enabled Friendly Fire by default to simulate Combine NPC behavior.
 
 Alpha Technical Test v1.1:
 - Improved Discord RPC.
