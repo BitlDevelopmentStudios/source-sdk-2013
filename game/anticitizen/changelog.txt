@@ -1,5 +1,7 @@
 Alpha Technical Test v3:
 - Added achievements!
+- Fixed a bug where blood effects don't show with friendly fire on.
+- Improved player ID text.
 
 Alpha Technical Test v2:
 - Hid the "Remaining soldiers" counter on the Combine side in favor of a life counter.
