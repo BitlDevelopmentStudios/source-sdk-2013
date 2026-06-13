@@ -55,6 +55,10 @@ protected:
 	float			m_flRaiseTime;		// If lowered, the time we should raise the viewmodel
 	float			m_flHolsterTime;	// When the weapon was holstered
 
+public:
+	CNetworkVar(int, m_iPrimaryAttacks);
+	CNetworkVar(int, m_iSecondaryAttacks);
+
 private:
 	
 	CBaseHL2MPCombatWeapon( const CBaseHL2MPCombatWeapon & );

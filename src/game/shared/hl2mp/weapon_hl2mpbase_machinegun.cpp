@@ -70,6 +70,7 @@ void CHL2MPMachineGun::PrimaryAttack( void )
 		return;
 
 	m_nShotsFired++;
+	m_iPrimaryAttacks++;
 
 	pPlayer->DoMuzzleFlash();
 

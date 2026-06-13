@@ -444,6 +444,8 @@ void CWeaponShotgun::PrimaryAttack( void )
 	FireBulletsInfo_t info( 7, vecSrc, vecAiming, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType );
 	info.m_pAttacker = pPlayer;
 
+	m_iPrimaryAttacks++;
+
 	// Fire the bullets, and force the first shot to be perfectly accuracy
 	pPlayer->FireBullets( info );
 
@@ -511,6 +513,8 @@ void CWeaponShotgun::SecondaryAttack( void )
 	pPlayer->SetMuzzleFlashTime(gpGlobals->curtime + 1.0);
 	CSoundEnt::InsertSound(SOUND_COMBAT, GetAbsOrigin(), SOUNDENT_VOLUME_SHOTGUN, 0.2);
 #endif
+
+	m_iSecondaryAttacks++;
 
 	if (!m_iClip1 && pPlayer->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
 	{

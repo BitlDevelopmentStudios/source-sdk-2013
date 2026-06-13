@@ -249,6 +249,8 @@ void CWeapon_SLAM::PrimaryAttack( void )
 			StartSatchelAttach();
 			break;
 	}
+
+	m_iPrimaryAttacks++;
 }
 
 //-----------------------------------------------------------------------------
@@ -268,6 +270,8 @@ void CWeapon_SLAM::SecondaryAttack( void )
 	{
 		StartSatchelDetonate();
 	}
+
+	m_iSecondaryAttacks++;
 }
 
 //-----------------------------------------------------------------------------

@@ -1694,6 +1694,7 @@ void CWeaponRPG::PrimaryAttack( void )
 	}
 #endif
 
+	m_iPrimaryAttacks++;
 	DecrementAmmo( GetOwner() );
 	SendWeaponAnim( ACT_VM_PRIMARYATTACK );
 	WeaponSound( SINGLE );

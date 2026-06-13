@@ -451,6 +451,8 @@ void DropPrimedFragGrenade( CHL2MP_Player *pPlayer, CBaseCombatWeapon *pGrenade 
 //-----------------------------------------------------------------------------
 void CWeaponFrag::ThrowGrenade( CBasePlayer *pPlayer )
 {
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
+
 #ifndef CLIENT_DLL
 	Vector	vecEye = pPlayer->EyePosition();
 	Vector	vForward, vRight;
@@ -485,11 +487,15 @@ void CWeaponFrag::ThrowGrenade( CBasePlayer *pPlayer )
 #endif
 
 	m_bRedraw = true;
+	m_iPrimaryAttacks++;
 
 	WeaponSound( SINGLE );
 	
 	// player "shoot" animation
-	pPlayer->SetAnimation( PLAYER_ATTACK1 );
+	if (pHL2MPPlayer)
+	{
+		pHL2MPPlayer->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
+	}
 
 #ifdef GAME_DLL
 	pPlayer->OnMyWeaponFired( this );
@@ -502,6 +508,8 @@ void CWeaponFrag::ThrowGrenade( CBasePlayer *pPlayer )
 //-----------------------------------------------------------------------------
 void CWeaponFrag::LobGrenade( CBasePlayer *pPlayer )
 {
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
+
 #ifndef CLIENT_DLL
 	Vector	vecEye = pPlayer->EyePosition();
 	Vector	vForward, vRight;
@@ -524,8 +532,12 @@ void CWeaponFrag::LobGrenade( CBasePlayer *pPlayer )
 
 	WeaponSound( WPN_DOUBLE );
 
+	m_iPrimaryAttacks++;
 	// player "shoot" animation
-	pPlayer->SetAnimation( PLAYER_ATTACK1 );
+	if (pHL2MPPlayer)
+	{
+		pHL2MPPlayer->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
+	}
 
 	m_bRedraw = true;
 }
@@ -536,6 +548,8 @@ void CWeaponFrag::LobGrenade( CBasePlayer *pPlayer )
 //-----------------------------------------------------------------------------
 void CWeaponFrag::RollGrenade( CBasePlayer *pPlayer )
 {
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
+
 #ifndef CLIENT_DLL
 	// BUGBUG: Hardcoded grenade width of 4 - better not change the model :)
 	Vector vecSrc;
@@ -572,13 +586,16 @@ void CWeaponFrag::RollGrenade( CBasePlayer *pPlayer )
 		pGrenade->SetDamage( GetHL2MPWpnData().m_iPlayerDamage );
 		pGrenade->SetDamageRadius( GRENADE_DAMAGE_RADIUS );
 	}
-
 #endif
 
 	WeaponSound( SPECIAL1 );
 
+	m_iPrimaryAttacks++;
 	// player "shoot" animation
-	pPlayer->SetAnimation( PLAYER_ATTACK1 );
+	if (pHL2MPPlayer)
+	{
+		pHL2MPPlayer->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
+	}
 
 	m_bRedraw = true;
 }
