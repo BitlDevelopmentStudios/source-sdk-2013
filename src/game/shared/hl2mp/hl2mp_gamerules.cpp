@@ -1588,9 +1588,9 @@ void CHL2MPRules::RestartGame(bool gameend)
 		m_bAnnouncedGameStart = false;
 		m_bAnnouncedGameEnd = false;
 		m_bGaveGameEndAchievements = false;
-		m_flTimeSinceGameStart = 0;
 	}
 
+	m_flTimeSinceGameStart = 0;
 	m_flIntermissionEndTime = 0;
 	m_bIsInIntermission = false;
 	m_flGameEndTime = 0;
