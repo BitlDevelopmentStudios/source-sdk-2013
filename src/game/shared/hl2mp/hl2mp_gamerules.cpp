@@ -954,6 +954,7 @@ void CHL2MPRules::GoToIntermission( void )
 	m_flGameEndTime = m_flIntermissionEndTime = gpGlobals->curtime + mp_chattime.GetInt();
 	m_iTimerType = TIMERSTATE_RESTART;
 	m_bIsInIntermission = true;
+	m_flTimeSinceGameStart = 0;
 
 	for ( int i = 0; i < MAX_PLAYERS; i++ )
 	{
