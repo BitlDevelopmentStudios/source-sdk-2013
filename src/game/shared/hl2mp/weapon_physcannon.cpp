@@ -2058,6 +2058,7 @@ void CWeaponPhysCannon::PrimaryAttack( void )
 
 	// If not active, just issue a physics punch in the world.
 	m_flNextPrimaryAttack = gpGlobals->curtime + 0.5f;
+	m_iPrimaryAttacks++;
 
 	Vector forward;
 	pOwner->EyeVectors( &forward );
@@ -2213,6 +2214,8 @@ void CWeaponPhysCannon::SecondaryAttack( void )
 	
 	if ( pOwner == NULL )
 		return;
+
+	m_iSecondaryAttacks++;
 
 	// See if we should drop a held item
 	if ( ( m_bActive ) && ( pOwner->m_afButtonPressed & IN_ATTACK2 ) )
