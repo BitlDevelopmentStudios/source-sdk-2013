@@ -10,6 +10,9 @@ Alpha Technical Test v2:
 - Fixed a bug where the Player ID UI would remain on screen after respawning.
 - Fixed a bug where the RPG laser sometimes still shows up after dropping the weapon.
 - Fixed the loading background not changing size when changing resolutions.
+- Fixed a bug where player glows persist between rounds.
+- Elites now drop AR2 Alt Fire on death.
+- Increased the damage of Elite Combine Energy Balls from 50 to 75.
 
 Alpha Technical Test v1.1:
 - Improved Discord RPC.

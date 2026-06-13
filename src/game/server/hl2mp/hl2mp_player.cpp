@@ -250,6 +250,10 @@ void CHL2MP_Player::Precache( void )
 	PrecacheScriptSound( "NPC_MetroPolice.Die" );
 	PrecacheScriptSound( "NPC_CombineS.Die" );
 	PrecacheScriptSound( "NPC_Citizen.die" );
+
+	UTIL_PrecacheOther("item_healthvial");
+	UTIL_PrecacheOther("weapon_frag");
+	UTIL_PrecacheOther("item_ammo_ar2_altfire");
 }
 
 void CHL2MP_Player::GiveAllItems( void )
@@ -1583,6 +1587,45 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 				{
 					DropItem("weapon_frag", WorldSpaceCenter() + RandomVector(-4, 4), RandomAngle(0, 360));
 					pHL2GameRules->NPC_DroppedGrenade();
+				}
+			}
+
+			CBaseCombatWeapon* pAR2 = Weapon_OwnsThisType("weapon_ar2");
+
+			if (pAR2)
+			{
+				if (GetPlayerClass() > CLS_INVALID)
+				{
+					const CAnticitizen_FilePlayerClassInfo_t& clsinfo = GetPlayerClassInfo();
+
+					if (clsinfo.iClassType == CLS_TYPE_HIGH_TIER) // if we're at or under mid, skip.
+					{
+						CBaseEntity* pItem = DropItem("item_ammo_ar2_altfire", WorldSpaceCenter() + RandomVector(-4, 4), RandomAngle(0, 360));
+
+						if (pItem)
+						{
+							IPhysicsObject* pObj = pItem->VPhysicsGetObject();
+
+							if (pObj)
+							{
+								Vector			vel = RandomVector(-64.0f, 64.0f);
+								AngularImpulse	angImp = RandomAngularImpulse(-300.0f, 300.0f);
+
+								vel[2] = 0.0f;
+								pObj->AddVelocity(&vel, &angImp);
+							}
+
+							if (info.GetDamageType() & DMG_DISSOLVE)
+							{
+								CBaseAnimating* pAnimating = dynamic_cast<CBaseAnimating*>(pItem);
+
+								if (pAnimating)
+								{
+									pAnimating->Dissolve(NULL, gpGlobals->curtime, false, ENTITY_DISSOLVE_NORMAL);
+								}
+							}
+						}
+					}
 				}
 			}
 		}

@@ -386,9 +386,8 @@ void CHL2MPRules::CheckLastMemberLeft(void)
 			pPlayer->SetGlowMode(1);
 			Color teamColor = COLOR_RED;
 			pPlayer->SetGlowColor(teamColor.r(), teamColor.g(), teamColor.b(), teamColor.a());
+			m_bLastSquadMemberAnnounced = true;
 		}
-
-		m_bLastSquadMemberAnnounced = true;
 	}
 #endif
 }
@@ -705,6 +704,7 @@ void CHL2MPRules::Think( void )
 				}
 
 				Announce();
+				CheckLastMemberLeft();
 
 				m_iGameEndReason = CheckCanEndGame();
 
@@ -821,6 +821,7 @@ void CHL2MPRules::GoToIntermission( void )
 		pPlayer->AddFlag( FL_FROZEN );
 		pPlayer->AddFlag(FL_GODMODE);
 		pPlayer->AddFlag(FL_NOTARGET);
+		pPlayer->ToggleGlow(false);
 	}
 #endif
 	
@@ -845,6 +846,7 @@ void CHL2MPRules::LeaveIntermission(void)
 		pPlayer->RemoveFlag(FL_FROZEN);
 		pPlayer->RemoveFlag(FL_GODMODE);
 		pPlayer->RemoveFlag(FL_NOTARGET);
+		pPlayer->ToggleGlow(false);
 	}
 #endif
 

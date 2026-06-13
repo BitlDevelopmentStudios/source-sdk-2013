@@ -320,7 +320,7 @@ void C_HL2MP_Player::DrawOverlay(void)
 
 	if (IsLocalPlayer())
 	{
-		if (GetTeamNumber() == TEAM_COMBINE)
+		if (GetTeamNumber() == TEAM_COMBINE && IsAlive())
 		{
 			if (GetPlayerClass() > CLS_METROPOLICE)
 			{
