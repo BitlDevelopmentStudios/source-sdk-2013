@@ -718,7 +718,7 @@ void CHL2MPRules::AwardGameEndAchievements()
 						IAchievement* pAchievement = pAchievementMgr->GetAchievementByID(achID);
 						if (pAchievement && pAchievement->IsAchieved())
 						{
-							if (HL2MPRules()->GetTimeSinceGameStart() < 30.0f)
+							if (HL2MPRules()->GetTimeSinceGameStart() < 420.0f)
 							{
 								achID = ACHIEVEMENT_ANTICITIZEN_KILL_FREEMAN_LESSTIME;
 							}
