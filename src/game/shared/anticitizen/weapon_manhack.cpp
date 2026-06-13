@@ -460,11 +460,16 @@ void CWeaponManhack::ThrowGrenade( CBasePlayer *pPlayer )
 #endif
 
 	m_bRedraw = true;
+	m_iPrimaryAttacks++;
 
 	WeaponSound( SINGLE );
 	
 	// player "shoot" animation
-	pPlayer->SetAnimation( PLAYER_ATTACK1 );
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
+	if (pHL2MPPlayer)
+	{
+		pHL2MPPlayer->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
+	}
 
 #ifdef GAME_DLL
 	pPlayer->OnMyWeaponFired( this );

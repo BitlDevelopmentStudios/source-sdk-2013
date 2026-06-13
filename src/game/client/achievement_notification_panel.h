@@ -11,14 +11,14 @@
 #pragma once
 #endif
 
-#include <vgui_controls/EditablePanel.h>
+#include "game_controls/panel_teamcolored.h"
 #include "hudelement.h"
 
 using namespace vgui;
 
-class CAchievementNotificationPanel : public CHudElement, public EditablePanel
+class CAchievementNotificationPanel : public CHudElement, public CEditablePanelTeamColored
 {
-	DECLARE_CLASS_SIMPLE( CAchievementNotificationPanel, EditablePanel );
+	DECLARE_CLASS_SIMPLE( CAchievementNotificationPanel, CEditablePanelTeamColored);
 
 public:
 	CAchievementNotificationPanel( const char *pElementName );
@@ -39,8 +39,8 @@ private:
 
 	float m_flHideTime;
 
-	Label *m_pLabelHeading;
-	Label *m_pLabelTitle;
+	CLabelTeamColored *m_pLabelHeading;
+	CLabelTeamColored *m_pLabelTitle;
 	EditablePanel *m_pPanelBackground;
 	ImagePanel *m_pIcon;
 

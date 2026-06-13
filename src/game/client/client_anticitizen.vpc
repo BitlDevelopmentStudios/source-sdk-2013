@@ -161,6 +161,8 @@ $Project "Client (ANTICITIZEN)"
 			$File	"anticitizen\anticitizen_hud_timer.cpp"
 			$File	"anticitizen\anticitizen_hud_troops.cpp"
 			$File	"anticitizen\anticitizen_hud_lives.cpp"
+			$File	"$SRCDIR\game\shared\anticitizen\achievements_anticitizen.cpp"
+			$File	"$SRCDIR\game\shared\anticitizen\achievements_anticitizen.h"
 			
 			$Folder	"Weapons"
 			{

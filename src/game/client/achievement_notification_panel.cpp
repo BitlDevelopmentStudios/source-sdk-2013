@@ -49,8 +49,8 @@ CAchievementNotificationPanel::CAchievementNotificationPanel( const char *pEleme
 	m_flHideTime = 0;
 	m_pPanelBackground = new EditablePanel( this, "Notification_Background" );
 	m_pIcon = new ImagePanel( this, "Notification_Icon" );
-	m_pLabelHeading = new Label( this, "HeadingLabel", "" );
-	m_pLabelTitle = new Label( this, "TitleLabel", "" );
+	m_pLabelHeading = new CLabelTeamColored( this, "HeadingLabel", "" );
+	m_pLabelTitle = new CLabelTeamColored( this, "TitleLabel", "" );
 
 	m_pIcon->SetShouldScaleImage( true );
 

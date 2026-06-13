@@ -11,6 +11,7 @@
 #include <KeyValues.h>
 #include "ammodef.h"
 #include "fmtstr.h"
+#include "achievements_anticitizen.h"
 
 #ifdef CLIENT_DLL
 	#include "c_hl2mp_player.h"
@@ -75,13 +76,15 @@ RecvPropFloat(RECVINFO(m_flGameStartTime)),
 RecvPropFloat(RECVINFO(m_flGameEndTime)),
 RecvPropInt(RECVINFO(m_iTimerType)),
 RecvPropInt(RECVINFO(m_iSoldiers)),
+RecvPropFloat(RECVINFO(m_flTimeSinceGameStart)),
 #else
 SendPropBool(SENDINFO(m_bTeamPlayEnabled)),
 SendPropBool(SENDINFO(m_bIsInIntermission)),
 SendPropFloat(SENDINFO(m_flGameStartTime)),
 SendPropFloat(SENDINFO(m_flGameEndTime)),
 SendPropInt(SENDINFO(m_iTimerType)),
-SendPropInt(SENDINFO(m_iSoldiers))
+SendPropInt(SENDINFO(m_iSoldiers)),
+SendPropFloat(SENDINFO(m_flTimeSinceGameStart)),
 #endif
 END_NETWORK_TABLE()
 
@@ -219,6 +222,7 @@ CHL2MPRules::CHL2MPRules()
 	m_bIsInIntermission = false;
 	m_flGameStartTime = 0;
 	m_flGameEndTime = 0;
+	m_flTimeSinceGameStart = 0;
 	m_iTimerType = TIMERSTATE_NONE;
 	m_iSoldiers = 0;
 	// the init state is round 1.
@@ -235,11 +239,55 @@ CHL2MPRules::CHL2MPRules()
 	m_bStartedStartClock = false;
 	m_bAnnouncedGameStart = false;
 	m_bAnnouncedGameEnd = false;
+	m_bGaveGameEndAchievements = false;
 	m_uiFreemanID = 0;
 	m_uiLastFreemanID = 0;
 	m_iNumTimesFreemanIDShowedUpIFuckingHateThis = 0;
 
 #endif
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Counts the accumulated # of primary and secondary attacks from all
+//			weapons (except grav gun).  If bBulletOnly is true, only counts
+//			attacks with ammo that does bullet damage.
+//-----------------------------------------------------------------------------
+int CalcFreemanAttacks(CBasePlayer *pFreeman, bool bBulletOnly)
+{
+	CAmmoDef* pAmmoDef = GetAmmoDef();
+	if (!pFreeman || !pAmmoDef)
+		return 0;
+
+	int iTotalAttacks = 0;
+	int iWeapons = pFreeman->WeaponCount();
+	for (int i = 0; i < iWeapons; i++)
+	{
+		CBaseHL2MPCombatWeapon* pWeapon = dynamic_cast<CBaseHL2MPCombatWeapon*>(pFreeman->GetWeapon(i));
+		if (pWeapon)
+		{
+			// add primary attacks if we were asked for all attacks, or only if it uses bullet ammo if we were asked to count bullet attacks
+			if (!bBulletOnly || (pAmmoDef->m_AmmoType[pWeapon->GetPrimaryAmmoType()].nDamageType == DMG_BULLET))
+			{
+				iTotalAttacks += pWeapon->m_iPrimaryAttacks;
+			}
+			// add secondary attacks if we were asked for all attacks, or only if it uses bullet ammo if we were asked to count bullet attacks
+			if (!bBulletOnly || (pAmmoDef->m_AmmoType[pWeapon->GetSecondaryAmmoType()].nDamageType == DMG_BULLET))
+			{
+				iTotalAttacks += pWeapon->m_iSecondaryAttacks;
+			}
+		}
+	}
+	return iTotalAttacks;
+}
+
+int CHL2MPRules::GetFreemanBulletsShot()
+{
+	if (!pFreeman)
+		return -1;
+
+	// get # of attacks w/bullet weapons
+	int iBulletAttackCount = CalcFreemanAttacks(pFreeman, true);
+	return iBulletAttackCount;
 }
 
 const CViewVectors* CHL2MPRules::GetViewVectors()const
@@ -621,6 +669,68 @@ void CHL2MPRules::Announce(bool gameend)
 #endif
 }
 
+void CHL2MPRules::AwardGameEndAchievements()
+{
+#ifndef CLIENT_DLL
+	if (!m_bGaveGameEndAchievements)
+	{
+		bool bFreemanLost = false;
+		bool bCombineLost = false;
+
+		switch (m_iGameEndReason)
+		{
+			case GAME_END_FREEMANDEAD:
+			{
+				bFreemanLost = true;
+				break;
+			}
+			case GAME_END_NOMORESOLDIERS:
+			{
+				bCombineLost = true;
+				break;
+			}
+		}
+
+		int achID = 0;
+
+		for (int i = 0; i < MAX_PLAYERS; i++)
+		{
+			CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+
+			if (!pPlayer)
+				continue;
+
+			if (pPlayer->GetTeamNumber() == TEAM_COMBINE)
+			{
+				if (!bCombineLost)
+				{
+					achID = ACHIEVEMENT_ANTICITIZEN_KILL_FREEMAN;
+				}
+				else
+				{
+					continue;
+				}
+			}
+			else if (pPlayer->GetTeamNumber() == TEAM_FREEMAN)
+			{
+				if (!bFreemanLost)
+				{
+					achID = ACHIEVEMENT_ANTICITIZEN_KILL_COMBINE;
+				}
+				else
+				{
+					continue;
+				}
+			}
+
+			pPlayer->AwardAchievement(achID);
+		}
+
+		m_bGaveGameEndAchievements = true;
+	}
+#endif
+}
+
 void CHL2MPRules::Think( void )
 {
 
@@ -669,6 +779,7 @@ void CHL2MPRules::Think( void )
 					}
 
 					m_flGameStartTime = gpGlobals->curtime + sv_startplaywaitime.GetInt();
+					m_flTimeSinceGameStart = gpGlobals->curtime;
 				}
 				else
 				{
@@ -784,6 +895,7 @@ void CHL2MPRules::Think( void )
 					}
 
 					Announce(true);
+					AwardGameEndAchievements();
 
 					SendHudMessage(NULL, szPhrase, 0.5f);
 				}
@@ -1442,6 +1554,8 @@ void CHL2MPRules::RestartGame(bool gameend)
 
 		m_bAnnouncedGameStart = false;
 		m_bAnnouncedGameEnd = false;
+		m_bGaveGameEndAchievements = false;
+		m_flTimeSinceGameStart = 0;
 	}
 
 	m_flIntermissionEndTime = 0;

@@ -191,15 +191,20 @@ public:
 
 	float GetMapRemainingTime();
 
+	float GetTimeSinceGameStart() { return (gpGlobals->curtime - m_flTimeSinceGameStart); }
+
 	int GetTimerState() { return m_iTimerType; }
 
 	void Announce(bool gameend = false);
+	void AwardGameEndAchievements();
+	int GetFreemanBulletsShot();
 	
 private:
 	
 	CNetworkVar( bool, m_bTeamPlayEnabled );
 	CNetworkVar( bool, m_bIsInIntermission );
 	CNetworkVar( float, m_flGameStartTime );
+	CNetworkVar( float, m_flTimeSinceGameStart );
 	CNetworkVar( float, m_flGameEndTime );
 	CNetworkVar( int, m_iTimerType );
 	CNetworkVar(int, m_iSoldiers);
@@ -215,6 +220,7 @@ private:
 	bool m_bLastSquadMemberAnnounced;
 	bool m_bAnnouncedGameStart;
 	bool m_bAnnouncedGameEnd;
+	bool m_bGaveGameEndAchievements;
 
 #ifndef CLIENT_DLL
 	//may be disasterous

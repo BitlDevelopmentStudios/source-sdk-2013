@@ -325,6 +325,8 @@ void CWeaponTurret::SpawnTurret(void)
 #endif
 	MoveHologram();
 
+	m_iPrimaryAttacks++;
+
 	DecrementAmmo(pOwner);
 }
 
@@ -360,7 +362,12 @@ void CWeaponTurret::PrimaryAttack(void)
 
 	WeaponSound(SINGLE);
 	SendWeaponAnim(ACT_SLAM_TRIPMINE_ATTACH);
-	pPlayer->SetAnimation(PLAYER_ATTACK1);
+
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
+	if (pHL2MPPlayer)
+	{
+		pHL2MPPlayer->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
+	}
 
 	m_flNextPrimaryAttack = gpGlobals->curtime + (SequenceDuration() * 0.3f);
 	//sequence duration dictates turret spawn.
@@ -376,6 +383,8 @@ void CWeaponTurret::SecondaryAttack(void)
 		m_iDesiredBuildRotations = m_iDesiredBuildRotations % 4;
 	}
 #endif
+
+	m_iSecondaryAttacks++;
 
 	m_flNextSecondaryAttack = gpGlobals->curtime + 0.3f;
 }
