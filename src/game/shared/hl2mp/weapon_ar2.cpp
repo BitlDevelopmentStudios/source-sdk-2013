@@ -442,6 +442,7 @@ void CWeaponAR2::SecondaryAttack( void )
 		return;
 	}
 
+	m_iSecondaryAttacks++;
 	m_bShotDelayed = true;
 	m_flNextEmptySoundTime = m_flNextPrimaryAttack = m_flNextSecondaryAttack = m_flDelayedFire = gpGlobals->curtime + 0.5f;
 

@@ -408,6 +408,8 @@ void CWeaponSMG1::SecondaryAttack( void )
 
 	SendWeaponAnim( ACT_VM_SECONDARYATTACK );
 
+	m_iSecondaryAttacks++;
+
 	// player "shoot" animation
 	pPlayer->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
 

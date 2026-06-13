@@ -144,6 +144,7 @@ void CWeapon357::PrimaryAttack( void )
 		return;
 	}
 
+	m_iPrimaryAttacks++;
 	WeaponSound( SINGLE );
 	pPlayer->DoMuzzleFlash();
 

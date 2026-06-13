@@ -388,6 +388,7 @@ void CBaseHL2MPBludgeonWeapon::Swing( int bIsSecondary )
 	}
 
 	WeaponSound( SINGLE );
+	m_iPrimaryAttacks++;
 
 	// -------------------------
 	//	Miss

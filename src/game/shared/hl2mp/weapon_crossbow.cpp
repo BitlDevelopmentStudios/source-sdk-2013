@@ -663,6 +663,7 @@ void CWeaponCrossbow::FireBolt( void )
 
 	m_iClip1--;
 
+	m_iPrimaryAttacks++;
 	pOwner->ViewPunch( QAngle( -2, 0, 0 ) );
 
 	WeaponSound( SINGLE );
