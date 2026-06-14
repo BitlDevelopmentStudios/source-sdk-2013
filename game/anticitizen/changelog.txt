@@ -3,6 +3,7 @@ Alpha Technical Test v3:
 - Fixed a bug where blood effects don't show with friendly fire on.
 - Improved player ID text.
 - Enabled access to the Quick Search/Serverfinder system.
+- Fixed mp_disable_respawn_times not working as intended.
 
 Alpha Technical Test v2:
 - Hid the "Remaining soldiers" counter on the Combine side in favor of a life counter.
