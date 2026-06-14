@@ -1,3 +1,25 @@
+Tony Sergi for his HL2MP changes from https://github.com/tonysergi/source-sdk-2013/.
+Saul's code for give autocomplete and colored chat console messages from https://github.com/saul/source-sdk-2013
+Source Engine Co-Operative Base Modification (SecobMod) with Winston's multiplayer NPC support https://developer.valvesoftware.com/wiki/Co-Operative_Base_(Mod)
+c_arms support for https://developer.valvesoftware.com/wiki/Hand_Viewmodels
+This mod uses LUX Shaders. https://github.com/LUX-Shaders-Team/LUX-Shaders
+
+The Mapbase team for MP fixes as well as their implementation of Tony Sergi's, Saul's, and SecobMod's code as well as fixes for aformentioned code.
+The SecobMod implementation uses code from dutchmega's Collaborate mod (https://developer.valvesoftware.com/wiki/Collaborate)
+Iván Bravo Bravo for the NPC AI node generation code.
+Sirmasters from BSNOOCH, for making the Mapadd code. (Part of SMMOD)
+Saul Rennison for his RTT shadow angle code (https://developer.valvesoftware.com/wiki/Dynamic_RTT_shadow_angles_in_Orange_Box_branch)
+Zeldaboy14 and ficool2 for their LUX Shaders fix.
+The Open Fortress team for the PATTACH_BONE_FOLLOW implementation. All code from Open Fortress is based on the previously public source code of the Alpha release of the mod.
+ficool2 for his Skybox patch.
+ficool2 and Totterynine for various changes from Coolsource, including a save/restore patch and a patch that fixes the cl_localnetworkbackdoor crash (https://github.com/Totterynine/cool-source-sdk)
+This repository implements fixes and improvments from the VDC, including:
+https://developer.valvesoftware.com/wiki/General_SDK_Snippets_%26_Fixes
+https://developer.valvesoftware.com/wiki/Detail_props/Aspect_ratio_fix
+https://developer.valvesoftware.com/wiki/Env_projectedtexture/fixes
+https://developer.valvesoftware.com/wiki/Muzzle_Flash_Lighting
+https://developer.valvesoftware.com/wiki/Simple_Projectile_Bullets (partial implementation)
+
 Taito for various assets/animations from Half-Life 2 Survivor Ver 2.0, such as the manhack weapon model.
 
 Klow on the Combine Overwiki for the following SVG conversions of the following logos:
@@ -16,6 +38,11 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=2860571852
 https://steamcommunity.com/sharedfiles/filedetails/?id=853079618
 
 2-handed pistol animations by xdshot: https://steamcommunity.com/sharedfiles/filedetails/?id=1644171575
+
+The_author for various SMOD and SMOD2 assets, such as
+- SMOD 2 blood effects
+- SMOD gibs
+- SMOD gore sounds
 
 This mod uses the following articles: 
 https://web.archive.org/web/20170621064352/http://articles.thewavelength.net/702/
