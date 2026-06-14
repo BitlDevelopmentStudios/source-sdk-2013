@@ -11,7 +11,7 @@
 
 #define HL2MP_PUSHAWAY_THINK_INTERVAL		(1.0f / 20.0f)
 #include "studio.h"
-enum Elasses
+enum EClasses
 {
 	// rand/invalid classes
 	CLS_RAND = -2,

@@ -136,6 +136,9 @@ void CHudTimer::OnThink()
 			case TIMERSTATE_RESTART:
 				szLabel = "#Anticitizen_TimerRestart";
 				break;
+			case TIMERSTATE_CHANGELEVEL:
+				szLabel = "#Anticitizen_TimerChangelevel";
+				break;
 		}
 
 		wchar_t wchText[256];	// Unicode text buffer

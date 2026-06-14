@@ -53,6 +53,7 @@ enum
 	TIMERSTATE_ROUNDSTART,
 	TIMERSTATE_GAMESTART,
 	TIMERSTATE_RESTART,
+	TIMERSTATE_CHANGELEVEL,
 };
 
 #ifdef CLIENT_DLL
@@ -149,6 +150,9 @@ public:
 	void RestartGame(bool gameend = false);
 
 	int GetState(void) { return m_iRoundState; }
+	int GetEndGameReason(void) { return m_iGameEndReason; }
+	int HasEnded(void) { return m_bJustEnded; }
+	int GetRoundCount(void) { return m_iRounds; }
 	
 #ifndef CLIENT_DLL
 	virtual Vector VecItemRespawnSpot( CItem *pItem );
@@ -172,6 +176,8 @@ public:
 
 	void SendHudMessage(CBasePlayer* pToPlayer, const char* text, float flDuration = 5.0f);
 	void SendHudMessage(CBasePlayer* pToPlayer, string_t text, float flDuration = 5.0f);
+
+	void RegisterScriptFunctions() override;
 #endif
 
 	bool IsOfficialMap( void );

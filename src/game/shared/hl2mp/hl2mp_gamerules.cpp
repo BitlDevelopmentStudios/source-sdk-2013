@@ -57,6 +57,8 @@ ConVar sv_startplaywaitime("sv_startplaywaitime", "5", FCVAR_GAMEDLL | FCVAR_NOT
 
 ConVar sv_freemanroundlimit("sv_freemanroundlimit", "3", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 
+ConVar sv_roundlimit("sv_roundlimit", "3", FCVAR_GAMEDLL | FCVAR_NOTIFY);
+
 extern ConVar mp_chattime;
 
 extern CBaseEntity	 *g_pLastCombineSpawn;
@@ -855,7 +857,7 @@ void CHL2MPRules::Think( void )
 				if (!g_fGameOver && (m_iGameEndReason > GAME_NOT_ENDED))
 				{
 					m_iRoundState = STATE_COMPLETION;
-
+					m_iRounds++;
 					GoToIntermission();
 				}
 			}
@@ -893,8 +895,16 @@ void CHL2MPRules::Think( void )
 				if (m_flIntermissionEndTime < gpGlobals->curtime)
 				{
 					m_bJustEnded = true;
-					m_iRoundState = STATE_PREROUND;
-					m_iRounds++;
+
+					if ((!m_bChangelevelDone) && (m_iRounds > sv_roundlimit.GetInt()))
+					{
+						ChangeLevel(); // intermission is over
+						m_bChangelevelDone = true;
+					}
+					else
+					{
+						m_iRoundState = STATE_PREROUND;
+					}
 				}
 				else
 				{
@@ -952,7 +962,14 @@ void CHL2MPRules::GoToIntermission( void )
 	g_fGameOver = true;
 
 	m_flGameEndTime = m_flIntermissionEndTime = gpGlobals->curtime + mp_chattime.GetInt();
-	m_iTimerType = TIMERSTATE_RESTART;
+	if (m_iRounds > sv_roundlimit.GetInt())
+	{
+		m_iTimerType = TIMERSTATE_CHANGELEVEL;
+	}
+	else
+	{
+		m_iTimerType = TIMERSTATE_RESTART;
+	}
 	m_bIsInIntermission = true;
 	m_flTimeSinceGameStart = 0;
 
@@ -1809,6 +1826,62 @@ const char *CHL2MPRules::GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer )
 	}
 
 	return pszFormat;
+}
+
+#define HL2MP_GAMERULES_SCRIPT_FUNC( function, desc ) \
+	ScriptRegisterFunctionNamed( g_pScriptVM, Script##function, #function, desc )
+
+int		ScriptGetRoundState() { return HL2MPRules()->GetState(); }
+int		ScriptGetEndGameReason() { return HL2MPRules()->GetEndGameReason(); }
+bool	ScriptIsInIntermission() { return HL2MPRules()->IsIntermission(); }
+bool	ScriptHasEnded() { return HL2MPRules()->HasEnded(); }
+int		ScriptSoldierCount() { return HL2MPRules()->GetRemainingSoldierCount(); }
+float	ScriptGetTime() { return HL2MPRules()->GetTimeSinceGameStart(); }
+float	ScriptGetWaitTime() { return HL2MPRules()->GetMapRemainingTime(); }
+HSCRIPT ScriptGetFreeman() { return ToHScript(HL2MPRules()->GetFreeman()); }
+void ScriptSetNextPlayerToBecomeFreeman(HSCRIPT pPlayer) 
+{ 
+	CHL2MP_Player* pHL2MPPlayer = ScriptToEntClass< CHL2MP_Player >(pPlayer);
+
+	if (!pHL2MPPlayer)
+		return;
+
+	return HL2MPRules()->SetNextPlayerToBecomeFreeman(pHL2MPPlayer);
+}
+int		ScriptGetRoundCount() { return HL2MPRules()->GetRoundCount(); }
+void ScriptAddLevelDesignerPlacedObject(HSCRIPT pEntity)
+{
+	CBaseEntity* pEnt = ScriptToEntClass< CBaseEntity >(pEntity);
+
+	if (!pEnt)
+		return;
+
+	return HL2MPRules()->AddLevelDesignerPlacedObject(pEnt);
+}
+void ScriptRemoveLevelDesignerPlacedObject(HSCRIPT pEntity)
+{
+	CBaseEntity* pEnt = ScriptToEntClass< CBaseEntity >(pEntity);
+
+	if (!pEnt)
+		return;
+
+	return HL2MPRules()->RemoveLevelDesignerPlacedObject(pEnt);
+}
+
+void CHL2MPRules::RegisterScriptFunctions()
+{
+	HL2MP_GAMERULES_SCRIPT_FUNC(GetRoundState, "Get current round state. See Constants.EAC1RoundState");
+	HL2MP_GAMERULES_SCRIPT_FUNC(GetEndGameReason, "Get end of game reason. See Constants.EAC1EndReason");
+	HL2MP_GAMERULES_SCRIPT_FUNC(IsInIntermission, "Are we in the intermission state?");
+	HL2MP_GAMERULES_SCRIPT_FUNC(HasEnded, "Did the game end?");
+	HL2MP_GAMERULES_SCRIPT_FUNC(SoldierCount, "Returns the number of soldiers left in-game.");
+	HL2MP_GAMERULES_SCRIPT_FUNC(GetTime, "Returns the time after the game started.");
+	HL2MP_GAMERULES_SCRIPT_FUNC(GetWaitTime, "Returns the time set before a round starts or during an intermission.");
+	HL2MP_GAMERULES_SCRIPT_FUNC(GetFreeman, "Returns the CHL2MP_Player chosen as Gordon Freeman.");
+	HL2MP_GAMERULES_SCRIPT_FUNC(SetNextPlayerToBecomeFreeman, "Sets a new CHL2MP_Player to become Gordon Freeman.");
+	HL2MP_GAMERULES_SCRIPT_FUNC(GetRoundCount, "Get the round count.");
+	HL2MP_GAMERULES_SCRIPT_FUNC(AddLevelDesignerPlacedObject, "Adds an entity to the respawn list.");
+	HL2MP_GAMERULES_SCRIPT_FUNC(RemoveLevelDesignerPlacedObject, "Removes an entity from the respawn list.");
 }
 
 #endif

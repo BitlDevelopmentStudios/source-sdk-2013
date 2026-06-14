@@ -1,3 +1,4 @@
+
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose:		Player for HL2.
@@ -140,6 +141,16 @@ BEGIN_DATADESC( CHL2MP_Player )
 END_DATADESC()
 
 BEGIN_ENT_SCRIPTDESC( CHL2MP_Player, CHL2_Player, "Half-Life 2: Deathmatch Player" )
+	DEFINE_SCRIPTFUNC_NAMED(ScriptSetPlayerClass, "SetPlayerClass", "Set the player's class. See Constants.EAC1Class. Freeman cannot be selected.")
+	DEFINE_SCRIPTFUNC(GetPlayerClass, "Get the player's class. See Constants.EAC1Class")
+	DEFINE_SCRIPTFUNC(GetClassMaxHealth, "Get the class max health.")
+	DEFINE_SCRIPTFUNC(GetClassMaxArmor, "Get the class max armor.")
+	DEFINE_SCRIPTFUNC(GetClassType, "Get the class type. See Constants.EAC1ClassType")
+	DEFINE_SCRIPTFUNC(IsClassWearingSuit, "Is the class wearing the HEV Suit?")
+	DEFINE_SCRIPTFUNC(IsFreeman, "Are we Gordon Freeman?")
+	DEFINE_SCRIPTFUNC(GetLifeCount, "Get player lives")
+	DEFINE_SCRIPTFUNC(GetMaxLifeCount, "Get player max lives")
+	DEFINE_SCRIPTFUNC(SetLifeCount, "Set player lives")
 END_SCRIPTDESC();
 
 #define HL2MPPLAYER_PHYSDAMAGE_SCALE 4.0f
@@ -1178,7 +1189,7 @@ bool CHL2MP_Player::HandleCommand_JoinTeam( int team )
 
 extern void respawn(CBaseEntity* pEdict, bool fCopyCorpse);
 
-bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
+bool CHL2MP_Player::HandleCommand_JoinClass(int iclass, bool brespawn)
 {
 	int iCurClass = iclass;
 
@@ -1262,13 +1273,20 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass)
 	SetPlayerClass(iCurClass);
 	m_bChosenClass = true;
 
-	if (IsAlive())
+	if (brespawn)
 	{
-		Spawn();
+		if (IsAlive())
+		{
+			Spawn();
+		}
+		else
+		{
+			respawn(this, false);
+		}
 	}
 	else
 	{
-		respawn(this, false);
+		LoadClass(GetPlayerClass());
 	}
 
 	return true;

@@ -68,7 +68,7 @@ public:
 	virtual void PreThink( void );
 	virtual void PlayerDeathThink( void );
 	virtual bool HandleCommand_JoinTeam( int team );
-	virtual bool HandleCommand_JoinClass(int iclass);
+	virtual bool HandleCommand_JoinClass(int iclass, bool brespawn = true);
 	virtual bool ClientCommand( const CCommand &args );
 	virtual void CreateViewModel( int viewmodelindex = 0 );
 	virtual bool BecomeRagdollOnClient( const Vector &force );
@@ -156,6 +156,64 @@ public:
 	void	SetPlayerClass(int playerclass);
 	int		GetPlayerClass(void);
 	const CAnticitizen_FilePlayerClassInfo_t& GetPlayerClassInfo(void);
+	int GetClassMaxHealth(void) 
+	{ 
+		if (GetPlayerClass() > CLS_INVALID)
+		{
+			const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
+			return pPlayerClassInfo.iHealth;
+		}
+
+		return GetMaxHealth();
+	}
+
+	int GetClassMaxArmor(void)
+	{
+		if (GetPlayerClass() > CLS_INVALID)
+		{
+			const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
+			return pPlayerClassInfo.iSuitArmor;
+		}
+
+		return ArmorValue();
+	}
+
+	int GetClassType(void)
+	{
+		if (GetPlayerClass() > CLS_INVALID)
+		{
+			const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
+			return pPlayerClassInfo.iClassType;
+		}
+
+		return CLS_TYPE_NONE;
+	}
+
+	bool IsClassWearingSuit(void)
+	{
+		if (GetPlayerClass() > CLS_INVALID)
+		{
+			const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
+			return pPlayerClassInfo.bSuit;
+		}
+
+		return IsSuitEquipped();
+	}
+
+	int GetMaxLifeCount(void)
+	{
+		if (GetPlayerClass() > CLS_INVALID)
+		{
+			const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
+			return pPlayerClassInfo.iLives;
+		}
+
+		return GetLifeCount();
+	}
+
+	bool IsFreeman(void) { return (GetPlayerClass() == CLS_FREEMAN); }
+
+	void	ScriptSetPlayerClass(int iclass) { HandleCommand_JoinClass(iclass, false); };
 
 	void	SetChosenClass(bool val) { m_bChosenClass = val; }
 
