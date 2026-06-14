@@ -16,7 +16,7 @@ LOOKING FOR THE OLD BDS BASE WITH QUIVER FORTRESS' SOURCE CODE? Go here: https:/
 ## Features:
 - Implements various pull requests from the master repo, allowing for a stable and reliable mod base. Each pull request is squished and merged, ensuring credit is given to each author.
 - Implements Tony Sergi's HL2MP changes which implement improved player animations and better code consistency (https://github.com/tonysergi/source-sdk-2013/).
-- Implements changes from Saul's repository, allowing for features like autocomplete for the "give" command, colored messages in chat, and FGD fixes for compilers (https://github.com/saul/source-sdk-2013).
+- Implements changes from Saul's repository, allowing for features like autocomplete for the "give" command, colored chat messages in console, and FGD fixes for compilers (https://github.com/saul/source-sdk-2013).
 - Implements changes from the Source Engine Co-Operative Base Modification (SecobMod), which includes Winston's multiplayer NPC support (https://developer.valvesoftware.com/wiki/Co-Operative_Base_(Mod)).
 - Implemented Discord RPC support (based off #1803).
 - Built-in c_arms support. Just add `$Include "$SRCDIR\game\shared\c_arms_include.vpc"` to the top of your VPC file and set it up! Based on https://developer.valvesoftware.com/wiki/Hand_Viewmodels
@@ -35,8 +35,9 @@ Iván Bravo Bravo for the NPC AI node generation code.
 Sirmasters from BSNOOCH, for making the Mapadd code. (Part of SMMOD)
 Saul Rennison for his RTT shadow angle code (https://developer.valvesoftware.com/wiki/Dynamic_RTT_shadow_angles_in_Orange_Box_branch)
 Zeldaboy14 and ficool2 for their LUX Shaders fix.
-ficool for his Skybox patch.
+ficool2 for his Skybox patch.
 ficool2 and Totterynine for various changes from Coolsource, including a save/restore patch and a patch that fixes the cl_localnetworkbackdoor crash (https://github.com/Totterynine/cool-source-sdk)
+The Open Fortress team for the PATTACH_BONE_FOLLOW implementation. All code from Open Fortress is based on the previously public source code of the Alpha release of the mod.
 This repository implements fixes and improvments from the VDC, including:
 https://developer.valvesoftware.com/wiki/General_SDK_Snippets_%26_Fixes
 https://developer.valvesoftware.com/wiki/Detail_props/Aspect_ratio_fix
