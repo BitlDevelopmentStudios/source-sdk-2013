@@ -1,7 +1,7 @@
 Alpha Technical Test v3:
 - Added achievements!
 - Fixed a bug where blood effects don't show with friendly fire on.
-- Improved player ID text.
+- Improved player ID text formatting.
 - Enabled access to the Quick Search/Serverfinder system.
 - Fixed mp_disable_respawn_times not working as intended.
 
