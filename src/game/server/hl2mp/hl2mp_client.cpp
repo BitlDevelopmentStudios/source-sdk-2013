@@ -140,7 +140,7 @@ void ClientGamePrecache( void )
 	CBaseEntity::PrecacheScriptSound( "Geiger.BeepLow" );
 }
 
-
+extern ConVar mp_disable_respawn_times;
 // called by ClientKill and DeadThink
 void respawn( CBaseEntity *pEdict, bool fCopyCorpse )
 {
@@ -148,7 +148,14 @@ void respawn( CBaseEntity *pEdict, bool fCopyCorpse )
 
 	if ( pPlayer )
 	{
-		if (gpGlobals->curtime > pPlayer->GetDeathTime() + DEATH_ANIMATION_TIME)
+		bool bRespawn = true;
+
+		if (!mp_disable_respawn_times.GetBool())
+		{
+			bRespawn = (gpGlobals->curtime > pPlayer->GetDeathTime() + DEATH_ANIMATION_TIME);
+		}
+
+		if (bRespawn)
 		{
 			if (pPlayer->GetLifeCount() == 0)
 			{
