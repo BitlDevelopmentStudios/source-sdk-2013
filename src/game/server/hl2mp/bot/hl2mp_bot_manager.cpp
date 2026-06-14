@@ -203,6 +203,9 @@ void CHL2MPBotManager::MaintainBotQuota()
 	if ( !GameRules() )
 		return;
 
+	if (gpGlobals->eLoadType == MapLoad_Background)
+		return;
+
 	// if it is not time to do anything...
 	if ( gpGlobals->curtime < m_flNextPeriodicThink )
 		return;
