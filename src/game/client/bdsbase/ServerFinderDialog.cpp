@@ -767,7 +767,7 @@ void CServerFinderDialog::SetMap(const char *mapName)
 
 int clampToPlayerCount(int violator)
 {
-	return clamp(violator, SERVERFINDER_MIN_PLAYERS, (MAX_PLAYERS - 1));
+	return clamp(violator, SERVERFINDER_MIN_PLAYERS, 7);
 }
 
 int clampToPingNum(int violator)
