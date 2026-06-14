@@ -95,7 +95,7 @@ public:
 #endif
 
 		m_eRespawnTimes = eRespawnTimesDefault;
-		m_iMaxPlayers = 16;
+		m_iMaxPlayers = 7;
 		m_iMaxPing = 0;
 	}
 
