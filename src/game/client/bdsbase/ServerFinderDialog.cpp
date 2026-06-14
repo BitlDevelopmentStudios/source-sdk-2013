@@ -610,7 +610,7 @@ void CServerFinderDialog::OnCommand(const char *command)
 		SaveOptionSelection();
 
 #ifndef SERVERFINDER_CONNECTION_TEST
-		if (engine->IsInGame())
+		if (engine->IsInGame() && !engine->IsLevelMainMenuBackground())
 		{
 			SERVERFINDER_SPEW(SERVERFINDER_LEVEL_INTERNAL, "Already connected to server.\n");
 			vgui::MessageBox* pMessageBox = new vgui::MessageBox("#Serverfinder_Title", "#Serverfinder_Error_CannotJoinConnected", GetParent());
