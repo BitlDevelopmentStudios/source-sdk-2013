@@ -307,7 +307,7 @@ void CWeaponStunStick::Hit(trace_t& traceHit, Activity nHitActivity)
 				pHitPlayer->ApplyAbsVelocityImpulse(dir);
 
 				color32 white = { 255,255,255,255 };
-				UTIL_ScreenFade(pPlayer, white, 0.5f, 0.65f, FFADE_IN);
+				UTIL_ScreenFade(pHitPlayer, white, 0.5f, 0.65f, FFADE_IN | FFADE_PURGE);
 
 				// Force the player to drop anything they were holding
 				pHitPlayer->ForceDropOfCarriedPhysObjects();
@@ -722,7 +722,7 @@ bool CWeaponStunStick::Deploy( void )
 	}
 #endif*/
 
-	//SetStunState( true );
+	SetStunState( true );
 
 #ifdef CLIENT_DLL
 	//Tony; we need to just do this
@@ -749,7 +749,7 @@ bool CWeaponStunStick::Holster( CBaseCombatWeapon *pSwitchingTo )
 	}
 #endif*/
 
-	//SetStunState( false );
+	SetStunState( false );
 	SetWeaponVisible( false );
 
 	return true;
@@ -761,7 +761,7 @@ bool CWeaponStunStick::Holster( CBaseCombatWeapon *pSwitchingTo )
 //-----------------------------------------------------------------------------
 void CWeaponStunStick::Drop( const Vector &vecVelocity )
 {
-	//SetStunState( false );
+	SetStunState( false );
 
 	BaseClass::Drop(vecVelocity);
 }
