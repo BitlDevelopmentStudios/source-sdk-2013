@@ -153,6 +153,16 @@ void CAchievementNotificationPanel::FireGameEvent( IGameEvent * event )
 		if (!pAchievement)
 			return;
 
+		int iPlayerIndex = event->GetInt("player");
+
+		CBasePlayer* pLocalPlayer = CBasePlayer::GetLocalPlayer();
+
+		if (!pLocalPlayer)
+			return;
+
+		if (pLocalPlayer->entindex() != iPlayerIndex)
+			return;
+
 		wchar_t szLocalizedName[256] = L"";
 
 		const wchar_t* pchLocalizedName = ACHIEVEMENT_LOCALIZED_NAME(pAchievement);

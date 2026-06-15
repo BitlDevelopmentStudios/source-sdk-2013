@@ -1,3 +1,8 @@
+Alpha Technical Test v4:
+- Fixed a bug where you can get achievement notifications from other players.
+- Disabled turret placement glows.
+- 
+
 Alpha Technical Test v3:
 - Added achievements!
 - Fixed a bug where blood effects don't show with friendly fire on.

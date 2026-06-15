@@ -66,7 +66,7 @@ public:
 		SetThink(&CTurretHologram::OnThink);
 		SetNextThink(gpGlobals->curtime + 0.1f);
 
-		ToggleGlow(true);
+		//ToggleGlow(true);
 	}
 
 	void OnThink(void)
@@ -88,7 +88,7 @@ public:
 
 		SetRenderMode(kRenderTransColor);
 		SetRenderColor(clrHighlightColor.r(), clrHighlightColor.g(), clrHighlightColor.b());
-		SetGlowColor(clrHighlightColor.r(), clrHighlightColor.g(), clrHighlightColor.b(), 255);
+		//SetGlowColor(clrHighlightColor.r(), clrHighlightColor.g(), clrHighlightColor.b(), 255);
 	}
 
 	void SetStatus(HologramStatus statusToReport) { status = statusToReport; }
