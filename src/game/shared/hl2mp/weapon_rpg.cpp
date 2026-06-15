@@ -1812,7 +1812,7 @@ void CWeaponRPG::ItemPostFrame( void )
 		StopGuiding();
 	}
 
-	if (pPlayer->m_afButtonPressed & IN_ATTACK2)
+	if (pPlayer->m_afButtonPressed & IN_ATTACK3)
 	{
 		ToggleGuiding();
 	}

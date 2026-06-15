@@ -23,8 +23,11 @@ WeaponData
 
 		"single_shot"		"Weapon_StunStick.Swing"
 		"melee_miss"		"Weapon_StunStick.Melee_Miss"
-		"melee_hit"			"Weapon_StunStick.Melee_Hit"
-		"melee_hit_world"	"Weapon_StunStick.Melee_HitWorld"
+		"melee_hit"		"Weapon_StunStick.Melee_Hit"
+		"melee_hit_world"		"Weapon_StunStick.Melee_HitWorld"
+		"special1"			"Weapon_Crowbar.Single"
+		"special2"			"Weapon_Crowbar.Melee_Hit"
+		"special3"			"Weapon_StunStick.Melee_HitWorld_Deactivated"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.

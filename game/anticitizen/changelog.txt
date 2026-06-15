@@ -9,6 +9,9 @@ Alpha Technical Test v3:
 - Added a round limit (5 by default). If the game reaches it, the game switches levels.
 - Increased Stun Baton blind time.
 - Renamed the stucstick to the Stun Baton.
+- Added a binding for a "Special attack" key, much like Team Fortress 2.
+- The RPG's guiding functionality can now be toggled by pressing the special attack key instead of the secondary fire.
+- The Stunstick's stunning function can now be turned off with the special attack key.
 
 Alpha Technical Test v2:
 - Hid the "Remaining soldiers" counter on the Combine side in favor of a life counter.

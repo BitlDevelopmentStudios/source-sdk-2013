@@ -10,6 +10,7 @@
 #include "weapon_hl2mpbasebasebludgeon.h"
 #include "IEffects.h"
 #include "debugoverlay_shared.h"
+#include "in_buttons.h"
 
 #ifndef CLIENT_DLL
 	#include "npc_metropolice.h"
@@ -77,6 +78,7 @@ public:
 
 
 	bool		Deploy( void );
+	void		ItemPostFrame(void);
 	bool		Holster( CBaseCombatWeapon *pSwitchingTo = NULL );
 	
 	void		Drop( const Vector &vecVelocity );
@@ -86,6 +88,7 @@ public:
 	bool		GetStunState( void );
 
 	void		Hit(trace_t& traceHit, Activity nHitActivity) OVERRIDE;
+	void		Swing(int bIsSecondary) OVERRIDE;
 
 #ifndef CLIENT_DLL
 	void		Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
@@ -94,8 +97,6 @@ public:
 #endif
 	
 	float		GetDamageForActivity( Activity hitActivity );
-
-	virtual bool	PlayFleshyHittySoundOnHit() const { return true; }
 
 	CWeaponStunStick( const CWeaponStunStick & );
 
@@ -238,12 +239,15 @@ void CWeaponStunStick::ImpactEffect( trace_t &traceHit )
 	
 //#ifndef CLIENT_DLL
 	
-	CEffectData	data;
+	if (m_bActive)
+	{
+		CEffectData	data;
 
-	data.m_vNormal = traceHit.plane.normal;
-	data.m_vOrigin = traceHit.endpos + ( data.m_vNormal * 4.0f );
+		data.m_vNormal = traceHit.plane.normal;
+		data.m_vOrigin = traceHit.endpos + (data.m_vNormal * 4.0f);
 
-	DispatchEffect( "StunstickImpact", data );
+		DispatchEffect("StunstickImpact", data);
+	}
 
 //#endif
 
@@ -283,7 +287,7 @@ void CWeaponStunStick::Hit(trace_t& traceHit, Activity nHitActivity)
 
 			CBasePlayer* pHitPlayer = ToBasePlayer(pHitEntity);
 
-			if (pHitPlayer)
+			if (pHitPlayer && m_bActive)
 			{
 				float yawKick = random->RandomFloat(-48, -24);
 
@@ -302,8 +306,8 @@ void CWeaponStunStick::Hit(trace_t& traceHit, Activity nHitActivity)
 				//Push the target back
 				pHitPlayer->ApplyAbsVelocityImpulse(dir);
 
-				color32 red = { 128,0,0,128 };
-				UTIL_ScreenFade(pPlayer, red, 0.5f, 0.65f, FFADE_IN);
+				color32 white = { 255,255,255,255 };
+				UTIL_ScreenFade(pPlayer, white, 0.5f, 0.65f, FFADE_IN);
 
 				// Force the player to drop anything they were holding
 				pHitPlayer->ForceDropOfCarriedPhysObjects();
@@ -319,12 +323,149 @@ void CWeaponStunStick::Hit(trace_t& traceHit, Activity nHitActivity)
 		TraceAttackToTriggers(info, traceHit.startpos, traceHit.endpos, hitDirection);
 #endif
 
-		if (this->PlayFleshyHittySoundOnHit())
-			WeaponSound(MELEE_HIT);
+		if (pHitEntity->IsPlayer() || pHitEntity->IsNPC())
+		{
+			if (m_bActive)
+			{
+				WeaponSound(MELEE_HIT);
+			}
+			else
+			{
+				WeaponSound(SPECIAL2);
+			}
+		}
+		else
+		{
+			if (m_bActive)
+			{
+				WeaponSound(MELEE_HIT_WORLD);
+			}
+			else
+			{
+				WeaponSound(SPECIAL3);
+			}
+		}
 	}
 
 	// Apply an impact effect
 	ImpactEffect(traceHit);
+}
+
+extern ConVar friendlyfire;
+
+//------------------------------------------------------------------------------
+// Purpose : Starts the swing of the weapon and determines the animation
+// Input   : bIsSecondary - is this a secondary attack?
+//------------------------------------------------------------------------------
+void CWeaponStunStick::Swing(int bIsSecondary)
+{
+	trace_t traceHit;
+
+	// Try a ray
+	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+	if (!pOwner)
+		return;
+
+	Vector swingStart = pOwner->Weapon_ShootPosition();
+	Vector forward;
+
+	bool bDontHitTeammates = (!friendlyfire.GetBool());
+	CTraceFilterIgnoreTeammates ignoreTeammatesFilter(pOwner, COLLISION_GROUP_NONE, pOwner->GetTeamNumber());
+
+	pOwner->EyeVectors(&forward, NULL, NULL);
+
+	Vector swingEnd = swingStart + forward * GetRange();
+
+	if (bDontHitTeammates)
+	{
+		UTIL_TraceLine(swingStart, swingEnd, MASK_SHOT_HULL, &ignoreTeammatesFilter, &traceHit);
+	}
+	else
+	{
+		UTIL_TraceLine(swingStart, swingEnd, MASK_SHOT_HULL, pOwner, COLLISION_GROUP_NONE, &traceHit);
+	}
+
+	Activity nHitActivity = ACT_VM_HITCENTER;
+
+#ifndef CLIENT_DLL
+	// Like bullets, bludgeon traces have to trace against triggers.
+	CTakeDamageInfo triggerInfo(GetOwner(), GetOwner(), GetDamageForActivity(nHitActivity), DMG_CLUB);
+	TraceAttackToTriggers(triggerInfo, traceHit.startpos, traceHit.endpos, vec3_origin);
+#endif
+
+	if (traceHit.fraction == 1.0)
+	{
+		float bludgeonHullRadius = 1.732f * BLUDGEON_HULL_DIM;  // hull is +/- 16, so use cuberoot of 2 to determine how big the hull is from center to the corner point
+
+		// Back off by hull "radius"
+		swingEnd -= forward * bludgeonHullRadius;
+
+		if (bDontHitTeammates)
+		{
+			UTIL_TraceHull(swingStart, swingEnd, g_bludgeonMins, g_bludgeonMaxs, MASK_SHOT_HULL, &ignoreTeammatesFilter, &traceHit);
+		}
+		else
+		{
+			UTIL_TraceHull(swingStart, swingEnd, g_bludgeonMins, g_bludgeonMaxs, MASK_SHOT_HULL, pOwner, COLLISION_GROUP_NONE, &traceHit);
+		}
+
+		if (traceHit.fraction < 1.0 && traceHit.m_pEnt)
+		{
+			Vector vecToTarget = traceHit.m_pEnt->GetAbsOrigin() - swingStart;
+			VectorNormalize(vecToTarget);
+
+			float dot = vecToTarget.Dot(forward);
+
+			// YWB:  Make sure they are sort of facing the guy at least...
+			if (dot < 0.70721f)
+			{
+				// Force amiss
+				traceHit.fraction = 1.0f;
+			}
+			else
+			{
+				nHitActivity = ChooseIntersectionPointAndActivity(traceHit, g_bludgeonMins, g_bludgeonMaxs, pOwner);
+			}
+		}
+	}
+
+	if (m_bActive)
+	{
+		WeaponSound(SINGLE);
+	}
+	else
+	{
+		WeaponSound(SPECIAL1);
+	}
+
+	m_iPrimaryAttacks++;
+
+	// -------------------------
+	//	Miss
+	// -------------------------
+	if (traceHit.fraction == 1.0f)
+	{
+		nHitActivity = bIsSecondary ? ACT_VM_MISSCENTER2 : ACT_VM_MISSCENTER;
+
+		// We want to test the first swing again
+		Vector testEnd = swingStart + forward * GetRange();
+
+		// See if we happened to hit water
+		ImpactWater(swingStart, testEnd);
+	}
+	else
+	{
+		Hit(traceHit, nHitActivity);
+	}
+
+	// Send the anim
+	SendWeaponAnim(nHitActivity);
+
+	ToHL2MPPlayer(pOwner)->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
+
+	//Setup our next attack times
+	m_flNextPrimaryAttack = gpGlobals->curtime + GetFireRate();
+	m_flNextSecondaryAttack = gpGlobals->curtime + SequenceDuration();
 }
 
 #ifndef CLIENT_DLL
@@ -551,6 +692,21 @@ void CWeaponStunStick::SetStunState( bool state )
 	}
 }
 
+void CWeaponStunStick::ItemPostFrame(void)
+{
+	BaseClass::ItemPostFrame();
+
+	CBasePlayer* pPlayer = ToBasePlayer(GetOwner());
+
+	if (pPlayer == NULL)
+		return;
+
+	if (pPlayer->m_afButtonPressed & IN_ATTACK3)
+	{
+		SetStunState(!m_bActive);
+	}
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Output : Returns true on success, false on failure.
@@ -566,7 +722,7 @@ bool CWeaponStunStick::Deploy( void )
 	}
 #endif*/
 
-	SetStunState( true );
+	//SetStunState( true );
 
 #ifdef CLIENT_DLL
 	//Tony; we need to just do this
@@ -593,7 +749,7 @@ bool CWeaponStunStick::Holster( CBaseCombatWeapon *pSwitchingTo )
 	}
 #endif*/
 
-	SetStunState( false );
+	//SetStunState( false );
 	SetWeaponVisible( false );
 
 	return true;
@@ -605,7 +761,7 @@ bool CWeaponStunStick::Holster( CBaseCombatWeapon *pSwitchingTo )
 //-----------------------------------------------------------------------------
 void CWeaponStunStick::Drop( const Vector &vecVelocity )
 {
-	SetStunState( false );
+	//SetStunState( false );
 
 	BaseClass::Drop(vecVelocity);
 }
@@ -734,6 +890,9 @@ void C_WeaponStunStick::ClientThink( void )
 		// Update our effects
 		if ( gpGlobals->frametime != 0.0f && ( random->RandomInt( 0, 3 ) == 0 ) )
 		{		
+			if (!m_bActive)
+				return;
+
 			Vector	vecOrigin;
 			QAngle	vecAngles;
 
@@ -831,6 +990,9 @@ void C_WeaponStunStick::ThirdPersonSwitch(bool bThirdPerson)
 //-----------------------------------------------------------------------------
 void C_WeaponStunStick::DrawThirdPersonEffects( void )
 {
+	if (!m_bActive)
+		return;
+
 	Vector	vecOrigin;
 	QAngle	vecAngles;
 	float	color[3];
@@ -924,6 +1086,9 @@ void C_WeaponStunStick::DrawThirdPersonEffects( void )
 //-----------------------------------------------------------------------------
 void C_WeaponStunStick::DrawFirstPersonEffects( void )
 {
+	if (!m_bActive)
+		return;
+
 	Vector	vecOrigin;
 	QAngle	vecAngles;
 	float	color[3];
@@ -983,6 +1148,9 @@ void C_WeaponStunStick::DrawFirstPersonEffects( void )
 //-----------------------------------------------------------------------------
 void C_WeaponStunStick::DrawEffects( void )
 {
+	if (!m_bActive)
+		return;
+
 	if ( ShouldDrawUsingViewModel() )
 	{
 		DrawFirstPersonEffects();
