@@ -37,11 +37,6 @@ END_NETWORK_TABLE()
 BEGIN_PREDICTION_DATA( CBaseHL2MPBludgeonWeapon )
 END_PREDICTION_DATA()
 
-#define BLUDGEON_HULL_DIM		16
-
-static const Vector g_bludgeonMins(-BLUDGEON_HULL_DIM,-BLUDGEON_HULL_DIM,-BLUDGEON_HULL_DIM);
-static const Vector g_bludgeonMaxs(BLUDGEON_HULL_DIM,BLUDGEON_HULL_DIM,BLUDGEON_HULL_DIM);
-
 //-----------------------------------------------------------------------------
 // Constructor
 //-----------------------------------------------------------------------------
@@ -126,7 +121,18 @@ void CBaseHL2MPBludgeonWeapon::PrimaryAttack()
 //------------------------------------------------------------------------------
 void CBaseHL2MPBludgeonWeapon::SecondaryAttack()
 {
+#ifndef CLIENT_DLL
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetPlayerOwner());
+	// Move other players back to history positions based on local player's lag
+	lagcompensation->StartLagCompensation(pPlayer, pPlayer->GetCurrentCommand());
+#endif
 	Swing( true );
+#ifndef CLIENT_DLL
+	// Move other players back to history positions based on local player's lag
+	lagcompensation->FinishLagCompensation(pPlayer);
+
+	pPlayer->OnMyWeaponFired(this);
+#endif
 }
 
 
@@ -167,8 +173,14 @@ void CBaseHL2MPBludgeonWeapon::Hit( trace_t &traceHit, Activity nHitActivity )
 		TraceAttackToTriggers( info, traceHit.startpos, traceHit.endpos, hitDirection );
 #endif
 
-		if ( this->PlayFleshyHittySoundOnHit() )
-			WeaponSound( MELEE_HIT );
+		if (!pHitEntity->IsWorld())
+		{
+			WeaponSound(MELEE_HIT);
+		}
+		else
+		{
+			WeaponSound(MELEE_HIT_WORLD);
+		}
 
 		// Don't do impact effect if this is an ally
 		if (pHitEntity->MyNPCPointer() && pHitEntity->MyNPCPointer()->IsPlayerAlly(pPlayer))
@@ -284,32 +296,6 @@ void CBaseHL2MPBludgeonWeapon::ImpactEffect( trace_t &traceHit )
 	//FIXME: need new decals
 	UTIL_ImpactTrace( &traceHit, DMG_CLUB );
 }
-
-class CTraceFilterIgnoreTeammates : public CTraceFilterSimple
-{
-public:
-	// It does have a base, but we'll never network anything below here..
-	DECLARE_CLASS( CTraceFilterIgnoreTeammates, CTraceFilterSimple );
-
-	CTraceFilterIgnoreTeammates( const IHandleEntity* passentity, int collisionGroup, int iIgnoreTeam )
-		: CTraceFilterSimple( passentity, collisionGroup ), m_iIgnoreTeam( iIgnoreTeam )
-	{
-	}
-
-	virtual bool ShouldHitEntity( IHandleEntity* pServerEntity, int contentsMask )
-	{
-		CBaseEntity* pEntity = EntityFromEntityHandle( pServerEntity );
-
-		if ( ( pEntity->IsPlayer() || pEntity->IsCombatItem() ) && ( pEntity->GetTeamNumber() == m_iIgnoreTeam || m_iIgnoreTeam == TEAM_ANY ) )
-		{
-			return false;
-		}
-
-		return BaseClass::ShouldHitEntity( pServerEntity, contentsMask );
-	}
-
-	int m_iIgnoreTeam;
-};
 
 //------------------------------------------------------------------------------
 // Purpose : Starts the swing of the weapon and determines the animation

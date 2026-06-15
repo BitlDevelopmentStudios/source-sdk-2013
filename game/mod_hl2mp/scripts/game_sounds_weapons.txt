@@ -306,8 +306,8 @@
 
 	"rndwave"
 	{
-		"wave"		"weapons/crowbar/crowbar_impact1.wav"
-		"wave"		"weapons/crowbar/crowbar_impact2.wav"
+		"wave"		"physics/metal/metal_computer_impact_bullet2.wav"
+		"wave"		"physics/metal/metal_computer_impact_bullet3.wav"
 	}
 }
 

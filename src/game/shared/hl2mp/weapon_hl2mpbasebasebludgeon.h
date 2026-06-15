@@ -22,6 +22,37 @@
 #define CBaseHL2MPBludgeonWeapon C_BaseHL2MPBludgeonWeapon
 #endif
 
+#define BLUDGEON_HULL_DIM		16
+
+static const Vector g_bludgeonMins(-BLUDGEON_HULL_DIM, -BLUDGEON_HULL_DIM, -BLUDGEON_HULL_DIM);
+static const Vector g_bludgeonMaxs(BLUDGEON_HULL_DIM, BLUDGEON_HULL_DIM, BLUDGEON_HULL_DIM);
+
+class CTraceFilterIgnoreTeammates : public CTraceFilterSimple
+{
+public:
+	// It does have a base, but we'll never network anything below here..
+	DECLARE_CLASS(CTraceFilterIgnoreTeammates, CTraceFilterSimple);
+
+	CTraceFilterIgnoreTeammates(const IHandleEntity* passentity, int collisionGroup, int iIgnoreTeam)
+		: CTraceFilterSimple(passentity, collisionGroup), m_iIgnoreTeam(iIgnoreTeam)
+	{
+	}
+
+	virtual bool ShouldHitEntity(IHandleEntity* pServerEntity, int contentsMask)
+	{
+		CBaseEntity* pEntity = EntityFromEntityHandle(pServerEntity);
+
+		if ((pEntity->IsPlayer() || pEntity->IsCombatItem()) && (pEntity->GetTeamNumber() == m_iIgnoreTeam || m_iIgnoreTeam == TEAM_ANY))
+		{
+			return false;
+		}
+
+		return BaseClass::ShouldHitEntity(pServerEntity, contentsMask);
+	}
+
+	int m_iIgnoreTeam;
+};
+
 //=========================================================
 // CBaseHLBludgeonWeapon 
 //=========================================================
@@ -57,17 +88,16 @@ public:
 
 	CBaseHL2MPBludgeonWeapon( const CBaseHL2MPBludgeonWeapon & );
 
-	virtual bool	PlayFleshyHittySoundOnHit() const { return false; }
+	virtual void	Hit(trace_t& traceHit, Activity nHitActivity);
+	virtual void	Swing(int bIsSecondary);
+
+	bool			ImpactWater(const Vector& start, const Vector& end);
+	Activity		ChooseIntersectionPointAndActivity(trace_t& hitTrace, const Vector& mins, const Vector& maxs, CBasePlayer* pOwner);
 
 	virtual void	Hit(trace_t& traceHit, Activity nHitActivity);
 
 protected:
 	virtual	void	ImpactEffect( trace_t &trace );
-
-private:
-	bool			ImpactWater( const Vector &start, const Vector &end );
-	void			Swing( int bIsSecondary );
-	Activity		ChooseIntersectionPointAndActivity( trace_t &hitTrace, const Vector &mins, const Vector &maxs, CBasePlayer *pOwner );
 };
 
 #endif
