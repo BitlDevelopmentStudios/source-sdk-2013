@@ -141,7 +141,7 @@ BEGIN_DATADESC( CHL2MP_Player )
 END_DATADESC()
 
 BEGIN_ENT_SCRIPTDESC( CHL2MP_Player, CHL2_Player, "Half-Life 2: Deathmatch Player" )
-	DEFINE_SCRIPTFUNC_NAMED(ScriptSetPlayerClass, "SetPlayerClass", "Set the player's class. See Constants.EAC1Class. Freeman cannot be selected.")
+	DEFINE_SCRIPTFUNC_NAMED(ScriptSetPlayerClass, "SetPlayerClass", "Set the player's class. See Constants.EAC1Class. Freeman cannot be selected or be switched from.")
 	DEFINE_SCRIPTFUNC(GetPlayerClass, "Get the player's class. See Constants.EAC1Class")
 	DEFINE_SCRIPTFUNC(GetClassMaxHealth, "Get the class max health.")
 	DEFINE_SCRIPTFUNC(GetClassMaxArmor, "Get the class max armor.")
@@ -151,6 +151,7 @@ BEGIN_ENT_SCRIPTDESC( CHL2MP_Player, CHL2_Player, "Half-Life 2: Deathmatch Playe
 	DEFINE_SCRIPTFUNC(GetLifeCount, "Get player lives")
 	DEFINE_SCRIPTFUNC(GetMaxLifeCount, "Get player max lives")
 	DEFINE_SCRIPTFUNC(SetLifeCount, "Set player lives")
+	DEFINE_SCRIPTFUNC_NAMED(SpeakSentenceForConcept, "SpeakSentence", "Speak a sentence. See Constants.EAC1Sentence")
 END_SCRIPTDESC();
 
 #define HL2MPPLAYER_PHYSDAMAGE_SCALE 4.0f
