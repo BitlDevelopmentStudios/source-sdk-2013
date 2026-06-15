@@ -1799,10 +1799,6 @@ void CWeaponRPG::ItemPostFrame( void )
 	{
 		SuppressGuiding();
 	}
-	else
-	{
-		SuppressGuiding( false );
-	}
 
 	//Move the laser
 	UpdateLaserPosition();
@@ -1810,11 +1806,6 @@ void CWeaponRPG::ItemPostFrame( void )
 	if ( pPlayer->GetAmmoCount(m_iPrimaryAmmoType) <= 0 && m_hMissile == NULL )
 	{
 		StopGuiding();
-	}
-
-	if (pPlayer->m_afButtonPressed & IN_ATTACK3)
-	{
-		ToggleGuiding();
 	}
 }
 

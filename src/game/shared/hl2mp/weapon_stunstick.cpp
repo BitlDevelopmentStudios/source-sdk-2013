@@ -78,7 +78,6 @@ public:
 
 
 	bool		Deploy( void );
-	void		ItemPostFrame(void);
 	bool		Holster( CBaseCombatWeapon *pSwitchingTo = NULL );
 	
 	void		Drop( const Vector &vecVelocity );
@@ -88,7 +87,6 @@ public:
 	bool		GetStunState( void );
 
 	void		Hit(trace_t& traceHit, Activity nHitActivity) OVERRIDE;
-	void		Swing(int bIsSecondary) OVERRIDE;
 
 #ifndef CLIENT_DLL
 	void		Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
@@ -325,147 +323,16 @@ void CWeaponStunStick::Hit(trace_t& traceHit, Activity nHitActivity)
 
 		if (pHitEntity->IsPlayer() || pHitEntity->IsNPC())
 		{
-			if (m_bActive)
-			{
-				WeaponSound(MELEE_HIT);
-			}
-			else
-			{
-				WeaponSound(SPECIAL2);
-			}
+			WeaponSound(MELEE_HIT);
 		}
 		else
 		{
-			if (m_bActive)
-			{
-				WeaponSound(MELEE_HIT_WORLD);
-			}
-			else
-			{
-				WeaponSound(SPECIAL3);
-			}
+			WeaponSound(MELEE_HIT_WORLD);
 		}
 	}
 
 	// Apply an impact effect
 	ImpactEffect(traceHit);
-}
-
-extern ConVar friendlyfire;
-
-//------------------------------------------------------------------------------
-// Purpose : Starts the swing of the weapon and determines the animation
-// Input   : bIsSecondary - is this a secondary attack?
-//------------------------------------------------------------------------------
-void CWeaponStunStick::Swing(int bIsSecondary)
-{
-	trace_t traceHit;
-
-	// Try a ray
-	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
-	if (!pOwner)
-		return;
-
-	Vector swingStart = pOwner->Weapon_ShootPosition();
-	Vector forward;
-
-	bool bDontHitTeammates = (!friendlyfire.GetBool());
-	CTraceFilterIgnoreTeammates ignoreTeammatesFilter(pOwner, COLLISION_GROUP_NONE, pOwner->GetTeamNumber());
-
-	pOwner->EyeVectors(&forward, NULL, NULL);
-
-	Vector swingEnd = swingStart + forward * GetRange();
-
-	if (bDontHitTeammates)
-	{
-		UTIL_TraceLine(swingStart, swingEnd, MASK_SHOT_HULL, &ignoreTeammatesFilter, &traceHit);
-	}
-	else
-	{
-		UTIL_TraceLine(swingStart, swingEnd, MASK_SHOT_HULL, pOwner, COLLISION_GROUP_NONE, &traceHit);
-	}
-
-	Activity nHitActivity = ACT_VM_HITCENTER;
-
-#ifndef CLIENT_DLL
-	// Like bullets, bludgeon traces have to trace against triggers.
-	CTakeDamageInfo triggerInfo(GetOwner(), GetOwner(), GetDamageForActivity(nHitActivity), DMG_CLUB);
-	TraceAttackToTriggers(triggerInfo, traceHit.startpos, traceHit.endpos, vec3_origin);
-#endif
-
-	if (traceHit.fraction == 1.0)
-	{
-		float bludgeonHullRadius = 1.732f * BLUDGEON_HULL_DIM;  // hull is +/- 16, so use cuberoot of 2 to determine how big the hull is from center to the corner point
-
-		// Back off by hull "radius"
-		swingEnd -= forward * bludgeonHullRadius;
-
-		if (bDontHitTeammates)
-		{
-			UTIL_TraceHull(swingStart, swingEnd, g_bludgeonMins, g_bludgeonMaxs, MASK_SHOT_HULL, &ignoreTeammatesFilter, &traceHit);
-		}
-		else
-		{
-			UTIL_TraceHull(swingStart, swingEnd, g_bludgeonMins, g_bludgeonMaxs, MASK_SHOT_HULL, pOwner, COLLISION_GROUP_NONE, &traceHit);
-		}
-
-		if (traceHit.fraction < 1.0 && traceHit.m_pEnt)
-		{
-			Vector vecToTarget = traceHit.m_pEnt->GetAbsOrigin() - swingStart;
-			VectorNormalize(vecToTarget);
-
-			float dot = vecToTarget.Dot(forward);
-
-			// YWB:  Make sure they are sort of facing the guy at least...
-			if (dot < 0.70721f)
-			{
-				// Force amiss
-				traceHit.fraction = 1.0f;
-			}
-			else
-			{
-				nHitActivity = ChooseIntersectionPointAndActivity(traceHit, g_bludgeonMins, g_bludgeonMaxs, pOwner);
-			}
-		}
-	}
-
-	if (m_bActive)
-	{
-		WeaponSound(SINGLE);
-	}
-	else
-	{
-		WeaponSound(SPECIAL1);
-	}
-
-	m_iPrimaryAttacks++;
-
-	// -------------------------
-	//	Miss
-	// -------------------------
-	if (traceHit.fraction == 1.0f)
-	{
-		nHitActivity = bIsSecondary ? ACT_VM_MISSCENTER2 : ACT_VM_MISSCENTER;
-
-		// We want to test the first swing again
-		Vector testEnd = swingStart + forward * GetRange();
-
-		// See if we happened to hit water
-		ImpactWater(swingStart, testEnd);
-	}
-	else
-	{
-		Hit(traceHit, nHitActivity);
-	}
-
-	// Send the anim
-	SendWeaponAnim(nHitActivity);
-
-	ToHL2MPPlayer(pOwner)->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
-
-	//Setup our next attack times
-	m_flNextPrimaryAttack = gpGlobals->curtime + GetFireRate();
-	m_flNextSecondaryAttack = gpGlobals->curtime + SequenceDuration();
 }
 
 #ifndef CLIENT_DLL
@@ -689,21 +556,6 @@ void CWeaponStunStick::SetStunState( bool state )
 	else
 	{
 		EmitSound( "Weapon_StunStick.Deactivate" );
-	}
-}
-
-void CWeaponStunStick::ItemPostFrame(void)
-{
-	BaseClass::ItemPostFrame();
-
-	CBasePlayer* pPlayer = ToBasePlayer(GetOwner());
-
-	if (pPlayer == NULL)
-		return;
-
-	if (pPlayer->m_afButtonPressed & IN_ATTACK3)
-	{
-		SetStunState(!m_bActive);
 	}
 }
 
