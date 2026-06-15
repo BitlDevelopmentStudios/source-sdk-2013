@@ -173,7 +173,7 @@ void CBaseHL2MPBludgeonWeapon::Hit( trace_t &traceHit, Activity nHitActivity )
 		TraceAttackToTriggers( info, traceHit.startpos, traceHit.endpos, hitDirection );
 #endif
 
-		if (!pHitEntity->IsWorld())
+		if (pHitEntity->IsPlayer() || pHitEntity->IsNPC())
 		{
 			WeaponSound(MELEE_HIT);
 		}
