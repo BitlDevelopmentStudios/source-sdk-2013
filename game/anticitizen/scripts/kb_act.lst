@@ -20,7 +20,6 @@
 "blank"			"=========================="
 "+attack"				"#Valve_Primary_Attack"
 "+attack2"				"#Valve_Secondary_Attack"
-"+attack3"				"#Valve_Special_Attack"
 "+reload"				"#Valve_Reload_Weapon"
 "+use"					"#Valve_Use_Items"
 "phys_swap"				"#Valve_Gravity_Gun"
