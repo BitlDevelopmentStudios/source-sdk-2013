@@ -6,7 +6,7 @@ Alpha Technical Test v3:
 - Fixed mp_disable_respawn_times not working as intended.
 - Added proper VScript support.
 - Placed turrets will now remain when the game starts.
-- Added a round limit (3 by default). If the game reaches it, the game switches levels.
+- Added a round limit (5 by default). If the game reaches it, the game switches levels.
 
 Alpha Technical Test v2:
 - Hid the "Remaining soldiers" counter on the Combine side in favor of a life counter.
