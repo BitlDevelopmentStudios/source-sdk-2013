@@ -302,8 +302,8 @@ void CWeaponStunStick::Hit(trace_t& traceHit, Activity nHitActivity)
 				//Push the target back
 				pHitPlayer->ApplyAbsVelocityImpulse(dir);
 
-				color32 red = { 128,128,128,128 };
-				UTIL_ScreenFade(pHitPlayer, red, 0.5f, 0.1f, FFADE_IN);
+				color32 red = { 128,0,0,128 };
+				UTIL_ScreenFade(pPlayer, red, 0.5f, 0.65f, FFADE_IN);
 
 				// Force the player to drop anything they were holding
 				pHitPlayer->ForceDropOfCarriedPhysObjects();

@@ -4,7 +4,7 @@
 	{
 		"id"		"1"
 		"value"		"0"
-		"data"		"7"
+		"data"		"9"
 		"hud"		"0"
 		"msg"		"0"
 	}
@@ -12,7 +12,7 @@
 	{
 		"id"		"2"
 		"value"		"0"
-		"data"		"20"
+		"data"		"24"
 		"hud"		"0"
 		"msg"		"0"
 	}
@@ -41,7 +41,7 @@
 	{
 		"id"		"1003"
 		"value"		"0"
-		"data"		"1"
+		"data"		"2"
 		"hud"		"0"
 		"msg"		"0"
 	}
@@ -49,7 +49,7 @@
 	{
 		"id"		"1004"
 		"value"		"0"
-		"data"		"1"
+		"data"		"2"
 		"hud"		"0"
 		"msg"		"0"
 	}
@@ -57,7 +57,7 @@
 	{
 		"id"		"1005"
 		"value"		"0"
-		"data"		"1"
+		"data"		"2"
 		"hud"		"0"
 		"msg"		"0"
 	}
@@ -87,23 +87,23 @@
 	{
 		"id"		"2003"
 		"value"		"0"
-		"data"		"19"
+		"data"		"22"
 		"hud"		"0"
-		"msg"		"3"
+		"msg"		"4"
 	}
 	"13"
 	{
 		"id"		"2004"
 		"value"		"0"
-		"data"		"19"
+		"data"		"22"
 		"hud"		"0"
-		"msg"		"1"
+		"msg"		"2"
 	}
 	"14"
 	{
 		"id"		"2005"
 		"value"		"0"
-		"data"		"19"
+		"data"		"22"
 		"hud"		"0"
 		"msg"		"0"
 	}
