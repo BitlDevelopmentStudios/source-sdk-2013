@@ -243,6 +243,7 @@ CHL2MPRules::CHL2MPRules()
 	m_bAnnouncedGameStart = false;
 	m_bAnnouncedGameEnd = false;
 	m_bGaveGameEndAchievements = false;
+	m_bSentGameEndEvent = false;
 	m_uiFreemanID = 0;
 	m_uiLastFreemanID = 0;
 	m_iNumTimesFreemanIDShowedUpIFuckingHateThis = 0;
@@ -698,8 +699,6 @@ void CHL2MPRules::AwardGameEndAchievements()
 			}
 		}
 
-		int achID = 0;
-
 		for (int i = 0; i < MAX_PLAYERS; i++)
 		{
 			CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
@@ -711,20 +710,11 @@ void CHL2MPRules::AwardGameEndAchievements()
 			{
 				if (!bCombineLost)
 				{
-					achID = ACHIEVEMENT_ANTICITIZEN_KILL_FREEMAN;
+					pPlayer->AwardAchievement(ACHIEVEMENT_ANTICITIZEN_KILL_FREEMAN);
 
-					// award the time achievement if we already got the first one.
-					CAchievementMgr* pAchievementMgr = dynamic_cast<CAchievementMgr*>(engine->GetAchievementMgr());
-					if (pAchievementMgr)
+					if (HL2MPRules()->GetTimeSinceGameStart() < 60.0f)
 					{
-						IAchievement* pAchievement = pAchievementMgr->GetAchievementByID(achID);
-						if (pAchievement && pAchievement->IsAchieved())
-						{
-							if (HL2MPRules()->GetTimeSinceGameStart() < 420.0f)
-							{
-								achID = ACHIEVEMENT_ANTICITIZEN_KILL_FREEMAN_LESSTIME;
-							}
-						}
+						pPlayer->AwardAchievement(ACHIEVEMENT_ANTICITIZEN_KILL_FREEMAN_LESSTIME);
 					}
 				}
 				else
@@ -736,20 +726,11 @@ void CHL2MPRules::AwardGameEndAchievements()
 			{
 				if (!bFreemanLost)
 				{
-					achID = ACHIEVEMENT_ANTICITIZEN_KILL_COMBINE;
+					pPlayer->AwardAchievement(ACHIEVEMENT_ANTICITIZEN_KILL_COMBINE);
 
-					// award the gravity gun achievement if we already got the first one.
-					CAchievementMgr* pAchievementMgr = dynamic_cast<CAchievementMgr*>(engine->GetAchievementMgr());
-					if (pAchievementMgr)
+					if (GetFreemanBulletsShot() == 0)
 					{
-						IAchievement* pAchievement = pAchievementMgr->GetAchievementByID(achID);
-						if (pAchievement && pAchievement->IsAchieved())
-						{
-							if (GetFreemanBulletsShot() == 0)
-							{
-								achID = ACHIEVEMENT_ANTICITIZEN_KILL_COMBINE_GRAVITYGUN;
-							}
-						}
+						pPlayer->AwardAchievement(ACHIEVEMENT_ANTICITIZEN_KILL_COMBINE_GRAVITYGUN);
 					}
 				}
 				else
@@ -757,8 +738,6 @@ void CHL2MPRules::AwardGameEndAchievements()
 					continue;
 				}
 			}
-
-			pPlayer->AwardAchievement(achID);
 		}
 
 		m_bGaveGameEndAchievements = true;
@@ -811,6 +790,12 @@ void CHL2MPRules::Think( void )
 					{
 						RestartGame();
 						m_bCompleteReset = true;
+					}
+
+					IGameEvent* event = gameeventmanager->CreateEvent("anticitizen_round_start");
+					if (event)
+					{
+						gameeventmanager->FireEvent(event);
 					}
 
 					m_flGameStartTime = gpGlobals->curtime + sv_startplaywaitime.GetInt();
@@ -935,6 +920,30 @@ void CHL2MPRules::Think( void )
 							pFreeman->GetSteamID(&id);
 							pNextPlayerToBecomeFreeman = ToHL2MPPlayer(UTIL_PlayerBySteamID(id));
 						}
+					}
+
+					int iWinningTeam = -1;
+
+					if (m_iGameEndReason == GAME_END_NOMORESOLDIERS)
+					{
+						iWinningTeam = TEAM_FREEMAN;
+					}
+					else if (m_iGameEndReason == GAME_END_FREEMANDEAD)
+					{
+						iWinningTeam = TEAM_COMBINE;
+					}
+
+					if (!m_bSentGameEndEvent)
+					{
+						IGameEvent* event = gameeventmanager->CreateEvent("anticitizen_round_end");
+						if (event)
+						{
+							event->SetInt("team", iWinningTeam);
+							event->SetInt("winreason", m_iGameEndReason);
+							gameeventmanager->FireEvent(event);
+						}
+
+						m_bSentGameEndEvent = true;
 					}
 
 					Announce(true);
@@ -1606,6 +1615,7 @@ void CHL2MPRules::RestartGame(bool gameend)
 		m_bAnnouncedGameStart = false;
 		m_bAnnouncedGameEnd = false;
 		m_bGaveGameEndAchievements = false;
+		m_bSentGameEndEvent = false;
 	}
 
 	m_flTimeSinceGameStart = 0;

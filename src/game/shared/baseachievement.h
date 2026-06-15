@@ -56,6 +56,7 @@ public:
 	virtual void PostRestoreSavedGame();
 	void SetCount( int iCount ) { m_iCount = iCount; }
 	int GetCount() { return m_iCount; }
+	void IncrementCount(int iOptIncrement = 0);
 	void SetProgressShown( int iProgressShown ) { m_iProgressShown = iProgressShown; }
 	int GetProgressShown() { return m_iProgressShown; }
 	virtual bool IsAchieved() { return m_bAchieved; }
@@ -117,7 +118,6 @@ protected:
 	void SetInflictorEntityNameFilter( const char *pEntityName );
 	void SetMapNameFilter( const char *pMapName );
 	void SetComponentPrefix( const char *pPrefix );
-	void IncrementCount( int iOptIncrement = 0 );
 	void EvaluateNewAchievement();
 	void AwardAchievement();
 	void ShowProgressNotification();

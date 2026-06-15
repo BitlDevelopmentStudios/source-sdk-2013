@@ -226,4 +226,60 @@ protected:
 	}
 };
 DECLARE_ACHIEVEMENT(CAchievementFreemanKillMilestone3, ACHIEVEMENT_ANTICITIZEN_FREEMAN_MILESTONE_3, "ANTICITIZEN_FREEMAN_MILESTONE_3", 10);
+
+class CAchievementWinGames : public CBaseAchievement
+{
+protected:
+	virtual void Init()
+	{
+		SetFlags(ACH_SAVE_GLOBAL);
+		SetGoal(98);
+	}
+
+	virtual void ListenForEvents()
+	{
+		ListenForGameEvent("anticitizen_round_end");
+	}
+
+	void FireGameEvent_Internal(IGameEvent* event)
+	{
+		if (FStrEq(event->GetName(), "anticitizen_round_end"))
+		{
+			// Were we on the winning team?
+			int iTeam = event->GetInt("team");
+			if ((iTeam >= FIRST_GAME_TEAM) && (iTeam == GetLocalPlayerTeam()))
+			{
+				IncrementCount();
+			}
+		}
+	}
+};
+DECLARE_ACHIEVEMENT(CAchievementWinGames, ACHIEVEMENT_ANTICITIZEN_GENERAL_WINGAMES, "ANTICITIZEN_GENERAL_WINGAMES", 10);
+
+class CAchievementKill : public CBaseAchievement
+{
+protected:
+	virtual void Init()
+	{
+		SetFlags(ACH_SAVE_GLOBAL | ACH_LISTEN_PLAYER_KILL_ENEMY_EVENTS);
+		SetGoal(420);
+	}
+
+	virtual void Event_EntityKilled(CBaseEntity* pVictim, CBaseEntity* pAttacker, CBaseEntity* pInflictor, IGameEvent* event)
+	{
+		if (!pVictim || !pVictim->IsPlayer())
+			return;
+
+		if (pAttacker == C_BasePlayer::GetLocalPlayer())
+		{
+			// no friendly fire kills
+			if (pVictim->GetTeamNumber() != pAttacker->GetTeamNumber())
+			{
+				// we killed a soldier
+				IncrementCount();
+			}
+		}
+	}
+};
+DECLARE_ACHIEVEMENT(CAchievementKill, ACHIEVEMENT_ANTICITIZEN_GENERAL_KILLS, "ANTICITIZEN_GENERAL_KILLS", 10);
 #endif // GAME_DLL

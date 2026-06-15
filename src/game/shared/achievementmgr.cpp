@@ -64,7 +64,7 @@ const char *COM_GetModDirectory();
 
 extern ConVar developer;
 
-#define DEBUG_ACHIEVEMENTS_IN_RELEASE 0
+#define DEBUG_ACHIEVEMENTS_IN_RELEASE 1
 
 //-----------------------------------------------------------------------------
 // Purpose: Write helper

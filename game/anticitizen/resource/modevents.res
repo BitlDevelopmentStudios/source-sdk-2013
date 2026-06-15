@@ -48,4 +48,19 @@
 		"player"	"byte"		// entindex of the player
 		"achievement"	"short"		// achievement ID
 	}
+	
+	"achievement_earned_local"
+	{
+		"achievement"	"short"
+	}
+	
+	"anticitizen_round_start"			// round restart
+	{
+	}
+	
+	"anticitizen_round_end"			// round restart
+	{
+		"team"		"byte"		// which team won the round
+		"winreason"	"byte"		// the reason the team won
+	}
 }
