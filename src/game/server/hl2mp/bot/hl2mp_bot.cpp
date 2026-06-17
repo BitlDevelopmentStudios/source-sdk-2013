@@ -345,6 +345,7 @@ void CC_BotAdd(const CCommand& args)
 }
 static ConCommand hl2mp_bot_add("hl2mp_bot_add", CC_BotAdd, "Add a bot.\n", FCVAR_GAMEDLL);
 static ConCommand bot_add("bot_add", CC_BotAdd, "Add a bot.\n", FCVAR_GAMEDLL);
+static ConCommand anticitizen_bot_add("anticitizen_bot_add", CC_BotAdd, "Add a bot.\n", FCVAR_GAMEDLL);
 
 //-----------------------------------------------------------------------------------------------------
 void CC_BotKick(const CCommand& args)
@@ -418,6 +419,7 @@ void CC_BotKick(const CCommand& args)
 }
 static ConCommand hl2mp_bot_kick("hl2mp_bot_kick", CC_BotKick, "Remove a HL2MPBot by name, or all bots (\"all\").\n", FCVAR_GAMEDLL);
 static ConCommand bot_kick("bot_kick", CC_BotKick, "Remove a HL2MPBot by name, or all bots (\"all\").\n", FCVAR_GAMEDLL);
+static ConCommand anticitizen_bot_kick("anticitizen_bot_kick", CC_BotKick, "Remove a HL2MPBot by name, or all bots (\"all\").\n", FCVAR_GAMEDLL);
 
 //-----------------------------------------------------------------------------------------------------
 void CC_BotKill(const CCommand& args)
@@ -477,6 +479,7 @@ void CC_BotKill(const CCommand& args)
 }
 static ConCommand hl2mp_bot_kill("hl2mp_bot_kill", CC_BotKill, "Kill a HL2MPBot by name, or all bots (\"all\").\n", FCVAR_GAMEDLL);
 static ConCommand bot_kill("bot_kill", CC_BotKill, "Kill a HL2MPBot by name, or all bots (\"all\").\n", FCVAR_GAMEDLL);
+static ConCommand anticitizen_bot_kill("anticitizen_bot_kill", CC_BotKill, "Kill a HL2MPBot by name, or all bots (\"all\").\n", FCVAR_GAMEDLL);
 
 //-----------------------------------------------------------------------------------------------------
 void CMD_BotWarpTeamToMe( void )
@@ -496,7 +499,7 @@ void CMD_BotWarpTeamToMe( void )
 }
 static ConCommand hl2mp_bot_warp_team_to_me( "hl2mp_bot_warp_team_to_me", CMD_BotWarpTeamToMe, "", FCVAR_GAMEDLL | FCVAR_CHEAT );
 static ConCommand bot_warp_team_to_me("bot_warp_team_to_me", CMD_BotWarpTeamToMe, "", FCVAR_GAMEDLL | FCVAR_CHEAT);
-
+static ConCommand anticitizen_bot_warp_team_to_me("anticitizen_bot_warp_team_to_me", CMD_BotWarpTeamToMe, "", FCVAR_GAMEDLL | FCVAR_CHEAT);
 
 //-----------------------------------------------------------------------------------------------------
 IMPLEMENT_INTENTION_INTERFACE( CHL2MPBot, CHL2MPBotMainAction );
