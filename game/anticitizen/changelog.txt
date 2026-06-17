@@ -2,6 +2,7 @@ Alpha Technical Test v4:
 - Fixed a bug where you can get achievement notifications from other players.
 - Disabled turret placement glows.
 - Added generic aliases for bot commands (i.e bot_add, bot_kick, bot_kill)
+- Fixed turrets sometimes shooting at spectators.
 
 Alpha Technical Test v3:
 - Added achievements!
