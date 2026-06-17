@@ -20,6 +20,8 @@ public:
 
 	virtual EventDesiredResult< CHL2MPBot > OnOtherKilled( CHL2MPBot *me, CBaseCombatCharacter *victim, const CTakeDamageInfo &info );
 
+	virtual EventDesiredResult< CHL2MPBot > OnActorEmoted(CHL2MPBot* me, CBaseCombatCharacter* emoter, int emote);
+
 	virtual QueryResultType ShouldAttack( const INextBot *me, const CKnownEntity *them ) const;
 	virtual QueryResultType	ShouldRetreat( const INextBot *me ) const;							// is it time to retreat?
 	virtual QueryResultType	ShouldHurry( const INextBot *me ) const;							// are we in a hurry?

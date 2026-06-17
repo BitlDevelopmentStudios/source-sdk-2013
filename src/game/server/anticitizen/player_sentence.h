@@ -24,6 +24,14 @@
 extern enum SentenceCriteria_t;
 extern enum SentencePriority_t;
 
+class SentenceLenKeyValuesLoader
+{
+public:
+	void LoadEntries(const char* fileName, const char* kvHeader);
+
+	KeyValues* m_storedKV;
+};
+
 //-----------------------------------------------------------------------------
 // This is the met of the class
 //-----------------------------------------------------------------------------
@@ -37,6 +45,14 @@ public:
 
 	void SetVoicePitch( int voicePitch );
 	int GetVoicePitch() const;
+
+	float GetSentenceLength(void) 
+	{ 
+		if (!m_bInit)
+			return 0.0f;
+
+		return m_curSentenceLength; 
+	};
 	
 	virtual void SetOuter( CBasePlayer *pOuter )	{ m_pOuter = pOuter; }
 
@@ -48,6 +64,8 @@ public:
 	int Speak( const char *pSentence, SentencePriority_t nSoundPriority = SENTENCE_PRIORITY_NORMAL, SentenceCriteria_t nCriteria = SENTENCE_CRITERIA_IN_SQUAD );
 
 	bool m_bInit;
+
+	SentenceLenKeyValuesLoader m_kvSentenceLen;
 
 protected:
 	virtual float GetVolume() = 0;
@@ -61,10 +79,11 @@ private:
 	int PlaySentence( const char *pSentence );
 
 	// Debug output
-	void SentenceMsg( const char *pStatus, const char *pSentence );
+	void SentenceMsg( const char *pStatus, const char *pSentence, int iIndex, float flLen );
 
 	int		m_voicePitch;
 	CBasePlayer *m_pOuter;
+	float	m_curSentenceLength;
 };
 
 
@@ -137,6 +156,9 @@ void CPlayer_Sentence< PLAYER_CLASS >::Init( PLAYER_CLASS *pOuter, const char *p
 	}
 
 	m_bInit = true;
+
+
+	m_kvSentenceLen.LoadEntries("scripts/sentencelen.txt", "SentenceLen");
 }
 
 

@@ -240,14 +240,29 @@ public:
 	bool IsThreatFiringAtMe( CBaseEntity* threat ) const;
 
 	const char* SentenceForConcept(int iConcept, int iVoiceMode);
-	void SpeakSentence(const char *pSentence, SentencePriority_t nSoundPriority = SENTENCE_PRIORITY_NORMAL, SentenceCriteria_t nCriteria = SENTENCE_CRITERIA_IN_SQUAD);
+	void SpeakSentence(const char *pSentence, SentencePriority_t nSoundPriority = SENTENCE_PRIORITY_NORMAL, SentenceCriteria_t nCriteria = SENTENCE_CRITERIA_NORMAL);
 
-	void SpeakSentenceForConcept(int iConcept) 
+	void SpeakSentenceForConcept(int iConcept, SentencePriority_t nSoundPriority = SENTENCE_PRIORITY_NORMAL, SentenceCriteria_t nCriteria = SENTENCE_CRITERIA_NORMAL)
 	{ 
 		if (GetVoiceMode() > VOICE_TYPE_NONE)
 		{
-			SpeakSentence(SentenceForConcept(iConcept, GetVoiceMode()));
+			SpeakSentence(SentenceForConcept(iConcept, GetVoiceMode()), nSoundPriority, nCriteria);
+
+			m_iLastConcept = iConcept;
+			m_bBotNotifier = true;
 		}
+	}
+
+	//version for vscript
+	void ScriptSpeakSentence(int iConcept)
+	{
+		SpeakSentenceForConcept(iConcept, SENTENCE_PRIORITY_NORMAL, SENTENCE_CRITERIA_NORMAL);
+	}
+
+	bool IsSentencePlaying(void) 
+	{ 
+		bool bPlaying = (m_flNextSentenceTime > gpGlobals->curtime);
+		return bPlaying;
 	}
 
 protected:
@@ -261,6 +276,9 @@ private:
 	CPlayer_Sentence< CHL2MP_Player > m_Sentences;
 	float			m_flNextPainSoundTime;
 	float			m_flNextSentenceTime;
+
+	bool m_bBotNotifier;
+	int m_iLastConcept;
 
 	CHL2MPPlayerAnimState* m_PlayerAnimState;
 

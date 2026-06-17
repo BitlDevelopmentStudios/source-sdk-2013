@@ -46,8 +46,7 @@ extern CBaseEntity				*g_pLastSpawn;
 
 ConVar hl2mp_spawn_frag_fallback_radius( "hl2mp_spawn_frag_fallback_radius", "48", FCVAR_NONE, "If no spawns are available, kill players with this radius to allow new players to spawn." );
 
-ConVar sv_sentencedelay("sv_sentencedelay", "5", FCVAR_NOTIFY);
-ConVar sv_painsentencedelay("sv_painsentencedelay", "1.5", FCVAR_NOTIFY);
+ConVar sv_sentencedelay("sv_sentencedelay", "1.5", FCVAR_NOTIFY);
 
 #define HL2MP_COMMAND_MAX_RATE 0.3
 
@@ -151,7 +150,7 @@ BEGIN_ENT_SCRIPTDESC( CHL2MP_Player, CHL2_Player, "Half-Life 2: Deathmatch Playe
 	DEFINE_SCRIPTFUNC(GetLifeCount, "Get player lives")
 	DEFINE_SCRIPTFUNC(GetMaxLifeCount, "Get player max lives")
 	DEFINE_SCRIPTFUNC(SetLifeCount, "Set player lives")
-	DEFINE_SCRIPTFUNC_NAMED(SpeakSentenceForConcept, "SpeakSentence", "Speak a sentence. See Constants.EAC1Sentence")
+	DEFINE_SCRIPTFUNC_NAMED(ScriptSpeakSentence, "SpeakSentence", "Speak a sentence. See Constants.EAC1Sentence")
 END_SCRIPTDESC();
 
 #define HL2MPPLAYER_PHYSDAMAGE_SCALE 4.0f
@@ -258,6 +257,9 @@ CHL2MP_Player::CHL2MP_Player()
 
 	m_iPlayerClass = CLS_INVALID;
 	m_bChosenClass = false;
+
+	m_bBotNotifier = false;
+	m_iLastConcept = -1;
 
 	m_iLives = -1;
 
@@ -584,7 +586,29 @@ void CHL2MP_Player::PostThink( void )
 
 	if (GetPlayerClass() > CLS_INVALID)
 	{
-		// do not use the timer unless the diffoculty is higher.
+		if (!IsSentencePlaying() && m_bBotNotifier && (m_iLastConcept > -1))
+		{
+			// let bots react to player's voice commands
+			CUtlVector< INextBot* > botVector;
+			TheNextBots().CollectAllBots(&botVector);
+
+			for (int i = 0; i < botVector.Count(); ++i)
+			{
+				// only emote if we're close to the player
+				CBaseCombatCharacter* pBotEnt = botVector[i]->GetEntity();
+
+				float distToNearest = FLT_MAX;
+				float flDist = (pBotEnt->GetAbsOrigin() - GetAbsOrigin()).LengthSqr();
+				if (flDist < distToNearest && FVisible(pBotEnt, MASK_SOLID_BRUSHONLY))
+				{
+					botVector[i]->OnActorEmoted(this, m_iLastConcept);
+				}
+			}
+
+			m_bBotNotifier = false;
+		}
+
+		// do not use the timer unless the difficulty is higher.
 		CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(this);
 
 		if (pBot)
@@ -1107,8 +1131,11 @@ void CHL2MP_Player::SpeakSentence(const char* pSentence, SentencePriority_t nSou
 {
 	bool alwaysSpeak = ((nSoundPriority == SENTENCE_PRIORITY_INVALID) && (nCriteria == SENTENCE_CRITERIA_ALWAYS));
 
-	if ((gpGlobals->curtime < m_flNextSentenceTime) && !alwaysSpeak)
-		return;
+	if (!alwaysSpeak)
+	{
+		if ((gpGlobals->curtime < m_flNextSentenceTime))
+			return;
+	}
 
 	if (GetPlayerClass() > CLS_INVALID)
 	{
@@ -1133,7 +1160,11 @@ void CHL2MP_Player::SpeakSentence(const char* pSentence, SentencePriority_t nSou
 
 			m_Sentences.Speak(szStepSound);
 
-			m_flNextSentenceTime = gpGlobals->curtime + sv_sentencedelay.GetFloat();
+			if (!alwaysSpeak)
+			{
+				float sentenceLength = m_Sentences.GetSentenceLength();
+				m_flNextSentenceTime = gpGlobals->curtime + sentenceLength + sv_sentencedelay.GetFloat();
+			}
 		}
 	}
 }
@@ -1892,7 +1923,9 @@ void CHL2MP_Player::PainSound(const CTakeDamageInfo& info)
 				// This causes it to speak it no matter what; doesn't bother with setting sounds.
 				// Use m_Sentences.Speak because we have custom logic here.
 				m_Sentences.Speak(pSentenceName, SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
-				m_flNextPainSoundTime = gpGlobals->curtime + sv_painsentencedelay.GetFloat();
+
+				float sentenceLength = m_Sentences.GetSentenceLength();
+				m_flNextPainSoundTime = gpGlobals->curtime + sentenceLength + sv_sentencedelay.GetFloat();
 			}
 		}
 	}

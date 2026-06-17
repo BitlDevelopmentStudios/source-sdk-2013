@@ -7,6 +7,7 @@
 
 #include "cbase.h"
 #include "player_sentence.h"
+#include "filesystem.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -28,10 +29,28 @@ CPlayer_SentenceBase::CPlayer_SentenceBase()
 	m_bInit = false;
 }
 
+static ConVar sentence_kvloader_debug("sentence_kvloader_debug", "1", FCVAR_REPLICATED);
+
+void SentenceLenKeyValuesLoader::LoadEntries(const char* fileName, const char* kvHeader)
+{
+	KeyValues* pKV = new KeyValues(kvHeader);
+	if (pKV->LoadFromFile(filesystem, fileName, "GAME"))
+	{
+		m_storedKV = pKV->MakeCopy();
+	}
+
+	if (sentence_kvloader_debug.GetBool())
+	{
+		KeyValuesDumpAsDevMsg(pKV, 1);
+	}
+
+	pKV->deleteThis();
+}
+
 //-----------------------------------------------------------------------------
 // Debug output
 //-----------------------------------------------------------------------------
-void CPlayer_SentenceBase::SentenceMsg( const char *pStatus, const char *pSentence )
+void CPlayer_SentenceBase::SentenceMsg( const char *pStatus, const char *pSentence, int iIndex, float flLen)
 {
 	int nMode = player_sentences.GetInt();
 	switch( nMode )
@@ -40,7 +59,7 @@ void CPlayer_SentenceBase::SentenceMsg( const char *pStatus, const char *pSenten
 		return;
 
 	case 1:
-		DevMsg( "SENTENCE [%d %.2f] %s: %s\n", GetOuter()->entindex(), gpGlobals->curtime, pStatus, pSentence );
+		DevMsg( "SENTENCE %i [%d %.2f] %s: %s [len: %.2f]\n", iIndex, GetOuter()->entindex(), gpGlobals->curtime, pStatus, pSentence, flLen);
 		break;
 	}
 }
@@ -104,7 +123,8 @@ int SENTENCEG_PlayRndSz_Player_Lookat(edict_t* entity, const char* szgroupname,
 			}
 		}
 
-		CBaseEntity::EmitSentenceByIndex(filter, ENTINDEX(entity), CHAN_VOICE, sentenceIndex, volume, soundlevel, flags, pitch, origin, direction);
+		CBaseEntity::EmitSentenceByIndex(filter, ENTINDEX(entity), CHAN_VOICE, sentenceIndex, volume, soundlevel, flags, pitch, origin, direction, false);
+
 		return sentenceIndex;
 	}
 
@@ -122,12 +142,23 @@ int CPlayer_SentenceBase::PlaySentence( const char *pSentence )
 	int nSentenceIndex = SENTENCEG_PlayRndSz_Player_Lookat( GetOuter()->edict(), pSentence, GetVolume(), GetSoundLevel(), 0, GetVoicePitch());
 	if ( nSentenceIndex < 0 )
 	{
-		SentenceMsg( "BOGUS", pSentence );
+		SentenceMsg( "BOGUS", pSentence, -1, -1);
 		return -1;
 	}
 
 	const char *pSentenceName = engine->SentenceNameFromIndex( nSentenceIndex ); 
-	SentenceMsg( "Speaking", pSentenceName );
+
+	float length = 0.0f;
+
+	KeyValues* sentence = m_kvSentenceLen.m_storedKV->FindKey(pSentenceName);
+	if (sentence)
+	{
+		length = sentence->GetFloat();
+	}
+
+	m_curSentenceLength = length;
+
+	SentenceMsg( "Speaking", pSentenceName, nSentenceIndex, m_curSentenceLength);
 	return nSentenceIndex;
 }
 

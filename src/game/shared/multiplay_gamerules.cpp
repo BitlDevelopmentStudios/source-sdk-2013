@@ -1742,18 +1742,6 @@ ConVarRef suitcharger( "sk_suitcharger" );
 				//WRITE_BYTE(iMenu);
 				//WRITE_BYTE(iItem);
 				//MessageEnd();
-
-#ifdef NEXT_BOT
-				// let bots react to player's voice commands
-				CUtlVector< INextBot* > botVector;
-				TheNextBots().CollectAllBots(&botVector);
-
-				for (int i = 0; i < botVector.Count(); ++i)
-				{
-					botVector[i]->OnActorEmoted(pHL2MPPlayer, pItem->m_iConcept);
-				}
-#endif
-
 				return pItem;
 			}
 		}

@@ -203,6 +203,35 @@ EventDesiredResult< CHL2MPBot > CHL2MPBotMainAction::OnOtherKilled( CHL2MPBot *m
 	return TryContinue();
 }
 
+EventDesiredResult< CHL2MPBot > CHL2MPBotMainAction::OnActorEmoted(CHL2MPBot* me, CBaseCombatCharacter* emoter, int emote)
+{
+	if (!emoter->IsPlayer())
+		return TryContinue();
+
+	if ((emoter->GetTeamNumber() == TEAM_FREEMAN) || (me->GetTeamNumber() == TEAM_FREEMAN))
+		return TryContinue();
+
+	//CHL2MP_Player* emotingPlayer = ToHL2MPPlayer(emoter);
+
+	switch (emote)
+	{
+		case MP_SENTENCE_REFIND_ENEMY:
+		case MP_SENTENCE_GO_ALERT:
+		case MP_SENTENCE_COMBINE_ALERT:
+		case MP_SENTENCE_LOST_LONG:
+		case MP_SENTENCE_LOST_SHORT:
+		case MP_SENTENCE_QUEST:
+		{
+			// if a squadmade asks a question, answer them.
+			// note that this should skip the timer.
+			me->SpeakSentenceForConcept(MP_SENTENCE_ANSWER, SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
+			break;
+		}
+	}
+
+
+	return TryContinue();
+}
 
 //---------------------------------------------------------------------------------------------
 /**

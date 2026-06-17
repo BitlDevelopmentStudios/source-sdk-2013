@@ -3,6 +3,7 @@ Alpha Technical Test v4:
 - Disabled turret placement glows.
 - Added generic aliases for bot commands (i.e bot_add, bot_kick, bot_kill)
 - Fixed turrets sometimes shooting at spectators.
+- Bots will now answer you when you ask a question.
 
 Alpha Technical Test v3:
 - Added achievements!
