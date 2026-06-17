@@ -2787,6 +2787,19 @@ Disposition_t CBaseCombatCharacter::IRelationType ( CBaseEntity *pTarget )
 					}
 				}
 			}
+			else
+			{
+				// become neutral to spectators.
+				// Only override if our relationship with this entity is identical to the default (prevents overriding ai_relationship)
+				Disposition_t nDisposition = FindEntityRelationship(pTarget)->disposition;
+				if (nDisposition == GetDefaultRelationshipDisposition(pTarget->Classify()))
+				{
+					if (pTarget->GetTeamNumber() == TEAM_SPECTATOR)
+					{
+						return D_NU;
+					}
+				}
+			}
 		}
 
 		return FindEntityRelationship(pTarget)->disposition;
