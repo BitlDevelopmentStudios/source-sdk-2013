@@ -4,6 +4,8 @@ Alpha Technical Test v4:
 - Added generic aliases for bot commands (i.e bot_add, bot_kick, bot_kill)
 - Fixed turrets sometimes shooting at spectators.
 - Bots now respond to certain voice responses.
+- Re-enabled spectator noclip.
+- Disabled spectator menu for now.
 
 Alpha Technical Test v3:
 - Added achievements!

@@ -271,11 +271,11 @@ void CSpectatorMenu::FireGameEvent( IGameEvent * event )
 //-----------------------------------------------------------------------------
 void CSpectatorMenu::OnKeyCodePressed(KeyCode code)
 {
-	if ( code == m_iDuckKey )
+	/*if (code == m_iDuckKey)
 	{
 		// hide if DUCK is pressed again
 		m_pViewPort->ShowPanel( this, false );
-	}
+	}*/
 }
 
 void CSpectatorMenu::ShowPanel(bool bShow)

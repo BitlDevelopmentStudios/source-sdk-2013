@@ -148,7 +148,8 @@ C_HL2MP_Player::~C_HL2MP_Player( void )
 
 void C_HL2MP_Player::ClientPlayerRespawn(void)
 {
-	m_iIDEntIndex = 0;
+	// this seems to break things.....
+	//m_iIDEntIndex = 0;
 }
 
 int C_HL2MP_Player::GetIDTarget() const

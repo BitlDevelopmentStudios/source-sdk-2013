@@ -215,6 +215,7 @@ EventDesiredResult< CHL2MPBot > CHL2MPBotMainAction::OnActorEmoted(CHL2MPBot* me
 
 	switch (emote)
 	{
+		case MP_SENTENCE_FLANK:
 		case MP_SENTENCE_REFIND_ENEMY:
 		case MP_SENTENCE_GO_ALERT:
 		case MP_SENTENCE_COMBINE_ALERT:
