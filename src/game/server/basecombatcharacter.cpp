@@ -2764,7 +2764,8 @@ Disposition_t CBaseCombatCharacter::IRelationType ( CBaseEntity *pTarget )
 		if (ai_team_relationships.GetBool())
 		{
 			// If both me and my target on a team, override default relationships
-			if (GetTeamNumber() != TEAM_UNASSIGNED && pTarget->GetTeamNumber() != TEAM_UNASSIGNED)
+			if (GetTeamNumber() != TEAM_UNASSIGNED && pTarget->GetTeamNumber() != TEAM_UNASSIGNED && 
+				GetTeamNumber() != TEAM_SPECTATOR && pTarget->GetTeamNumber() != TEAM_SPECTATOR)
 			{
 				// Only override if our relationship with this entity is identical to the default (prevents overriding ai_relationship)
 				Disposition_t nDisposition = FindEntityRelationship(pTarget)->disposition;
