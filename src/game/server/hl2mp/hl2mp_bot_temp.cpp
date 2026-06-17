@@ -434,6 +434,13 @@ void Bot_Think( CHL2MP_Player *pBot )
 // Handler for the "bot" command.
 void Bot_f()
 {
+	// Listenserver host or rcon access only!
+	if ( !UTIL_IsCommandIssuedByServerAdmin() )
+		return;
+	
+	if ( !sv_cheats->GetBool() )
+		return;
+	
 	// Look at -count.
 	int count = 1;
 	count = clamp(count, 1, 16);
@@ -450,5 +457,5 @@ void Bot_f()
 	}
 }
 
-ConCommand cc_Bot("bot", Bot_f, "Add a bot.", FCVAR_CHEAT);
+ConCommand cc_Bot("bot", Bot_f, "Add a bot.", FCVAR_GAMEDLL);
 

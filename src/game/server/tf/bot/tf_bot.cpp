@@ -321,7 +321,7 @@ void CreateBotName( int iTeam, int iClassIndex, CTFBot::DifficultyType skill, ch
 
 
 //-----------------------------------------------------------------------------------------------------
-CON_COMMAND_F( tf_bot_add, "Add a bot.", FCVAR_GAMEDLL )
+void CC_BotAdd(const CCommand& args)
 {
 	// Listenserver host or rcon access only!
 	if ( !UTIL_IsCommandIssuedByServerAdmin() )
@@ -452,10 +452,11 @@ CON_COMMAND_F( tf_bot_add, "Add a bot.", FCVAR_GAMEDLL )
 		TheTFBots().OnForceAddedBots( iNumAdded );
 	}
 }
-
+static ConCommand tf_bot_add("tf_bot_add", CC_BotAdd, "Add a bot.\n", FCVAR_GAMEDLL);
+static ConCommand bot_add("bot_add", CC_BotAdd, "Add a bot.\n", FCVAR_GAMEDLL);
 
 //-----------------------------------------------------------------------------------------------------
-CON_COMMAND_F( tf_bot_kick, "Remove a TFBot by name, or all bots (\"all\").", FCVAR_GAMEDLL )
+void CC_BotKick(const CCommand& args)
 {
 	// Listenserver host or rcon access only!
 	if ( !UTIL_IsCommandIssuedByServerAdmin() )
@@ -532,10 +533,11 @@ CON_COMMAND_F( tf_bot_kick, "Remove a TFBot by name, or all bots (\"all\").", FC
 	}
 	TheTFBots().OnForceKickedBots( iNumKicked );
 }
-
+static ConCommand tf_bot_kick("tf_bot_kick", CC_BotKick, "Remove a TFBot by name, or all bots (\"all\").", FCVAR_GAMEDLL);
+static ConCommand bot_kick("bot_kick", CC_BotKick, "Remove a TFBot by name, or all bots (\"all\").", FCVAR_GAMEDLL);
 
 //-----------------------------------------------------------------------------------------------------
-CON_COMMAND_F( tf_bot_kill, "Kill a TFBot by name, or all bots (\"all\").", FCVAR_GAMEDLL )
+void CC_BotKill(const CCommand& args)
 {
 	// Listenserver host or rcon access only!
 	if ( !UTIL_IsCommandIssuedByServerAdmin() )
@@ -598,6 +600,8 @@ CON_COMMAND_F( tf_bot_kill, "Kill a TFBot by name, or all bots (\"all\").", FCVA
 		}
 	}
 }
+static ConCommand tf_bot_kill("tf_bot_kill", CC_BotKill, "Kill a TFBot by name, or all bots (\"all\").\n", FCVAR_GAMEDLL);
+static ConCommand bot_kill("bot_kill", CC_BotKill, "Kill a TFBot by name, or all bots (\"all\").\n", FCVAR_GAMEDLL);
 
 //-----------------------------------------------------------------------------------------------------
 void CMD_BotWarpTeamToMe( void )
@@ -616,6 +620,7 @@ void CMD_BotWarpTeamToMe( void )
 	}
 }
 static ConCommand tf_bot_warp_team_to_me( "tf_bot_warp_team_to_me", CMD_BotWarpTeamToMe, "", FCVAR_GAMEDLL | FCVAR_CHEAT );
+static ConCommand bot_warp_team_to_me("bot_warp_team_to_me", CMD_BotWarpTeamToMe, "", FCVAR_GAMEDLL | FCVAR_CHEAT);
 
 
 //-----------------------------------------------------------------------------------------------------

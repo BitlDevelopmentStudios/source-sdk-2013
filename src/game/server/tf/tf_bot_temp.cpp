@@ -414,7 +414,7 @@ CON_COMMAND_F( bot_kick, "Remove a bot by name, or an entire team (\"red\" or \"
 }
 
 // Handler for the "bot" command.
-CON_COMMAND_F( bot, "Add a bot.", FCVAR_NONE )
+CON_COMMAND_F( bot, "Add a bot.", FCVAR_GAMEDLL )
 {
 	// Listenserver host or rcon access only!
 	if ( !UTIL_IsCommandIssuedByServerAdmin() )
