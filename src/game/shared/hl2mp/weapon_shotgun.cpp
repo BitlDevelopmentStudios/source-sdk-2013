@@ -490,10 +490,10 @@ void CWeaponShotgun::SecondaryAttack( void )
 	}
 
 	// shotgunner cannot use secondary fire
-	if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
+	/*if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
 	{
 		return;
-	}
+	}*/
 
 	pPlayer->m_nButtons &= ~IN_ATTACK2;
 	// MUST call sound before removing a round from the clip of a CMachineGun
@@ -515,6 +515,7 @@ void CWeaponShotgun::SecondaryAttack( void )
 
 	FireBulletsInfo_t info( 12, vecSrc, vecAiming, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType );
 	info.m_pAttacker = pPlayer;
+	info.m_flDamageScale = 0.75f;
 
 	// Fire the bullets, and force the first shot to be perfectly accuracy
 	pPlayer->FireBullets( info );

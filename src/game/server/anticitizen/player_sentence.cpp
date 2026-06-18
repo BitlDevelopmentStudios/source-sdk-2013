@@ -29,7 +29,7 @@ CPlayer_SentenceBase::CPlayer_SentenceBase()
 	m_bInit = false;
 }
 
-static ConVar sentence_kvloader_debug("sentence_kvloader_debug", "1", FCVAR_REPLICATED);
+static ConVar sentence_kvloader_debug("sentence_kvloader_debug", "0", FCVAR_REPLICATED);
 
 void SentenceLenKeyValuesLoader::LoadEntries(const char* fileName, const char* kvHeader)
 {

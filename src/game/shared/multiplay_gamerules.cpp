@@ -776,7 +776,7 @@ ConVarRef suitcharger( "sk_suitcharger" );
 		FireTargets( "game_playerdie", pVictim, pVictim, USE_TOGGLE, 0 );
 
 		// Did the player kill himself?
-		if ( pVictim == pScorer )  
+		/*if (pVictim == pScorer)
 		{			
 			if ( UseSuicidePenalty() )
 			{
@@ -784,10 +784,10 @@ ConVarRef suitcharger( "sk_suitcharger" );
 				pVictim->IncrementFragCount( -1 );
 			}			
 		}
-		else if ( pScorer )
+		else*/ if ( pScorer )
 		{
 			// if a player dies in a deathmatch game and the killer is a client, award the killer some points
-			pScorer->IncrementFragCount( IPointsForKill( pScorer, pVictim ) );
+			//pScorer->IncrementFragCount( IPointsForKill( pScorer, pVictim ) );
 			
 			// Allow the scorer to immediately paint a decal
 			pScorer->AllowImmediateDecalPainting();
@@ -797,14 +797,14 @@ ConVarRef suitcharger( "sk_suitcharger" );
 			//g_EventQueue.AddEvent( "game_playerkill", "Use", value, 0, pScorer, pScorer );
 			FireTargets( "game_playerkill", pScorer, pScorer, USE_TOGGLE, 0 );
 		}
-		else
+		/*else
 		{  
 			if ( UseSuicidePenalty() )
 			{
 				// Players lose a frag for letting the world kill them			
 				pVictim->IncrementFragCount( -1 );
 			}					
-		}
+		}*/
 	}
 
 	//=========================================================

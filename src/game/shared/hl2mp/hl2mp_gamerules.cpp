@@ -1838,6 +1838,40 @@ const char *CHL2MPRules::GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer )
 	return pszFormat;
 }
 
+void CC_ForceFreeman(const CCommand& args)
+{
+	// Listenserver host or rcon access only!
+	if (!UTIL_IsCommandIssuedByServerAdmin())
+		return;
+
+	if (args.ArgC() < 2)
+	{
+		DevMsg("%s <player name>\n", args.Arg(0));
+		return;
+	}
+
+	const char* pPlayerName = args.Arg(1);
+
+	for (int i = 1; i <= gpGlobals->maxClients; ++i)
+	{
+		CHL2MP_Player* player = ToHL2MPPlayer((UTIL_PlayerByIndex(i)));
+
+		if (!player)
+			continue;
+
+		if (FNullEnt(player->edict()))
+			continue;
+
+		if (FStrEq(pPlayerName, player->GetPlayerName()))
+		{
+			HL2MPRules()->SetNextPlayerToBecomeFreeman(player);
+			Msg("%s will become Gordon Freeman on the next round.\n", player->GetPlayerName());
+			return;
+		}
+	}
+}
+static ConCommand forcefreeman("forcefreeman", CC_ForceFreeman, "Make the specified player become Gordon Freeman on the next round.\n", FCVAR_GAMEDLL | FCVAR_CHEAT);
+
 #define HL2MP_GAMERULES_SCRIPT_FUNC( function, desc ) \
 	ScriptRegisterFunctionNamed( g_pScriptVM, Script##function, #function, desc )
 

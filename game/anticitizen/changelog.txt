@@ -6,6 +6,9 @@ Alpha Technical Test v4:
 - Bots now respond to certain voice responses.
 - Re-enabled spectator noclip.
 - Disabled spectator menu for now.
+- Increased Combine Ball damage from 75 to 200. This allows the Elite to take down Freeman in 3 point blank hits, making him more vital to the team.
+- The score is now based on the total amount of damage you inflict other players. Friendly Fire hits will detract from the score.
+- Reduced the damage of Shotgun secondary fire shots by 35%.
 
 Alpha Technical Test v3:
 - Added achievements!

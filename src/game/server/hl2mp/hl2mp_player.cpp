@@ -706,7 +706,7 @@ void CHL2MP_Player::FireBullets ( const FireBulletsInfo_t &info )
 
 	if ( pWeapon )
 	{
-		modinfo.m_iPlayerDamage = modinfo.m_flDamage = pWeapon->GetHL2MPWpnData().m_iPlayerDamage;
+		modinfo.m_iPlayerDamage = modinfo.m_flDamage = (pWeapon->GetHL2MPWpnData().m_iPlayerDamage * modinfo.m_flDamageScale);
 	}
 
 	BaseClass::FireBullets( modinfo );
@@ -1763,18 +1763,6 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 		}
 	}
 
-	// Check for the attacker being in team Unassigned to account
-	// for non-player attackers, which are in this team by default.
-	// In TDM, should only happen with deaths to non-player causes.
-	if (pAttacker && !pAttacker->InSameTeam(this) && pAttacker->GetTeamNumber() != TEAM_UNASSIGNED)
-	{
-		pAttacker->GetTeam()->AddScore(1);
-	}
-	else
-	{
-		GetTeam()->AddScore(-1);
-	}
-
 	FlashlightTurnOff();
 
 	m_lifeState = LIFE_DEAD;
@@ -1811,6 +1799,24 @@ int CHL2MP_Player::OnTakeDamage_Alive(const CTakeDamageInfo& info)
 				if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
 				{
 					pPlayer->SayFreemanLowHealthLine();
+				}
+
+				if (pPlayer->IsAlive() && IsAlive() && 
+					(pPlayer->GetTeamNumber() != TEAM_SPECTATOR) && 
+					(GetTeamNumber() != TEAM_SPECTATOR))
+				{
+					int dmg = 0;
+					if ((pPlayer->GetTeamNumber() == TEAM_UNASSIGNED) || !pPlayer->InSameTeam(this))
+					{
+						dmg = (int)info.GetDamage();
+					}
+					else
+					{
+						dmg = ((int)info.GetDamage() * -1);
+					}
+
+					pPlayer->AddPoints(dmg, true);
+					pPlayer->AddPointsToTeam(dmg, true);
 				}
 			}
 		}
