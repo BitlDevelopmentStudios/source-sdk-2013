@@ -11,6 +11,8 @@ Alpha Technical Test v4:
 - Reduced the damage of Shotgun secondary fire shots by 35%.
 - Improved scoreboard update time.
 - Reverted Manhack and Turret ownership changes.
+- Added killicons for Manhacks and Turrets.
+- Fixed a bug where the DO YOU FEEL LIKE A HERO YET? can be achieved if the player dies without an attacker defined.
 
 Alpha Technical Test v3:
 - Added achievements!
