@@ -438,7 +438,7 @@ void CWeaponManhack::ThrowGrenade( CBasePlayer *pPlayer )
 		AngularImpulse angImp = AngularImpulse(600, random->RandomInt(-1200, 1200), 0);
 
 		pManhack->SetName(AllocPooledString("spawnedManhack"));
-		//pManhack->SetOwnerEntity(pPlayer);
+		pManhack->SetOwnerEntity(pPlayer);
 		pManhack->SetLocalOrigin(vecSrc);
 		pManhack->SetLocalAngles(vec3_angle);
 		pManhack->AddSpawnFlags((SF_MANHACK_PACKED_UP | SF_NPC_FADE_CORPSE));

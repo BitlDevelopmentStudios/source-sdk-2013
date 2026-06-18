@@ -1803,7 +1803,7 @@ int CHL2MP_Player::OnTakeDamage_Alive(const CTakeDamageInfo& info)
 
 				if (pPlayer->IsAlive() && IsAlive() && 
 					(pPlayer->GetTeamNumber() != TEAM_SPECTATOR) && 
-					(GetTeamNumber() != TEAM_SPECTATOR))
+					(GetTeamNumber() != TEAM_SPECTATOR) && (pPlayer != this))
 				{
 					int dmg = 0;
 					if ((pPlayer->GetTeamNumber() == TEAM_UNASSIGNED) || !pPlayer->InSameTeam(this))

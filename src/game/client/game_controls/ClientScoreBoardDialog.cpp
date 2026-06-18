@@ -297,7 +297,8 @@ void CClientScoreBoardDialog::Update( void )
 	MoveToCenterOfScreen();
 
 	// update every second
-	m_fNextUpdateTime = gpGlobals->curtime + 1.0f; 
+	//m_fNextUpdateTime = gpGlobals->curtime + 1.0f; 
+	m_fNextUpdateTime = gpGlobals->curtime + 0.1f;
 }
 
 //-----------------------------------------------------------------------------

@@ -251,6 +251,7 @@ CHL2MPRules::CHL2MPRules()
 #endif
 }
 
+#ifndef CLIENT_DLL
 //-----------------------------------------------------------------------------
 // Purpose: Counts the accumulated # of primary and secondary attacks from all
 //			weapons (except grav gun).  If bBulletOnly is true, only counts
@@ -270,12 +271,18 @@ int CalcPlayerAttacks(CBasePlayer *pPlayer, bool bBulletOnly)
 		if (pWeapon)
 		{
 			// add primary attacks if we were asked for all attacks, or only if it uses bullet ammo if we were asked to count bullet attacks
-			if (!bBulletOnly || (pAmmoDef->m_AmmoType[pWeapon->GetPrimaryAmmoType()].nDamageType == DMG_BULLET))
+			if (!bBulletOnly || 
+				(pAmmoDef->m_AmmoType[pWeapon->GetPrimaryAmmoType()].nDamageType == DMG_BULLET) || 
+				(pAmmoDef->m_AmmoType[pWeapon->GetPrimaryAmmoType()].nDamageType == (DMG_BULLET | DMG_BUCKSHOT)) ||
+				(pAmmoDef->m_AmmoType[pWeapon->GetPrimaryAmmoType()].nDamageType == (DMG_BULLET | DMG_SNIPER)))
 			{
 				iTotalAttacks += pWeapon->m_iPrimaryAttacks;
 			}
 			// add secondary attacks if we were asked for all attacks, or only if it uses bullet ammo if we were asked to count bullet attacks
-			if (!bBulletOnly || (pAmmoDef->m_AmmoType[pWeapon->GetSecondaryAmmoType()].nDamageType == DMG_BULLET))
+			if (!bBulletOnly || 
+				(pAmmoDef->m_AmmoType[pWeapon->GetSecondaryAmmoType()].nDamageType == DMG_BULLET) ||
+				(pAmmoDef->m_AmmoType[pWeapon->GetSecondaryAmmoType()].nDamageType == (DMG_BULLET | DMG_BUCKSHOT)) ||
+				(pAmmoDef->m_AmmoType[pWeapon->GetSecondaryAmmoType()].nDamageType == (DMG_BULLET | DMG_SNIPER)))
 			{
 				iTotalAttacks += pWeapon->m_iSecondaryAttacks;
 			}
@@ -283,6 +290,7 @@ int CalcPlayerAttacks(CBasePlayer *pPlayer, bool bBulletOnly)
 	}
 	return iTotalAttacks;
 }
+#endif
 
 int CHL2MPRules::GetFreemanBulletsShot()
 {
@@ -728,7 +736,8 @@ void CHL2MPRules::AwardGameEndAchievements()
 				{
 					pPlayer->AwardAchievement(ACHIEVEMENT_ANTICITIZEN_KILL_COMBINE);
 
-					if (GetFreemanBulletsShot() == 0)
+					int bulletsShot = GetFreemanBulletsShot();
+					if (bulletsShot == 0)
 					{
 						pPlayer->AwardAchievement(ACHIEVEMENT_ANTICITIZEN_KILL_COMBINE_GRAVITYGUN);
 					}

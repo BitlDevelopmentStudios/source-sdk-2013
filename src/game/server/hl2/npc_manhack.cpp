@@ -1501,7 +1501,7 @@ void CNPC_Manhack::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr
 		flDamage = 1.0f;
 	}
 
-	CTakeDamageInfo info( this, this, flDamage, DMG_SLASH );
+	CTakeDamageInfo info( this, (GetOwnerEntity() ? GetOwnerEntity() : this), flDamage, DMG_SLASH );
 
 	// check for actual "ownership" of damage
 	CBasePlayer *pPlayer = HasPhysicsAttacker( MANHACK_SMASH_TIME );

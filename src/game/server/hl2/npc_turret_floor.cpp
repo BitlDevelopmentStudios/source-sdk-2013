@@ -1147,7 +1147,7 @@ void CNPC_FloorTurret::Shoot( const Vector &vecSrc, const Vector &vecDirToEnemy,
 		info.m_vecDirShooting = vecDir;
 		info.m_iTracerFreq = 1;
 		info.m_iShots = 1;
-		info.m_pAttacker = this;
+		info.m_pAttacker = (GetOwnerEntity() ? GetOwnerEntity() : this);
 		info.m_vecSpread = VECTOR_CONE_PRECALCULATED;
 		info.m_flDistance = MAX_COORD_RANGE;
 		info.m_iAmmoType = m_iAmmoType;
@@ -1158,7 +1158,7 @@ void CNPC_FloorTurret::Shoot( const Vector &vecSrc, const Vector &vecDirToEnemy,
 		info.m_vecDirShooting = vecDirToEnemy;
 		info.m_iTracerFreq = 1;
 		info.m_iShots = 1;
-		info.m_pAttacker = this;
+		info.m_pAttacker = (GetOwnerEntity() ? GetOwnerEntity() : this);
 		info.m_vecSpread = GetAttackSpread( NULL, GetEnemy() );
 		info.m_flDistance = MAX_COORD_RANGE;
 		info.m_iAmmoType = m_iAmmoType;

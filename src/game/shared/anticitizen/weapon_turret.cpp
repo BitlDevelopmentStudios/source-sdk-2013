@@ -302,7 +302,7 @@ void CWeaponTurret::SpawnTurret(void)
 	if (pTurret && pHologram)
 	{
 		pTurret->SetName(AllocPooledString("spawnedTurret"));
-		//pTurret->SetOwnerEntity(pOwner);
+		pTurret->SetOwnerEntity(pOwner);
 		pTurret->AddSpawnFlags(SF_FLOOR_TURRET_AUTOACTIVATE);
 		pTurret->Spawn();
 

@@ -400,6 +400,8 @@ void CWeaponAR2::DelayedAttack( void )
 	// Decrease ammo
 	pOwner->RemoveAmmo( 1, m_iSecondaryAmmoType );
 
+	m_iSecondaryAttacks++;
+
 	// Can shoot again immediately
 	m_flNextPrimaryAttack = gpGlobals->curtime + 0.5f;
 
@@ -442,7 +444,6 @@ void CWeaponAR2::SecondaryAttack( void )
 		return;
 	}
 
-	m_iSecondaryAttacks++;
 	m_bShotDelayed = true;
 	m_flNextEmptySoundTime = m_flNextPrimaryAttack = m_flNextSecondaryAttack = m_flDelayedFire = gpGlobals->curtime + 0.5f;
 

@@ -9,6 +9,8 @@ Alpha Technical Test v4:
 - Increased Combine Ball damage from 75 to 150.
 - The score is now based on the total amount of damage you inflict other players. Friendly Fire hits will detract from the score.
 - Reduced the damage of Shotgun secondary fire shots by 35%.
+- Improved scoreboard update time.
+- Reverted Manhack and Turret ownership changes.
 
 Alpha Technical Test v3:
 - Added achievements!

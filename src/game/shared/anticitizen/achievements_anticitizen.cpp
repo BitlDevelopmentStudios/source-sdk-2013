@@ -71,7 +71,7 @@ protected:
 		if (!pVictim || !pVictim->IsPlayer())
 			return;
 
-		if (pAttacker == C_BasePlayer::GetLocalPlayer())
+		if ((pAttacker == C_BasePlayer::GetLocalPlayer()) && (pVictim != C_BasePlayer::GetLocalPlayer()))
 		{
 			// no friendly fire kills
 			if (pVictim->GetTeamNumber() != pAttacker->GetTeamNumber())
@@ -120,7 +120,7 @@ protected:
 		if (!pVictim || !pVictim->IsPlayer())
 			return;
 
-		if (pAttacker == C_BasePlayer::GetLocalPlayer())
+		if ((pAttacker == C_BasePlayer::GetLocalPlayer()) && (pVictim != C_BasePlayer::GetLocalPlayer()))
 		{
 			// friendly fire kills
 			if (pVictim->GetTeamNumber() == pAttacker->GetTeamNumber())
@@ -148,7 +148,7 @@ public:
 		if (!pVictim || !pVictim->IsPlayer())
 			return;
 
-		if (pAttacker == C_BasePlayer::GetLocalPlayer())
+		if ((pAttacker == C_BasePlayer::GetLocalPlayer()) && (pVictim != C_BasePlayer::GetLocalPlayer()))
 		{
 			// no friendly fire kills
 			if (pVictim->GetTeamNumber() != pAttacker->GetTeamNumber())
@@ -270,7 +270,7 @@ protected:
 		if (!pVictim || !pVictim->IsPlayer())
 			return;
 
-		if (pAttacker == C_BasePlayer::GetLocalPlayer())
+		if ((pAttacker == C_BasePlayer::GetLocalPlayer()) && (pVictim != C_BasePlayer::GetLocalPlayer()))
 		{
 			// no friendly fire kills
 			if (pVictim->GetTeamNumber() != pAttacker->GetTeamNumber())

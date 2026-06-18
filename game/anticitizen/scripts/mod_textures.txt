@@ -208,6 +208,22 @@
 				"font"		"HL2MPTypeDeath"
 				"character"	"6"
 		}
+		"death_turret_floor"
+		{
+				"file"		"VGUI/basic2d_linear/ex_weaponicon_36_killicon"
+				"x"			"0"
+				"y"			"0"
+				"width"		"64"
+				"height"	"32"
+		}
+		"death_manhack"
+		{
+				"file"		"VGUI/basic2d_linear/ex_weaponicon_52_killicon"
+				"x"			"0"
+				"y"			"0"
+				"width"		"64"
+				"height"	"32"
+		}
 		"voice_player"
 		{
 				"file"		"voice/icntlk_sv"
