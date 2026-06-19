@@ -1825,15 +1825,17 @@ int CHL2MP_Player::OnTakeDamage_Alive(const CTakeDamageInfo& info)
 					(pPlayer->GetTeamNumber() != TEAM_SPECTATOR) && 
 					(GetTeamNumber() != TEAM_SPECTATOR) && (pPlayer != this))
 				{
+					int valToGive = (int)info.GetBaseDamage();
 					int dmg = 0;
+
 					if (!pPlayer->InSameTeam(this))
 					{
-						dmg = (int)info.GetDamage();
+						dmg = valToGive;
 					}
-					else
+					/*else
 					{
-						dmg = ((int)info.GetDamage() * -1);
-					}
+						dmg = (valToGive * -1);
+					}*/
 
 					pPlayer->AddPoints(dmg, true);
 					pPlayer->AddPointsToTeam(dmg, true);
