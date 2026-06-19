@@ -194,7 +194,7 @@ void C_HL2MP_Player::UpdateIDTarget()
 		bIsEnemyPlayer = GetTeamNumber() != pEntity->GetTeamNumber();
 	}
 
-	if ( !tr.startsolid && tr.DidHitNonWorldEntity() )
+	if ( (!tr.startsolid || bIsEnemyPlayer) && tr.DidHitNonWorldEntity() )
 	{
 		if ( pEntity && (pEntity != this) )
 		{
