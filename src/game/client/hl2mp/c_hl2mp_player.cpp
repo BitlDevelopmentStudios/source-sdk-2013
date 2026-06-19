@@ -139,22 +139,41 @@ int C_HL2MP_Player::GetIDTarget() const
 //-----------------------------------------------------------------------------
 void C_HL2MP_Player::UpdateIDTarget()
 {
-	if ( !IsLocalPlayer() )
+	C_HL2MP_Player* pLocalPlayer = C_HL2MP_Player::GetLocalHL2MPPlayer();
+
+	if (!pLocalPlayer || !IsLocalPlayer())
 		return;
+
+	// don't show IDs if mp_fadetoblack is on
+	if (GetTeamNumber() > TEAM_SPECTATOR && mp_fadetoblack.GetBool() && !IsAlive())
+	{
+		m_iIDEntIndex = 0;
+		return;
+	}
+
+	// If we're in deathcam, ID our killer
+	if ((GetObserverMode() == OBS_MODE_DEATHCAM || GetObserverMode() == OBS_MODE_CHASE) && GetObserverTarget() && GetObserverTarget() != GetLocalHL2MPPlayer())
+	{
+		m_iIDEntIndex = GetObserverTarget()->entindex();
+		return;
+	}
 
 	// Clear old target and find a new one
 	m_iIDEntIndex = 0;
 
-	// don't show IDs in chase spec mode
-	if ( GetObserverMode() == OBS_MODE_CHASE || 
-		 GetObserverMode() == OBS_MODE_DEATHCAM )
-		 return;
-
 	trace_t tr;
 	Vector vecStart, vecEnd;
-	VectorMA( MainViewOrigin(), 1500, MainViewForward(), vecEnd );
-	VectorMA( MainViewOrigin(), 10,   MainViewForward(), vecStart );
-	UTIL_TraceLine( vecStart, vecEnd, MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
+	VectorMA(MainViewOrigin(), MAX_TRACE_LENGTH, MainViewForward(), vecEnd);
+	VectorMA(MainViewOrigin(), 10, MainViewForward(), vecStart);
+
+	if (IsObserver())
+	{
+		UTIL_TraceLine(vecStart, vecEnd, MASK_SOLID, GetObserverTarget(), COLLISION_GROUP_NONE, &tr);
+	}
+	else
+	{
+		UTIL_TraceLine(vecStart, vecEnd, MASK_SOLID, this, COLLISION_GROUP_NONE, &tr);
+	}
 
 	if ( !tr.startsolid && tr.DidHitNonWorldEntity() )
 	{
