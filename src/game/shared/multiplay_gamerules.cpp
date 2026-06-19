@@ -1732,17 +1732,54 @@ ConVarRef suitcharger( "sk_suitcharger" );
 			{
 				pHL2MPPlayer->SpeakSentenceForConcept(pItem->m_iConcept);
 
-				// Register this event in the mod-specific usermessages .cpp file if you hit this assert
-				//Assert(usermessages->LookupUserMessage("VoiceSubtitle") != -1);
+				// show a subtitle if we need to
+				if (pItem->m_bShowSubtitle)
+				{
+					CRecipientFilter filter;
 
-				// Send a subtitle to anyone in the PAS
-				//CReliableBroadcastRecipientFilter user;
-				//UserMessageBegin(user, "VoiceSubtitle");
-				//WRITE_BYTE(pHL2MPPlayer->entindex());
-				//WRITE_BYTE(iMenu);
-				//WRITE_BYTE(iItem);
-				//MessageEnd();
-				return pItem;
+					if (pItem->m_bDistanceBasedSubtitle)
+					{
+						filter.AddRecipientsByPAS(pPlayer->WorldSpaceCenter());
+
+						// further reduce the range to a certain radius
+						int i;
+						for (i = filter.GetRecipientCount() - 1; i >= 0; i--)
+						{
+							int index = filter.GetRecipientIndex(i);
+
+							CBasePlayer* pListener = UTIL_PlayerByIndex(index);
+
+							if (pListener && pListener != pPlayer)
+							{
+								float flDist = (pListener->WorldSpaceCenter() - pPlayer->WorldSpaceCenter()).Length2D();
+
+								if (flDist > VOICE_COMMAND_MAX_SUBTITLE_DIST)
+									filter.RemoveRecipientByPlayerIndex(index);
+							}
+						}
+					}
+					else
+					{
+						filter.AddAllPlayers();
+					}
+
+					// if we aren't a disguised spy
+					if (!pPlayer->ShouldShowVoiceSubtitleToEnemy())
+					{
+						// remove players on other teams
+						filter.RemoveRecipientsNotOnTeam(pPlayer->GetTeam());
+					}
+
+					// Register this event in the mod-specific usermessages .cpp file if you hit this assert
+					Assert(usermessages->LookupUserMessage("VoiceSubtitle") != -1);
+
+					UserMessageBegin(filter, "VoiceSubtitle");
+					WRITE_BYTE(pHL2MPPlayer->entindex());
+					WRITE_BYTE(iMenu);
+					WRITE_BYTE(iItem);
+					MessageEnd();
+					return pItem;
+				}
 			}
 		}
 

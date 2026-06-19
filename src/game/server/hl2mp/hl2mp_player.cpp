@@ -361,60 +361,6 @@ void CHL2MP_Player::GiveAllItems( void )
 	}
 }
 
-void CHL2MP_Player::GiveFreemanWeapons(void)
-{
-	CBasePlayer::GiveAmmo(255, "Pistol");
-	CBasePlayer::GiveAmmo(255, "AR2");
-	CBasePlayer::GiveAmmo(5, "AR2AltFire");
-	CBasePlayer::GiveAmmo(255, "SMG1");
-	CBasePlayer::GiveAmmo(3, "smg1_grenade");
-	CBasePlayer::GiveAmmo(255, "Buckshot");
-	CBasePlayer::GiveAmmo(32, "357");
-	CBasePlayer::GiveAmmo(3, "rpg_round");
-	CBasePlayer::GiveAmmo(16, "XBowBolt");
-
-	CBasePlayer::GiveAmmo(3, "grenade");
-
-	GiveNamedItem("weapon_crowbar");
-	GiveNamedItem("weapon_pistol");
-	GiveNamedItem("weapon_357");
-
-	GiveNamedItem("weapon_smg1");
-	GiveNamedItem("weapon_ar2");
-
-	GiveNamedItem("weapon_shotgun");
-	GiveNamedItem("weapon_frag");
-
-	GiveNamedItem("weapon_crossbow");
-
-	GiveNamedItem("weapon_rpg");
-
-	GiveNamedItem("weapon_physcannon");
-
-	const char* szDefaultWeaponName = engine->GetClientConVarValue(engine->IndexOfEdict(edict()), "cl_defaultweapon");
-
-	CBaseCombatWeapon* pDefaultWeapon = Weapon_OwnsThisType(szDefaultWeaponName);
-
-	if (pDefaultWeapon)
-	{
-		Weapon_Switch(pDefaultWeapon);
-	}
-	else
-	{
-		Weapon_Switch(Weapon_OwnsThisType("weapon_physcannon"));
-	}
-}
-
-void CHL2MP_Player::ReplenishTroopAmmoAndHealth(void)
-{
-	TakeHealth((GetMaxHealth() / 2), DMG_GENERIC);
-
-	CBasePlayer::GiveAmmo(128, "Pistol");
-	CBasePlayer::GiveAmmo(128, "AR2");
-	CBasePlayer::GiveAmmo(128, "SMG1");
-	CBasePlayer::GiveAmmo(128, "Buckshot");
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: Sets HL2 specific defaults.
 //-----------------------------------------------------------------------------
@@ -857,6 +803,80 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 		StopObserverMode();
 		State_Transition(STATE_ACTIVE);
 	}
+
+	if (iTeam == TEAM_FREEMAN)
+	{
+		ClientPrint(this, HUD_PRINTTALK, "#On_Team_Freeman");
+	}
+	else if (iTeam == TEAM_COMBINE)
+	{
+		ClientPrint(this, HUD_PRINTTALK, "#On_Team_Combine");
+	}
+	else
+	{
+		ClientPrint(this, HUD_PRINTTALK, "#On_Team", GetTeam()->GetName());
+	}
+}
+
+#define AMMO_TROOP_MAX_PISTOL 90
+#define AMMO_TROOP_MAX_AR2 90
+#define AMMO_TROOP_MAX_SMG1 225
+#define AMMO_TROOP_MAX_BUCKSHOT 32
+
+void CHL2MP_Player::GiveFreemanWeapons(void)
+{
+	float flFreemanAmmoMultiplier = 1.25f;
+
+	CBasePlayer::GiveAmmo((int)(AMMO_TROOP_MAX_PISTOL * flFreemanAmmoMultiplier), "Pistol");
+	CBasePlayer::GiveAmmo((int)(AMMO_TROOP_MAX_AR2 * flFreemanAmmoMultiplier), "AR2");
+	CBasePlayer::GiveAmmo(3, "AR2AltFire");
+	CBasePlayer::GiveAmmo((int)(AMMO_TROOP_MAX_SMG1 * flFreemanAmmoMultiplier), "SMG1");
+	CBasePlayer::GiveAmmo(3, "smg1_grenade");
+	CBasePlayer::GiveAmmo((int)(AMMO_TROOP_MAX_BUCKSHOT * flFreemanAmmoMultiplier), "Buckshot");
+	CBasePlayer::GiveAmmo(30, "357");
+	CBasePlayer::GiveAmmo(3, "rpg_round");
+	CBasePlayer::GiveAmmo(16, "XBowBolt");
+
+	CBasePlayer::GiveAmmo(3, "grenade");
+
+	GiveNamedItem("weapon_crowbar");
+	GiveNamedItem("weapon_pistol");
+	GiveNamedItem("weapon_357");
+
+	GiveNamedItem("weapon_smg1");
+	GiveNamedItem("weapon_ar2");
+
+	GiveNamedItem("weapon_shotgun");
+	GiveNamedItem("weapon_frag");
+
+	GiveNamedItem("weapon_crossbow");
+
+	GiveNamedItem("weapon_rpg");
+
+	GiveNamedItem("weapon_physcannon");
+
+	const char* szDefaultWeaponName = engine->GetClientConVarValue(engine->IndexOfEdict(edict()), "cl_defaultweapon");
+
+	CBaseCombatWeapon* pDefaultWeapon = Weapon_OwnsThisType(szDefaultWeaponName);
+
+	if (pDefaultWeapon)
+	{
+		Weapon_Switch(pDefaultWeapon);
+	}
+	else
+	{
+		Weapon_Switch(Weapon_OwnsThisType("weapon_physcannon"));
+	}
+}
+
+void CHL2MP_Player::ReplenishTroopAmmoAndHealth(void)
+{
+	TakeHealth((GetMaxHealth() / 2), DMG_GENERIC);
+
+	CBasePlayer::GiveAmmo((AMMO_TROOP_MAX_PISTOL / 2), "Pistol");
+	CBasePlayer::GiveAmmo((AMMO_TROOP_MAX_AR2 / 2), "AR2");
+	CBasePlayer::GiveAmmo((AMMO_TROOP_MAX_SMG1 / 2), "SMG1");
+	CBasePlayer::GiveAmmo((AMMO_TROOP_MAX_BUCKSHOT / 2), "Buckshot");
 }
 
 void CHL2MP_Player::LoadClass(int iClass)
@@ -934,10 +954,10 @@ void CHL2MP_Player::LoadClass(int iClass)
 		}
 		else
 		{
-			CBasePlayer::GiveAmmo(255, "Pistol");
-			CBasePlayer::GiveAmmo(255, "AR2");
-			CBasePlayer::GiveAmmo(255, "SMG1");
-			CBasePlayer::GiveAmmo(255, "Buckshot");
+			CBasePlayer::GiveAmmo(AMMO_TROOP_MAX_PISTOL, "Pistol");
+			CBasePlayer::GiveAmmo(AMMO_TROOP_MAX_AR2, "AR2");
+			CBasePlayer::GiveAmmo(AMMO_TROOP_MAX_SMG1, "SMG1");
+			CBasePlayer::GiveAmmo(AMMO_TROOP_MAX_BUCKSHOT, "Buckshot");
 
 			if (pPlayerClassInfo.szPrimaryWeapon[0])
 			{
@@ -1806,7 +1826,7 @@ int CHL2MP_Player::OnTakeDamage_Alive(const CTakeDamageInfo& info)
 					(GetTeamNumber() != TEAM_SPECTATOR) && (pPlayer != this))
 				{
 					int dmg = 0;
-					if ((pPlayer->GetTeamNumber() == TEAM_UNASSIGNED) || !pPlayer->InSameTeam(this))
+					if (!pPlayer->InSameTeam(this))
 					{
 						dmg = (int)info.GetDamage();
 					}

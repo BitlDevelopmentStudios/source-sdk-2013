@@ -1171,7 +1171,7 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 			}
 #endif
 
-			if ( !IsInCommentaryMode() )
+			/*if (!IsInCommentaryMode())
 			{
 				wchar_t wszLocalized[100];
 				if ( bAutoTeamed )
@@ -1187,7 +1187,7 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 				g_pVGuiLocalize->ConvertUnicodeToANSI( wszLocalized, szLocalized, sizeof(szLocalized) );
 
 				hudChat->Printf( CHAT_FILTER_TEAMCHANGE, "%s", szLocalized );
-			}
+			}*/
 		}
 
 		if ( pPlayer && pPlayer->IsLocalPlayer() )

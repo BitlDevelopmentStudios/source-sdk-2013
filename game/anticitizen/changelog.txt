@@ -12,7 +12,13 @@ Alpha Technical Test v4:
 - Improved scoreboard update time.
 - Reverted Manhack and Turret ownership changes.
 - Added killicons for Manhacks and Turrets.
-- Fixed a bug where the DO YOU FEEL LIKE A HERO YET? can be achieved if the player dies without an attacker defined.
+- Fixed a bug where the "DO YOU FEEL LIKE A HERO YET?" achievement can be achieved if the player dies without an attacker defined.
+- Removed the public team change chat notification.
+- Added TF2 styled chat subtitles for voice commands.
+- "You are on team" messages now display whenever you change teams.
+- Fixed an oversight where Gordon didn't get all his equipment.
+- Adjusted max ammo limits to be more lenient.
+- Adjusted the amount of ammo that spawns for both classes.
 
 Alpha Technical Test v3:
 - Added achievements!

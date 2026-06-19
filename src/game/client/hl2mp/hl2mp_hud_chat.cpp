@@ -23,9 +23,10 @@ DECLARE_HUDELEMENT( CHudChat );
 DECLARE_HUD_MESSAGE( CHudChat, SayText );
 DECLARE_HUD_MESSAGE( CHudChat, SayText2 );
 DECLARE_HUD_MESSAGE( CHudChat, TextMsg );
+DECLARE_HUD_MESSAGE( CHudChat, VoiceSubtitle );
 
 
-//=====================
+//=====================VoiceSubtitle
 //CHudChatLine
 //=====================
 
@@ -77,6 +78,7 @@ void CHudChat::Init( void )
 	HOOK_HUD_MESSAGE( CHudChat, SayText );
 	HOOK_HUD_MESSAGE( CHudChat, SayText2 );
 	HOOK_HUD_MESSAGE( CHudChat, TextMsg );
+	HOOK_HUD_MESSAGE( CHudChat, VoiceSubtitle );
 }
 
 //-----------------------------------------------------------------------------

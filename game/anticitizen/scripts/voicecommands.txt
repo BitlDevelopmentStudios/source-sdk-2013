@@ -26,7 +26,7 @@
 			"menu_label"			"#Voice_Menu_Flank"
 			"show_subtitle"				"1"
 			"distance_check_subtitle"		"1"
-			"subtitle"				"#Voice_Menu_Go"
+			"subtitle"				"#Voice_Menu_Flank"
 		}
 
 		"item_2"
@@ -35,7 +35,7 @@
 			"menu_label"			"#Voice_Menu_Alert"
 			"show_subtitle"				"1"
 			"distance_check_subtitle"		"1"
-			"subtitle"				"#Voice_Menu_Go"
+			"subtitle"				"#Voice_Menu_Alert"
 		}
 
 		"item_3"
@@ -44,7 +44,7 @@
 			"menu_label"			"#Voice_Menu_Lost"
 			"show_subtitle"				"1"
 			"distance_check_subtitle"		"1"
-			"subtitle"				"#Voice_Menu_Go"
+			"subtitle"				"#Voice_Menu_Lost"
 		}
 
 		"item_4"
@@ -53,7 +53,7 @@
 			"menu_label"			"#Voice_Menu_Refind"
 			"show_subtitle"				"1"
 			"distance_check_subtitle"		"1"
-			"subtitle"				"#Voice_Menu_Go"
+			"subtitle"				"#Voice_Menu_Refind"
 		}
 
 		"item_5"
@@ -62,7 +62,7 @@
 			"menu_label"			"#Voice_Menu_Danger"
 			"show_subtitle"				"1"
 			"distance_check_subtitle"		"1"
-			"subtitle"				"#Voice_Menu_Go"
+			"subtitle"				"#Voice_Menu_Danger"
 		}
 
 		"item_6"
@@ -71,7 +71,7 @@
 			"menu_label"			"#Voice_Menu_Quest"
 			"show_subtitle"				"1"
 			"distance_check_subtitle"		"1"
-			"subtitle"				"#Voice_Menu_Go"
+			"subtitle"				"#Voice_Menu_Quest"
 		}
 
 		"item_7"
@@ -80,7 +80,7 @@
 			"menu_label"			"#Voice_Menu_Answer"
 			"show_subtitle"				"1"
 			"distance_check_subtitle"		"1"
-			"subtitle"				"#Voice_Menu_Go"
+			"subtitle"				"#Voice_Menu_Answer"
 		}
 
 		"item_8"
@@ -89,7 +89,7 @@
 			"menu_label"			"#Voice_Menu_Clear"
 			"show_subtitle"				"1"
 			"distance_check_subtitle"		"1"
-			"subtitle"				"#Voice_Menu_Go"
+			"subtitle"				"#Voice_Menu_Clear"
 		}
 
 		"item_9"
@@ -98,28 +98,7 @@
 			"menu_label"			"#Voice_Menu_Check"
 			"show_subtitle"				"1"
 			"distance_check_subtitle"		"1"
-			"subtitle"				"#Voice_Menu_Go"
-		}
-	}
-
-	"menu_2"
-	{
-		"item_1"
-		{
-			"concept"				"TLK_COMBINE_ANNOUNCE"		
-			"menu_label"			"#Voice_Menu_Combine_Announce"
-			"show_subtitle"				"1"
-			"distance_check_subtitle"		"1"
-			"subtitle"				"#Voice_Menu_Medic"
-		}
-		
-		"item_2"
-		{
-			"concept"				"TLK_COMBINE_ASSAULT"		
-			"menu_label"			"#Voice_Menu_Combine_Assault"
-			"show_subtitle"				"1"
-			"distance_check_subtitle"		"1"
-			"subtitle"				"#Voice_Menu_Thanks"
+			"subtitle"				"#Voice_Menu_Check"
 		}
 	}
 }

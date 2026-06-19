@@ -54,7 +54,7 @@ WeaponData
 		}
 		"ammo"
 		{
-				"file"		"VGUI/basic2d_linear/ex_weaponicon_36_killicon"
+				"file"		"VGUI/basic2d_linear/ex_weaponicon_36_ammo"
 				"x"			"0"
 				"y"			"0"
 				"width"		"64"

@@ -211,6 +211,9 @@ EventDesiredResult< CHL2MPBot > CHL2MPBotMainAction::OnActorEmoted(CHL2MPBot* me
 	if ((emoter->GetTeamNumber() == TEAM_FREEMAN) || (me->GetTeamNumber() == TEAM_FREEMAN))
 		return TryContinue();
 
+	if (emoter == me)
+		return TryContinue();
+
 	//CHL2MP_Player* emotingPlayer = ToHL2MPPlayer(emoter);
 
 	switch (emote)

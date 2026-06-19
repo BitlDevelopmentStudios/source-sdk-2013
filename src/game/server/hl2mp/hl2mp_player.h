@@ -265,6 +265,8 @@ public:
 		return bPlaying;
 	}
 
+	virtual bool	CanSpeakVoiceCommand(void) { return !IsSentencePlaying(); }
+
 protected:
 	CPlayer_Sentence< CHL2MP_Player >* GetSentences() { return &m_Sentences; }
 
