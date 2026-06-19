@@ -175,10 +175,27 @@ void C_HL2MP_Player::UpdateIDTarget()
 		UTIL_TraceLine(vecStart, vecEnd, MASK_SOLID, this, COLLISION_GROUP_NONE, &tr);
 	}
 
+	bool bIsEnemyPlayer = false;
+
+	C_BaseEntity* pEntity = tr.m_pEnt;
+
+	if (pEntity && pEntity->IsPlayer())
+	{
+		trace_t trShot;
+		// use the shot mask to replicate the medigun's trace
+		UTIL_TraceLine(vecStart, vecEnd, MASK_SHOT, this, COLLISION_GROUP_NONE, &trShot);
+
+		if (trShot.fraction != 1.0 && trShot.m_pEnt && trShot.m_pEnt->IsPlayer() && (!tr.startsolid || pEntity != trShot.m_pEnt))
+		{
+			tr = trShot;
+		}
+
+		// It's okay to start solid against enemies because we sometimes press right against them
+		bIsEnemyPlayer = GetTeamNumber() != pEntity->GetTeamNumber();
+	}
+
 	if ( !tr.startsolid && tr.DidHitNonWorldEntity() )
 	{
-		C_BaseEntity *pEntity = tr.m_pEnt;
-
 		if ( pEntity && (pEntity != this) )
 		{
 			m_iIDEntIndex = pEntity->entindex();
