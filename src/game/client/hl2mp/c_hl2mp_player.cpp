@@ -333,6 +333,8 @@ void C_HL2MP_Player::ClientThink( void )
 		m_vLookAtTarget = GetAbsOrigin() + vForward * 512;
 	}
 
+	m_viewtarget = m_vLookAtTarget;
+
 	UpdateIDTarget();
 }
 
