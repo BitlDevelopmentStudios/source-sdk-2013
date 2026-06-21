@@ -94,8 +94,8 @@ void CMapLoadBG::UpdateMainBackground(void)
 			}
 			else
 			{
-				// position it propertionately to the resolution, with a 10% offset applied.
-				y = (y + (iTall - y) - (iTall * 0.10));
+				// position it propertionately to the resolution, with a 15% offset applied.
+				y = (y + (iTall - y) - (iTall * 0.15));
 			}
 
 			m_pTipPanel->SetPos(x, y);
@@ -141,7 +141,9 @@ void CMapLoadBG::SetRandBackgroundImage(bool bIsWidescreen)
 		g_pFullFileSystem->FindClose(fh);
 	}
 
-	if (!fileNames.Count())
+	int count = fileNames.Count();
+
+	if (!count)
 	{
 		DevWarning("No loading backgrounds can be found.\n");
 		return;
@@ -151,7 +153,7 @@ void CMapLoadBG::SetRandBackgroundImage(bool bIsWidescreen)
 	int m_nRandomSeed = RandomInt(0, 9999);
 	CUniformRandomStream randomize;
 	randomize.SetSeed(m_nRandomSeed);
-	int index = randomize.RandomInt(0, fileNames.Count() - 1);
+	int index = randomize.RandomInt(0, count - 1);
 
 	const char* pBackgroundFile = NULL;
 
