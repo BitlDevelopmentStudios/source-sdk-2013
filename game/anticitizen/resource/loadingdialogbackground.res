@@ -22,7 +22,7 @@
 	{
 		"ControlName"		"Label"
 		"fieldName"		"TipText"
-		"font"			"Default"
+		"font"			"Tip"
 		"labelText"		""
 		"textAlignment"	"center"
 		"xpos"			"10"
