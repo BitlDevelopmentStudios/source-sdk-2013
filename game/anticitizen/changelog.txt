@@ -21,6 +21,8 @@ Alpha Technical Test v4:
 - Adjusted the amount of ammo that spawns for both classes.
 - Added tips to the loading screen.
 - You can use the "tip" command to get a tip printed in the console.
+- Added blue eyes to the Civil Protection Officer.
+- Added more background art.
 
 Alpha Technical Test v3:
 - Added achievements!
