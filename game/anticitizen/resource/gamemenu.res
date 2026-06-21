@@ -20,36 +20,25 @@
 	}
 	"4"
 	{
-		"label" ""
-		"command" ""
-		"OnlyInGame" "1"
-	}
-	"5"
-	{
 		"label" "#GameUI_GameMenu_Serverfinder" 
 		"command" "engine serverfinderdialog"
 	} 
-	"6"
+	"5"
 	{
 		"label" "#GameUI_GameMenu_FindServers"
 		"command" "OpenServerBrowser"
 	}
-	"7"
+	"6"
 	{
 		"label" "#GameUI_GameMenu_CreateServer"
 		"command" "OpenCreateMultiplayerGameDialog"
 	}
-	"8"
-	{
-		"label" ""
-		"command" ""
-	}
-	"9"
+	"7"
 	{
 		"label" "#GameUI_GameMenu_Achievements"
 		"command" "OpenAchievementsDialog"
 	}
-	"10"
+	"8"
 	{
 		"label" "#GameUI_GameMenu_ActivateVR"
 		"command" "engine vr_activate"
@@ -57,7 +46,7 @@
 		"OnlyWhenVREnabled" "1"
 		"OnlyWhenVRInactive" "1"
 	}
-	"11"
+	"9"
 	{
 		"label" "#GameUI_GameMenu_DeactivateVR"
 		"command" "engine vr_deactivate"
@@ -65,17 +54,12 @@
 		"OnlyWhenVREnabled" "1"
 		"OnlyWhenVRActive" "1"
 	}
-	"12"
-	{
-		"label" ""
-		"command" ""
-	}
-	"13"
+	"10"
 	{
 		"label" "#GameUI_GameMenu_Options"
 		"command" "OpenOptionsDialog"
 	}
-	"14"
+	"11"
 	{
 		"label" "#GameUI_GameMenu_Quit"
 		"command" "Quit"

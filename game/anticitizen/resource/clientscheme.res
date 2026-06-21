@@ -78,7 +78,7 @@ Scheme
 
 		// Top-left corner of the menu on the main screen
 		"Main.Menu.X"			"76"
-		"Main.Menu.Y"			"240"
+		"Main.Menu.Y"			"250"
 		
 		// Blank space to leave beneath the menu on the main screen
 		"Main.BottomBorder"	"32"
@@ -453,55 +453,6 @@ Scheme
 				"tall"		"12"
 				"weight"	"0"
 				"antialias"	"1"
-			}
-		}
-		
-		DefaultTip
-		{
-			"1"
-			{
-				"name"		"K12HL2"
-				"tall"		"16" [$DECK]
-				"tall"		"12"
-				"weight"	"600"
-				"antialias" "1"
-				"yres"	"1 599"
-			}
-			"2"
-			{
-				"name"		"K12HL2"
-				"tall"		"22" [$DECK]
-				"tall"		"14"
-				"weight"	"600"
-				"antialias" "1"
-				"yres"	"600 767"
-			}
-			"3"
-			{
-				"name"		"K12HL2"
-				"tall"		"26" [$DECK]
-				"tall"		"19"
-				"weight"	"700"
-				"antialias" "1"
-				"yres"	"768 1023"
-			}
-			"4"
-			{
-				"name"		"K12HL2"
-				"tall"		"30" [$DECK]
-				"tall"		"21"
-				"weight"	"700"
-				"antialias" "1"
-				"yres"	"1024 1199"
-			}
-			"5" // Proportional - misyl
-			{
-				"name"		"K12HL2"
-				"tall"		"14" [$DECK]
-				"tall"		"10"
-				"weight"	"700"
-				"antialias" "1"
-				"additive"	"1"
 			}
 		}
 		
