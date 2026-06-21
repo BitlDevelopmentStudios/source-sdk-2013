@@ -94,8 +94,8 @@ void CMapLoadBG::UpdateMainBackground(void)
 			}
 			else
 			{
-				// position it propertionately to the resolution, with a 15% offset applied.
-				y = (y + (iTall - y) - (iTall * 0.15));
+				// position it propertionately to the resolution, with a 10% offset applied.
+				y = (y + (iTall - y) - (iTall * 0.10));
 			}
 
 			m_pTipPanel->SetPos(x, y);
