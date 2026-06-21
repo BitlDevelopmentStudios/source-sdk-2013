@@ -19,6 +19,8 @@ Alpha Technical Test v4:
 - Fixed an oversight where Gordon didn't get all his equipment.
 - Adjusted max ammo limits to be more lenient.
 - Adjusted the amount of ammo that spawns for both classes.
+- Added tips to the loading screen.
+- You can use the "tip" command to get a tip printed in the console.
 
 Alpha Technical Test v3:
 - Added achievements!

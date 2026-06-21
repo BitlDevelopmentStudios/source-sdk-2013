@@ -41,6 +41,10 @@ private:
 
 	vgui::ImagePanel *m_pBackground;
 	const char* m_szImagePath;
+
+	vgui::Label* m_pTipPanel;
+
+	float m_flLastTipChange;
 };
 
 #endif	// !MAPLOAD_BACKGROUND_H

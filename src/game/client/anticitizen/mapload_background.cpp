@@ -7,6 +7,9 @@
 #include "cbase.h"
 #include "mapload_background.h"
 #include "filesystem.h"
+#include <vgui_controls/Label.h>
+#include "anticitizen_tips.h"
+#include "vgui/ILocalize.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -19,7 +22,11 @@ using namespace vgui;
 CMapLoadBG::CMapLoadBG( char const *panelName ) : EditablePanel( NULL, panelName )
 {
 	VPANEL toolParent = enginevgui->GetPanel( PANEL_GAMEUIDLL );
-	SetParent( toolParent );
+	SetParent( toolParent );	
+
+	m_pTipPanel = new Label(this, "TipText", "");
+
+	m_flLastTipChange = 0;
 
 	ResizePanel();
 }
@@ -71,6 +78,28 @@ void CMapLoadBG::UpdateMainBackground(void)
 		bool bIsWidescreen = aspectRatio >= 1.5999f;
 
 		SetRandBackgroundImage(bIsWidescreen);
+
+		if (m_pTipPanel)
+		{
+			// change tip.
+			m_pTipPanel->SetText(UTIL_GetRandomTipUnicode());
+
+			// position the panel.
+			int x, y;
+			m_pTipPanel->GetPos(x, y);
+
+			if (iWide <= 640)
+			{
+				y = 10;
+			}
+			else
+			{
+				// position it propertionately to the resolution, with a 7% offset applied.
+				y = (y + (iTall - y) - (iTall * 0.07));
+			}
+
+			m_pTipPanel->SetPos(x, y);
+		}
 	}
 }
 
