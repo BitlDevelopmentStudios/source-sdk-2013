@@ -65,7 +65,7 @@ Scheme
 		{
 			"1"	
 			{
-				"name"		"Tahoma" 
+				"name"		"Verdana Bold" 
 				"tall"		"20"
 				"weight"	"600"
 				"antialias" "1"
