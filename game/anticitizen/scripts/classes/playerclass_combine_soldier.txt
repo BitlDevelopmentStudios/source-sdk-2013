@@ -11,7 +11,7 @@ PlayerClassDatafile
 	"VoiceMode"			"2"
 	
 	"Grenades"			"-1"
-	"Crates"			"3"
+	"Crates"			"4"
 	
 	"PrimaryWeapon"		"weapon_ar2"
 	"SecondaryWeapon"	"weapon_smg1"
