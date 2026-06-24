@@ -7,6 +7,7 @@
 #include "cbase.h"
 #include "npcevent.h"
 #include "in_buttons.h"
+#include "datacache/imdlcache.h"
 
 #ifdef CLIENT_DLL
 	#include "c_hl2mp_player.h"
@@ -234,6 +235,8 @@ void CWeaponFrag::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChar
 
 #endif
 
+#define BASE_HIDEWEAPON_THINK_CONTEXT			"BaseCombatWeapon_HideThink"
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -241,6 +244,47 @@ bool CWeaponFrag::Deploy( void )
 {
 	m_bRedraw = false;
 	m_fDrawbackFinished = false;
+
+	CHL2MP_Player* pOwner = ToHL2MPPlayer(GetOwner());
+
+	if (pOwner && (pOwner->m_nButtons & IN_GRENADE1) && (pOwner->GetPlayerClass() > CLS_INVALID) && (pOwner->GetPlayerClass() != CLS_FREEMAN))
+	{
+		// this ignores the lowering code. this is okay i feel.
+
+		if (!HasAnyAmmo())
+			return false;
+
+		CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+		if (pOwner)
+		{
+			// Dead men deploy no weapons
+			if (pOwner->IsAlive() == false)
+				return false;
+
+			SetViewModel();
+
+			pOwner->SetNextAttack(gpGlobals->curtime);
+		}
+
+		// shoot NOW. we're about to throw a grenade.
+		m_flNextPrimaryAttack = gpGlobals->curtime;
+		m_flNextSecondaryAttack = gpGlobals->curtime;
+
+		WeaponSound(DEPLOY);
+
+		SetWeaponVisible(true);
+
+		/*
+
+		This code is disabled for now, because moving through the weapons in the carousel
+		selects and deploys each weapon as you pass it. (sjb)
+
+		*/
+
+		SetContextThink(NULL, 0, BASE_HIDEWEAPON_THINK_CONTEXT);
+
+		return true;
+	}
 
 	return BaseClass::Deploy();
 }
@@ -393,11 +437,15 @@ void CWeaponFrag::ItemPostFrame( void )
 			switch( m_AttackPaused )
 			{
 			case GRENADE_PAUSED_PRIMARY:
-				if( !(pOwner->m_nButtons & IN_ATTACK) )
 				{
-					SendWeaponAnim( ACT_VM_THROW );
-					pOwner->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
-					m_fDrawbackFinished = false;
+					bool bCanUseGrenade = ((pOwner->GetPlayerClass() > CLS_INVALID) && (pOwner->GetPlayerClass() != CLS_FREEMAN));
+
+					if ((!(pOwner->m_nButtons & IN_ATTACK) || (bCanUseGrenade && !(pOwner->m_nButtons & IN_GRENADE1))))
+					{
+						SendWeaponAnim(ACT_VM_THROW);
+						pOwner->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
+						m_fDrawbackFinished = false;
+					}
 				}
 				break;
 
@@ -430,6 +478,37 @@ void CWeaponFrag::ItemPostFrame( void )
 	}
 
 	BaseClass::ItemPostFrame();
+
+	if (pOwner && (pOwner->GetPlayerClass() > CLS_INVALID) && (pOwner->GetPlayerClass() != CLS_FREEMAN))
+	{
+		bool bFired = false;
+
+		if (!bFired && (pOwner->m_nButtons & IN_GRENADE1) && (m_flNextPrimaryAttack <= gpGlobals->curtime))
+		{
+			//NOTENOTE: There is a bug with this code with regards to the way machine guns catch the leading edge trigger
+			//			on the player hitting the attack key.  It relies on the gun catching that case in the same frame.
+			//			However, because the player can also be doing a secondary attack, the edge trigger may be missed.
+			//			We really need to hold onto the edge trigger and only clear the condition when the gun has fired its
+			//			first shot.  Right now that's too much of an architecture change -- jdw
+
+			// If the firing button was just pressed, or the alt-fire just released, reset the firing time
+			if ((pOwner->m_afButtonPressed & IN_GRENADE1))
+			{
+				m_flNextPrimaryAttack = gpGlobals->curtime;
+			}
+
+			PrimaryAttack();
+
+			if (AutoFiresFullClip())
+			{
+				m_bFiringWholeClip = true;
+			}
+
+#ifdef CLIENT_DLL
+			pOwner->SetFiredWeapon(true);
+#endif
+		}
+	}
 
 	if ( m_bRedraw )
 	{

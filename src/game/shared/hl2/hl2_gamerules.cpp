@@ -185,6 +185,7 @@ ConVar	sk_max_manhacks				("sk_max_manhacks", "0", FCVAR_REPLICATED);
 ConVar	sk_max_slam("sk_max_slam", "0", FCVAR_REPLICATED);
 ConVar	sk_max_crate("sk_max_crate", "0", FCVAR_REPLICATED);
 ConVar	sk_max_turret("sk_max_turret", "0", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_turret("sk_npc_dmg_turret", "0", FCVAR_REPLICATED);
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -1873,7 +1874,7 @@ CAmmoDef *GetAmmoDef()
 		def.AddAmmoType("Manhacks", DMG_SLASH, TRACER_NONE, 0, 0, "sk_max_manhacks", 0, 0);
 		def.AddAmmoType("slam", DMG_BURN, TRACER_NONE, 0, 0, "sk_max_slam", 0, 0);
 		def.AddAmmoType("Crate", DMG_CLUB, TRACER_NONE, 0, 0, "sk_max_crate", 0, 0);
-		def.AddAmmoType("Turret", DMG_BULLET, TRACER_NONE, 0, 0, "sk_max_turret", 0, 0);
+		def.AddAmmoType("Turret", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_npc_dmg_turret", "sk_npc_dmg_turret", "sk_max_turret", BULLET_IMPULSE(200, 1225), 0);
 	}
 
 	return &def;

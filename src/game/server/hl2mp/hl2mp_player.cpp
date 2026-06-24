@@ -504,7 +504,9 @@ void CHL2MP_Player::PreThink( void )
 	m_vecTotalBulletForce = vec3_origin;
 }
 
-extern ConVar sk_resource_regen_time;
+ConVar sk_resource_grenade_regen_time("sk_resource_grenade_regen_time", "7", FCVAR_REPLICATED | FCVAR_NOTIFY);
+ConVar sk_resource_ar2ball_regen_time("sk_resource_ar2ball_regen_time", "9", FCVAR_REPLICATED | FCVAR_NOTIFY);
+ConVar sk_resource_manhack_regen_time("sk_resource_manhack_regen_time", "8", FCVAR_REPLICATED | FCVAR_NOTIFY);
 
 void CHL2MP_Player::PostThink( void )
 {
@@ -554,6 +556,28 @@ void CHL2MP_Player::PostThink( void )
 			m_bBotNotifier = false;
 		}
 
+		if ((GetPlayerClass() != CLS_FREEMAN))
+		{
+			if ((m_nButtons & IN_GRENADE1))
+			{
+				CBaseCombatWeapon* pFrag = Weapon_OwnsThisType("weapon_frag");
+
+				if (pFrag)
+				{
+					Weapon_Switch(pFrag);
+				}
+				else
+				{
+					CBaseCombatWeapon* pHack = Weapon_OwnsThisType("weapon_manhack");
+
+					if (pHack)
+					{
+						Weapon_Switch(pHack);
+					}
+				}
+			}
+		}
+
 		// do not use the timer unless the difficulty is higher.
 		CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(this);
 
@@ -580,7 +604,7 @@ void CHL2MP_Player::PostThink( void )
 				{
 					if (!m_grenadeReloadTimer.HasStarted())
 					{
-						m_grenadeReloadTimer.Start(sk_resource_regen_time.GetFloat());
+						m_grenadeReloadTimer.Start(sk_resource_grenade_regen_time.GetFloat());
 					}
 				}
 			}
@@ -601,7 +625,7 @@ void CHL2MP_Player::PostThink( void )
 				{
 					if (!m_ballReloadTimer.HasStarted())
 					{
-						m_ballReloadTimer.Start(sk_resource_regen_time.GetFloat());
+						m_ballReloadTimer.Start(sk_resource_ar2ball_regen_time.GetFloat());
 					}
 				}
 			}
@@ -625,7 +649,7 @@ void CHL2MP_Player::PostThink( void )
 
 					if (!m_hackReloadTimer.HasStarted())
 					{
-						m_hackReloadTimer.Start(sk_resource_regen_time.GetFloat());
+						m_hackReloadTimer.Start(sk_resource_manhack_regen_time.GetFloat());
 					}
 				}
 			}

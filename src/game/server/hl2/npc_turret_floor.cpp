@@ -217,6 +217,7 @@ void CNPC_FloorTurret::UpdateOnRemove( void )
 
 	StopSound("NPC_FloorTurret.AlarmPing");
 	StopSound("NPC_FloorTurret.Alarm");
+	StopSound("NPC_FloorTurret.Alert");
 
 	BaseClass::UpdateOnRemove();
 }
@@ -313,7 +314,7 @@ void CNPC_FloorTurret::Spawn( void )
 	SetPoseParameter( m_poseAim_Yaw, 0 );
 	SetPoseParameter( m_poseAim_Pitch, 0 );
 
-	m_iAmmoType = GetAmmoDef()->Index( "PISTOL" );
+	m_iAmmoType = GetAmmoDef()->Index( "Turret" );
 
 	m_iMuzzleAttachment = LookupAttachment( "eyes" );
 	m_iEyeAttachment = LookupAttachment( "light" );
@@ -1352,6 +1353,8 @@ void CNPC_FloorTurret::InactiveThink( void )
 {
 	// Update our PVS state
 	CheckPVSCondition();
+	StopSound("NPC_FloorTurret.Alarm");
+	StopSound("NPC_FloorTurret.Alert");
 
 	// Wake up if we're not on our side
 	if ( !OnSide() && m_bEnabled )

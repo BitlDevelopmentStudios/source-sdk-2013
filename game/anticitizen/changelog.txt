@@ -1,3 +1,15 @@
+Alpha v1:
+- Added the ability for Overwatch soldiers to throw grenades or Manhacks with a single button press.
+- Increased grenade regeneration time from 6 seconds to 7 seconds.
+- Increased Manhack regeneration time from 6 seconds to 8 seconds.
+- Increased Energy Ball regeneration time from 6 seconds to 9 seconds.
+- Increased Manhack health from 25 to 35.
+- Increased Manhack damage from 20 to 65.
+- Turret damage has been increased from 3 damage per bullet to 8.
+- Fix turret sound looping bugs.
+
+-----------------------------------------------------------------------------------------------------------------------
+
 Alpha Technical Test v4:
 - Fixed a bug where you can get achievement notifications from other players.
 - Disabled turret placement glows.
@@ -62,6 +74,8 @@ Alpha Technical Test v1.1:
 
 Alpha Technical Test v1:
 - Initial public release
+
+-----------------------------------------------------------------------------------------------------------------------
 
 Private Pre-Alpha:
 - Initial private release

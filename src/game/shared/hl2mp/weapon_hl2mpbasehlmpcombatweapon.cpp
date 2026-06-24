@@ -57,7 +57,6 @@ END_PREDICTION_DATA()
 #endif
 
 extern ConVar sk_auto_reload_time;
-ConVar sk_resource_regen_time("sk_resource_regen_time", "6", FCVAR_REPLICATED);
 
 CBaseHL2MPCombatWeapon::CBaseHL2MPCombatWeapon( void )
 {
