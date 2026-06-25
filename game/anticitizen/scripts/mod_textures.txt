@@ -213,16 +213,16 @@
 				"file"		"VGUI/basic2d_linear/ex_weaponicon_36_killicon"
 				"x"			"0"
 				"y"			"0"
-				"width"		"32"
-				"height"	"16"
+				"width"		"64"
+				"height"	"32"
 		}
 		"death_manhack"
 		{
 				"file"		"VGUI/basic2d_linear/ex_weaponicon_52_killicon"
 				"x"			"0"
 				"y"			"0"
-				"width"		"32"
-				"height"	"16"
+				"width"		"64"
+				"height"	"32"
 		}
 		"voice_player"
 		{
