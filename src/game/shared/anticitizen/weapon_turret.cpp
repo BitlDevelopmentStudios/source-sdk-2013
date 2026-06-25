@@ -310,7 +310,7 @@ void CWeaponTurret::SpawnTurret(void)
 		IPhysicsObject* pPhys = pTurret->VPhysicsGetObject();
 		if (pPhys != NULL)
 		{
-			pPhys->SetMass(pPhys->GetMass() * 5.0f);
+			pPhys->SetMass(pPhys->GetMass() * 4.0f);
 		}
 
 		pTurret->Activate();

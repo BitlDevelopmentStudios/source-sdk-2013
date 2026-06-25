@@ -462,7 +462,7 @@ void CHL2MP_Player::Spawn(void)
 	}
 }
 
-ConVar hl2mp_allow_pickup( "hl2mp_allow_pickup", "0", FCVAR_GAMEDLL );
+ConVar hl2mp_allow_pickup( "hl2mp_allow_pickup", "1", FCVAR_CHEAT );
 
 void CHL2MP_Player::PickupObject( CBaseEntity* pObject, bool bLimitMassAndSize )
 {

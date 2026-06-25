@@ -7,6 +7,8 @@ Alpha v1:
 - Increased Manhack damage from 20 to 65.
 - Turret damage has been increased from 3 damage per bullet to 8.
 - Fix turret sound looping bugs.
+- Reduce mass multiplier for turrets from 5.0 to 4.0.
+- You can now pick up props.
 
 -----------------------------------------------------------------------------------------------------------------------
 
