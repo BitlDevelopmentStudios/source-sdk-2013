@@ -1008,6 +1008,9 @@ void CPlayerPickupController::Init( CBasePlayer *pPlayer, CBaseEntity *pObject )
 void CPlayerPickupController::Shutdown( bool bThrown )
 {
 #ifndef CLIENT_DLL
+	// misyl: Disable pred filtering in this server-only section.
+	CDisablePredictionFiltering disablePred;
+
 	CBaseEntity *pObject = m_grabController.GetAttached();
 
 	bool bClearVelocity = false;
@@ -1048,14 +1051,13 @@ void CPlayerPickupController::Shutdown( bool bThrown )
 	}
 	Remove();
 
+#else
 	m_grabController.DetachEntity(bThrown);
 
 	if (m_hAttachedObject)
 	{
-		m_hAttachedObject->VPhysicsDestroyObject();
 		m_hAttachedObject = NULL;
 	}
-
 #endif
 	
 }
