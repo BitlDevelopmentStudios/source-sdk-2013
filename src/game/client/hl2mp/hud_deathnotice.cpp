@@ -196,7 +196,7 @@ void CHudDeathNotice::Paint()
 		}
 		else
 		{
-			float scale = ( (float)ScreenHeight() / 480.0f );	//scale based on 640x480
+			float scale = (((float)ScreenHeight() / 480.0f) / 2.3f);	//scale based on 640x480
 			iconWide = (int)( scale * (float)icon->Width() );
 			iconTall = (int)( scale * (float)icon->Height() );
 		}
