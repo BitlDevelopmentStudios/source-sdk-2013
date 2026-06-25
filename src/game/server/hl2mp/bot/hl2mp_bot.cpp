@@ -1281,6 +1281,13 @@ void CHL2MPBot::UpdateLookingAroundForEnemies( void )
 
 	if ( known )
 	{
+		// the original code glitches out when there are a bunch of NPCs in one map.
+		// the solution is to only look for players.
+		if (!known->GetEntity()->IsPlayer() && !known->IsVisibleInFOVNow())
+		{
+			return;
+		}
+
 		if ( known->IsVisibleInFOVNow() )
 		{
 			// I see you!
@@ -1320,55 +1327,53 @@ void CHL2MPBot::UpdateLookingAroundForEnemies( void )
 			return;
 		}
 
+		// look toward potentially visible area nearest the last known position
+		CNavArea *myArea = GetLastKnownArea();
+		if ( myArea )
 		{
-			// look toward potentially visible area nearest the last known position
-			CNavArea *myArea = GetLastKnownArea();
-			if ( myArea )
+			const CNavArea *closeArea = NULL;
+			CFindClosestPotentiallyVisibleAreaToPos find( known->GetLastKnownPosition() );
+			myArea->ForAllPotentiallyVisibleAreas( find );
+
+			closeArea = find.m_closeArea;
+
+			if ( closeArea )
 			{
-				const CNavArea *closeArea = NULL;
-				CFindClosestPotentiallyVisibleAreaToPos find( known->GetLastKnownPosition() );
-				myArea->ForAllPotentiallyVisibleAreas( find );
-
-				closeArea = find.m_closeArea;
-
-				if ( closeArea )
+				// try to not look directly at walls
+				const int retryCount = 10.0f;
+				for( int r=0; r<retryCount; ++r )
 				{
-					// try to not look directly at walls
-					const int retryCount = 10.0f;
-					for( int r=0; r<retryCount; ++r )
-					{
-						Vector gazeSpot = closeArea->GetRandomPoint() + Vector( 0, 0, 0.75f * HumanHeight );
+					Vector gazeSpot = closeArea->GetRandomPoint() + Vector( 0, 0, 0.75f * HumanHeight );
 
-						if ( GetVisionInterface()->IsLineOfSightClear( gazeSpot ) )
-						{
-							// use maxLookInterval so these looks override body aiming from path following
-							GetBodyInterface()->AimHeadTowards( gazeSpot, IBody::IMPORTANT, maxLookInterval, NULL, "Looking toward potentially visible area near known but hidden threat" );
-							return;
-						}
-					}					
-
-					// can't find a clear line to look along
-					if ( IsDebugging( NEXTBOT_VISION | NEXTBOT_ERRORS ) )
+					if ( GetVisionInterface()->IsLineOfSightClear( gazeSpot ) )
 					{
-						ConColorMsg( Color( 255, 255, 0, 255 ), "%3.2f: %s can't find clear line to look at potentially visible near known but hidden entity %s(#%d)\n", 
-										gpGlobals->curtime,
-										GetDebugIdentifier(),
-										known->GetEntity()->GetClassname(),
-										known->GetEntity()->entindex() );
+						// use maxLookInterval so these looks override body aiming from path following
+						GetBodyInterface()->AimHeadTowards( gazeSpot, IBody::IMPORTANT, maxLookInterval, NULL, "Looking toward potentially visible area near known but hidden threat" );
+						return;
 					}
-				}
-				else if ( IsDebugging( NEXTBOT_VISION | NEXTBOT_ERRORS ) )
+				}					
+
+				// can't find a clear line to look along
+				if ( IsDebugging( NEXTBOT_VISION | NEXTBOT_ERRORS ) )
 				{
-					ConColorMsg( Color( 255, 255, 0, 255 ), "%3.2f: %s no potentially visible area to look toward known but hidden entity %s(#%d)\n", 
+					ConColorMsg( Color( 255, 255, 0, 255 ), "%3.2f: %s can't find clear line to look at potentially visible near known but hidden entity %s(#%d)\n", 
 									gpGlobals->curtime,
 									GetDebugIdentifier(),
 									known->GetEntity()->GetClassname(),
 									known->GetEntity()->entindex() );
 				}
 			}
-
-			return;
+			else if ( IsDebugging( NEXTBOT_VISION | NEXTBOT_ERRORS ) )
+			{
+				ConColorMsg( Color( 255, 255, 0, 255 ), "%3.2f: %s no potentially visible area to look toward known but hidden entity %s(#%d)\n", 
+								gpGlobals->curtime,
+								GetDebugIdentifier(),
+								known->GetEntity()->GetClassname(),
+								known->GetEntity()->entindex() );
+			}
 		}
+
+		return;
 	}
 
 	// no known threat - look toward where enemies will come from
@@ -2566,12 +2571,9 @@ bool CHL2MPBot::IsEnemy( const CBaseEntity* them ) const
 	if ( them == this )
 		return false;
 
-	if (!them->IsPlayer())
+	if (!them->IsPlayer() && !them->IsNPC())
 	{
-		if (!them->IsNPC())
-		{ 
-			return false;
-		}
+		return false;
 	}
 
 	if ( hl2mp_bot_ignore_real_players.GetBool() )
