@@ -1056,7 +1056,7 @@ void CPlayerPickupController::Shutdown( bool bThrown )
 
 	if (m_hAttachedObject)
 	{
-		m_hAttachedObject = NULL;
+		m_hAttachedObject->VPhysicsDestroyObject();
 	}
 #endif
 	
