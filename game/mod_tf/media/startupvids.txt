@@ -1,2 +1,0 @@
-media/valve.webm
-media/bitl_logo_bdsbase.webm
