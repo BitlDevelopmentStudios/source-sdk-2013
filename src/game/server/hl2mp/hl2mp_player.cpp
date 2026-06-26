@@ -48,6 +48,8 @@ ConVar hl2mp_spawn_frag_fallback_radius( "hl2mp_spawn_frag_fallback_radius", "48
 
 ConVar sv_sentencedelay("sv_sentencedelay", "1.5", FCVAR_NOTIFY);
 
+ConVar hl2mp_spawnprotection("hl2mp_spawnprotection", "5", FCVAR_REPLICATED | FCVAR_NOTIFY);
+
 #define HL2MP_COMMAND_MAX_RATE 0.3
 
 #define CYCLELATCH_UPDATE_INTERVAL	0.2f
@@ -460,6 +462,8 @@ void CHL2MP_Player::Spawn(void)
 		// Ms - If we are spectating then go roaming
 		StartObserverMode(OBS_MODE_ROAMING);
 	}
+
+	m_flSpawnProtectTime = gpGlobals->curtime + hl2mp_spawnprotection.GetFloat();
 }
 
 ConVar hl2mp_allow_pickup( "hl2mp_allow_pickup", "1", FCVAR_CHEAT );
@@ -511,6 +515,17 @@ ConVar sk_resource_manhack_regen_time("sk_resource_manhack_regen_time", "8", FCV
 void CHL2MP_Player::PostThink( void )
 {
 	BaseClass::PostThink();
+
+	if (GetTeamNumber() != TEAM_SPECTATOR)
+	{
+		if (gpGlobals->curtime < m_flSpawnProtectTime)
+		{
+			if (m_nButtons > 0)
+			{
+				m_flSpawnProtectTime = 0;
+			}
+		}
+	}
 	
 	if ( GetFlags() & FL_DUCKING )
 	{
@@ -1818,7 +1833,7 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 int CHL2MP_Player::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 {
 	//return here if the player is in the respawn grace period vs. slams.
-	if ( gpGlobals->curtime < m_flSlamProtectTime &&  (inputInfo.GetDamageType() == DMG_BLAST ) )
+	if ( gpGlobals->curtime < m_flSpawnProtectTime )
 		return 0;
 
 	m_vecTotalBulletForce += inputInfo.GetDamageForce();
@@ -2130,8 +2145,6 @@ ReturnSpot:
 	}
 
 	g_pLastSpawn = pSpot;
-
-	m_flSlamProtectTime = gpGlobals->curtime + 0.5;
 
 	return pSpot;
 } 

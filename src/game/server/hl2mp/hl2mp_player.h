@@ -300,7 +300,7 @@ private:
 	float m_flNextModelChangeTime;
 	float m_flNextTeamChangeTime;
 
-	float m_flSlamProtectTime;	
+	float m_flSpawnProtectTime;
 
 	HL2MPPlayerState m_iPlayerState;
 	CHL2MPPlayerStateInfo *m_pCurStateInfo;

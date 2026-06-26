@@ -9,6 +9,7 @@ Alpha v1:
 - Fix turret sound looping bugs.
 - Reduce mass multiplier for turrets from 5.0 to 4.0.
 - You can now pick up props.
+- Added a 5 second spawn protection period.
 
 -----------------------------------------------------------------------------------------------------------------------
 
