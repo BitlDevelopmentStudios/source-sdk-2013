@@ -48,7 +48,8 @@ ConVar hl2mp_spawn_frag_fallback_radius( "hl2mp_spawn_frag_fallback_radius", "48
 
 ConVar sv_sentencedelay("sv_sentencedelay", "1.5", FCVAR_NOTIFY);
 
-ConVar hl2mp_spawnprotection("hl2mp_spawnprotection", "5", FCVAR_REPLICATED | FCVAR_NOTIFY);
+ConVar hl2mp_spawnprotection("hl2mp_spawnprotection", "1", FCVAR_REPLICATED | FCVAR_NOTIFY);
+ConVar hl2mp_spawnprotection_time("hl2mp_spawnprotection_time", "5", FCVAR_REPLICATED | FCVAR_NOTIFY);
 
 #define HL2MP_COMMAND_MAX_RATE 0.3
 
@@ -465,7 +466,11 @@ void CHL2MP_Player::Spawn(void)
 
 	if (GetTeamNumber() != TEAM_SPECTATOR)
 	{
-		m_flSpawnProtectTime = gpGlobals->curtime + hl2mp_spawnprotection.GetFloat();
+		if (hl2mp_spawnprotection.GetBool())
+		{
+			m_SpawnProtectTimer.Start(hl2mp_spawnprotection_time.GetFloat());
+			m_bAllowSpawnProtection = true;
+		}
 	}
 }
 
@@ -519,20 +524,20 @@ void CHL2MP_Player::PostThink( void )
 {
 	BaseClass::PostThink();
 
-	if (GetTeamNumber() != TEAM_SPECTATOR)
+	if (m_bAllowSpawnProtection)
 	{
-		if (gpGlobals->curtime < m_flSpawnProtectTime)
-		{
-			if (m_nButtons > 0)
-			{
-				m_flSpawnProtectTime = 0;
-			}
-		}
-	}
+		ClientPrint(this, HUD_PRINTCENTER, "#Protected");
 
-	if (gpGlobals->curtime < m_flSpawnProtectTime)
-	{
-		UTIL_ClientPrintAll(HUD_PRINTCENTER, "#Protected");
+		Vector vecVelocity = GetAbsVelocity();
+		float flSpeed = vecVelocity.Length2D();
+
+		if (m_SpawnProtectTimer.HasElapsedSinceStart() || 
+			(flSpeed > 0.5f))
+		{
+			ClientPrint(this, HUD_PRINTCENTER, "#Protection_Disabled");
+			m_bAllowSpawnProtection = false;
+			m_SpawnProtectTimer.Invalidate();
+		}
 	}
 	
 	if ( GetFlags() & FL_DUCKING )
@@ -1841,7 +1846,7 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 void CHL2MP_Player::TraceAttack(const CTakeDamageInfo& inputInfo, const Vector& vecDir, trace_t* ptr, CDmgAccumulator* pAccumulator)
 {
 	//return here if the player is in the respawn grace period vs. slams.
-	if (gpGlobals->curtime < m_flSpawnProtectTime)
+	if (m_bAllowSpawnProtection)
 		return;
 
 	BaseClass::TraceAttack(inputInfo, vecDir, ptr, pAccumulator);
@@ -1850,7 +1855,7 @@ void CHL2MP_Player::TraceAttack(const CTakeDamageInfo& inputInfo, const Vector& 
 bool CHL2MP_Player::PassesDamageFilter(const CTakeDamageInfo& info)
 {
 	//return here if the player is in the respawn grace period vs. slams.
-	if (gpGlobals->curtime < m_flSpawnProtectTime)
+	if (m_bAllowSpawnProtection)
 		return false;
 
 	return BaseClass::PassesDamageFilter(info);
@@ -1859,7 +1864,7 @@ bool CHL2MP_Player::PassesDamageFilter(const CTakeDamageInfo& info)
 int CHL2MP_Player::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 {
 	//return here if the player is in the respawn grace period vs. slams.
-	if ( gpGlobals->curtime < m_flSpawnProtectTime )
+	if (m_bAllowSpawnProtection)
 		return 0;
 
 	m_vecTotalBulletForce += inputInfo.GetDamageForce();

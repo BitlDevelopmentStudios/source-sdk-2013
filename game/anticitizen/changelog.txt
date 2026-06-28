@@ -9,7 +9,7 @@ Alpha v1:
 - Fix turret sound looping bugs.
 - Reduce mass multiplier for turrets from 5.0 to 4.0.
 - You can now pick up props.
-- Added a 5 second spawn protection period.
+- Added spawn protection that gets removed when you start moving.
 - Fixed a bug where players can t-pose while in water.
 
 -----------------------------------------------------------------------------------------------------------------------

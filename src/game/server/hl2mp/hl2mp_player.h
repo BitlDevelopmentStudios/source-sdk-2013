@@ -302,8 +302,6 @@ private:
 	float m_flNextModelChangeTime;
 	float m_flNextTeamChangeTime;
 
-	float m_flSpawnProtectTime;
-
 	HL2MPPlayerState m_iPlayerState;
 	CHL2MPPlayerStateInfo *m_pCurStateInfo;
 
@@ -315,6 +313,8 @@ private:
     bool m_bEnterObserver;
 	bool m_bReady;
 	bool m_bChosenClass;
+	bool m_bAllowSpawnProtection;
+	CountdownTimer m_SpawnProtectTimer;
 
 	CNetworkVar(int, m_cycleLatch); // Network the cycle to clients periodically
 	CountdownTimer m_cycleLatchTimer;
