@@ -386,21 +386,27 @@ void CWeaponFrag::PrimaryAttack( void )
 	if ( m_bRedraw )
 		return;
 
-	CBaseCombatCharacter *pOwner  = GetOwner();
+	CHL2MP_Player* pOwner = ToHL2MPPlayer(GetOwner());
 	
 	if ( pOwner == NULL )
 	{ 
 		return;
 	}
 
-	CBasePlayer *pPlayer = ToBasePlayer( GetOwner() );;
+	bool bCanUseGrenade = ((pOwner->GetPlayerClass() > CLS_INVALID) && (pOwner->GetPlayerClass() != CLS_FREEMAN));
 
-	if ( !pPlayer )
-		return;
-
-	// Note that this is a primary attack and prepare the grenade attack to pause.
-	m_AttackPaused = GRENADE_PAUSED_PRIMARY;
-	SendWeaponAnim( ACT_VM_PULLBACK_HIGH );
+	if ((bCanUseGrenade && (pOwner->m_nButtons & IN_GRENADE1)))
+	{
+		SendWeaponAnim(ACT_VM_THROW);
+		pOwner->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
+		m_fDrawbackFinished = false;
+	}
+	else
+	{
+		// Note that this is a primary attack and prepare the grenade attack to pause.
+		m_AttackPaused = GRENADE_PAUSED_PRIMARY;
+		SendWeaponAnim(ACT_VM_PULLBACK_HIGH);
+	}
 	
 	// Put both of these off indefinitely. We do not know how long
 	// the player will hold the grenade.
@@ -410,7 +416,7 @@ void CWeaponFrag::PrimaryAttack( void )
 	// If I'm now out of ammo, switch away
 	if ( !HasPrimaryAmmo() )
 	{
-		pPlayer->SwitchToNextBestWeapon( this );
+		pOwner->SwitchToNextBestWeapon( this );
 	}
 }
 
@@ -437,15 +443,11 @@ void CWeaponFrag::ItemPostFrame( void )
 			switch( m_AttackPaused )
 			{
 			case GRENADE_PAUSED_PRIMARY:
+				if ( (!(pOwner->m_nButtons & IN_ATTACK)) )
 				{
-					bool bCanUseGrenade = ((pOwner->GetPlayerClass() > CLS_INVALID) && (pOwner->GetPlayerClass() != CLS_FREEMAN));
-
-					if ((!(pOwner->m_nButtons & IN_ATTACK) || (bCanUseGrenade && !(pOwner->m_nButtons & IN_GRENADE1))))
-					{
-						SendWeaponAnim(ACT_VM_THROW);
-						pOwner->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
-						m_fDrawbackFinished = false;
-					}
+					SendWeaponAnim(ACT_VM_THROW);
+					pOwner->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
+					m_fDrawbackFinished = false;
 				}
 				break;
 

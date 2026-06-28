@@ -514,3 +514,6 @@ src/lib/public/x64/raytrace.lib
 src/lib/public/x64/tier1.lib
 src/lib/public/x64/vgui_controls.lib
 game_shader_generic_example.dll
+*.lin
+*.prt
+*.vmx

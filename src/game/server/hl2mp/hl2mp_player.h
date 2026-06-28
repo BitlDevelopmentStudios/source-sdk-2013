@@ -73,6 +73,8 @@ public:
 	virtual void CreateViewModel( int viewmodelindex = 0 );
 	virtual bool BecomeRagdollOnClient( const Vector &force );
 	virtual void Event_Killed( const CTakeDamageInfo &info );
+	virtual bool PassesDamageFilter(const CTakeDamageInfo& info);
+	virtual void TraceAttack(const CTakeDamageInfo& inputInfo, const Vector& vecDir, trace_t* ptr, CDmgAccumulator* pAccumulator);
 	virtual int OnTakeDamage( const CTakeDamageInfo &inputInfo );
 	virtual int OnTakeDamage_Alive(const CTakeDamageInfo& info);
 	virtual bool WantsLagCompensationOnEntity( const CBasePlayer *pPlayer, const CUserCmd *pCmd, const CBitVec<MAX_EDICTS> *pEntityTransmitBits ) const;

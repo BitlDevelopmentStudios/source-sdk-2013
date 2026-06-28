@@ -463,7 +463,10 @@ void CHL2MP_Player::Spawn(void)
 		StartObserverMode(OBS_MODE_ROAMING);
 	}
 
-	m_flSpawnProtectTime = gpGlobals->curtime + hl2mp_spawnprotection.GetFloat();
+	if (GetTeamNumber() != TEAM_SPECTATOR)
+	{
+		m_flSpawnProtectTime = gpGlobals->curtime + hl2mp_spawnprotection.GetFloat();
+	}
 }
 
 ConVar hl2mp_allow_pickup( "hl2mp_allow_pickup", "1", FCVAR_CHEAT );
@@ -525,6 +528,11 @@ void CHL2MP_Player::PostThink( void )
 				m_flSpawnProtectTime = 0;
 			}
 		}
+	}
+
+	if (gpGlobals->curtime < m_flSpawnProtectTime)
+	{
+		UTIL_ClientPrintAll(HUD_PRINTCENTER, "#Protected");
 	}
 	
 	if ( GetFlags() & FL_DUCKING )
@@ -1828,6 +1836,24 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 
 	RemoveEffects( EF_NODRAW );	// still draw player body
 	StopZooming();
+}
+
+void CHL2MP_Player::TraceAttack(const CTakeDamageInfo& inputInfo, const Vector& vecDir, trace_t* ptr, CDmgAccumulator* pAccumulator)
+{
+	//return here if the player is in the respawn grace period vs. slams.
+	if (gpGlobals->curtime < m_flSpawnProtectTime)
+		return;
+
+	BaseClass::TraceAttack(inputInfo, vecDir, ptr, pAccumulator);
+}
+
+bool CHL2MP_Player::PassesDamageFilter(const CTakeDamageInfo& info)
+{
+	//return here if the player is in the respawn grace period vs. slams.
+	if (gpGlobals->curtime < m_flSpawnProtectTime)
+		return false;
+
+	return BaseClass::PassesDamageFilter(info);
 }
 
 int CHL2MP_Player::OnTakeDamage( const CTakeDamageInfo &inputInfo )
