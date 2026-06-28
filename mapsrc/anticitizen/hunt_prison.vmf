@@ -2,7 +2,7 @@ versioninfo
 {
 	"editorversion" "400"
 	"editorbuild" "8871"
-	"mapversion" "49"
+	"mapversion" "50"
 	"formatversion" "100"
 	"prefab" "0"
 }
@@ -107,7 +107,7 @@ bgimages_plus
 world
 {
 	"id" "1"
-	"mapversion" "49"
+	"mapversion" "50"
 	"classname" "worldspawn"
 	"comment" "Decompiled by BSPSource v1.4.6.1 from d2_prison_01"
 	"detailmaterial" "detail/detailsprites"
@@ -131327,8 +131327,8 @@ entity
 {
 	"id" "528137"
 	"classname" "info_player_combine"
-	"angles" "0 0 0"
-	"origin" "2237.06 -2208 1407.99"
+	"angles" "0 180 0"
+	"origin" "4159.41 -2880 1407.99"
 	editor
 	{
 		"color" "0 255 0"
@@ -131341,8 +131341,8 @@ entity
 {
 	"id" "528139"
 	"classname" "info_player_combine"
-	"angles" "0 0 0"
-	"origin" "2242.94 -2080 1407.99"
+	"angles" "0 180 0"
+	"origin" "4153.53 -3008 1407.99"
 	editor
 	{
 		"color" "0 255 0"
@@ -131355,8 +131355,8 @@ entity
 {
 	"id" "528141"
 	"classname" "info_player_combine"
-	"angles" "0 0 0"
-	"origin" "2241.4 -2336 1407.99"
+	"angles" "0 180 0"
+	"origin" "4155.07 -2752 1407.99"
 	editor
 	{
 		"color" "0 255 0"
@@ -131369,8 +131369,8 @@ entity
 {
 	"id" "528143"
 	"classname" "info_player_combine"
-	"angles" "0 0 0"
-	"origin" "2238.6 -1888 1407.99"
+	"angles" "0 180 0"
+	"origin" "4157.87 -3200 1407.99"
 	editor
 	{
 		"color" "0 255 0"
@@ -131383,8 +131383,8 @@ entity
 {
 	"id" "528153"
 	"classname" "info_player_combine"
-	"angles" "0 0 0"
-	"origin" "2301.06 -2144 1408.51"
+	"angles" "0 180 0"
+	"origin" "4095.41 -2944 1408.51"
 	editor
 	{
 		"color" "0 255 0"
@@ -131397,8 +131397,8 @@ entity
 {
 	"id" "528155"
 	"classname" "info_player_combine"
-	"angles" "0 0 0"
-	"origin" "2306.94 -2016 1408.51"
+	"angles" "0 180 0"
+	"origin" "4089.53 -3072 1408.51"
 	editor
 	{
 		"color" "0 255 0"
@@ -131411,8 +131411,8 @@ entity
 {
 	"id" "528157"
 	"classname" "info_player_combine"
-	"angles" "0 0 0"
-	"origin" "2305.4 -2272 1408.51"
+	"angles" "0 180 0"
+	"origin" "4091.07 -2816 1408.51"
 	editor
 	{
 		"color" "0 255 0"
@@ -131425,8 +131425,8 @@ entity
 {
 	"id" "528159"
 	"classname" "info_player_combine"
-	"angles" "0 0 0"
-	"origin" "2302.6 -1824 1408.51"
+	"angles" "0 180 0"
+	"origin" "4093.87 -3264 1408.51"
 	editor
 	{
 		"color" "0 255 0"
@@ -131440,7 +131440,7 @@ entity
 	"id" "528169"
 	"classname" "info_player_combine"
 	"angles" "0 0 0"
-	"origin" "1981.06 -2144 1535.72"
+	"origin" "3227.36 -3232 1411.95"
 	editor
 	{
 		"color" "0 255 0"
@@ -131454,7 +131454,7 @@ entity
 	"id" "528171"
 	"classname" "info_player_combine"
 	"angles" "0 0 0"
-	"origin" "1986.94 -2016 1535.72"
+	"origin" "3233.24 -3104 1411.95"
 	editor
 	{
 		"color" "0 255 0"
@@ -131468,7 +131468,7 @@ entity
 	"id" "528173"
 	"classname" "info_player_combine"
 	"angles" "0 0 0"
-	"origin" "1985.4 -2272 1535.72"
+	"origin" "3231.7 -3360 1411.95"
 	editor
 	{
 		"color" "0 255 0"
@@ -131482,7 +131482,7 @@ entity
 	"id" "528175"
 	"classname" "info_player_combine"
 	"angles" "0 0 0"
-	"origin" "1982.6 -1824 1535.72"
+	"origin" "3228.9 -2912 1411.95"
 	editor
 	{
 		"color" "0 255 0"
@@ -132432,13 +132432,125 @@ entity
 		"logicalpos" "[3000 15000]"
 	}
 }
+entity
+{
+	"id" "533920"
+	"classname" "info_player_combine"
+	"angles" "0 0 0"
+	"origin" "1953.4 -2368 1535.4"
+	editor
+	{
+		"color" "0 255 0"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 -9268]"
+	}
+}
+entity
+{
+	"id" "533922"
+	"classname" "info_player_combine"
+	"angles" "0 0 0"
+	"origin" "1949.06 -2240 1535.4"
+	editor
+	{
+		"color" "0 255 0"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 -9268]"
+	}
+}
+entity
+{
+	"id" "533924"
+	"classname" "info_player_combine"
+	"angles" "0 0 0"
+	"origin" "1954.94 -2112 1535.4"
+	editor
+	{
+		"color" "0 255 0"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 -9268]"
+	}
+}
+entity
+{
+	"id" "533926"
+	"classname" "info_player_combine"
+	"angles" "0 0 0"
+	"origin" "1950.6 -1920 1535.4"
+	editor
+	{
+		"color" "0 255 0"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 -9268]"
+	}
+}
+entity
+{
+	"id" "533928"
+	"classname" "info_player_combine"
+	"angles" "0 0 0"
+	"origin" "2014.6 -1856 1535.92"
+	editor
+	{
+		"color" "0 255 0"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 -9268]"
+	}
+}
+entity
+{
+	"id" "533930"
+	"classname" "info_player_combine"
+	"angles" "0 0 0"
+	"origin" "2018.94 -2048 1535.92"
+	editor
+	{
+		"color" "0 255 0"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 -9268]"
+	}
+}
+entity
+{
+	"id" "533932"
+	"classname" "info_player_combine"
+	"angles" "0 0 0"
+	"origin" "2013.06 -2176 1535.92"
+	editor
+	{
+		"color" "0 255 0"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 -9268]"
+	}
+}
+entity
+{
+	"id" "533934"
+	"classname" "info_player_combine"
+	"angles" "0 0 0"
+	"origin" "2017.4 -2304 1535.92"
+	editor
+	{
+		"color" "0 255 0"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 -9268]"
+	}
+}
 cameras
 {
 	"activecamera" "0"
 	camera
 	{
-		"position" "[2394.31 -2151.42 1572.23]"
-		"look" "[2340.95 -2411.39 1549.95]"
+		"position" "[2241.49 -2378.85 1840.26]"
+		"look" "[2061.97 -2356.17 1644.85]"
 	}
 	camera
 	{
