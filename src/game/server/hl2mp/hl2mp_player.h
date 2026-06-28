@@ -267,7 +267,7 @@ public:
 		return bPlaying;
 	}
 
-	virtual bool	CanSpeakVoiceCommand(void) { return !IsSentencePlaying(); }
+	virtual bool	CanSpeakVoiceCommand(void) { return (IsAlive() && !IsSentencePlaying()); }
 
 protected:
 	CPlayer_Sentence< CHL2MP_Player >* GetSentences() { return &m_Sentences; }

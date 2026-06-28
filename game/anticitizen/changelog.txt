@@ -9,8 +9,10 @@ Alpha v1:
 - Fix turret sound looping bugs.
 - Reduce mass multiplier for turrets from 5.0 to 4.0.
 - You can now pick up props.
-- Added spawn protection that gets removed when you start moving.
+- Added idle spawn protection that gets removed when you start moving or after a 5 second timer elapses.
 - Fixed a bug where players can t-pose while in water.
+- Fixed a bug where you can say voice commands while dead.
+- Added a new map: hunt_prison! This map takes place at the beginning segment of Nova Prospect, further enhanced with more props and improved lighting.
 
 -----------------------------------------------------------------------------------------------------------------------
 
