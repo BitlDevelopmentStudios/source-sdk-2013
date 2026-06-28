@@ -526,15 +526,11 @@ void CHL2MP_Player::PostThink( void )
 
 	if (m_bAllowSpawnProtection)
 	{
-		ClientPrint(this, HUD_PRINTCENTER, "#Protected");
-
 		Vector vecVelocity = GetAbsVelocity();
 		float flSpeed = vecVelocity.Length2D();
 
-		if (m_SpawnProtectTimer.HasElapsedSinceStart() || 
-			(flSpeed > 0.5f))
+		if (m_SpawnProtectTimer.HasElapsedSinceStart() || (flSpeed > 0.5f))
 		{
-			ClientPrint(this, HUD_PRINTCENTER, "#Protection_Disabled");
 			m_bAllowSpawnProtection = false;
 			m_SpawnProtectTimer.Invalidate();
 		}
