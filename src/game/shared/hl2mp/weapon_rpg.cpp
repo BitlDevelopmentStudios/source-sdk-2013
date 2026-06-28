@@ -2017,6 +2017,15 @@ void CWeaponRPG::UpdateLaserPosition( Vector vecMuzzlePos, Vector vecEndPos )
 	// Move the laser sprite
 	if ( m_hLaserDot != NULL )
 	{
+		if (m_bGuiding)
+		{
+			m_hLaserDot->TurnOn();
+		}
+		else
+		{
+			m_hLaserDot->TurnOff();
+		}
+
 		Vector	laserPos = tr.endpos;
 		m_hLaserDot->SetLaserPosition( laserPos, tr.plane.normal );
 				
