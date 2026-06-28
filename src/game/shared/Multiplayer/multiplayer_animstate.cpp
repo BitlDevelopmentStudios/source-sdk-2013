@@ -877,7 +877,10 @@ bool CMultiPlayerAnimState::HandleSwimming( Activity &idealActivity )
 			m_bFirstSwimFrame = false;
 		}
 
-		idealActivity = ACT_MP_SWIM;		
+		// disable the swim animation for now.
+#ifndef HL2MP
+		idealActivity = ACT_MP_SWIM;
+#endif // !HL2MP	
 		m_bInSwim = true;
 		return true;
 	}
