@@ -447,7 +447,6 @@ void CHL2MPRules::CheckLastMemberLeft(void)
 
 			pPlayer->SpeakSentence("LAST_OF_SQUAD", SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
 			pPlayer->ToggleGlow(true);
-			pPlayer->SetGlowMode(1);
 			Color teamColor = COLOR_RED;
 			pPlayer->SetGlowColor(teamColor.r(), teamColor.g(), teamColor.b(), teamColor.a());
 			m_bLastSquadMemberAnnounced = true;

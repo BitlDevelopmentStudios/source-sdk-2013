@@ -404,7 +404,6 @@ void CHL2MP_Player::Spawn(void)
 	if (GetTeamNumber() == TEAM_FREEMAN)
 	{
 		ToggleGlow(true);
-		SetGlowMode(1);
 		Color teamColor = COLOR_YELLOW;
 		SetGlowColor(teamColor.r(), teamColor.g(), teamColor.b(), teamColor.a());
 	}
