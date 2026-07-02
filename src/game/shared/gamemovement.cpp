@@ -72,6 +72,7 @@ ConVar player_limit_jump_speed( "player_limit_jump_speed", "1", FCVAR_REPLICATED
 // duck controls. Its value is meaningless anytime we don't have the options window open.
 ConVar option_duck_method("option_duck_method", "1", FCVAR_REPLICATED|FCVAR_ARCHIVE );// 0 = HOLD to duck, 1 = Duck is a toggle
 
+ConVar sv_gordon_movement_system("sv_gordon_movement_system", "1", FCVAR_REPLICATED, "0 = 2006, 1 = orangebox");
 
 // [MD] I'll remove this eventually. For now, I want the ability to A/B the optimizations.
 bool g_bMovementOptimizations = true;
@@ -2558,15 +2559,16 @@ bool CGameMovement::CheckJumpButton( void )
 
 			if (info.bSPMovement)
 			{
-				// we're using a hybrid system. 
-				// if the player is moving forwards, they can bunnyhop. if the player is moving backwards, they can ABH.
-				if (mv->m_flForwardMove > 0)
+				CHLMoveData* pMoveData = (CHLMoveData*)mv;
+
+				Vector vecForward;
+				AngleVectors(mv->m_vecViewAngles, &vecForward);
+
+				vecForward.z = 0;
+				VectorNormalize(vecForward);
+
+				if (sv_gordon_movement_system.GetInt() <= 0)
 				{
-					CHLMoveData* pMoveData = (CHLMoveData*)mv;
-					Vector vecForward;
-					AngleVectors(mv->m_vecViewAngles, &vecForward);
-					vecForward.z = 0;
-					VectorNormalize(vecForward);
 					if (!pMoveData->m_bIsSprinting && !player->m_Local.m_bDucked)
 					{
 						for (int iAxis = 0; iAxis < 2; ++iAxis)
@@ -2583,20 +2585,16 @@ bool CGameMovement::CheckJumpButton( void )
 							//			vecForward[iAxis] *= ( mv->m_flForwardMove * jumpforwardsprintscale.GetFloat() );
 						}
 					}
+
 					VectorAdd(vecForward, mv->m_vecVelocity, mv->m_vecVelocity);
 				}
-				else if (mv->m_flForwardMove < 0)
+				else if (sv_gordon_movement_system.GetInt() >= 1)
 				{
-					CHLMoveData* pMoveData = (CHLMoveData*)mv;
-					Vector vecForward;
-					AngleVectors(mv->m_vecViewAngles, &vecForward);
-					vecForward.z = 0;
-					VectorNormalize(vecForward);
-
 					// We give a certain percentage of the current forward movement as a bonus to the jump speed.  That bonus is clipped
 					// to not accumulate over time.
 					float flSpeedBoostPerc = (!pMoveData->m_bIsSprinting && !player->m_Local.m_bDucked) ? 0.5f : 0.1f;
 					float flSpeedAddition = fabs(mv->m_flForwardMove * flSpeedBoostPerc);
+
 					float flMaxSpeed = mv->m_flMaxSpeed + (mv->m_flMaxSpeed * flSpeedBoostPerc);
 					float flNewSpeed = (flSpeedAddition + mv->m_vecVelocity.Length2D());
 
@@ -2610,6 +2608,7 @@ bool CGameMovement::CheckJumpButton( void )
 						flSpeedAddition *= -1.0f;
 
 					// Add it on
+
 					VectorAdd((vecForward * flSpeedAddition), mv->m_vecVelocity, mv->m_vecVelocity);
 				}
 			}

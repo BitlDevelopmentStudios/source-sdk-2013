@@ -15,6 +15,7 @@ Alpha v1:
 - Added a new map: hunt_prison! This map takes place at the beginning segment of Nova Prospect, further enhanced with more props and improved lighting.
 - Freeman and last player standing glows are now visible regardless of if a player is hiding or not.
 - Fixed RPG guiding not working properly.
+- Removed Gordon's hybrid movement system due to it thoretically not working as intended. This is replaced with a server ConVar that switches between the movement systems (sv_gordon_movement_system). Orange Box movement is the default.
 
 -----------------------------------------------------------------------------------------------------------------------
 
