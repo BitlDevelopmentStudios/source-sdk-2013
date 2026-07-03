@@ -152,7 +152,7 @@ public:
 	int GetState(void) { return m_iRoundState; }
 	int GetEndGameReason(void) { return m_iGameEndReason; }
 	int HasEnded(void) { return m_bJustEnded; }
-	int GetRoundCount(void) { return m_iRounds; }
+	int GetRoundCount(void) { return m_iCurrentRound; }
 	
 #ifndef CLIENT_DLL
 	virtual Vector VecItemRespawnSpot( CItem *pItem );
@@ -215,7 +215,7 @@ private:
 	CNetworkVar( int, m_iTimerType );
 	CNetworkVar(int, m_iSoldiers);
 	CNetworkVar(int, m_iRoundState);
-	CNetworkVar(int, m_iRounds);
+	CNetworkVar(int, m_iCurrentRound);
 	CNetworkVar(int, m_iGameEndReason);
 	CUtlVector<EHANDLE> m_hRespawnableItemsAndWeapons;
 	bool m_bCompleteReset;

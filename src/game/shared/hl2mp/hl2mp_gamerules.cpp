@@ -80,7 +80,7 @@ RecvPropFloat(RECVINFO(m_flGameEndTime)),
 RecvPropInt(RECVINFO(m_iTimerType)),
 RecvPropInt(RECVINFO(m_iSoldiers)),
 RecvPropInt(RECVINFO(m_iRoundState)),
-RecvPropInt(RECVINFO(m_iRounds)),
+RecvPropInt(RECVINFO(m_iCurrentRound)),
 RecvPropInt(RECVINFO(m_iGameEndReason)),
 RecvPropFloat(RECVINFO(m_flTimeSinceGameStart)),
 #else
@@ -91,7 +91,7 @@ SendPropFloat(SENDINFO(m_flGameEndTime)),
 SendPropInt(SENDINFO(m_iTimerType)),
 SendPropInt(SENDINFO(m_iSoldiers)),
 SendPropInt(SENDINFO(m_iRoundState)),
-SendPropInt(SENDINFO(m_iRounds)),
+SendPropInt(SENDINFO(m_iCurrentRound)),
 SendPropInt(SENDINFO(m_iGameEndReason)),
 SendPropFloat(SENDINFO(m_flTimeSinceGameStart)),
 #endif
@@ -235,7 +235,7 @@ CHL2MPRules::CHL2MPRules()
 	m_iTimerType = TIMERSTATE_NONE;
 	m_iSoldiers = 0;
 	// the init state is round 1.
-	m_iRounds = 1;
+	m_iCurrentRound = 1;
 
 	m_hRespawnableItemsAndWeapons.RemoveAll();
 	m_bCompleteReset = false;
@@ -856,7 +856,7 @@ void CHL2MPRules::Think( void )
 				if (!g_fGameOver && (m_iGameEndReason > GAME_NOT_ENDED))
 				{
 					m_iRoundState = STATE_COMPLETION;
-					m_iRounds++;
+					m_iCurrentRound++;
 					GoToIntermission();
 				}
 			}
@@ -895,7 +895,7 @@ void CHL2MPRules::Think( void )
 				{
 					m_bJustEnded = true;
 
-					if ((!m_bChangelevelDone) && (m_iRounds > sv_roundlimit.GetInt()))
+					if ((!m_bChangelevelDone) && (m_iCurrentRound > sv_roundlimit.GetInt()))
 					{
 						ChangeLevel(); // intermission is over
 						m_bChangelevelDone = true;
@@ -949,6 +949,13 @@ void CHL2MPRules::Think( void )
 
 					if (!m_bSentGameEndEvent)
 					{
+						CTeam* pWinningTeam = GetGlobalTeam(iWinningTeam);
+
+						if (pWinningTeam)
+						{
+							pWinningTeam->SetRoundsWon(pWinningTeam->GetRoundsWon() + 1);
+						}
+
 						IGameEvent* event = gameeventmanager->CreateEvent("anticitizen_round_end");
 						if (event)
 						{
@@ -985,7 +992,7 @@ void CHL2MPRules::GoToIntermission( void )
 	g_fGameOver = true;
 
 	m_flGameEndTime = m_flIntermissionEndTime = gpGlobals->curtime + mp_chattime.GetInt();
-	if (m_iRounds > sv_roundlimit.GetInt())
+	if (m_iCurrentRound > sv_roundlimit.GetInt())
 	{
 		m_iTimerType = TIMERSTATE_CHANGELEVEL;
 	}

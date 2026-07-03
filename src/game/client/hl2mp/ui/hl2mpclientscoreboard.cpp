@@ -395,9 +395,14 @@ void CHL2MPClientScoreBoardDialog::UpdateTeamInfo()
 			}
 
 			// update stats
+			wchar_t roundsval[6];
+			V_snwprintf(roundsval, ARRAYSIZE(roundsval), L"%d", team->GetRoundsWon());
+			m_pPlayerList->ModifyColumn(sectionID, "rounds_won", roundsval);
+
 			wchar_t val[6];
 			V_snwprintf(val, ARRAYSIZE(val), L"%d", team->Get_Score());
 			m_pPlayerList->ModifyColumn(sectionID, "frags", val);
+
 			if (team->Get_Ping() < 1)
 			{
 				m_pPlayerList->ModifyColumn(sectionID, "ping", L"");
@@ -425,6 +430,7 @@ void CHL2MPClientScoreBoardDialog::AddHeader()
 	m_pPlayerList->AddColumnToSection(0, "name", "", 0, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_NAME_WIDTH ) - ( m_iAvatarWidth * 2 ) );
 	m_pPlayerList->AddColumnToSection(0, "frags", "#PlayerScore", 0 | SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_SCORE_WIDTH ) );
 	m_pPlayerList->AddColumnToSection(0, "deaths", "#PlayerDeath", 0 | SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_DEATH_WIDTH ) );
+	m_pPlayerList->AddColumnToSection(0, "rounds_won", "#PlayerRoundsWon", 0 | SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx(GetScheme(), CSTRIKE_ROUNDSWON_WIDTH));
 	m_pPlayerList->AddColumnToSection(0, "ping", "#PlayerPing", 0 | SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_PING_WIDTH ) );
 //	m_pPlayerList->AddColumnToSection(0, "voice", "#PlayerVoice", SectionedListPanel::COLUMN_IMAGE | SectionedListPanel::HEADER_TEXT| SectionedListPanel::COLUMN_CENTER, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_VOICE_WIDTH ) );
 //	m_pPlayerList->AddColumnToSection(0, "tracker", "#PlayerTracker", SectionedListPanel::COLUMN_IMAGE | SectionedListPanel::HEADER_TEXT, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_FRIENDS_WIDTH ) );
@@ -449,6 +455,7 @@ void CHL2MPClientScoreBoardDialog::AddSection(int teamType, int teamNumber)
 		m_pPlayerList->AddColumnToSection(sectionID, "name", "", 0, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_NAME_WIDTH ) - ( m_iAvatarWidth * 2 ) );
 		m_pPlayerList->AddColumnToSection(sectionID, "frags", "", SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_SCORE_WIDTH ) );
 		m_pPlayerList->AddColumnToSection(sectionID, "deaths", "", SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_DEATH_WIDTH ) );
+		m_pPlayerList->AddColumnToSection(sectionID, "rounds_won", "", SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx(GetScheme(), CSTRIKE_ROUNDSWON_WIDTH));
 		m_pPlayerList->AddColumnToSection(sectionID, "ping", "", SectionedListPanel::COLUMN_RIGHT, scheme()->GetProportionalScaledValueEx( GetScheme(), CSTRIKE_PING_WIDTH ) );
 
 		// set the section to have the team color

@@ -16,6 +16,7 @@ Alpha v1:
 - Freeman and last player standing glows are now visible regardless of if a player is hiding or not.
 - Fixed RPG guiding not working properly.
 - Removed Gordon's hybrid movement system due to it thoretically not working as intended. This is replaced with a server ConVar that switches between the movement systems (sv_gordon_movement_system). Orange Box movement is the default.
+- Added a "rounds won" score count for each team. This persists between rounds.
 
 -----------------------------------------------------------------------------------------------------------------------
 
