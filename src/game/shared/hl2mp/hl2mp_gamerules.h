@@ -214,15 +214,15 @@ private:
 	CNetworkVar( float, m_flGameEndTime );
 	CNetworkVar( int, m_iTimerType );
 	CNetworkVar(int, m_iSoldiers);
+	CNetworkVar(int, m_iRoundState);
+	CNetworkVar(int, m_iRounds);
+	CNetworkVar(int, m_iGameEndReason);
 	CUtlVector<EHANDLE> m_hRespawnableItemsAndWeapons;
 	bool m_bCompleteReset;
 	bool m_bHasMinPlayersToStart;
 	bool m_bReassignSpectators;
 	bool m_bStartedStartClock;
 	bool m_bJustEnded;
-	int m_iRoundState;
-	int m_iRounds;
-	int m_iGameEndReason;
 	bool m_bLastSquadMemberAnnounced;
 	bool m_bAnnouncedGameStart;
 	bool m_bAnnouncedGameEnd;
