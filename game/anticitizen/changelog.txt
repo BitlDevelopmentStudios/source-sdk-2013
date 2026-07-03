@@ -17,7 +17,13 @@ Alpha v1:
 - Fixed RPG guiding not working properly.
 - Removed Gordon's hybrid movement system due to it thoretically not working as intended. This is replaced with a server ConVar that switches between the movement systems (sv_gordon_movement_system). Orange Box movement is the default.
 - Added a "rounds won" score count for each team. This persists between rounds.
+- Added a "custom" folder for installing mods.
+- Cleaned up Gravity Gun bindings in the Options.
+- Reorganized changelog.
+- Changed the in-game HUD name for some weapons.
 
+-----------------------------------------------------------------------------------------------------------------------
+ALPHA
 -----------------------------------------------------------------------------------------------------------------------
 
 Alpha Technical Test v4:
@@ -85,7 +91,9 @@ Alpha Technical Test v1.1:
 Alpha Technical Test v1:
 - Initial public release
 
------------------------------------------------------------------------------------------------------------------------
-
 Private Pre-Alpha:
 - Initial private release
+
+-----------------------------------------------------------------------------------------------------------------------
+PRE-ALPHA/ALPHA TECHNICAL TEST
+-----------------------------------------------------------------------------------------------------------------------
