@@ -8,6 +8,7 @@
 	nohimodel 1
 	nocrosshair 0
 	supportsvr	1
+	GameData	"anticitizen.fgd"
 	icon		"resource/game"
 	hidden_maps
 	{
