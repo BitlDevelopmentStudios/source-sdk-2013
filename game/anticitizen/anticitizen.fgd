@@ -1,0 +1,26 @@
+//-------------------------------------------------------------------------
+//
+// Game data for Half-Life 2 Multiplayer.
+//
+//-------------------------------------------------------------------------
+
+@include "hl2mp.fgd"
+
+@PointClass base(PlayerClass, Angles) studio("models/editor/playerstart.mdl") = info_player_freeman :
+	"This entity indicates the position and facing direction at which the player will spawn during a deathmatch map. Any number of "+
+	"info_player_deathmatch entities may be placed in a map."
+[
+]
+
+@FilterClass base(BaseFilter) size(-8 -8 -8, 8 8 8) = filter_activator_team :
+	"A filter that filters by the team of the activator."
+[
+	filterteam(choices) : "Filter Team Number" : 2 : 
+		"The team number to filter by.  If the filter mode is Allow, only entities whose "+
+		"team number matches the given team will pass the filter. If the filter mode is Disallow, "+
+		"all entities EXCEPT those whose team number matches the given team will pass the filter." =
+	[
+		2 : "Combine"
+		3 : "Rebels/Freeman"
+	]
+]
