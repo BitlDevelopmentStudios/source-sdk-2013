@@ -74,7 +74,7 @@
 
 			// this mounts hl2mp maps, assuming they are in the same drive and same drive partition as SDK 2013.
 			game                			"|all_source_engine_paths|..\half-life 2 deathmatch\hl2mp"
-			// we then overwrite those with what we have in sdk 2013. 
+			// we then overwrite the extra files with what we have in sdk 2013.
 			game				|appid_243750|hl2mp
 
 			// Last, mount in shared HL2 loose files
