@@ -1498,7 +1498,11 @@ bool CHL2MPRules::IsOfficialMap( void )
 { 
 	static const char *s_OfficialMaps[] =
 	{
-		"devtest",
+		// ANTICITIZEN ONE
+		"hunt_prison",
+
+		// hl2mp
+		//"devtest",
 		"dm_lockdown",
 		"dm_overwatch",
 		"dm_powerhouse",
