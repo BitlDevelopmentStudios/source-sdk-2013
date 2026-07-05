@@ -21,6 +21,7 @@ Alpha v1:
 - Cleaned up Gravity Gun bindings in the Options.
 - Reorganized changelog.
 - Changed the in-game HUD name for some weapons.
+- Added the ability for ANTICITIZEN ONE to mount HL2MP/HL2DM maps. You must have Half-Life 2 Deathmatch installed via Steam and on the same drive as your Source SDK 2013 install.
 
 -----------------------------------------------------------------------------------------------------------------------
 ALPHA
