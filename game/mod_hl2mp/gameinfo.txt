@@ -8,7 +8,7 @@
 	nohimodel 1
 	nocrosshair 1
 	supportsvr	1
-	GameData				"hl2mp.fgd"
+	GameData				"hl2mp_edit.fgd"
 	hidden_maps
 	{
 		"test_speakers"		1
