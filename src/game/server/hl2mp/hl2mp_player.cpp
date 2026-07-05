@@ -61,6 +61,7 @@ LINK_ENTITY_TO_CLASS( player, CHL2MP_Player );
 
 LINK_ENTITY_TO_CLASS( info_player_combine, CPointEntity );
 LINK_ENTITY_TO_CLASS( info_player_rebel, CPointEntity );
+LINK_ENTITY_TO_CLASS( info_player_freeman, CPointEntity );
 
 extern void SendProxy_Origin(const SendProp* pProp, const void* pStruct, const void* pData, DVariant* pOut, int iElement, int objectID);
 
@@ -2098,7 +2099,13 @@ CBaseEntity* CHL2MP_Player::EntSelectSpawnPoint( void )
 	}
 	else if (GetTeamNumber() == TEAM_FREEMAN)
 	{
-		pSpawnpointName = "info_player_rebel";
+		pSpawnpointName = "info_player_freeman";
+
+		if (gEntList.FindEntityByClassname(NULL, pSpawnpointName) == NULL)
+		{
+			pSpawnpointName = "info_player_rebel";
+		}
+
 		pLastSpawnPoint = g_pLastRebelSpawn;
 	}
 
