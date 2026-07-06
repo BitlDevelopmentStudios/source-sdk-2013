@@ -490,6 +490,10 @@ void CHL2MP_Player::SetupPlayerSoundsByModel( const char *pModelName )
 	{
 		m_iPlayerSoundType = (int)PLAYER_SOUNDS_CITIZEN;
 	}
+	else if (Q_stristr(pModelName, "gordon"))
+	{
+		m_iPlayerSoundType = (int)PLAYER_SOUNDS_CITIZEN;
+	}
 	else if ( Q_stristr(pModelName, "police" ) )
 	{
 		m_iPlayerSoundType = (int)PLAYER_SOUNDS_METROPOLICE;
