@@ -126,7 +126,8 @@ void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, f
 	// combine and metrocop footstep sounds 
 	ep.m_nChannel = CHAN_STATIC;
 	ep.m_pSoundName = params.soundname;
-	ep.m_flVolume = fvol;
+	// reduce the volume by 35% so we can mix the normal footstep sounds better
+	ep.m_flVolume = (fvol * 0.65f);
 	ep.m_SoundLevel = params.soundlevel;
 	ep.m_nFlags = 0;
 	ep.m_nPitch = params.pitch;
