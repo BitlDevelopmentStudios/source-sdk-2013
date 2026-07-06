@@ -24,6 +24,7 @@ Alpha v1:
 - Added the ability for ANTICITIZEN ONE to mount HL2MP/HL2DM maps. You must have Half-Life 2 Deathmatch installed via Steam and on the same drive as your Source SDK 2013 install.
 - Added a fgd file.
 - Added a new loading background.
+- Fixed per-material footsteps.
 
 -----------------------------------------------------------------------------------------------------------------------
 ALPHA
