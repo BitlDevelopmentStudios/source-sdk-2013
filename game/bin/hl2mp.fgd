@@ -5,7 +5,6 @@
 //-------------------------------------------------------------------------
 
 @include "halflife2.fgd"
-@include "bds.fgd"
 
 
 @PointClass base(PlayerClass, Angles) studio("models/editor/playerstart.mdl") = info_player_deathmatch :
