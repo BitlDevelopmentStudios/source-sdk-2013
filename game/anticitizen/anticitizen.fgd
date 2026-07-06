@@ -6,9 +6,22 @@
 
 @include "hl2mp_edit.fgd"
 
-@PointClass base(PlayerClass, Angles) studio("models/editor/playerstart.mdl") = info_player_freeman :
+@PointClass base(PlayerClass, Angles) studio("models/gordon/gordon.mdl") = info_player_freeman :
 	"This entity indicates the position and facing direction at which the player will spawn during a deathmatch map. Any number of "+
-	"info_player_deathmatch entities may be placed in a map."
+	"info_player_freeman entities may be placed in a map."
+[
+]
+
+@PointClass base(PlayerClass, Angles) studio("models/combine_soldier.mdl") = info_player_combine :
+	"This entity indicates the position and facing direction at which the player will spawn during a deathmatch map. Any number of "+
+	"info_player_combine entities may be placed in a map."
+[
+]
+
+
+@PointClass base(PlayerClass, Angles) studio("models/gordon/gordon.mdl") = info_player_rebel :
+	"This entity indicates the position and facing direction at which the player will spawn during a deathmatch map. Any number of "+
+	"info_player_rebel entities may be placed in a map."
 [
 ]
 
