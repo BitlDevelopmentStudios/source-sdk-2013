@@ -355,19 +355,6 @@ void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, f
 	if ( gpGlobals->maxClients > 1 && !sv_footsteps.GetFloat() )
 		return;
 
-	if (GetTeamNumber() == TEAM_SPECTATOR)
-	{
-		BaseClass::PlayStepSound(vecOrigin, psurface, fvol, force);
-		return;
-	}
-
-	// give freeman his proper sounds.
-	if (GetPlayerClass() == CLS_FREEMAN)
-	{
-		BaseClass::PlayStepSound(vecOrigin, psurface, fvol, force);
-		return;
-	}
-
 #if defined( CLIENT_DLL )
 	// during prediction play footstep sounds only once
 	if ( prediction->InPrediction() && !prediction->IsFirstTimePredicted() )
