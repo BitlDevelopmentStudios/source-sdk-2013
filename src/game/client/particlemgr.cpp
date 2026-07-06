@@ -147,7 +147,7 @@ CParticleEffectBinding::CParticleEffectBinding()
 	m_LastMax = m_Max;
 
 	m_flParticleCullRadius = -1.f; // dummy value, is overwritten below
-	SetParticleCullRadius( 0.0f );
+	m_flParticleCullRadius = 0.0f;
 	m_nActiveParticles = 0;
 
 	m_FrameCode = 0;
