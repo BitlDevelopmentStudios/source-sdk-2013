@@ -2,7 +2,7 @@ versioninfo
 {
 	"editorversion" "400"
 	"editorbuild" "8871"
-	"mapversion" "50"
+	"mapversion" "51"
 	"formatversion" "100"
 	"prefab" "0"
 }
@@ -107,7 +107,7 @@ bgimages_plus
 world
 {
 	"id" "1"
-	"mapversion" "50"
+	"mapversion" "51"
 	"classname" "worldspawn"
 	"comment" "Decompiled by BSPSource v1.4.6.1 from d2_prison_01"
 	"detailmaterial" "detail/detailsprites"
@@ -131151,7 +131151,7 @@ entity
 entity
 {
 	"id" "527868"
-	"classname" "info_player_rebel"
+	"classname" "info_player_freeman"
 	"angles" "0 255 0"
 	"origin" "1536 -4160 1408"
 	editor
@@ -131242,7 +131242,7 @@ entity
 entity
 {
 	"id" "528047"
-	"classname" "info_player_rebel"
+	"classname" "info_player_freeman"
 	"angles" "0 270 0"
 	"origin" "2048 -4064 1288"
 	editor
@@ -131284,7 +131284,7 @@ entity
 entity
 {
 	"id" "528082"
-	"classname" "info_player_rebel"
+	"classname" "info_player_freeman"
 	"angles" "0 292.5 0"
 	"origin" "1034.04 -4053.76 1285.03"
 	editor
@@ -132549,8 +132549,8 @@ cameras
 	"activecamera" "0"
 	camera
 	{
-		"position" "[2241.49 -2378.85 1840.26]"
-		"look" "[2061.97 -2356.17 1644.85]"
+		"position" "[2040.84 -4187.12 1402.4]"
+		"look" "[2075.24 -3964.91 1259.7]"
 	}
 	camera
 	{
