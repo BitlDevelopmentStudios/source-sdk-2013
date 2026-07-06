@@ -346,6 +346,12 @@ void CHL2MP_Player::UpdateStepSound(surfacedata_t* psurface, const Vector& vecOr
 //-----------------------------------------------------------------------------
 void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, float fvol, bool force )
 {
+	if (m_iPlayerSoundType == (int)PLAYER_SOUNDS_CITIZEN)
+	{
+		BaseClass::PlayStepSound(vecOrigin, psurface, fvol, force);
+		return;
+	}
+
 	if ( gpGlobals->maxClients > 1 && !sv_footsteps.GetFloat() )
 		return;
 
@@ -364,11 +370,14 @@ void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, f
 
 #if defined( CLIENT_DLL )
 	// during prediction play footstep sounds only once
-	if ( !prediction->IsFirstTimePredicted() )
+	if ( prediction->InPrediction() && !prediction->IsFirstTimePredicted() )
 		return;
 #endif
 
 	if ( GetFlags() & FL_DUCKING )
+		return;
+
+	if (!psurface)
 		return;
 
 	m_Local.m_nStepside = !m_Local.m_nStepside;
@@ -377,11 +386,11 @@ void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, f
 
 	if ( m_Local.m_nStepside )
 	{
-		Q_snprintf( szStepSound, sizeof( szStepSound ), "%s.RunFootstepLeft", g_ppszPlayerSoundPrefixNames[m_iPlayerSoundType] );
+		Q_snprintf( szStepSound, sizeof( szStepSound ), "%s.RunFootstepLeft", GetPlayerModelSoundPrefix());
 	}
 	else
 	{
-		Q_snprintf( szStepSound, sizeof( szStepSound ), "%s.RunFootstepRight", g_ppszPlayerSoundPrefixNames[m_iPlayerSoundType] );
+		Q_snprintf( szStepSound, sizeof( szStepSound ), "%s.RunFootstepRight", GetPlayerModelSoundPrefix());
 	}
 
 	CSoundParameters params;
@@ -399,7 +408,8 @@ void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, f
 #endif
 
 	EmitSound_t ep;
-	ep.m_nChannel = CHAN_BODY;
+	// combine and metrocop footstep sounds 
+	ep.m_nChannel = CHAN_STATIC;
 	ep.m_pSoundName = params.soundname;
 	ep.m_flVolume = fvol;
 	ep.m_SoundLevel = params.soundlevel;
@@ -408,6 +418,8 @@ void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, f
 	ep.m_pOrigin = &vecOrigin;
 
 	EmitSound( filter, entindex(), ep );
+	// play the per-material footsteps.
+	BaseClass::PlayStepSound(vecOrigin, psurface, fvol, force);
 }
 
 extern ConVar sv_maxspeed;
