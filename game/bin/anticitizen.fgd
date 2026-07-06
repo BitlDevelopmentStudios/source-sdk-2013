@@ -4,7 +4,7 @@
 //
 //-------------------------------------------------------------------------
 
-@include "hl2mp_edit.fgd"
+@include "hl2mp.fgd"
 
 @PointClass base(PlayerClass, Angles) studio("models/gordon/gordon.mdl") = info_player_freeman :
 	"This entity indicates the position and facing direction at which the player will spawn during a deathmatch map. Any number of "+
