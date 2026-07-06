@@ -8,7 +8,7 @@ Alpha v1:
 - Turret damage has been increased from 3 damage per bullet to 8.
 - Fix turret sound looping bugs.
 - Reduce mass multiplier for turrets from 5.0 to 4.0.
-- You can now pick up props.
+- You can now pick up props/turrets.
 - Added idle spawn protection that gets removed when you start moving or after a 5 second timer elapses.
 - Fixed a bug where players can t-pose while in water.
 - Fixed a bug where you can say voice commands while dead.
