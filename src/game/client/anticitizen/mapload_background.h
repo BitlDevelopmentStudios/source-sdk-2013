@@ -34,7 +34,7 @@ protected:
 	void ApplySchemeSettings( vgui::IScheme *pScheme );
 	void ResizePanel(void);
 	void UpdateMainBackground(void);
-	void SetRandBackgroundImage(bool bIsWidescreen);
+	const char *SetRandBackgroundImage(bool bIsWidescreen);
 
 private:
 	MESSAGE_FUNC(OnActivate, "activate");

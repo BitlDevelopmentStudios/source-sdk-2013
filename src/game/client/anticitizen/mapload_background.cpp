@@ -25,6 +25,7 @@ CMapLoadBG::CMapLoadBG( char const *panelName ) : EditablePanel( NULL, panelName
 	SetParent( toolParent );	
 
 	m_pTipPanel = new Label(this, "TipText", "");
+	m_pBackground = NULL;
 
 	m_flLastTipChange = 0;
 
@@ -77,7 +78,9 @@ void CMapLoadBG::UpdateMainBackground(void)
 		float aspectRatio = (float)iWide / (float)iTall;
 		bool bIsWidescreen = aspectRatio >= 1.5999f;
 
-		SetRandBackgroundImage(bIsWidescreen);
+		const char *newBG = SetRandBackgroundImage(bIsWidescreen);
+
+		m_pBackground->SetImage(newBG);
 
 		if (m_pTipPanel)
 		{
@@ -103,11 +106,12 @@ void CMapLoadBG::UpdateMainBackground(void)
 	}
 }
 
-void CMapLoadBG::SetRandBackgroundImage(bool bIsWidescreen)
+const char *CMapLoadBG::SetRandBackgroundImage(bool bIsWidescreen)
 {
 	// pulled from the background music code
 	char path[512];
-	Q_snprintf(path, sizeof(path), (bIsWidescreen ? "materials/vgui/loading/background*_widescreen.vmt" : "materials/vgui/loading/background*.vmt"));
+	const char *szBGName = (bIsWidescreen ? "materials/vgui/loading/background*_widescreen.vmt" : "materials/vgui/loading/background*.vmt");
+	Q_snprintf(path, sizeof(path), szBGName);
 	Q_FixSlashes(path);
 	CUtlVector<char*> fileNames;
 	FileFindHandle_t fh;
@@ -146,7 +150,7 @@ void CMapLoadBG::SetRandBackgroundImage(bool bIsWidescreen)
 	if (!count)
 	{
 		DevWarning("No loading backgrounds can be found.\n");
-		return;
+		return "";
 	}
 
 	// HACK
@@ -166,7 +170,7 @@ void CMapLoadBG::SetRandBackgroundImage(bool bIsWidescreen)
 		*ext = 0;
 	}
 
-	m_pBackground->SetImage(pBackgroundFile);
+	return pBackgroundFile;
 }
 
 //-----------------------------------------------------------------------------

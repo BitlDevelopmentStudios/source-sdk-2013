@@ -98,9 +98,6 @@ extern ConVar voice_modenable;
 extern ConVar cl_enable_text_chat;
 
 extern bool IsInCommentaryMode( void );
-// Fenix: Needed for the custom background loading screens
-CMapLoadBG* pPanelBg;
-IMaterial* pMatMapBg;
 extern const char* GetWearLocalizationString( float flWear );
 
 CON_COMMAND( cl_reload_localization_files, "Reloads all localization files" )
@@ -306,10 +303,6 @@ ClientModeShared::ClientModeShared()
 	m_pWeaponSelection = NULL;
 	m_nRootSize[ 0 ] = m_nRootSize[ 1 ] = -1;
 
-	// Fenix: Needed for the custom background loading screens
-	pPanelBg = NULL;
-	pMatMapBg = NULL;
-
 #if defined( REPLAY_ENABLED )
 	m_pReplayReminderPanel = NULL;
 	m_flReplayStartRecordTime = 0.0f;
@@ -415,7 +408,7 @@ void ClientModeShared::Init()
 		if (pGameUI)
 		{
 			// Insert custom loading panel for the loading dialog
-			pPanelBg = new CMapLoadBG("Background");
+			CMapLoadBG* pPanelBg = new CMapLoadBG("Background");
 			pPanelBg->InvalidateLayout(false, true);
 			pPanelBg->SetVisible(false);
 			pPanelBg->MakePopup(false);
