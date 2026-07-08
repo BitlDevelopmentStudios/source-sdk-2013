@@ -83,15 +83,19 @@ void CTipsDialog::OnCommand(const char *command)
 	if (!stricmp(command, "Next"))
 	{
 		OnNext();
-		return;
 	}
 	else if ( !stricmp( command, "Ok" ) )
 	{
 		OnClose();
-		return;
 	}
-
-	//BaseClass::OnCommand( command );
+	else if (!stricmp(command, "Close"))
+	{
+		OnClose();
+	}
+	else if (!stricmp(command, "CloseModal"))
+	{
+		OnClose();
+	}
 }
 
 void CTipsDialog::OnKeyCodeTyped(KeyCode code)
