@@ -25,6 +25,8 @@ Alpha v1:
 - Added a fgd file.
 - Added a new loading background.
 - Fixed per-material footsteps.
+- Added VPK files.
+- Added mapcycle files.
 
 -----------------------------------------------------------------------------------------------------------------------
 ALPHA
