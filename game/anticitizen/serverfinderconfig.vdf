@@ -1,8 +1,0 @@
-"ServerFinderConfig"
-{
-	"map"		"dm_overwatch"
-	"israndommap"		"1"
-	"maxplayers"		"7"
-	"MaxPing"		"0"
-	"RespawnTimes"		"0"
-}
