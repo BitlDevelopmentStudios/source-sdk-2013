@@ -1,3 +1,5 @@
+Alpha v2:
+
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.
 - Increased grenade regeneration time from 6 seconds to 7 seconds.
