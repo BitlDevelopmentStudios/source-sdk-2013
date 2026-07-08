@@ -63,6 +63,13 @@
 			game+mod			|appid_243750|hl2mp/hl2mp_english.vpk
 			game+mod			|appid_243750|hl2mp/hl2mp_pak.vpk
 
+			// episodic assets from ep1/ep2
+			// may scrap this for seperately stored vpks later, maybe.
+			game+mod			|appid_243730|ep2/ep2_english.vpk
+			game+mod			|appid_243730|ep2/ep2_pak.vpk
+			game+mod			|appid_243730|episodic/ep1_english.vpk
+			game+mod			|appid_243730|episodic/ep1_pak.vpk
+
 			game				|appid_243750|hl2_complete/hl2_complete_textures.vpk
 			game				|appid_243750|hl2_complete/hl2_complete_sound_vo_english.vpk
 			game				|appid_243750|hl2_complete/hl2_complete_sound_misc.vpk
