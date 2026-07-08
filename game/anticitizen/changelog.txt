@@ -1,5 +1,5 @@
 Alpha v1:
-- Added the ability for Overwatch soldiers to throw grenades or Manhacks with a single button press.
+- Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.
 - Increased grenade regeneration time from 6 seconds to 7 seconds.
 - Increased Manhack regeneration time from 6 seconds to 8 seconds.
 - Increased Energy Ball regeneration time from 6 seconds to 9 seconds.
@@ -15,7 +15,7 @@ Alpha v1:
 - Added a new map: hunt_prison! This map takes place at the beginning segment of Nova Prospect, further enhanced with more props and improved lighting.
 - Freeman and last player standing glows are now visible regardless of if a player is hiding or not.
 - Fixed RPG guiding not working properly.
-- Removed Gordon's hybrid movement system due to it thoretically not working as intended. This is replaced with a server ConVar that switches between the movement systems (sv_gordon_movement_system). Orange Box movement is the default.
+- Removed Gordon's hybrid movement system due to it theoretically not working as intended. This is replaced with a server ConVar that switches between the movement systems (sv_gordon_movement_system). Orange Box movement is the default.
 - Added a "rounds won" score count for each team. This persists between rounds.
 - Added a "custom" folder for installing mods.
 - Cleaned up Gravity Gun bindings in the Options.
