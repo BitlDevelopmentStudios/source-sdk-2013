@@ -518,4 +518,5 @@ mapsrc/*/*.lin
 mapsrc/*/*.prt
 mapsrc/*/*.vmx
 mapsrc/*/*.bsp
-vpksrc/*/*.privatekey.vdf
+vpksrc/*.privatekey.vdf
+*.vpk
