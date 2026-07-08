@@ -41,10 +41,6 @@
 #include "xbox/xbox_console.h"
 #endif
 
-// Fenix: Needed for the custom background loading screens
-#include "GameUI/IGameUI.h"
-#include "mapload_background.h"
-
 #if defined( REPLAY_ENABLED )
 #include "replay/replaycamera.h"
 #include "replay/ireplaysystem.h"
@@ -399,22 +395,6 @@ void ClientModeShared::Init()
 
 	HOOK_MESSAGE( VGUIMenu );
 	HOOK_MESSAGE( Rumble );
-
-	// Fenix: Custom background loading screens - Injects the custom panel at the loading screen
-	CreateInterfaceFn gameUIFactory = g_GameUI.GetFactory();
-	if (gameUIFactory)
-	{
-		IGameUI* pGameUI = (IGameUI*)gameUIFactory(GAMEUI_INTERFACE_VERSION, NULL);
-		if (pGameUI)
-		{
-			// Insert custom loading panel for the loading dialog
-			CMapLoadBG* pPanelBg = new CMapLoadBG("Background");
-			pPanelBg->InvalidateLayout(false, true);
-			pPanelBg->SetVisible(false);
-			pPanelBg->MakePopup(false);
-			pGameUI->SetLoadingBackgroundDialog(pPanelBg->GetVPanel());
-		}
-	}
 }
 
 

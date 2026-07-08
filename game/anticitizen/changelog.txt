@@ -27,7 +27,6 @@ Alpha v1:
 - Fixed per-material footsteps.
 - Added VPK files.
 - Added mapcycle files.
-- Added proper sv_pure support.
 
 -----------------------------------------------------------------------------------------------------------------------
 ALPHA

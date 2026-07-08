@@ -61,6 +61,11 @@
 	}
 	"11"
 	{
+		"label" "#GameUI_GameMenu_Tips"
+		"command" "engine tipsdialog"
+	}
+	"12"
+	{
 		"label" "#GameUI_GameMenu_Quit"
 		"command" "Quit"
 	}

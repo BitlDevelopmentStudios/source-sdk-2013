@@ -864,6 +864,7 @@ Scheme
 				"additive" "0"
 				"antialias" "1"
 				"custom"	"1" [$OSX]
+				"dropshadow"	"1"
 			}
 		}
 
