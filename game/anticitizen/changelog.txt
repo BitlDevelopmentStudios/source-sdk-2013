@@ -1,4 +1,5 @@
 Alpha v2:
+- Fixed a problem where the close button on the Tips panel didn't work.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.
