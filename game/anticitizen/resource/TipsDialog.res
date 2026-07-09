@@ -287,6 +287,7 @@
 		"auto_wide_tocontents"		"0"
 		"auto_tall_tocontents"		"0"
 		"use_proportional_insets"		"0"
+		"command"		"Ok"
 		"Default"		"0"
 	}
 	"frame_menu"
