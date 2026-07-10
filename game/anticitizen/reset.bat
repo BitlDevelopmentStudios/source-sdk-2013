@@ -55,6 +55,7 @@ del bin_linux\x64\gamepadui.so.dbg
 del bin_linux\x64\gamepadui_srv.so.dbg
 del sound\sound.cache
 del media\viewed.res
+del anticitizen_pak.vpk.sound.cache
 rmdir /S /Q sound_workshop\
 rmdir /S /Q download\user_custom\
 rmdir /S /Q download\sound\
