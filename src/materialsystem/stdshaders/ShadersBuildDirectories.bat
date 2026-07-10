@@ -18,6 +18,11 @@ rem Process Names we will try to call to ask for Shader reloads
 rem Will check in Order
 set PROCESS_LIST=
 
+rem The two SDK's LUX is targeted at ( SP and TF2SDK )
+set PROCESS_LIST=%PROCESS_LIST% hl2.exe
 set PROCESS_LIST=%PROCESS_LIST% hl2_win64.exe
-set PROCESS_LIST=%PROCESS_LIST% mod_tf_win64.exe
-set PROCESS_LIST=%PROCESS_LIST% mod_hl2mp_win64.exe
+
+rem Mod Projects using LUX
+set PROCESS_LIST=%PROCESS_LIST% tf2classified_win64.exe
+set PROCESS_LIST=%PROCESS_LIST% fc_tfsdk_win64.exe
+set PROCESS_LIST=%PROCESS_LIST% mod_hl2mp.exe
