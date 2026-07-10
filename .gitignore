@@ -53,6 +53,9 @@ config.cfg
 
 # shader files
 *.tmp
+*.vcs
+# inc files are required for TF
+src/materialsystem/stdshaders/include/*.inc
 
 # GCH
 *.h.gch
