@@ -207,6 +207,11 @@ const char *GetRandomBotName( void )
 	if ( nameIndex >= nameCount )
 		nameIndex = 0;
 
+	if (RandomInt(1, 50) == 50)
+	{
+		name = "Gay";
+	}
+
 	return name;
 }
 

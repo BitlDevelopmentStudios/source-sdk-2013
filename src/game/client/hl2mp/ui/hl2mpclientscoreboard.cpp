@@ -500,10 +500,25 @@ int CHL2MPClientScoreBoardDialog::GetSectionFromTeamNumber( int teamNumber )
 bool CHL2MPClientScoreBoardDialog::GetPlayerScoreInfo(int playerIndex, KeyValues *kv)
 {
 	kv->SetInt("playerIndex", playerIndex);
-	kv->SetInt("team", g_PR->GetTeam( playerIndex ) );
+	int iTeamNumber = g_PR->GetTeam(playerIndex);
+	kv->SetInt("team", iTeamNumber);
 	kv->SetString("name", g_PR->GetPlayerName(playerIndex) );
 	kv->SetInt("deaths", g_PR->GetDeaths( playerIndex ));
-	kv->SetInt("frags", g_PR->GetPlayerScore( playerIndex ));
+
+	// hack that sets the player's score to freeman's score.
+	// this is because there's only 1 player in the freeman team, and our score is based on damage, so we should keep it in sync.
+	if (iTeamNumber == TEAM_FREEMAN)
+	{ 
+		C_Team* pTeam = GetGlobalTeam(iTeamNumber);
+		if (pTeam)
+		{
+			kv->SetInt("frags", pTeam->Get_Score());
+		}
+	}
+	else
+	{
+		kv->SetInt("frags", g_PR->GetPlayerScore(playerIndex));
+	}
 	
 	if (g_PR->GetPing( playerIndex ) < 1)
 	{
