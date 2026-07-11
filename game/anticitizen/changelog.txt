@@ -1,6 +1,7 @@
 Alpha v2:
 - Fixed a problem where the close button on the Tips panel didn't work.
 - Updated LUX shaders
+- Fixed an oversight where EP1 and EP2 maps showed up in the maplist.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.
