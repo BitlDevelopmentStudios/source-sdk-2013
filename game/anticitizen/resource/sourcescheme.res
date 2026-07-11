@@ -14,10 +14,11 @@ Scheme
 		{
 			"1"	
 			{
-				"name"		"Verdana Bold" 
-				"tall"		"20"
+				"name"		"Tahoma" [!$OSX]
+				"name"		"Verdana" [$OSX]
+				"tall"		"16" [!$LINUX]
+				"tall"		"18" [$LINUX]
 				"weight"	"600"
-				"antialias" "1"
 			}
 		}
 	}
