@@ -165,18 +165,17 @@ void CTargetID::Paint()
 			if ( pPlayer->InSameTeam(pLocalPlayer) )
 			{
 				printFormatString = "#Playerid_sameteam";
-				bShowHealth = true;
 			}
 			else
 			{
 				printFormatString = "#Playerid_diffteam";
 			}
-		
+			
+			bShowHealth = true;
 
 			if ( bShowHealth )
 			{
 				float healthPerc = (float)pPlayer->GetHealth() / 100.0f;
-				healthPerc = clamp(healthPerc, 0.0f, 1.0f);
 
 				CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
 
@@ -189,6 +188,8 @@ void CTargetID::Paint()
 						healthPerc = (float)pPlayer->GetHealth() / (float)pPlayerClassInfo.iHealth;
 					}
 				}
+
+				healthPerc = clamp(healthPerc, 0.0f, 1.0f);
 
 				_snwprintf( wszHealthText, ARRAYSIZE(wszHealthText) - 1, L"%.0f%%", (healthPerc * 100));
 				wszHealthText[ ARRAYSIZE(wszHealthText)-1 ] = '\0';
