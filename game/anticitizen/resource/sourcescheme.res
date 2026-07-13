@@ -6,6 +6,9 @@ Scheme
 	{
 		FrameSystemButton.Icon			"resource/icon_overwatch"
 		FrameSystemButton.DisabledIcon	"resource/icon_overwatch_disabled"
+		
+		Frame.BgColor					"47 98 168 255"
+		Frame.OutOfFocusBgColor			"47 98 168 128"
 	}
 	
 	Fonts
