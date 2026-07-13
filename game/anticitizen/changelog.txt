@@ -5,7 +5,7 @@ Alpha v2:
 - Improved visibility of Tips.
 - Fixed a bug where the score for Freeman may be different from the team score in the scoreboard in rare instances.
 - Changed the UI color.
-- Removed some joke tips
+- Removed some joke tips.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.

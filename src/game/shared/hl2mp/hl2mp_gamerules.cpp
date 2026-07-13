@@ -398,9 +398,16 @@ void CHL2MPRules::PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &inf
 #endif
 }
 
+#ifndef CLIENT_DLL
+extern ConVar disablelives;
+#endif
+
 int CHL2MPRules::GetRemainingSoldierCount(void)
 {
 #ifndef  CLIENT_DLL
+	if (disablelives.GetBool())
+		return 999;
+
 	if ((m_iRoundState == STATE_PREROUND) || (m_iRoundState == STATE_COMPLETION))
 		return 0;
 
