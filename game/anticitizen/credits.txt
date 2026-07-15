@@ -19,6 +19,7 @@ https://developer.valvesoftware.com/wiki/Detail_props/Aspect_ratio_fix
 https://developer.valvesoftware.com/wiki/Env_projectedtexture/fixes
 https://developer.valvesoftware.com/wiki/Muzzle_Flash_Lighting
 https://developer.valvesoftware.com/wiki/Simple_Projectile_Bullets (partial implementation)
+https://developer.valvesoftware.com/wiki/Battlefield_Style_Hitmarker (used for sprinting voiceline code)
 
 Taito for various assets/animations from Half-Life 2 Survivor Ver 2.0, such as the manhack weapon model.
 

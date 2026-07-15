@@ -18,6 +18,15 @@
 	"wave"		"common/null.wav"
 }
 
+"HL2Player.SprintStartCombine"
+{
+	"channel"	"CHAN_AUTO"
+	"volume"	"1.0"
+	"soundlevel"  "SNDLVL_60dB"
+
+	"wave"	"player/suit_sprint_com.wav"
+}
+
 "NPC_Citizen.ADSIn"
 {
 	"channel"	"CHAN_AUTO"

@@ -9,6 +9,7 @@ Alpha v2:
 - You can now view Freeman's health.
 - Added sprinting for all Combine units.
 	- Sprinting speed is set to 245 Hammer Units/s.
+	- If you're sprinting directly at Freeman, it will tell all players in your squad that you're flanking.
 - Fixed a bug where some weapon reload sounds didn't play after aiming down their sights.
 - Added unique sounds for aiming down sights depending on class.
 - Fixed a bug where the aiming down sights sound plays multiple times at once.

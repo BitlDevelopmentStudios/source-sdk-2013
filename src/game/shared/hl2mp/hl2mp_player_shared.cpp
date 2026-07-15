@@ -495,6 +495,7 @@ void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
 					filter.UsePredictionRules();
 					EmitSound(filter, entindex(), "HL2Player.SprintStart");
 				}
+
 				mv->m_flClientMaxSpeed = info.flSprintSpeed;
 			}
 			else
@@ -530,6 +531,35 @@ void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
 					CPASAttenuationFilter filter(this);
 					filter.UsePredictionRules();
 					EmitSound(filter, entindex(), "HL2Player.SprintStartCombine");
+
+					// if we're looking at gordon, tell squadmates we're flanking.
+					// Set up the vectors and traceline
+					trace_t tr;
+					Vector vecStart, vecStop, vecDir;
+
+					// Get the angles
+					AngleVectors(EyeAngles(), &vecDir);
+
+					// Get the vectors
+					vecStart = Weapon_ShootPosition();
+					vecStop = vecStart + vecDir * MAX_TRACE_LENGTH;
+
+					// Do the TraceLine
+					UTIL_TraceLine(vecStart, vecStop, MASK_ALL, this, COLLISION_GROUP_NONE, &tr);
+
+					// Check to see if we hit a player
+					if (tr.m_pEnt)
+					{
+						if (tr.m_pEnt->GetTeamNumber() != GetTeamNumber())
+						{
+							if (tr.m_pEnt->IsPlayer())
+							{
+#ifndef CLIENT_DLL
+								engine->ClientCommand(edict(), "voicemenu 0 0");
+#endif
+							}
+						}
+					}
 				}
 
 				mv->m_flClientMaxSpeed = info.flSprintSpeed;

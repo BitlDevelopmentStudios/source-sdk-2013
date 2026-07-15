@@ -16,15 +16,6 @@
 	"wave"	"player/suit_sprint.wav"
 }
 
-"HL2Player.SprintStartCombine"
-{
-	"channel"	"CHAN_VOICE"
-	"volume"	"1.0"
-	"soundlevel"  "SNDLVL_60dB"
-
-	"wave"	"player/suit_sprint_com.wav"
-}
-
 "HL2Player.FlashLightOn"
 {
 	"channel"	"CHAN_WEAPON"
