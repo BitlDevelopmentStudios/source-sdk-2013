@@ -272,9 +272,20 @@ float CBaseHL2MPCombatWeapon::CalcViewmodelBob( void )
 	//FIXME: This maximum speed value must come from the server.
 	//		 MaxSpeed() is not sufficient for dealing with sprinting - jdw
 
-	speed = clamp( speed, -320, 320 );
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(player);
 
-	float bob_offset = RemapVal( speed, 0, 320, 0.0f, 1.0f );
+	float bCurMaxSpeed = 320;
+
+	if (pHL2MPPlayer)
+	{
+		const CAnticitizen_FilePlayerClassInfo_t& info = pHL2MPPlayer->GetPlayerClassInfo();
+
+		bCurMaxSpeed = info.flSprintSpeed;
+	}
+
+	speed = clamp( speed, -bCurMaxSpeed, bCurMaxSpeed);
+
+	float bob_offset = RemapVal( speed, 0, bCurMaxSpeed, 0.0f, 1.0f );
 	
 	bobtime += ( gpGlobals->curtime - lastbobtime ) * bob_offset;
 	lastbobtime = gpGlobals->curtime;
