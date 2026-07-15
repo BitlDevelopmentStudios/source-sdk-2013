@@ -89,6 +89,7 @@ public:
 	bool					bSPMovement;
 	bool					bSuit;
 	bool					bADSWeapons;
+	bool					bCanThrowGrenade;
 	// HACK: only for the pistol??
 	bool					bTwoHandedWeaponAnims;
 
@@ -98,7 +99,7 @@ public:
 
 	char					szPrimaryWeapon[MAX_WEAPON_STRING];
 	char					szSecondaryWeapon[MAX_WEAPON_STRING];
-	char					szMeleeWeapon[MAX_WEAPON_STRING];
+	char					szTertiaryWeapon[MAX_WEAPON_STRING];
 };
 
 #endif

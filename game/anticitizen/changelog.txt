@@ -7,6 +7,8 @@ Alpha v2:
 - Changed the UI color.
 - Removed some joke tips.
 - You can now view Freeman's health.
+- Added sprinting for all Combine units.
+	- Sprinting speed is set to 245 Hammer Units/s.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.

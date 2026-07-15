@@ -398,6 +398,7 @@ $sequence "holsterempty_2hand" {
 	fps 30
 }
 
+// these are broken, but when we fix these there's a wierd jitter after shooting....
 $sequence "idletolow_2hand" {
 	"c_pistol_anims_2hand\idletolow_2hand.smd"
 	activity "ACT_VM_LOWERED_TO_IDLE_TWO_HANDED" 1

@@ -542,9 +542,9 @@ public:
 	virtual bool			Lower( void ) { return false; }
 
 	bool					IsIronsighted(void);
-	void					ToggleIronsights(void);
-	void					EnableIronsights(void);
-	void					DisableIronsights(void);
+	virtual void			ToggleIronsights(void);
+	virtual void			EnableIronsights(void);
+	virtual void			DisableIronsights(void);
 	void					SetIronsightTime(void);
 
 	virtual void			HideThink( void );

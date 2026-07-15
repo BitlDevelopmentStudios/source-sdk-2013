@@ -22,6 +22,7 @@
 #include "SoundEmitterSystem/isoundemittersystembase.h"
 #include "in_buttons.h"
 #include "decals.h"
+#include "weapon_hl2mpbasehlmpcombatweapon.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -476,9 +477,48 @@ void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
 		}
 		else
 		{
-			if (GetActiveWeapon() && GetActiveWeapon()->IsIronsighted())
+			CBaseHL2MPCombatWeapon* myWeapon = dynamic_cast<CBaseHL2MPCombatWeapon*>(GetActiveWeapon());
+
+			int nChangedButtons = mv->m_nButtons ^ mv->m_nOldButtons;
+			const bool bWantSprint = (CanSprint() && (mv->m_nButtons & IN_SPEED));
+			const bool bWantsToChangeSprinting = (m_HL2Local.m_bNewSprinting != bWantSprint) && (nChangedButtons & IN_SPEED) != 0;
+			bool bSprinting = m_HL2Local.m_bNewSprinting;
+
+			if (bWantsToChangeSprinting)
+			{
+				if (bWantSprint)
+				{
+					bSprinting = true;
+				}
+				else
+				{
+					bSprinting = false;
+				}
+			}
+
+			if (myWeapon && myWeapon->IsIronsighted() && info.bADSWeapons)
+			{
+				bSprinting = false;
+			}
+
+			m_HL2Local.m_bNewSprinting = bSprinting;
+
+			if (myWeapon && myWeapon->IsIronsighted() && info.bADSWeapons)
 			{
 				mv->m_flClientMaxSpeed = info.flADSSpeed;
+			}
+			else if (bSprinting)
+			{
+				bool bJustPressedSpeed = !!(nChangedButtons & IN_SPEED);
+
+				if (bJustPressedSpeed)
+				{
+					CPASAttenuationFilter filter(this);
+					filter.UsePredictionRules();
+					EmitSound(filter, entindex(), "HL2Player.SprintStartCombine");
+				}
+
+				mv->m_flClientMaxSpeed = info.flSprintSpeed;
 			}
 			else
 			{

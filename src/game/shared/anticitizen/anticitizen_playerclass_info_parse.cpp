@@ -21,6 +21,7 @@ CAnticitizen_FilePlayerClassInfo_t::CAnticitizen_FilePlayerClassInfo_t()
 	bSPMovement = false;
 	bSuit = false;
 	bADSWeapons = false;
+	bCanThrowGrenade = false;
 	m_szCArmModel[0] = 0;
 	iCArmSkin = 0;
 	iClassType = CLS_TYPE_NONE;
@@ -28,7 +29,7 @@ CAnticitizen_FilePlayerClassInfo_t::CAnticitizen_FilePlayerClassInfo_t()
 	flSprintSpeed = DEFAULT_SPRINT_SPEED;
 	szPrimaryWeapon[0] = 0;
 	szSecondaryWeapon[0] = 0;
-	szMeleeWeapon[0] = 0;
+	szTertiaryWeapon[0] = 0;
 }
 
 void CAnticitizen_FilePlayerClassInfo_t::Parse(KeyValues* pKeyValuesData, const char* szClassName)
@@ -59,6 +60,7 @@ void CAnticitizen_FilePlayerClassInfo_t::Parse(KeyValues* pKeyValuesData, const 
 	}
 
 	bADSWeapons = pKeyValuesData->GetBool("CanADSOfWeapons");
+	bCanThrowGrenade = pKeyValuesData->GetBool("CanThrowGrenade");
 	flNormSpeed = pKeyValuesData->GetFloat("Speed", DEFAULT_NORM_SPEED);
 	flSprintSpeed = pKeyValuesData->GetFloat("SprintSpeed", DEFAULT_SPRINT_SPEED);
 	flADSSpeed = pKeyValuesData->GetFloat("ADSSpeed", DEFAULT_ADS_SPEED);
@@ -70,7 +72,7 @@ void CAnticitizen_FilePlayerClassInfo_t::Parse(KeyValues* pKeyValuesData, const 
 		// Classname
 		Q_strncpy(szSecondaryWeapon, pKeyValuesData->GetString("SecondaryWeapon", ""), MAX_WEAPON_STRING);
 		// Classname
-		Q_strncpy(szMeleeWeapon, pKeyValuesData->GetString("MeleeWeapon", ""), MAX_WEAPON_STRING);
+		Q_strncpy(szTertiaryWeapon, pKeyValuesData->GetString("TertiaryWeapon", ""), MAX_WEAPON_STRING);
 	}
 }
 

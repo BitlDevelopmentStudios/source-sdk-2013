@@ -584,9 +584,11 @@ void CHL2MP_Player::PostThink( void )
 			m_bBotNotifier = false;
 		}
 
-		if ((GetPlayerClass() != CLS_FREEMAN))
+		const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
+
+		if (info.bCanThrowGrenade)
 		{
-			if ((m_nButtons & IN_GRENADE1))
+			if ((m_nButtons & IN_GRENADE1) && !(m_nButtons & IN_SPEED))
 			{
 				CBaseCombatWeapon* pFrag = Weapon_OwnsThisType("weapon_frag");
 
@@ -614,8 +616,6 @@ void CHL2MP_Player::PostThink( void )
 			if (pBot->GetDifficulty() <= CHL2MPBot::DifficultyType::NORMAL)
 				return;
 		}
-
-		const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
 
 		if (info.iGrenades == -1)
 		{
@@ -1031,9 +1031,9 @@ void CHL2MP_Player::LoadClass(int iClass)
 				GiveNamedItem(pPlayerClassInfo.szSecondaryWeapon);
 			}
 
-			if (pPlayerClassInfo.szMeleeWeapon[0])
+			if (pPlayerClassInfo.szTertiaryWeapon[0])
 			{
-				GiveNamedItem(pPlayerClassInfo.szMeleeWeapon);
+				GiveNamedItem(pPlayerClassInfo.szTertiaryWeapon);
 			}
 
 			if (pPlayerClassInfo.iGrenades == -1 || pPlayerClassInfo.iGrenades > 0)

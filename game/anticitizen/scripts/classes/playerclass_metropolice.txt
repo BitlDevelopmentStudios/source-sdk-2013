@@ -14,13 +14,15 @@ PlayerClassDatafile
 	
 	"PrimaryWeapon"		"weapon_smg1"
 	"SecondaryWeapon"	"weapon_pistol"
-	"MeleeWeapon"		"weapon_stunstick"
+	"TertiaryWeapon"	"weapon_stunstick"
 	
 	"Health"			"40"
 	"Lives"				"3"
 	"CanADSOfWeapons"	"1"
 	"TwoHandedWeaponAnims"	"1"
+	"CanThrowGrenade"	"1"
 	
 	"ADSSpeed"			"58"
 	"Speed"				"184"
+	"SprintSpeed"		"245"
 }

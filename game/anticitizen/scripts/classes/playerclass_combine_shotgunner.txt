@@ -20,7 +20,9 @@ PlayerClassDatafile
 	"Lives"				"3"
 	"CanADSOfWeapons"	"1"
 	"TwoHandedWeaponAnims"	"1"
+	"CanThrowGrenade"	"1"
 	
 	"ADSSpeed"			"72"
 	"Speed"				"215"
+	"SprintSpeed"		"245"
 }

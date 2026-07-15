@@ -2631,6 +2631,7 @@ Activity CBaseCombatWeapon::GetTwoHandedActivityForActivity(Activity ideal)
 {
 	MDLCACHE_CRITICAL_SECTION();
 	Activity curIdeal = ideal;
+	//DevMsg("IDEAL %i\n", (int)curIdeal);
 	switch (curIdeal)
 	{
 		case ACT_VM_IDLE:
@@ -2682,6 +2683,7 @@ Activity CBaseCombatWeapon::GetTwoHandedActivityForActivity(Activity ideal)
 			curIdeal = ACT_VM_FIDGET_TWO_HANDED;
 			break;
 	}
+	//DevMsg("CONVERTED IDEAL %i\n", (int)curIdeal);
 
 	return (Activity)SelectWeightedSequence(curIdeal);
 }
@@ -2693,16 +2695,17 @@ Activity CBaseCombatWeapon::GetTwoHandedActivityForActivity(Activity ideal)
 bool CBaseCombatWeapon::SetIdealActivity( Activity ideal )
 {
 	MDLCACHE_CRITICAL_SECTION();
-	int	idealSequence = SelectWeightedSequence( ideal );
+	int	idealSequence = SelectWeightedSequence(ideal);
 
 	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
 
 	if (pPlayer && pPlayer->GetPlayerClass() > CLS_INVALID)
 	{
 		const CAnticitizen_FilePlayerClassInfo_t& info = pPlayer->GetPlayerClassInfo();
-		if (info.bTwoHandedWeaponAnims && (GetTwoHandedActivityForActivity(ideal) > -1))
+		Activity twoHandedActivity = GetTwoHandedActivityForActivity(ideal);
+		if (info.bTwoHandedWeaponAnims && (twoHandedActivity > -1))
 		{
-			idealSequence = GetTwoHandedActivityForActivity(ideal);
+			idealSequence = twoHandedActivity;
 		}
 	}
 
@@ -2717,7 +2720,7 @@ bool CBaseCombatWeapon::SetIdealActivity( Activity ideal )
 	int nextSequence = FindTransitionSequence( GetSequence(), m_nIdealSequence, NULL );
 
 	// Don't use transitions when we're deploying
-	if ( ideal != ACT_VM_DRAW && IsWeaponVisible() && nextSequence != m_nIdealSequence )
+	if (ideal != ACT_VM_DRAW && IsWeaponVisible() && nextSequence != m_nIdealSequence )
 	{
 		//Set our activity to the next transitional animation
 		SetActivity( ACT_TRANSITION );
