@@ -251,6 +251,7 @@ CHL2MPRules::CHL2MPRules()
 	m_bAnnouncedGameEnd = false;
 	m_bGaveGameEndAchievements = false;
 	m_bSentGameEndEvent = false;
+	m_bStrippedFlags = false;
 	m_uiFreemanID = 0;
 	m_uiLastFreemanID = 0;
 	m_iNumTimesFreemanIDShowedUpIFuckingHateThis = 0;
@@ -844,16 +845,21 @@ void CHL2MPRules::Think( void )
 		{
 			if (m_flGameStartTime < gpGlobals->curtime)
 			{
-				for (int i = 0; i < MAX_PLAYERS; i++)
+				if (!m_bStrippedFlags)
 				{
-					CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
+					for (int i = 0; i < MAX_PLAYERS; i++)
+					{
+						CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
 
-					if (!pPlayer)
-						continue;
+						if (!pPlayer)
+							continue;
 
-					pPlayer->RemoveFlag(FL_FROZEN);
-					pPlayer->RemoveFlag(FL_GODMODE);
-					pPlayer->RemoveFlag(FL_NOTARGET);
+						pPlayer->RemoveFlag(FL_FROZEN);
+						pPlayer->RemoveFlag(FL_GODMODE);
+						pPlayer->RemoveFlag(FL_NOTARGET);
+					}
+
+					m_bStrippedFlags = true;
 				}
 
 				Announce();
@@ -890,6 +896,8 @@ void CHL2MPRules::Think( void )
 					pPlayer->AddFlag(FL_GODMODE);
 					pPlayer->AddFlag(FL_NOTARGET);
 				}
+
+				m_bStrippedFlags = false;
 			}
 
 			break;
@@ -1024,6 +1032,8 @@ void CHL2MPRules::GoToIntermission( void )
 		pPlayer->AddFlag(FL_NOTARGET);
 		pPlayer->ToggleGlow(false);
 	}
+
+	m_bStrippedFlags = false;
 #endif
 	
 }

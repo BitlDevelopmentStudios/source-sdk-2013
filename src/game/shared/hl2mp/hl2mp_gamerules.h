@@ -228,6 +228,7 @@ private:
 	bool m_bAnnouncedGameEnd;
 	bool m_bGaveGameEndAchievements;
 	bool m_bSentGameEndEvent;
+	bool m_bStrippedFlags;
 
 #ifndef CLIENT_DLL
 	//may be disasterous

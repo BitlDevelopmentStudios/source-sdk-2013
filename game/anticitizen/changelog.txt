@@ -13,6 +13,7 @@ Alpha v2:
 - Fixed a bug where some weapon reload sounds didn't play after aiming down their sights.
 - Added unique sounds for aiming down sights depending on class.
 - Fixed a bug where the aiming down sights sound plays multiple times at once.
+- Fixed a bug where the "god" cheat didn't work when the game was in progress.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.
