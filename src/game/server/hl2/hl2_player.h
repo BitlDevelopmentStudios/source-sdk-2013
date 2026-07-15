@@ -179,7 +179,7 @@ public:
 	void StopSprinting( void );
 	void InitSprinting( void );
 	bool IsSprinting(void) { return m_fIsSprinting || m_HL2Local.m_bNewSprinting; }
-	bool CanSprint( void );
+	virtual bool CanSprint( void );
 	void EnableSprint( bool bEnable);
 
 	bool CanZoom( CBaseEntity *pRequester );

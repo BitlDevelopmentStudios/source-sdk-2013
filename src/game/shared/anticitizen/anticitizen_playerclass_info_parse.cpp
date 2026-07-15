@@ -7,14 +7,6 @@
 #include "cbase.h"
 #include "anticitizen_playerclass_info_parse.h"
 
-const char* pWeaponCategories[NUM_WEAPON_TYPES] =
-{
-	"empty",
-	"primary",
-	"secondary",
-	"melee"
-};
-
 CAnticitizen_FilePlayerClassInfo_t::CAnticitizen_FilePlayerClassInfo_t()
 {
 	bAllWeapons = false;
@@ -22,6 +14,8 @@ CAnticitizen_FilePlayerClassInfo_t::CAnticitizen_FilePlayerClassInfo_t()
 	bSuit = false;
 	bADSWeapons = false;
 	bCanThrowGrenade = false;
+	// all classes can sprint for the moment.
+	bCanSprint = true;
 	m_szCArmModel[0] = 0;
 	iCArmSkin = 0;
 	iClassType = CLS_TYPE_NONE;
@@ -61,6 +55,7 @@ void CAnticitizen_FilePlayerClassInfo_t::Parse(KeyValues* pKeyValuesData, const 
 
 	bADSWeapons = pKeyValuesData->GetBool("CanADSOfWeapons");
 	bCanThrowGrenade = pKeyValuesData->GetBool("CanThrowGrenade");
+	bCanSprint = pKeyValuesData->GetBool("CanSprint", true);
 	flNormSpeed = pKeyValuesData->GetFloat("Speed", DEFAULT_NORM_SPEED);
 	flSprintSpeed = pKeyValuesData->GetFloat("SprintSpeed", DEFAULT_SPRINT_SPEED);
 	flADSSpeed = pKeyValuesData->GetFloat("ADSSpeed", DEFAULT_ADS_SPEED);

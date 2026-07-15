@@ -892,14 +892,6 @@ Vector C_HL2MP_Player::GetAutoaimVector( float flDelta )
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Returns whether or not we are allowed to sprint now.
-//-----------------------------------------------------------------------------
-bool C_HL2MP_Player::CanSprint( void )
-{
-	return ( (!m_Local.m_bDucked && !m_Local.m_bDucking) && (GetWaterLevel() != 3) );
-}
-
-//-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 void C_HL2MP_Player::StartWalking( void )
 {

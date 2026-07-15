@@ -90,7 +90,7 @@ public:
 	bool					bSuit;
 	bool					bADSWeapons;
 	bool					bCanThrowGrenade;
-	// HACK: only for the pistol??
+	bool					bCanSprint;
 	bool					bTwoHandedWeaponAnims;
 
 	float					flNormSpeed;

@@ -20,36 +20,36 @@
 
 "NPC_MetroPolice.ADSIn"
 {
-	"channel"	"CHAN_ITEM"
-	"volume"	"0.8"
+	"channel"	"CHAN_AUTO"
+	"volume"	"0.65"
 	"soundlevel"  "SNDLVL_75dB"
 
-	"wave"	"player/ironsight_on.wav"
+	"wave"	"player/ironsight_on_metropolice.wav"
 }
 
 "NPC_MetroPolice.ADSOut"
 {
-	"channel"	"CHAN_ITEM"
-	"volume"	"0.8"
+	"channel"	"CHAN_AUTO"
+	"volume"	"0.65"
 	"soundlevel"  "SNDLVL_75dB"
 
-	"wave"	"player/ironsight_off.wav"
+	"wave"	"player/ironsight_off_metropolice.wav"
 }
 
 "NPC_CombineS.ADSIn"
 {
-	"channel"	"CHAN_ITEM"
-	"volume"	"0.8"
+	"channel"	"CHAN_AUTO"
+	"volume"	"0.65"
 	"soundlevel"  "SNDLVL_75dB"
 
-	"wave"	"player/ironsight_on.wav"
+	"wave"	"player/ironsight_on_combine_s.wav"
 }
 
 "NPC_CombineS.ADSOut"
 {
-	"channel"	"CHAN_ITEM"
-	"volume"	"0.8"
+	"channel"	"CHAN_AUTO"
+	"volume"	"0.65"
 	"soundlevel"  "SNDLVL_75dB"
 
-	"wave"	"player/ironsight_off.wav"
+	"wave"	"player/ironsight_off_combine_s.wav"
 }

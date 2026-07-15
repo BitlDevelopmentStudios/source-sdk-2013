@@ -411,6 +411,35 @@ void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, f
 	BaseClass::PlayStepSound(vecOrigin, psurface, fvol, force);
 }
 
+bool CHL2MP_Player::CanSprint(void)
+{
+	const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
+
+	bool bClassCanSprint = true;
+
+	if (GetPlayerClass() > CLS_INVALID)
+	{
+		bClassCanSprint = info.bCanSprint;
+	}
+
+	bool bWeaponIsntIronsighted = true;
+
+	if (info.bADSWeapons)
+	{
+		CBaseCombatWeapon* myWeapon = GetActiveWeapon();
+
+		if (myWeapon)
+		{
+			if (myWeapon->IsIronsighted())
+			{
+				bWeaponIsntIronsighted = false;
+			}
+		}
+	}
+
+	return (bClassCanSprint && bWeaponIsntIronsighted && (!m_Local.m_bDucked && !m_Local.m_bDucking) && (GetWaterLevel() != 3));
+}
+
 extern ConVar sv_maxspeed;
 
 void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
@@ -419,16 +448,14 @@ void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
 	{
 		const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
 
+		int nChangedButtons = mv->m_nButtons ^ mv->m_nOldButtons;
+		bool bJustPressedSpeed = !!(nChangedButtons & IN_SPEED);
+		const bool bWantSprint = (CanSprint() && (mv->m_nButtons & IN_SPEED));
+		const bool bWantsToChangeSprinting = (m_HL2Local.m_bNewSprinting != bWantSprint) && (nChangedButtons & IN_SPEED) != 0;
+		bool bSprinting = m_HL2Local.m_bNewSprinting;
+
 		if (IsSuitEquipped())
 		{
-			int nChangedButtons = mv->m_nButtons ^ mv->m_nOldButtons;
-
-			bool bJustPressedSpeed = !!(nChangedButtons & IN_SPEED);
-
-			const bool bWantSprint = (CanSprint() && (mv->m_nButtons & IN_SPEED));
-			const bool bWantsToChangeSprinting = (m_HL2Local.m_bNewSprinting != bWantSprint) && (nChangedButtons & IN_SPEED) != 0;
-
-			bool bSprinting = m_HL2Local.m_bNewSprinting;
 			if (bWantsToChangeSprinting)
 			{
 				if (bWantSprint)
@@ -477,13 +504,6 @@ void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
 		}
 		else
 		{
-			CBaseHL2MPCombatWeapon* myWeapon = dynamic_cast<CBaseHL2MPCombatWeapon*>(GetActiveWeapon());
-
-			int nChangedButtons = mv->m_nButtons ^ mv->m_nOldButtons;
-			const bool bWantSprint = (CanSprint() && (mv->m_nButtons & IN_SPEED));
-			const bool bWantsToChangeSprinting = (m_HL2Local.m_bNewSprinting != bWantSprint) && (nChangedButtons & IN_SPEED) != 0;
-			bool bSprinting = m_HL2Local.m_bNewSprinting;
-
 			if (bWantsToChangeSprinting)
 			{
 				if (bWantSprint)
@@ -496,21 +516,15 @@ void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
 				}
 			}
 
-			if (myWeapon && myWeapon->IsIronsighted() && info.bADSWeapons)
-			{
-				bSprinting = false;
-			}
-
 			m_HL2Local.m_bNewSprinting = bSprinting;
 
-			if (myWeapon && myWeapon->IsIronsighted() && info.bADSWeapons)
+			CBaseCombatWeapon* myWeapon = GetActiveWeapon();
+			if (info.bADSWeapons && myWeapon && myWeapon->IsIronsighted())
 			{
 				mv->m_flClientMaxSpeed = info.flADSSpeed;
 			}
 			else if (bSprinting)
 			{
-				bool bJustPressedSpeed = !!(nChangedButtons & IN_SPEED);
-
 				if (bJustPressedSpeed)
 				{
 					CPASAttenuationFilter filter(this);

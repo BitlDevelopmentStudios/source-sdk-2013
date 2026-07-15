@@ -220,6 +220,9 @@ public:
 	virtual void PressWalkButton( float duration = -1.0f );
 	virtual void ReleaseWalkButton( void );
 
+	virtual void PressSprintButton(float duration = -1.0f) { PressWalkButton(duration); }
+	virtual void ReleaseSprintButton(void) { ReleaseWalkButton(); }
+
 	virtual void SetButtonScale( float forward, float right );
 
 	//------------------------------------------------------------------------

@@ -646,9 +646,11 @@ void CBaseCombatWeapon::EnableIronsights(void)
 
 	if (pOwner->SetFOV(this, pOwner->GetDefaultFOV() + GetIronsightFOVOffset(), viewmodel_fov_zoomtime.GetFloat())) //modify the last value to adjust how fast the fov is applied
 	{
+		// play these on the server
+#ifndef CLIENT_DLL
 		CHL2MP_Player *pHL2MPPlayer = ToHL2MPPlayer(pOwner);
 
-		if (pHL2MPPlayer)
+		if (pHL2MPPlayer && !m_bIsIronsighted)
 		{
 			char szStepSound[128];
 
@@ -656,6 +658,7 @@ void CBaseCombatWeapon::EnableIronsights(void)
 
 			pHL2MPPlayer->EmitSound(szStepSound);
 		}
+#endif
 
 		m_bIsIronsighted = true;
 		SetIronsightTime();
@@ -681,9 +684,11 @@ void CBaseCombatWeapon::DisableIronsights(void)
 
 	if (pOwner->SetFOV(this, 0, viewmodel_fov_zoomtime.GetFloat())) //modify the last value to adjust how fast the fov is applied
 	{
+		// play these on the server
+#ifndef CLIENT_DLL
 		CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pOwner);
 
-		if (pHL2MPPlayer)
+		if (pHL2MPPlayer && m_bIsIronsighted)
 		{
 			char szStepSound[128];
 
@@ -691,6 +696,7 @@ void CBaseCombatWeapon::DisableIronsights(void)
 
 			pHL2MPPlayer->EmitSound(szStepSound);
 		}
+#endif
 
 		m_bIsIronsighted = false;
 		SetIronsightTime();
