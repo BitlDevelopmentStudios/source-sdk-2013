@@ -342,6 +342,16 @@ ActionResult< CHL2MPBot >	CHL2MPBotGetHealth::OnStart( CHL2MPBot *me, Action< CH
 		return Done( "No path to health!" );
 	}
 
+	if (me->GetActiveWeapon() && me->GetActiveWeapon()->IsIronsighted())
+	{
+		me->ReleaseADSButton();
+	}
+
+	if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
+	{
+		me->PressSprintButton();
+	}
+
 	return Continue();
 }
 
@@ -501,6 +511,11 @@ ActionResult< CHL2MPBot >	CHL2MPBotGetHealth::OnSuspend( CHL2MPBot* me, Action< 
 		me->ReleaseUseButton();
 	}
 
+	if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
+	{
+		me->ReleaseSprintButton();
+	}
+
 	return Continue();
 }
 
@@ -513,8 +528,22 @@ void CHL2MPBotGetHealth::OnEnd( CHL2MPBot* me, Action< CHL2MPBot >* nextAction )
 		m_usingCharger = false;
 		me->ReleaseUseButton();
 	}
+
+	if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
+	{
+		me->ReleaseSprintButton();
+	}
 }
 
+//---------------------------------------------------------------------------------------------
+ActionResult< CHL2MPBot >	CHL2MPBotGetHealth::OnResume(CHL2MPBot* me, Action< CHL2MPBot >* interruptingAction)
+{
+	if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
+	{
+		me->PressSprintButton();
+	}
+	return Continue();
+}
 
 //---------------------------------------------------------------------------------------------
 EventDesiredResult< CHL2MPBot > CHL2MPBotGetHealth::OnStuck( CHL2MPBot *me )

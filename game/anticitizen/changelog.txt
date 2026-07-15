@@ -14,7 +14,8 @@ Alpha v2:
 - Added unique sounds for aiming down sights depending on class.
 - Fixed a bug where the aiming down sights sound plays multiple times at once.
 - Fixed a bug where the "god" cheat didn't work when the game was in progress.
-- Bots can now sprint when chasing you.
+- Bots can now sprint when chasing you or getting supplies.
+	- What bots sprint towards is dependant on skill level.
 - Bots will now spawn at mixed skill levels by default.
 - Revised drop system. Combine players will now drop health vials and grenades after every kill, not just after a few.
 

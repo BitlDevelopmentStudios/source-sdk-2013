@@ -14,6 +14,7 @@ public:
 	virtual ActionResult< CHL2MPBot >	Update( CHL2MPBot *me, float interval );
 	virtual ActionResult< CHL2MPBot >	OnSuspend( CHL2MPBot* me, Action< CHL2MPBot >* interruptingAction );
 	virtual void						OnEnd( CHL2MPBot* me, Action< CHL2MPBot >* nextAction );
+	virtual ActionResult< CHL2MPBot >	OnResume(CHL2MPBot* me, Action< CHL2MPBot >* interruptingAction);
 
 	virtual EventDesiredResult< CHL2MPBot > OnStuck( CHL2MPBot *me );
 	virtual EventDesiredResult< CHL2MPBot > OnMoveToSuccess( CHL2MPBot *me, const Path *path );

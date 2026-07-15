@@ -206,6 +206,17 @@ ActionResult< CHL2MPBot >	CHL2MPBotGetProp::OnStart( CHL2MPBot *me, Action< CHL2
 		return Done( "No path to prop!" );
 	}
 
+	// do we need this block?
+	if (me->GetActiveWeapon() && me->GetActiveWeapon()->IsIronsighted())
+	{
+		me->ReleaseADSButton();
+	}
+
+	if (me->GetDifficulty() > CHL2MPBot::DifficultyType::NORMAL)
+	{
+		me->PressSprintButton();
+	}
+
 	return Continue();
 }
 
@@ -316,6 +327,11 @@ ActionResult< CHL2MPBot >	CHL2MPBotGetProp::OnSuspend( CHL2MPBot* me, Action< CH
 		me->EquipBestWeaponForThreat( threat );
 	}
 
+	if (me->GetDifficulty() > CHL2MPBot::DifficultyType::NORMAL)
+	{
+		me->ReleaseSprintButton();
+	}
+
 	return Continue();
 }
 
@@ -323,6 +339,10 @@ ActionResult< CHL2MPBot >	CHL2MPBotGetProp::OnSuspend( CHL2MPBot* me, Action< CH
 //---------------------------------------------------------------------------------------------
 ActionResult< CHL2MPBot >	CHL2MPBotGetProp::OnResume( CHL2MPBot* me, Action< CHL2MPBot >* interruptingAction )
 {
+	if (me->GetDifficulty() > CHL2MPBot::DifficultyType::NORMAL)
+	{
+		me->PressSprintButton();
+	}
 	return Continue();
 }
 
@@ -340,6 +360,11 @@ void CHL2MPBotGetProp::OnEnd( CHL2MPBot* me, Action< CHL2MPBot >* nextAction )
 		const CKnownEntity* threat = me->GetVisionInterface()->GetPrimaryKnownThreat();
 		// may need to switch weapons from physcannon
 		me->EquipBestWeaponForThreat( threat );
+	}
+
+	if (me->GetDifficulty() > CHL2MPBot::DifficultyType::NORMAL)
+	{
+		me->ReleaseSprintButton();
 	}
 }
 

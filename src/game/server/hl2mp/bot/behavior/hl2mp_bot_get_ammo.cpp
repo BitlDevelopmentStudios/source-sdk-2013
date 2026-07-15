@@ -200,6 +200,16 @@ ActionResult< CHL2MPBot >	CHL2MPBotGetAmmo::OnStart( CHL2MPBot *me, Action< CHL2
 		return Done( "No path to ammo!" );
 	}
 
+	if (me->GetActiveWeapon() && me->GetActiveWeapon()->IsIronsighted())
+	{
+		me->ReleaseADSButton();
+	}
+
+	if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
+	{
+		me->PressSprintButton();
+	}
+
 	return Continue();
 }
 
@@ -265,4 +275,35 @@ QueryResultType CHL2MPBotGetAmmo::ShouldHurry( const INextBot *me ) const
 {
 	// if we need ammo, we best hustle
 	return ANSWER_YES;
+}
+
+//---------------------------------------------------------------------------------------------
+ActionResult< CHL2MPBot >	CHL2MPBotGetAmmo::OnSuspend(CHL2MPBot* me, Action< CHL2MPBot >* interruptingAction)
+{
+	if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
+	{
+		me->ReleaseSprintButton();
+	}
+
+	return Continue();
+}
+
+
+//---------------------------------------------------------------------------------------------
+void CHL2MPBotGetAmmo::OnEnd(CHL2MPBot* me, Action< CHL2MPBot >* nextAction)
+{
+	if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
+	{
+		me->ReleaseSprintButton();
+	}
+}
+
+//---------------------------------------------------------------------------------------------
+ActionResult< CHL2MPBot >	CHL2MPBotGetAmmo::OnResume(CHL2MPBot* me, Action< CHL2MPBot >* interruptingAction)
+{
+	if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
+	{
+		me->PressSprintButton();
+	}
+	return Continue();
 }

@@ -80,7 +80,10 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 
 		if ( threat->IsVisibleRecently() )
 		{
-			me->PressSprintButton();
+			if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
+			{
+				me->PressSprintButton();
+			}
 
 			if ( isUsingCloseRangeWeapon )
 			{
@@ -105,7 +108,10 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 					me->ReleaseADSButton();
 				}
 
-				me->ReleaseSprintButton();
+				if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
+				{
+					me->ReleaseSprintButton();
+				}
 
 				me->GetVisionInterface()->ForgetEntity( threat->GetEntity() );
 				me->SpeakSentenceForConcept(MP_SENTENCE_LOST_GROUP);
@@ -125,7 +131,10 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 				//m_repathTimer.Start( RandomFloat( 0.3f, 0.5f ) );
 				m_repathTimer.Start( RandomFloat( 3.0f, 5.0f ) );
 
-				me->PressSprintButton();
+				if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
+				{
+					me->PressSprintButton();
+				}
 
 				if ( isUsingCloseRangeWeapon )
 				{
