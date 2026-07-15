@@ -80,6 +80,8 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 
 		if ( threat->IsVisibleRecently() )
 		{
+			me->PressSprintButton();
+
 			if ( isUsingCloseRangeWeapon )
 			{
 				CHL2MPBotPathCost cost( me, FASTEST_ROUTE );
@@ -96,13 +98,15 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 			// if we're at the threat's last known position and he's still not visible, we lost him
 			m_chasePath.Invalidate();
 
-			if (me->GetActiveWeapon() && me->GetActiveWeapon()->IsIronsighted())
-			{
-				me->ReleaseADSButton();
-			}
-
 			if ( me->IsRangeLessThan( threat->GetLastKnownPosition(), 20.0f ) )
 			{
+				if (me->GetActiveWeapon() && me->GetActiveWeapon()->IsIronsighted())
+				{
+					me->ReleaseADSButton();
+				}
+
+				me->ReleaseSprintButton();
+
 				me->GetVisionInterface()->ForgetEntity( threat->GetEntity() );
 				me->SpeakSentenceForConcept(MP_SENTENCE_LOST_GROUP);
 				return Done( "I lost my target!" );
@@ -120,6 +124,8 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 			{
 				//m_repathTimer.Start( RandomFloat( 0.3f, 0.5f ) );
 				m_repathTimer.Start( RandomFloat( 3.0f, 5.0f ) );
+
+				me->PressSprintButton();
 
 				if ( isUsingCloseRangeWeapon )
 				{

@@ -1744,22 +1744,22 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 			CHalfLife2* pHL2GameRules = static_cast<CHalfLife2*>(g_pGameRules);
 
 			// Attempt to drop health
-			if (pHL2GameRules->NPC_ShouldDropHealth(pPlayer))
-			{
+			//if (pHL2GameRules->NPC_ShouldDropHealth(pPlayer))
+			//{
 				DropItem("item_healthvial", WorldSpaceCenter() + RandomVector(-4, 4), RandomAngle(0, 360));
-				pHL2GameRules->NPC_DroppedHealth();
-			}
+				//pHL2GameRules->NPC_DroppedHealth();
+			//}
 
 			CBaseCombatWeapon* pGrenade = Weapon_OwnsThisType("weapon_frag");
 
 			if (pGrenade)
 			{
-				// Attempt to drop a grenade. We don't do anything from werapon_drop here for accuracy's sake.
-				if (pHL2GameRules->NPC_ShouldDropGrenade(pPlayer))
-				{
+				// Attempt to drop a grenade. We don't do anything from weapon_drop here for accuracy's sake.
+				//if (pHL2GameRules->NPC_ShouldDropGrenade(pPlayer))
+				//{
 					DropItem("weapon_frag", WorldSpaceCenter() + RandomVector(-4, 4), RandomAngle(0, 360));
-					pHL2GameRules->NPC_DroppedGrenade();
-				}
+					//pHL2GameRules->NPC_DroppedGrenade();
+				//}
 			}
 
 			CBaseCombatWeapon* pAR2 = Weapon_OwnsThisType("weapon_ar2");
