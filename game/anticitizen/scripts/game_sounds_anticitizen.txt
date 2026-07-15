@@ -18,6 +18,24 @@
 	"wave"		"common/null.wav"
 }
 
+"NPC_Citizen.ADSIn"
+{
+	"channel"	"CHAN_AUTO"
+	"volume"	"0.65"
+	"soundlevel"  "SNDLVL_75dB"
+
+	"wave"	"player/ironsight_on.wav"
+}
+
+"NPC_Citizen.ADSOut"
+{
+	"channel"	"CHAN_AUTO"
+	"volume"	"0.65"
+	"soundlevel"  "SNDLVL_75dB"
+
+	"wave"	"player/ironsight_off.wav"
+}
+
 "NPC_MetroPolice.ADSIn"
 {
 	"channel"	"CHAN_AUTO"
