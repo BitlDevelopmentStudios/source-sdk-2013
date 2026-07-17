@@ -88,6 +88,11 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 			{
 				if (!bAllowEliteSecondary)
 				{
+					if ((me->GetPlayerClass() != CLS_FREEMAN) && (me->GetClassType() == CLS_TYPE_HIGH_TIER))
+					{
+						me->DebugConColorMsg(NEXTBOT_BEHAVIOR, Color(255, 0, 0, 255), "NON-HARD ELITE IS SPRINTING!! ENERGY BALLS CANNOT FIRE.");
+					}
+
 					me->PressSprintButton();
 				}
 			}
@@ -145,6 +150,11 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 				{
 					if (!bAllowEliteSecondary)
 					{
+						if ((me->GetPlayerClass() != CLS_FREEMAN) && (me->GetClassType() == CLS_TYPE_HIGH_TIER))
+						{
+							me->DebugConColorMsg(NEXTBOT_BEHAVIOR, Color(255, 0, 0, 255), "NON-HARD ELITE IS SPRINTING!! ENERGY BALLS CANNOT FIRE.");
+						}
+
 						me->PressSprintButton();
 					}
 				}
