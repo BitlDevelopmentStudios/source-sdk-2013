@@ -422,7 +422,7 @@ void CWeaponAR2::SecondaryAttack( void )
 	if ( pPlayer == NULL )
 		return;
 
-	if (pPlayer->GetPlayerClass() > CLS_INVALID)
+	if ((pPlayer->GetPlayerClass() > CLS_INVALID) && (pPlayer->GetPlayerClass() != CLS_FREEMAN))
 	{
 		const CAnticitizen_FilePlayerClassInfo_t& info = pPlayer->GetPlayerClassInfo();
 
@@ -432,6 +432,17 @@ void CWeaponAR2::SecondaryAttack( void )
 			BaseClass::WeaponSound(EMPTY);
 			m_flNextEmptySoundTime = m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
 			return;
+		}
+		else
+		{
+			// if we're able to, check if we're sprinting.
+			if (pPlayer->m_HL2Local.m_bNewSprinting)
+			{
+				SendWeaponAnim(ACT_VM_DRYFIRE);
+				BaseClass::WeaponSound(EMPTY);
+				m_flNextEmptySoundTime = m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
+				return;
+			}
 		}
 	}
 

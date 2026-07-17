@@ -925,6 +925,11 @@ void CHL2MP_Player::ReplenishTroopAmmoAndHealth(void)
 {
 	TakeHealth((GetMaxHealth() / 2), DMG_GENERIC);
 
+	if (IsSuitEquipped())
+	{
+		ApplyBattery(0.5);
+	}
+
 	CBasePlayer::GiveAmmo((AMMO_TROOP_MAX_PISTOL / 2), "Pistol");
 	CBasePlayer::GiveAmmo((AMMO_TROOP_MAX_AR2 / 2), "AR2");
 	CBasePlayer::GiveAmmo((AMMO_TROOP_MAX_SMG1 / 2), "SMG1");

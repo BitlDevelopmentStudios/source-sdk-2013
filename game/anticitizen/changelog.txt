@@ -8,8 +8,10 @@ Alpha v2:
 - Removed some joke tips.
 - You can now view Freeman's health.
 - Added sprinting for all Combine units.
-	- Sprinting speed is set to 245 Hammer Units/s.
-	- If you're sprinting directly at Freeman, it will tell all players in your squad that you're flanking.
+	- When sprinting, all units will run 60 HUs faster thain their base walk speed (Civil Protection: 244 HU/s, Combine Soldiers: 275 HU/s)
+	- If you're sprinting while looking at Freeman, it will tell all players in your squad that you're flanking.
+	- Sprinting will negatively effect your accuracy, even if you're an Elite.
+	- Elites cannot use their Energy Ball attack when sprinting.
 - Fixed a bug where some weapon reload sounds didn't play after aiming down their sights.
 - Added unique sounds for aiming down sights depending on class.
 - Fixed a bug where the aiming down sights sound plays multiple times at once.
@@ -21,6 +23,7 @@ Alpha v2:
 - Manhacks now drop batteries on death.
 - Increased Manhack damage from 65 to 85.
 - Increased Turret bullet damage from 8 to 10.
+- Thrown Crates will now contain half a suit battery, similar to Stunsticks.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.

@@ -119,7 +119,8 @@ Vector CHL2MP_Player::GetAttackSpread( CBaseCombatWeapon *pWeapon, CBaseEntity *
 				float groundspeed = Vector2DLength(g_pMoveData->m_vecVelocity.AsVector2D());
 				bool movingalongground = ((GetFlags() & FL_ONGROUND) && groundspeed > 0.0001f);
 
-				if (!(GetFlags() & FL_ONGROUND))
+				if ((!(GetFlags() & FL_ONGROUND)) || 
+					m_HL2Local.m_bNewSprinting)
 				{
 					proficiency = WEAPON_PROFICIENCY_AVERAGE;
 				}
@@ -142,6 +143,10 @@ Vector CHL2MP_Player::GetAttackSpread( CBaseCombatWeapon *pWeapon, CBaseEntity *
 				if (pWeapon->IsIronsighted())
 				{
 					proficiency = WEAPON_PROFICIENCY_PERFECT;
+				}
+				else if (m_HL2Local.m_bNewSprinting)
+				{
+					proficiency = WEAPON_PROFICIENCY_GOOD;
 				}
 				else
 				{
