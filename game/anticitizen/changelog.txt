@@ -18,6 +18,7 @@ Alpha v2:
 	- What bots sprint towards is dependant on skill level.
 - Bots will now spawn at mixed skill levels by default.
 - Revised drop system. Combine players will now drop health vials and grenades after every kill, not just after a few.
+- Manhacks now drop batteries on death.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.

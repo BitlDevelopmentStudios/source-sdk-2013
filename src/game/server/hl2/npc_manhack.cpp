@@ -38,6 +38,7 @@
 #include "physics_prop_ragdoll.h"
 #include "soundent.h"
 #include "ammodef.h"
+#include "items.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -390,6 +391,16 @@ void CNPC_Manhack::Event_Killed( const CTakeDamageInfo &info )
 		// Probably this manhack was killed immediately after spawning. Turn the sound
 		// on right now so that we can pitch it up for the crash!
 		SoundInit();
+	}
+
+	CItem* pBattery = (CItem*)CreateEntityByName("item_battery");
+	if (pBattery)
+	{
+		pBattery->SetAbsOrigin(GetAbsOrigin());
+		pBattery->SetAbsVelocity(GetAbsVelocity());
+		pBattery->SetLocalAngularVelocity(GetLocalAngularVelocity());
+		pBattery->ActivateWhenAtRest();
+		pBattery->Spawn();
 	}
 
 	// Always gib when clubbed or blasted or crushed, or just randomly
