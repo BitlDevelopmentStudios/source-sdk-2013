@@ -48,6 +48,8 @@ ConVar hl2mp_spawn_frag_fallback_radius( "hl2mp_spawn_frag_fallback_radius", "48
 
 ConVar sv_sentencedelay("sv_sentencedelay", "1.5", FCVAR_NOTIFY);
 
+ConVar sv_sentencebotdelay("sv_sentencebotdelay", "3.5", FCVAR_NOTIFY);
+
 ConVar hl2mp_spawnprotection("hl2mp_spawnprotection", "1", FCVAR_REPLICATED | FCVAR_NOTIFY);
 ConVar hl2mp_spawnprotection_time("hl2mp_spawnprotection_time", "5", FCVAR_REPLICATED | FCVAR_NOTIFY);
 
@@ -1250,7 +1252,17 @@ void CHL2MP_Player::SpeakSentence(const char* pSentence, SentencePriority_t nSou
 			if (!alwaysSpeak)
 			{
 				float sentenceLength = m_Sentences.GetSentenceLength();
-				m_flNextSentenceTime = gpGlobals->curtime + sentenceLength + sv_sentencedelay.GetFloat();
+
+				float sentenceDelay = sv_sentencedelay.GetFloat();
+
+				CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(this);
+
+				if (pBot)
+				{
+					sentenceDelay = sv_sentencebotdelay.GetFloat();
+				}
+
+				m_flNextSentenceTime = gpGlobals->curtime + sentenceLength + sentenceDelay;
 			}
 		}
 	}

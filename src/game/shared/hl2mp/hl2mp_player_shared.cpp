@@ -15,6 +15,7 @@
 #else
 #include "hl2mp_player.h"
 #include "anticitizen_player_resource.h"
+#include "bot/hl2mp_bot.h"
 #endif
 
 #include "hl2mp_gamerules.h"
@@ -560,7 +561,16 @@ void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
 							if (tr.m_pEnt->IsPlayer())
 							{
 #ifndef CLIENT_DLL
-								engine->ClientCommand(edict(), "voicemenu 0 0");
+								CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(this);
+
+								if (pBot)
+								{
+									SpeakSentenceForConcept(MP_SENTENCE_FLANK);
+								}
+								else
+								{
+									engine->ClientCommand(edict(), "voicemenu 0 0");
+								}
 #endif
 							}
 						}
