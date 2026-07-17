@@ -12,7 +12,7 @@
 extern ConVar hl2mp_bot_path_lookahead_range;
 extern ConVar hl2mp_bot_offense_must_push_time;
 
-ConVar hl2mp_bot_aggressive( "hl2mp_bot_aggressive", "0", FCVAR_NONE );
+ConVar hl2mp_bot_aggressive( "hl2mp_bot_aggressive", "1", FCVAR_NONE );
 
 //---------------------------------------------------------------------------------------------
 CHL2MPBotAttack::CHL2MPBotAttack( void ) : m_chasePath( ChasePath::LEAD_SUBJECT )
@@ -70,6 +70,10 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 					   !bHasRangedWeapon &&
 					   me->GetDifficulty() > CHL2MPBot::EASY;
 
+	bool bAllowEliteSecondary = ((me->GetPlayerClass() != CLS_FREEMAN) &&
+		(me->GetClassType() == CLS_TYPE_HIGH_TIER) &&
+		(me->GetDifficulty() >= CHL2MPBot::DifficultyType::HARD));
+
 	// pursue the threat. if not visible, go to the last known position
 	if ( bAggressive ||
 	     !threat->IsVisibleRecently() || 
@@ -82,10 +86,6 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 		{
 			if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
 			{
-				bool bAllowEliteSecondary = ((me->GetPlayerClass() != CLS_FREEMAN) &&
-					(me->GetClassType() == CLS_TYPE_HIGH_TIER) &&
-					(me->GetDifficulty() >= CHL2MPBot::DifficultyType::HARD));
-
 				if (!bAllowEliteSecondary)
 				{
 					me->PressSprintButton();
@@ -117,10 +117,6 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 
 				if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
 				{
-					bool bAllowEliteSecondary = ((me->GetPlayerClass() != CLS_FREEMAN) &&
-						(me->GetClassType() == CLS_TYPE_HIGH_TIER) &&
-						(me->GetDifficulty() >= CHL2MPBot::DifficultyType::HARD));
-
 					if (!bAllowEliteSecondary)
 					{
 						me->ReleaseSprintButton();
@@ -147,10 +143,6 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 
 				if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
 				{
-					bool bAllowEliteSecondary = ((me->GetPlayerClass() != CLS_FREEMAN) &&
-						(me->GetClassType() == CLS_TYPE_HIGH_TIER) &&
-						(me->GetDifficulty() >= CHL2MPBot::DifficultyType::HARD));
-
 					if (!bAllowEliteSecondary)
 					{
 						me->PressSprintButton();

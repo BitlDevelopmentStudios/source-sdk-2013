@@ -25,6 +25,7 @@ Alpha v2:
 - Increased Turret bullet damage from 8 to 10.
 - Thrown Crates will now contain half a suit battery, similar to Stunsticks.
 - Bots will no longer spam sentences as often.
+- Made bots more aggressive.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.
