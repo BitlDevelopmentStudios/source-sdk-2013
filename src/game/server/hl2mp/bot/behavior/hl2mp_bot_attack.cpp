@@ -82,7 +82,14 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 		{
 			if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
 			{
-				me->PressSprintButton();
+				bool bAllowEliteSecondary = ((me->GetPlayerClass() != CLS_FREEMAN) &&
+					(me->GetClassType() == CLS_TYPE_HIGH_TIER) &&
+					(me->GetDifficulty() >= CHL2MPBot::DifficultyType::HARD));
+
+				if (!bAllowEliteSecondary)
+				{
+					me->PressSprintButton();
+				}
 			}
 
 			if ( isUsingCloseRangeWeapon )
@@ -110,7 +117,14 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 
 				if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
 				{
-					me->ReleaseSprintButton();
+					bool bAllowEliteSecondary = ((me->GetPlayerClass() != CLS_FREEMAN) &&
+						(me->GetClassType() == CLS_TYPE_HIGH_TIER) &&
+						(me->GetDifficulty() >= CHL2MPBot::DifficultyType::HARD));
+
+					if (!bAllowEliteSecondary)
+					{
+						me->ReleaseSprintButton();
+					}
 				}
 
 				me->GetVisionInterface()->ForgetEntity( threat->GetEntity() );
@@ -133,7 +147,14 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 
 				if (me->GetDifficulty() > CHL2MPBot::DifficultyType::EASY)
 				{
-					me->PressSprintButton();
+					bool bAllowEliteSecondary = ((me->GetPlayerClass() != CLS_FREEMAN) &&
+						(me->GetClassType() == CLS_TYPE_HIGH_TIER) &&
+						(me->GetDifficulty() >= CHL2MPBot::DifficultyType::HARD));
+
+					if (!bAllowEliteSecondary)
+					{
+						me->PressSprintButton();
+					}
 				}
 
 				if ( isUsingCloseRangeWeapon )

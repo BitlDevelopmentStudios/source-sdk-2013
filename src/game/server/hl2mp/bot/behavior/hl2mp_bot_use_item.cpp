@@ -44,6 +44,20 @@ ActionResult< CHL2MPBot >	CHL2MPBotUseItem::OnStart( CHL2MPBot *me, Action< CHL2
 		{
 			return Done("No weapon alt ammo");
 		}
+		else
+		{
+			if (me->GetPlayerClass() != CLS_FREEMAN)
+			{
+				if (me->GetClassType() != CLS_TYPE_HIGH_TIER)
+				{
+					return Done("Cannot use secondary fire");
+				}
+				else if (me->m_HL2Local.m_bNewSprinting)
+				{
+					return Done("Cannot use secondary fire while sprinting");
+				}
+			}
+		}
 	}
 	else
 	{
