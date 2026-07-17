@@ -929,7 +929,7 @@ void CHL2MP_Player::ReplenishTroopAmmoAndHealth(void)
 
 	if (IsSuitEquipped())
 	{
-		ApplyBattery(0.5);
+		ApplyBattery(2.0);
 	}
 
 	CBasePlayer::GiveAmmo((AMMO_TROOP_MAX_PISTOL / 2), "Pistol");
