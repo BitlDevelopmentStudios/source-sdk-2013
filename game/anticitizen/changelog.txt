@@ -23,7 +23,7 @@ Alpha v2:
 - Manhacks now drop batteries on death.
 - Increased Manhack damage from 65 to 85.
 - Increased Turret bullet damage from 8 to 10.
-- Thrown Crates will now contain the equivalent of 2 suit batteries.
+- Thrown Crates will now contain the equivalent of 2 suit batteries if used by Freeman.
 - Bots will no longer spam sentences as often.
 - Made bots more aggressive.
 
