@@ -86,6 +86,10 @@ bool IsClassName(const char* string)
 	{
 		return true;
 	}
+	else if (!stricmp(string, "assassin"))
+	{
+		return true;
+	}
 
 	return false;
 }
@@ -109,6 +113,10 @@ int Bot_GetClassByName(const char* string)
 	else if (!stricmp(string, "elite"))
 	{
 		iTeam = CLS_COMBINE_ELITE;
+	}
+	else if (!stricmp(string, "assassin"))
+	{
+		iTeam = CLS_COMBINE_ASSASSIN;
 	}
 
 	return iTeam;
@@ -323,7 +331,7 @@ void CC_BotAdd(const CCommand& args)
 
 			int iClass = i;
 
-			if (iClass >= CLS_LAST_COMBINE_CLASS)
+			if (iClass > CLS_LAST_COMBINE_CLASS)
 			{
 				iClass = CLS_RAND;
 			}

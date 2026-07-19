@@ -95,9 +95,13 @@ static void OpenVoiceMenu_1( void )
 
 	if (pPlayer)
 	{
-		if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
+		if (pPlayer->GetPlayerClass() > CLS_INVALID)
 		{
-			OpenVoiceMenu(1);
+			const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = pPlayer->GetPlayerClassInfo();
+			if (pPlayerClassInfo.iSentenceVoice > VOICE_TYPE_NONE)
+			{
+				OpenVoiceMenu(1);
+			}
 		}
 	}
 }

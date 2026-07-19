@@ -37,7 +37,7 @@
 "use weapon_crowbar" 	"#HL2_Crowbar_Menu"
 "use weapon_stunstick" 	"#HL2_StunBaton_Menu"
 "phys_swap"				"#HL2_GravityGun_Menu"
-"use weapon_pistol"		"#HL2_Pistol_Menu"
+"use weapon_pistol;use weapon_dualpistols"		"#HL2_Pistol_Menu"
 "use weapon_357"		"#HL2_357Handgun_Menu"
 "use weapon_smg1"		"#HL2_SMG1_Menu"
 "use weapon_ar2"		"#HL2_Pulse_Rifle_Menu"

@@ -60,7 +60,7 @@ public:
 	
 	CHL2MPSWeaponInfo const	&GetHL2MPWpnData() const;
 
-	void CreateMuzzleSmokeEffect();
+	virtual void CreateMuzzleSmokeEffect();
 
 	virtual void FireBullets( const FireBulletsInfo_t &info );
 	virtual void FallInit( void );

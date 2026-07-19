@@ -359,9 +359,11 @@ void C_HL2MP_Player::DrawOverlay(void)
 
 	if (IsLocalPlayer())
 	{
-		if (GetTeamNumber() == TEAM_COMBINE && IsAlive())
+		if ((GetPlayerClass() > CLS_INVALID) && IsAlive())
 		{
-			if (GetPlayerClass() > CLS_METROPOLICE)
+			const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
+
+			if (info.bOverlay)
 			{
 				// Bring up the current overlay
 				IMaterial* pMaterial = materials->FindMaterial("effects/combine_binocoverlay_muted", TEXTURE_GROUP_CLIENT_EFFECTS, false);

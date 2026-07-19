@@ -16,6 +16,8 @@ CAnticitizen_FilePlayerClassInfo_t::CAnticitizen_FilePlayerClassInfo_t()
 	bCanThrowGrenade = false;
 	// all classes can sprint for the moment.
 	bCanSprint = true;
+	bSilentFootsteps = false;
+	bOverlay = false;
 	m_szCArmModel[0] = 0;
 	iCArmSkin = 0;
 	iClassType = CLS_TYPE_NONE;
@@ -56,6 +58,9 @@ void CAnticitizen_FilePlayerClassInfo_t::Parse(KeyValues* pKeyValuesData, const 
 	bADSWeapons = pKeyValuesData->GetBool("CanADSOfWeapons");
 	bCanThrowGrenade = pKeyValuesData->GetBool("CanThrowGrenade");
 	bCanSprint = pKeyValuesData->GetBool("CanSprint", true);
+	bSilentFootsteps = pKeyValuesData->GetBool("SilentFootsteps");
+	bOverlay = pKeyValuesData->GetBool("CombineOverlay");
+	bHasEyeEffect = pKeyValuesData->GetBool("HasEyeEffect");
 	flNormSpeed = pKeyValuesData->GetFloat("Speed", DEFAULT_NORM_SPEED);
 	flSprintSpeed = pKeyValuesData->GetFloat("SprintSpeed", DEFAULT_SPRINT_SPEED);
 	flADSSpeed = pKeyValuesData->GetFloat("ADSSpeed", DEFAULT_ADS_SPEED);

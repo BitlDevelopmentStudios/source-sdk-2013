@@ -42,6 +42,7 @@ const char* pszCombineClasses[] =
 	"combine_soldier",
 	"combine_shotgunner",
 	"combine_elite",
+	"combine_assassin",
 	NULL
 };
 
@@ -51,7 +52,7 @@ const char* pszFreemanClasses[] =
 	NULL
 };
 
-const char *g_ppszPlayerSoundPrefixNames[PLAYER_SOUNDS_MAX] =
+const char * g_ppszPlayerSoundPrefixNames[PLAYER_SOUNDS_MAX] =
 {
 	"NPC_Citizen",
 	"NPC_CombineS",
@@ -353,7 +354,15 @@ void CHL2MP_Player::UpdateStepSound(surfacedata_t* psurface, const Vector& vecOr
 //-----------------------------------------------------------------------------
 void CHL2MP_Player::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, float fvol, bool force )
 {
-	if (m_iPlayerSoundType == (int)PLAYER_SOUNDS_CITIZEN)
+	if (GetPlayerClass() == CLS_INVALID)
+	{
+		BaseClass::PlayStepSound(vecOrigin, psurface, fvol, force);
+		return;
+	}
+
+	const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
+
+	if ((m_iPlayerSoundType == (int)PLAYER_SOUNDS_CITIZEN) || info.bSilentFootsteps)
 	{
 		BaseClass::PlayStepSound(vecOrigin, psurface, fvol, force);
 		return;

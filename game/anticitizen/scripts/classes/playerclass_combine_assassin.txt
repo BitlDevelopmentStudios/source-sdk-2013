@@ -1,0 +1,26 @@
+PlayerClassDatafile
+{
+	// FilePlayerClassInfo_t members
+	"printname"			"#anticitizen_class_assassin"
+	"playermodel"		"models/combine_assassin.mdl"
+	"CArmsModel"		"models/weapons/c_arms_assassin.mdl"
+	"selectcmd"			"class_assassin"
+
+	// CAnticitizen_FilePlayerClassInfo_t members
+	"ClassType"			"1" // 0 = none, 1 = low, 2 = mid, 3 = high, 4 = freeman
+	
+	"Grenades"			"-1"
+	
+	"PrimaryWeapon"		"weapon_crossbow"
+	"SecondaryWeapon"	"weapon_dualpistols"
+	
+	"Health"			"40"
+	"Lives"				"3"
+	"CanThrowGrenade"	"1"
+	"CanSprint"			"0"
+	"SilentFootsteps"	"1"
+	"CombineOverlay"	"1"
+	"HasEyeEffect"		"1"
+	
+	"Speed"				"275"
+}

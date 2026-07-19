@@ -23,6 +23,15 @@ class CHL2MP_Player;
 #include "player_sentence.h"
 #include "hl2mp_playeranimstate.h"
 #include "mp_shareddefs.h"
+#include "SpriteTrail.h"
+#include "Sprite.h"
+
+//Eye states
+enum assassinEyeState_t
+{
+	PLAYER_ASSASSIN_EYE_ACTIVE,			//Actively looking
+	PLAYER_ASSASSIN_EYE_DEAD,				//Completely invisible
+};
 
 //=============================================================================
 // >> HL2MP_Player
@@ -138,6 +147,9 @@ public:
 
 	bool IsReady();
 	void SetReady( bool bReady );
+
+	void SpawnEye();
+	void KillEye();
 
 	void CheckChatText( char *p, int bufsize );
 
@@ -323,6 +335,8 @@ private:
 	CountdownTimer m_grenadeReloadTimer;
 	CountdownTimer m_ballReloadTimer;
 	CountdownTimer m_hackReloadTimer;
+	CSprite* m_pEyeSprite;
+	CSpriteTrail* m_pEyeTrail;
 };
 
 inline CHL2MP_Player *ToHL2MPPlayer( CBaseEntity *pEntity )

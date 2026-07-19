@@ -129,12 +129,32 @@
 		"command"		"joinclass 3"
 	}
 	
+	"assassin"
+	{
+		"ControlName"		"MouseOverPanelButton"
+		"fieldName"		"assassin"
+		"xpos"			"76"
+		"ypos"			"244"
+		"wide"			"148"
+		"tall"			"20"
+		"autoResize"		"0"
+		"pinCorner"		"2"
+		"visible"		"1"
+		"enabled"		"1"
+		"tabPosition"		"0"
+		"labelText"		"#anticitizen_class_assassin"
+		"textAlignment"		"west"
+		"dulltext"		"0"
+		"brighttext"		"0"
+		"command"		"joinclass 4"
+	}
+	
 	"autoselect"
 	{
 		"ControlName"		"MouseOverPanelButton"
 		"fieldName"		"autoselect"
 		"xpos"			"76"
-		"ypos"			"276"
+		"ypos"			"308"
 		"wide"			"148"
 		"tall"			"20"
 		"autoResize"		"0"

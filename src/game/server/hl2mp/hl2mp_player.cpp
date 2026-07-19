@@ -269,6 +269,9 @@ CHL2MP_Player::CHL2MP_Player()
 
 	m_iLives = -1;
 
+	m_pEyeSprite = NULL;
+	m_pEyeTrail = NULL;
+
 	m_cycleLatch = 0;
 	m_cycleLatchTimer.Invalidate();
 
@@ -303,6 +306,8 @@ void CHL2MP_Player::Precache( void )
 
 	PrecacheModel ( "sprites/glow01.vmt" );
 	PrecacheModel("effects/combine_binocoverlay_muted.vmt");
+	PrecacheModel("sprites/redglow1.vmt");
+	PrecacheModel("sprites/bluelaser1.vmt");
 
 	PrecacheFootStepSounds();
 	PrecacheADSSounds();
@@ -472,6 +477,42 @@ void CHL2MP_Player::Spawn(void)
 		{
 			m_SpawnProtectTimer.Start(hl2mp_spawnprotection_time.GetFloat());
 			m_bAllowSpawnProtection = true;
+		}
+	}
+}
+
+void CHL2MP_Player::SpawnEye()
+{
+	int attachment = LookupAttachment("Eye");
+
+	if (attachment != -1)
+	{
+		// Start up the eye glow
+		m_pEyeSprite = CSprite::SpriteCreate("sprites/redglow1.vmt", GetLocalOrigin(), false);
+
+		if (m_pEyeSprite != NULL)
+		{
+			m_pEyeSprite->SetAttachment(this, attachment);
+			m_pEyeSprite->SetTransparency(kRenderTransAdd, 255, 255, 255, 200, kRenderFxNone);
+
+			m_pEyeSprite->SetColor(255, 0, 0);
+			m_pEyeSprite->SetBrightness(164, 0.1f);
+			m_pEyeSprite->SetScale(0.4f, 0.1f);
+		}
+
+		// Start up the eye trail
+		m_pEyeTrail = CSpriteTrail::SpriteTrailCreate("sprites/bluelaser1.vmt", GetLocalOrigin(), false);
+
+		if (m_pEyeTrail != NULL)
+		{
+			m_pEyeTrail->SetAttachment(this, attachment);
+			m_pEyeTrail->SetTransparency(kRenderTransAdd, 255, 0, 0, 200, kRenderFxNone);
+			m_pEyeTrail->SetStartWidth(8.0f);
+			m_pEyeTrail->SetLifeTime(0.75f);
+
+			m_pEyeTrail->SetColor(255, 0, 0);
+			m_pEyeTrail->SetScale(8.0f);
+			m_pEyeTrail->SetBrightness(164);
 		}
 	}
 }
@@ -872,10 +913,10 @@ void CHL2MP_Player::ChangeTeam( int iTeam )
 	}
 }
 
-#define AMMO_TROOP_MAX_PISTOL 90
-#define AMMO_TROOP_MAX_AR2 90
+#define AMMO_TROOP_MAX_PISTOL 180
+#define AMMO_TROOP_MAX_AR2 180
 #define AMMO_TROOP_MAX_SMG1 225
-#define AMMO_TROOP_MAX_BUCKSHOT 32
+#define AMMO_TROOP_MAX_BUCKSHOT 64
 
 void CHL2MP_Player::GiveFreemanWeapons(void)
 {
@@ -951,6 +992,7 @@ void CHL2MP_Player::LoadClass(int iClass)
 	}
 
 	RemoveAllItems(true);
+	KillEye();
 
 	if (!IsAllowedToPickupWeapons())
 	{
@@ -983,6 +1025,13 @@ void CHL2MP_Player::LoadClass(int iClass)
 					pHands->SetSkin(pPlayerClassInfo.iCArmSkin);
 				}
 			}
+		}
+
+		//add an if statement that spawns the eye.
+		//for now, all classes have this.
+		if (pPlayerClassInfo.bHasEyeEffect)
+		{
+			SpawnEye();
 		}
 
 		if (pPlayerClassInfo.iHealth > 0)
@@ -1636,11 +1685,43 @@ void CHL2MP_Player::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecT
 		CBaseCombatWeapon* pCrate = Weapon_OwnsThisType("weapon_crate");
 		CBaseCombatWeapon* pTurret = Weapon_OwnsThisType("weapon_turret");
 
-		if ((GetActiveWeapon() == pManhack) || 
-			(GetActiveWeapon() == pCrate) || 
-			(GetActiveWeapon() == pTurret))
+		bool bHasForbiddenWeapon = ((GetActiveWeapon() == pManhack) ||
+									(GetActiveWeapon() == pCrate) ||
+									(GetActiveWeapon() == pTurret));
+
+		if (bHasForbiddenWeapon)
 		{
 			// refuse to spawn the manhack or crate.
+			return;
+		}
+
+		CBaseCombatWeapon* pDualPistols = Weapon_OwnsThisType("weapon_dualpistols");
+
+		if (GetActiveWeapon() == pDualPistols)
+		{
+			// drop 2 pistols instead.
+			for (int i = 0; i < 2; i++) 
+			{
+				EHANDLE pent;
+
+				pent = CreateEntityByName("weapon_pistol");
+				if (pent == NULL)
+				{
+					Msg("Pistol entity doesn't exist?? How??\n");
+					return;
+				}
+
+				pent->SetLocalOrigin(GetLocalOrigin());
+				pent->AddSpawnFlags(SF_NORESPAWN);
+
+				DispatchSpawn(pent);
+
+				CBaseCombatWeapon* pNewWeapon = dynamic_cast<CBaseCombatWeapon*>((CBaseEntity*)pent);
+				if (pNewWeapon)
+				{
+					BaseClass::BaseClass::Weapon_Drop(pNewWeapon, pvecTarget, pVelocity);
+				}
+			}
 			return;
 		}
 	}
@@ -1864,10 +1945,27 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 
 	FlashlightTurnOff();
 
+	KillEye();
+
 	m_lifeState = LIFE_DEAD;
 
 	RemoveEffects( EF_NODRAW );	// still draw player body
 	StopZooming();
+}
+
+void CHL2MP_Player::KillEye()
+{
+	if (m_pEyeSprite != NULL)
+	{
+		m_pEyeSprite->Remove();
+		m_pEyeSprite = NULL;
+	}
+
+	if (m_pEyeTrail != NULL)
+	{
+		m_pEyeTrail->Remove();
+		m_pEyeTrail = NULL;
+	}
 }
 
 void CHL2MP_Player::TraceAttack(const CTakeDamageInfo& inputInfo, const Vector& vecDir, trace_t* ptr, CDmgAccumulator* pAccumulator)

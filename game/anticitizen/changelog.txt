@@ -26,6 +26,7 @@ Alpha v2:
 - Thrown Crates will now contain the equivalent of 2 suit batteries if used by Freeman.
 - Bots will no longer spam sentences as often.
 - Made bots more aggressive.
+- Added a new class: the Overwatch Female Assassin. (WIP)
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.

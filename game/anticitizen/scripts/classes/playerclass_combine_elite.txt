@@ -20,6 +20,7 @@ PlayerClassDatafile
 	"CanADSOfWeapons"	"1"
 	"TwoHandedWeaponAnims"	"1"
 	"CanThrowGrenade"	"1"
+	"CombineOverlay"	"1"
 	
 	"ADSSpeed"			"72"
 	"Speed"				"215"

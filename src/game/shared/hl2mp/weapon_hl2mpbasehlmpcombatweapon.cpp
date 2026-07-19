@@ -280,7 +280,14 @@ float CBaseHL2MPCombatWeapon::CalcViewmodelBob( void )
 	{
 		const CAnticitizen_FilePlayerClassInfo_t& info = pHL2MPPlayer->GetPlayerClassInfo();
 
-		bCurMaxSpeed = info.flSprintSpeed;
+		if (info.bCanSprint)
+		{
+			bCurMaxSpeed = info.flSprintSpeed;
+		}
+		else
+		{
+			bCurMaxSpeed = info.flNormSpeed;
+		}
 	}
 
 	speed = clamp( speed, -bCurMaxSpeed, bCurMaxSpeed);

@@ -10,12 +10,15 @@
 
 #ifdef CLIENT_DLL
 	#include "c_hl2mp_player.h"
+	#include "c_te_effect_dispatch.h"
 #else
 	#include "hl2mp_player.h"
+	#include "te_effect_dispatch.h"
 #endif
 
 #include "weapon_hl2mpbasehlmpcombatweapon.h"
 #include "weapon_hl2mpbase_machinegun.h"
+#include "particle_parse.h"
 
 #define	PISTOL_FASTEST_REFIRE_TIME		0.1f
 #define	PISTOL_FASTEST_DRY_REFIRE_TIME	0.2f
@@ -50,13 +53,14 @@ public:
 	void	ItemPostFrame( void );
 	void	ItemPreFrame( void );
 	void	ItemBusyFrame( void );
-	void	PrimaryAttack( void );
+	virtual void	PrimaryAttack( void );
 	void	AddViewKick( void );
 	void	DryFire( void );
 
 	void	UpdatePenaltyTime( void );
 
-	Activity	GetPrimaryAttackActivity( void );
+	virtual Activity	GetPrimaryAttackActivity( void );
+	virtual PlayerAnimEvent_t	Get3rdPersonPrimaryAttackActivity(void);
 
 	virtual bool Reload( void );
 
@@ -98,11 +102,12 @@ public:
 	
 	DECLARE_ACTTABLE();
 
-private:
+public:
 	CNetworkVar( float,	m_flSoonestPrimaryAttack );
 	CNetworkVar( float,	m_flLastAttackTime );
 	CNetworkVar( float,	m_flAccuracyPenalty );
 	CNetworkVar( int,	m_nNumShotsFired );
+	CNetworkVar(bool, m_bDontResetShotsFired);
 
 private:
 	CWeaponPistol( const CWeaponPistol & );
@@ -116,11 +121,13 @@ BEGIN_NETWORK_TABLE( CWeaponPistol, DT_WeaponPistol )
 	RecvPropTime( RECVINFO( m_flLastAttackTime ) ),
 	RecvPropFloat( RECVINFO( m_flAccuracyPenalty ) ),
 	RecvPropInt( RECVINFO( m_nNumShotsFired ) ),
+	RecvPropBool(RECVINFO(m_bDontResetShotsFired)),
 #else
 	SendPropTime( SENDINFO( m_flSoonestPrimaryAttack ) ),
 	SendPropTime( SENDINFO( m_flLastAttackTime ) ),
 	SendPropFloat( SENDINFO( m_flAccuracyPenalty ) ),
 	SendPropInt( SENDINFO( m_nNumShotsFired ) ),
+	SendPropBool(SENDINFO(m_bDontResetShotsFired)),
 #endif
 END_NETWORK_TABLE()
 
@@ -130,6 +137,7 @@ BEGIN_PREDICTION_DATA( CWeaponPistol )
 	DEFINE_PRED_FIELD( m_flLastAttackTime, FIELD_FLOAT, FTYPEDESC_INSENDTABLE ),
 	DEFINE_PRED_FIELD( m_flAccuracyPenalty, FIELD_FLOAT, FTYPEDESC_INSENDTABLE ),
 	DEFINE_PRED_FIELD( m_nNumShotsFired, FIELD_INTEGER, FTYPEDESC_INSENDTABLE ),
+	DEFINE_PRED_FIELD(m_bDontResetShotsFired, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 END_PREDICTION_DATA()
 #endif
 
@@ -187,6 +195,7 @@ CWeaponPistol::CWeaponPistol( void )
 	m_fMaxRange2		= 200;
 
 	m_bFiresUnderwater	= true;
+	m_bDontResetShotsFired = false;
 }
 
 #ifndef CLIENT_DLL
@@ -245,9 +254,25 @@ void CWeaponPistol::DryFire( void )
 //-----------------------------------------------------------------------------
 void CWeaponPistol::PrimaryAttack( void )
 {
-	if ( ( gpGlobals->curtime - m_flLastAttackTime ) > 0.5f )
+	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+
+	if (!pOwner)
+		return;
+
+	// Abort here to handle burst and auto fire modes
+	if ((UsesClipsForAmmo1() && m_iClip1 == 0) || (!UsesClipsForAmmo1() && !pOwner->GetAmmoCount(m_iPrimaryAmmoType)))
+		return;
+
+	if (!m_bDontResetShotsFired)
 	{
-		m_nNumShotsFired = 0;
+		if ((gpGlobals->curtime - m_flLastAttackTime) > 0.5f)
+		{
+			m_nNumShotsFired = 0;
+		}
+		else
+		{
+			m_nNumShotsFired++;
+		}
 	}
 	else
 	{
@@ -256,8 +281,6 @@ void CWeaponPistol::PrimaryAttack( void )
 
 	m_flLastAttackTime = gpGlobals->curtime;
 	m_flSoonestPrimaryAttack = gpGlobals->curtime + PISTOL_FASTEST_REFIRE_TIME;
-
-	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
 
 	if( pOwner )
 	{
@@ -268,7 +291,60 @@ void CWeaponPistol::PrimaryAttack( void )
 		pOwner->ViewPunchReset();
 	}
 
-	BaseClass::PrimaryAttack();
+	m_nShotsFired++;
+	m_iPrimaryAttacks++;
+
+	pOwner->DoMuzzleFlash();
+
+	// To make the firing framerate independent, we may have to fire more than one bullet here on low-framerate systems, 
+	// especially if the weapon we're firing has a really fast rate of fire.
+	int iBulletsToFire = 0;
+	float fireRate = GetFireRate();
+
+	while (m_flNextPrimaryAttack <= gpGlobals->curtime)
+	{
+		// MUST call sound before removing a round from the clip of a CHLMachineGun
+		WeaponSound(SINGLE, m_flNextPrimaryAttack);
+		m_flNextPrimaryAttack = m_flNextPrimaryAttack + fireRate;
+		iBulletsToFire++;
+	}
+
+	// Make sure we don't fire more than the amount in the clip, if this weapon uses clips
+	if (UsesClipsForAmmo1())
+	{
+		if (iBulletsToFire > m_iClip1)
+			iBulletsToFire = m_iClip1;
+		m_iClip1 -= iBulletsToFire;
+	}
+
+	CreateMuzzleSmokeEffect();
+
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pOwner);
+
+	// Fire the bullets
+	FireBulletsInfo_t info;
+	info.m_iShots = iBulletsToFire;
+	info.m_vecSrc = pHL2MPPlayer->Weapon_ShootPosition();
+	info.m_vecDirShooting = pOwner->GetAutoaimVector(AUTOAIM_5DEGREES);
+	info.m_vecSpread = pHL2MPPlayer->GetAttackSpread(this);
+	info.m_flDistance = MAX_TRACE_LENGTH;
+	info.m_iAmmoType = m_iPrimaryAmmoType;
+	info.m_iTracerFreq = 2;
+	FireBullets(info);
+
+	//Factor in the view kick
+	AddViewKick();
+
+	if (!m_iClip1 && pOwner->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
+	{
+		// HEV suit - indicate out of ammo condition
+		pOwner->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
+	}
+
+	Activity act = GetPrimaryAttackActivity();
+	SendWeaponAnim(act);
+	PlayerAnimEvent_t thirdact = Get3rdPersonPrimaryAttackActivity();
+	ToHL2MPPlayer(pOwner)->DoAnimationEvent(thirdact);
 
 	// Add an accuracy penalty which can move past our maximum penalty time if we're really spastic
 	m_flAccuracyPenalty += PISTOL_ACCURACY_SHOT_PENALTY_TIME;
@@ -363,6 +439,11 @@ Activity CWeaponPistol::GetPrimaryAttackActivity( void )
 	return ACT_VM_RECOIL3;
 }
 
+PlayerAnimEvent_t CWeaponPistol::Get3rdPersonPrimaryAttackActivity(void)
+{
+	return PLAYERANIMEVENT_ATTACK_PRIMARY;
+}
+
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 bool CWeaponPistol::Reload( void )
@@ -412,4 +493,153 @@ const WeaponProficiencyInfo_t* CWeaponPistol::GetProficiencyValues()
 	COMPILE_TIME_ASSERT(ARRAYSIZE(proficiencyTable) == WEAPON_PROFICIENCY_PERFECT + 1);
 
 	return proficiencyTable;
+}
+
+#ifdef CLIENT_DLL
+#define CWeaponDualPistols C_WeaponDualPistols
+#endif
+
+//-----------------------------------------------------------------------------
+// CWeaponDualPistols
+//-----------------------------------------------------------------------------
+
+class CWeaponDualPistols : public CWeaponPistol
+{
+public:
+	DECLARE_CLASS(CWeaponDualPistols, CWeaponPistol);
+
+	CWeaponDualPistols(void);
+
+	DECLARE_NETWORKCLASS();
+	DECLARE_PREDICTABLE();
+
+	Activity			GetPrimaryAttackActivity(void) OVERRIDE;
+	PlayerAnimEvent_t	Get3rdPersonPrimaryAttackActivity(void) OVERRIDE;
+	void 				CreateMuzzleSmokeEffect() OVERRIDE;
+
+	bool		ShouldSwitchPistol(void) { return ((m_nNumShotsFired % 2) == 0); }
+
+	DECLARE_ACTTABLE();
+
+private:
+	CWeaponDualPistols(const CWeaponDualPistols&);
+};
+
+IMPLEMENT_NETWORKCLASS_ALIASED(WeaponDualPistols, DT_WeaponDualPistols)
+
+BEGIN_NETWORK_TABLE(CWeaponDualPistols, DT_WeaponDualPistols)
+END_NETWORK_TABLE()
+
+#ifdef CLIENT_DLL
+BEGIN_PREDICTION_DATA(CWeaponDualPistols)
+END_PREDICTION_DATA()
+#endif
+
+LINK_ENTITY_TO_CLASS(weapon_dualpistols, CWeaponDualPistols);
+PRECACHE_WEAPON_REGISTER(weapon_dualpistols);
+
+acttable_t CWeaponDualPistols::m_acttable[] =
+{
+	{ ACT_MP_STAND_IDLE,				ACT_HL2MP_IDLE_PISTOL2,					false },
+	{ ACT_MP_CROUCH_IDLE,				ACT_HL2MP_IDLE_CROUCH_PISTOL2,			false },
+
+	{ ACT_MP_RUN,						ACT_HL2MP_RUN_PISTOL2,					false },
+	{ ACT_MP_CROUCHWALK,				ACT_HL2MP_WALK_CROUCH_PISTOL2,			false },
+
+	{ ACT_MP_ATTACK_STAND_PRIMARYFIRE,	ACT_HL2MP_GESTURE_RANGE_ATTACK_PISTOL2_R,	false },
+	{ ACT_MP_ATTACK_CROUCH_PRIMARYFIRE,	ACT_HL2MP_GESTURE_RANGE_ATTACK_PISTOL2_R,	false },
+
+	{ ACT_MP_ATTACK_STAND_SECONDARYFIRE,	ACT_HL2MP_GESTURE_RANGE_ATTACK_PISTOL2_L,	false },
+	{ ACT_MP_ATTACK_CROUCH_SECONDARYFIRE,	ACT_HL2MP_GESTURE_RANGE_ATTACK_PISTOL2_L,	false },
+
+	{ ACT_MP_RELOAD_STAND,				ACT_HL2MP_GESTURE_RELOAD_PISTOL2,		false },
+	{ ACT_MP_RELOAD_CROUCH,				ACT_HL2MP_GESTURE_RELOAD_PISTOL2,		false },
+
+	{ ACT_MP_JUMP,						ACT_HL2MP_JUMP_PISTOL2,					false },
+
+	{ ACT_RANGE_ATTACK1,				ACT_RANGE_ATTACK_PISTOL,				false },
+};
+
+IMPLEMENT_ACTTABLE(CWeaponDualPistols);
+
+//-----------------------------------------------------------------------------
+// Purpose: Constructor
+//-----------------------------------------------------------------------------
+CWeaponDualPistols::CWeaponDualPistols(void)
+{
+	m_flSoonestPrimaryAttack = gpGlobals->curtime;
+	m_flAccuracyPenalty = 0.0f;
+
+	m_fMinRange1 = 24;
+	m_fMaxRange1 = 1500;
+	m_fMinRange2 = 24;
+	m_fMaxRange2 = 200;
+
+	m_bFiresUnderwater = true;
+	m_bDontResetShotsFired = true;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Output : int
+//-----------------------------------------------------------------------------
+Activity CWeaponDualPistols::GetPrimaryAttackActivity(void)
+{
+	if (ShouldSwitchPistol())
+	{
+		if (m_nNumShotsFired < 1)
+			return ACT_VM_SECONDARYATTACK;
+
+		if (m_nNumShotsFired < 2)
+			return ACT_VM_HITLEFT;
+
+		if (m_nNumShotsFired < 3)
+			return ACT_VM_HITLEFT2;
+
+		return ACT_VM_MISSLEFT;
+	}
+	else
+	{
+		if (m_nNumShotsFired < 1)
+			return ACT_VM_PRIMARYATTACK;
+
+		if (m_nNumShotsFired < 2)
+			return ACT_VM_RECOIL1;
+
+		if (m_nNumShotsFired < 3)
+			return ACT_VM_RECOIL2;
+
+		return ACT_VM_RECOIL3;
+	}
+}
+
+PlayerAnimEvent_t CWeaponDualPistols::Get3rdPersonPrimaryAttackActivity(void)
+{
+	if (ShouldSwitchPistol())
+	{
+		return PLAYERANIMEVENT_ATTACK_SECONDARY;
+	}
+	else
+	{
+		return PLAYERANIMEVENT_ATTACK_PRIMARY;
+	}
+}
+
+void CWeaponDualPistols::CreateMuzzleSmokeEffect()
+{
+	const char* szAttachment = "muzzle";
+
+	if (ShouldSwitchPistol())
+	{
+		szAttachment = "muzzle1";
+	}
+	
+	if (GetPlayerOwner())
+	{
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, GetPlayerOwner()->GetViewModel(), szAttachment, true);
+	}
+	else
+	{
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, szAttachment, true);
+	}
 }

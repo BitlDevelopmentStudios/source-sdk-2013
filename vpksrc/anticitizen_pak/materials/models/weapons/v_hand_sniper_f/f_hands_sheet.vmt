@@ -1,0 +1,17 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\v_hand_sniper_f\f_hands_sheet"
+	"$bumpmap" "models\weapons\v_hand_sniper_f\f_hands_sheet_normal"
+	"$model" 1
+
+	"$phong" "1"
+	"$phongboost" "0.5"
+	"$phongexponent" "5"
+	"$phongalbedotint" "1"										
+	"$phongfresnelranges"	"[.1 .5  1]"
+
+	//rimlight parameters
+	"$rimlight" "1"
+	"$rimlightexponent" "40"
+	"$rimlightboost" "0.4"
+}

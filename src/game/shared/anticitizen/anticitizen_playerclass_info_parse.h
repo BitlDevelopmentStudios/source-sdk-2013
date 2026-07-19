@@ -91,7 +91,10 @@ public:
 	bool					bADSWeapons;
 	bool					bCanThrowGrenade;
 	bool					bCanSprint;
+	bool					bSilentFootsteps;
 	bool					bTwoHandedWeaponAnims;
+	bool					bOverlay;
+	bool					bHasEyeEffect;
 
 	float					flNormSpeed;
 	float					flSprintSpeed;
