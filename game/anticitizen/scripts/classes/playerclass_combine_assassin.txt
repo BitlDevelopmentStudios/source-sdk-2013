@@ -11,7 +11,7 @@ PlayerClassDatafile
 	
 	"Grenades"			"-1"
 	
-	"PrimaryWeapon"		"weapon_crossbow"
+	"PrimaryWeapon"		"weapon_sniperrifle"
 	"SecondaryWeapon"	"weapon_dualpistols"
 	
 	"Health"			"40"

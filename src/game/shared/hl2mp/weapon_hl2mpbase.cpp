@@ -120,11 +120,11 @@ void CWeaponHL2MPBase::CreateMuzzleSmokeEffect()
 {
 	if (GetPlayerOwner())
 	{
-		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, GetPlayerOwner()->GetViewModel(), "muzzle", true);
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, GetPlayerOwner()->GetViewModel(), "muzzle", false);
 	}
 	else
 	{
-		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", false);
 	}
 }
 

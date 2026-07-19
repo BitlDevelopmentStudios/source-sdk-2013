@@ -339,6 +339,8 @@ $Project "Server (ANTICITIZEN)"
 				$File	"$SRCDIR\game\shared\anticitizen\weapon_manhack.cpp"
 				$File	"$SRCDIR\game\shared\anticitizen\weapon_crate.cpp"
 				$File	"$SRCDIR\game\shared\anticitizen\weapon_turret.cpp"
+				$File	"$SRCDIR\game\shared\anticitizen\weapon_sniperrifle.cpp"
+				$File	"$SRCDIR\game\shared\anticitizen\weapon_sniperrifle.h"
 			}
 		}
 

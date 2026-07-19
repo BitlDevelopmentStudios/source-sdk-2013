@@ -33,6 +33,7 @@
 	#include "ai_basenpc.h"
 	#include "env_zoom.h"
 	#include "ammodef.h"
+	#include "anticitizen/weapon_sniperrifle.h"
 
 	extern int TrainSpeed(int iSpeed, int iMax);
 	
@@ -301,6 +302,33 @@ void CBasePlayer::ItemPostFrame()
 	}
 
 #if !defined( CLIENT_DLL )
+	CBaseCombatWeapon* pWeapon;
+	CWeaponSniperRifle* pSniperRifle = NULL;
+
+	//find the railgun and update its itempostframe.
+	for (int i = 0; i < WeaponCount(); i++)
+	{
+		pWeapon = GetWeapon(i);
+
+		if (pWeapon == NULL)
+			continue;
+
+		// If we have an active weapon, skip it.
+		if (pWeapon == GetActiveWeapon())
+			continue;
+
+		if (FStrEq(pWeapon->GetClassname(), "weapon_sniperrifle"))
+		{
+			pSniperRifle = (CWeaponSniperRifle*)pSniperRifle;
+			break;
+		}
+	}
+
+	if (pSniperRifle)
+	{
+		pSniperRifle->HolsterThink();
+	}
+
 	ImpulseCommands();
 
 	if( sv_infinite_ammo.GetBool() && GetActiveWeapon() )
