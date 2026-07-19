@@ -496,6 +496,8 @@ void CHL2MP_Player::SpawnEye()
 			m_pEyeTrail->SetStartWidth(8.0f);
 			m_pEyeTrail->SetLifeTime(0.75f);
 
+			m_pEyeTrail->SetVisibleByLocalPlayer(false);
+
 			m_pEyeTrail->SetColor(255, 0, 0);
 			m_pEyeTrail->SetScale(8.0f);
 			m_pEyeTrail->SetBrightness(164);

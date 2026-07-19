@@ -95,6 +95,7 @@ BEGIN_NETWORK_TABLE( CSpriteTrail, DT_SpriteTrail )
 	SendPropFloat( SENDINFO(m_flMinFadeLength),	0,	SPROP_NOSCALE ),
 	SendPropVector( SENDINFO(m_vecSkyboxOrigin),0,	SPROP_NOSCALE ),
 	SendPropFloat( SENDINFO(m_flSkyboxScale),	0,	SPROP_NOSCALE ),
+	SendPropBool(SENDINFO(m_bDrawForLocalPlayer)),
 #else
 	RecvPropFloat( RECVINFO(m_flLifeTime)),
 	RecvPropFloat( RECVINFO(m_flStartWidth)),
@@ -104,6 +105,7 @@ BEGIN_NETWORK_TABLE( CSpriteTrail, DT_SpriteTrail )
 	RecvPropFloat( RECVINFO(m_flMinFadeLength)),
 	RecvPropVector( RECVINFO(m_vecSkyboxOrigin)),
 	RecvPropFloat( RECVINFO(m_flSkyboxScale)),
+	RecvPropBool(RECVINFO(m_bDrawForLocalPlayer)),
 #endif
 END_NETWORK_TABLE()
 
@@ -128,6 +130,7 @@ CSpriteTrail::CSpriteTrail( void )
 	m_flSkyboxScale = 1.0f;
 	m_flEndWidth = -1.0f;
 	m_bDrawForMoveParent = true;
+	m_bDrawForLocalPlayer = true;
 }
 
 void CSpriteTrail::Spawn( void )
@@ -422,6 +425,14 @@ void CSpriteTrail::UpdateTrail( void )
 int CSpriteTrail::DrawModel( int flags )
 {
 	VPROF_BUDGET( "CSpriteTrail::DrawModel", VPROF_BUDGETGROUP_PARTICLE_RENDERING );
+
+	if (!m_bDrawForLocalPlayer)
+	{
+		CBasePlayer* pLocalPlayer = CBasePlayer::GetLocalPlayer();
+
+		if (GetMoveParent() == pLocalPlayer)
+			return 0;
+	}
 	
 	// Must have at least one point
 	if ( m_nStepCount < 1 )

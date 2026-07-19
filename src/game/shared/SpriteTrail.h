@@ -54,6 +54,7 @@ public:
 	void Spawn( void );
 	void Precache( void );
 	void SetTransmit( bool bTransmit = true ) { m_bDrawForMoveParent = bTransmit; }
+	void SetVisibleByLocalPlayer(bool bVisibleByLocalPlayer = true) { m_bDrawForLocalPlayer = bVisibleByLocalPlayer; }
 
 #if defined( CLIENT_DLL ) 
 	// Client only code
@@ -110,6 +111,7 @@ private:
 	CNetworkVar( float, m_flMinFadeLength );	// The end of the trail must fade out for this many units
 	CNetworkVector( m_vecSkyboxOrigin );	// What's our skybox origin?
 	CNetworkVar( float, m_flSkyboxScale );	// What's our skybox scale?
+	CNetworkVar(bool, m_bDrawForLocalPlayer);
 
 	string_t m_iszSpriteName;
 	bool	m_bAnimate;
