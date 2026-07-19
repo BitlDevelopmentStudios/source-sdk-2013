@@ -335,7 +335,6 @@ private:
 	CountdownTimer m_grenadeReloadTimer;
 	CountdownTimer m_ballReloadTimer;
 	CountdownTimer m_hackReloadTimer;
-	CSprite* m_pEyeSprite;
 	CSpriteTrail* m_pEyeTrail;
 };
 

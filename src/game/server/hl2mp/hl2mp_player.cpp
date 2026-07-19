@@ -269,7 +269,6 @@ CHL2MP_Player::CHL2MP_Player()
 
 	m_iLives = -1;
 
-	m_pEyeSprite = NULL;
 	m_pEyeTrail = NULL;
 
 	m_cycleLatch = 0;
@@ -487,19 +486,6 @@ void CHL2MP_Player::SpawnEye()
 
 	if (attachment != -1)
 	{
-		// Start up the eye glow
-		m_pEyeSprite = CSprite::SpriteCreate("sprites/redglow1.vmt", GetLocalOrigin(), false);
-
-		if (m_pEyeSprite != NULL)
-		{
-			m_pEyeSprite->SetAttachment(this, attachment);
-			m_pEyeSprite->SetTransparency(kRenderTransAdd, 255, 255, 255, 200, kRenderFxNone);
-
-			m_pEyeSprite->SetColor(255, 0, 0);
-			m_pEyeSprite->SetBrightness(164, 0.1f);
-			m_pEyeSprite->SetScale(0.4f, 0.1f);
-		}
-
 		// Start up the eye trail
 		m_pEyeTrail = CSpriteTrail::SpriteTrailCreate("sprites/bluelaser1.vmt", GetLocalOrigin(), false);
 
@@ -1955,12 +1941,6 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 
 void CHL2MP_Player::KillEye()
 {
-	if (m_pEyeSprite != NULL)
-	{
-		m_pEyeSprite->Remove();
-		m_pEyeSprite = NULL;
-	}
-
 	if (m_pEyeTrail != NULL)
 	{
 		m_pEyeTrail->Remove();
