@@ -31,6 +31,7 @@ Alpha v2:
 	- Primary Weapon: The Overwatch Sniper Rifle - A powerful sniper rifle with a rechargable battery that adjusts damage based on charge.
 	- Secondary Weapon: Dual 9mm Pistols
 - Fixed a glitch that sometimes causes tips to not load.
+- Buffed Pistol damage from 5 to 7.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.
