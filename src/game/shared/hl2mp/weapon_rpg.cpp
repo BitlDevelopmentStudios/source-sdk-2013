@@ -2026,7 +2026,7 @@ void CWeaponRPG::UpdateLaserPosition( Vector vecMuzzlePos, Vector vecEndPos )
 			m_hLaserDot->TurnOff();
 		}
 
-		Vector	laserPos = tr.endpos;
+		Vector	laserPos = (tr.endpos + (tr.plane.normal * 1.0f));
 		m_hLaserDot->SetLaserPosition( laserPos, tr.plane.normal );
 				
 		if ( tr.DidHitNonWorldEntity() )
