@@ -324,6 +324,8 @@ $Project "Server (ANTICITIZEN)"
 			$File	"$SRCDIR\game\shared\anticitizen\anticitizen_playerclass_info_parse.h"
 			$File	"$SRCDIR\game\shared\anticitizen\achievements_anticitizen.cpp"
 			$File	"$SRCDIR\game\shared\anticitizen\achievements_anticitizen.h"
+			$File	"actual_bullet.cpp"
+			$File	"actual_bullet.h"
 			
 			$Folder "Bots"
 			{

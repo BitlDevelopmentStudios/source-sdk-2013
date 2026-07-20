@@ -22,6 +22,7 @@
 #else
 	#include "hl2mp_player.h"
 	#include "te_effect_dispatch.h"
+	#include "actual_bullet.h"
 #endif
 
 #include "weapon_hl2mpbasehlmpcombatweapon.h"
@@ -57,7 +58,6 @@ public:
 	void	ItemPostFrame(void);
 	void	HolsterThink(void);
 	const char* GetTracerType(void) { return "AR2Tracer"; }
-	void	DoImpactEffect(trace_t& tr, int nDamageType);
 	void	CheckZoomToggle(void);
 	virtual void	SecondaryAttack(void);
 	void	ToggleZoom(void);

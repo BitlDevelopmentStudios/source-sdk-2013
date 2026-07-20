@@ -176,7 +176,10 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 	}
 
 	// Fire the bullets, and force the first shot to be perfectly accuracy
-	pPlayer->FireBullets( info );
+	//pPlayer->FireBullets( info );
+#ifndef CLIENT_DLL
+	FireActualBullet(info, 6000.0f, GetTracerType(), true, true, "AR2Impact");
+#endif // CLIENT_DLL
 
 #ifdef CLIENT_DLL
 	//Disorient the player
@@ -406,23 +409,6 @@ void CWeaponSniperRifle::HolsterThink(void)
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: 
-// Input  : &tr - 
-//			nDamageType - 
-//-----------------------------------------------------------------------------
-void CWeaponSniperRifle::DoImpactEffect(trace_t& tr, int nDamageType)
-{
-	CEffectData data;
-
-	data.m_vOrigin = tr.endpos + (tr.plane.normal * 1.0f);
-	data.m_vNormal = tr.plane.normal;
-
-	DispatchEffect("AR2Impact", data);
-
-	BaseClass::DoImpactEffect(tr, nDamageType);
-}
-
-//-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 void CWeaponSniperRifle::LaserOff(void)
 {
@@ -479,7 +465,7 @@ void CWeaponSniperRifle::LaserOn(void)
 		m_hLaserDot = CreateLaserDotEx(GetAbsOrigin(), this, false, 1);
 	}
 
-	SetLaserDotPostition(m_hLaserDot, tr.endpos, tr.plane.normal);
+	SetLaserDotPostition(m_hLaserDot, (tr.endpos + (tr.plane.normal * 1.0f)), tr.plane.normal);
 	EnableLaserDot(m_hLaserDot, true);
 #endif
 
