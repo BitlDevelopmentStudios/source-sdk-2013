@@ -80,3 +80,12 @@
 
 	"wave"	"player/ironsight_off_combine_s.wav"
 }
+
+"Weapon_SniperRifle.ChargeProgress"
+{
+	"channel"	"CHAN_AUTO"
+	"volume"	"0.9"
+	"soundlevel"  	"SNDLVL_75dB"
+
+	"wave"	"weapons/slam/buttonclick.wav"
+}

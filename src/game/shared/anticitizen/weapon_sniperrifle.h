@@ -13,7 +13,7 @@
 
 #include "npcevent.h"
 #include "in_buttons.h"
-#include "beam_shared.h"
+#include "hl2mp/weapon_rpg.h"
 
 #ifdef CLIENT_DLL
 	#include "c_hl2mp_player.h"
@@ -30,6 +30,16 @@
 #define CWeaponSniperRifle C_WeaponSniperRifle
 #endif
 
+#define SNIPER_RANGE 4096
+#define SNIPER_CHARGE_DRAIN 25
+
+enum ChargeState_t
+{
+	CHARGE_STATE_ACTIVE,
+	CHARGE_STATE_ZOOMED,
+	CHARGE_STATE_HOLSTERED,
+};
+
 //-----------------------------------------------------------------------------
 // CWeaponSniperRifle
 //-----------------------------------------------------------------------------
@@ -40,6 +50,7 @@ class CWeaponSniperRifle : public CBaseHL2MPCombatWeapon
 public:
 
 	CWeaponSniperRifle( void );
+	~CWeaponSniperRifle(void);
 
 	void	PrimaryAttack( void );
 	void	Precache(void);
@@ -53,10 +64,27 @@ public:
 	virtual bool	Holster(CBaseCombatWeapon* pSwitchingTo = NULL);
 	virtual void	ItemBusyFrame(void);
 	void			Drop(const Vector& vecVelocity);
-#ifndef CLIENT_DLL
+	bool			ShouldBeep(void);
+	void			Charge(int iState);
+
+	void	TurnOff(void);
+
 	void	LaserOff(void);
 	void	LaserOn(void);
-#endif
+
+	virtual bool IsWeaponZoomed() { return m_bInZoom; }		// Is this weapon in its 'zoomed in' mode?
+
+	virtual const Vector& GetBulletSpread(void)
+	{
+		static Vector cone;
+
+		cone = VECTOR_CONE_2DEGREES;
+
+		if (m_bInZoom)
+			cone = vec3_origin;
+
+		return cone;
+	}
 
 	DECLARE_NETWORKCLASS(); 
 	DECLARE_PREDICTABLE();
@@ -64,9 +92,11 @@ public:
 
 private:
 	CNetworkVar(bool, m_bInZoom);
+	CNetworkVar(bool, m_bLaserOn);
+	CNetworkVar(float, m_flRechargeTime);
+
 #ifndef CLIENT_DLL
-	int sHaloSprite;
-	CBeam* m_pBeam;
+	EHANDLE	m_hLaserDot;
 #endif
 
 private:

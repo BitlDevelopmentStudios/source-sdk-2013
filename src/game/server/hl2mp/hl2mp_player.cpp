@@ -33,6 +33,7 @@
 #include "bot/hl2mp_bot.h"
 
 #include "igameresources.h"
+#include "weapon_sniperrifle.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -735,7 +736,17 @@ void CHL2MP_Player::FireBullets ( const FireBulletsInfo_t &info )
 
 	if ( pWeapon )
 	{
-		modinfo.m_iPlayerDamage = modinfo.m_flDamage = (pWeapon->GetHL2MPWpnData().m_iPlayerDamage * modinfo.m_flDamageScale);
+		//modinfo.m_iPlayerDamage = modinfo.m_flDamage = (pWeapon->GetHL2MPWpnData().m_iPlayerDamage * modinfo.m_flDamageScale);
+
+		CAmmoDef* pAmmoDef = GetAmmoDef();
+		int nPlrDmg = pAmmoDef->PlrDamage(info.m_iAmmoType);
+
+		if (nPlrDmg <= 0)
+		{
+			nPlrDmg = pWeapon->GetHL2MPWpnData().m_iPlayerDamage;
+		}
+
+		modinfo.m_iPlayerDamage = modinfo.m_flDamage = (nPlrDmg * modinfo.m_flDamageScale);
 	}
 
 	BaseClass::FireBullets( modinfo );
@@ -1672,13 +1683,25 @@ void CHL2MP_Player::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecT
 		CBaseCombatWeapon* pManhack = Weapon_OwnsThisType("weapon_manhack");
 		CBaseCombatWeapon* pCrate = Weapon_OwnsThisType("weapon_crate");
 		CBaseCombatWeapon* pTurret = Weapon_OwnsThisType("weapon_turret");
+		CBaseCombatWeapon* pSniper = Weapon_OwnsThisType("weapon_sniperrifle");
 
 		bool bHasForbiddenWeapon = ((GetActiveWeapon() == pManhack) ||
 									(GetActiveWeapon() == pCrate) ||
-									(GetActiveWeapon() == pTurret));
+									(GetActiveWeapon() == pTurret) ||
+									(GetActiveWeapon() == pSniper));
 
 		if (bHasForbiddenWeapon)
 		{
+			if ((GetActiveWeapon() == pSniper))
+			{
+				CWeaponSniperRifle* pSniperRifle = (CWeaponSniperRifle*)pSniper;
+
+				if (pSniperRifle)
+				{
+					pSniperRifle->TurnOff();
+				}
+			}
+
 			// refuse to spawn the manhack or crate.
 			return;
 		}

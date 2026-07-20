@@ -22,5 +22,6 @@ PlayerClassDatafile
 	"CombineOverlay"	"1"
 	"HasEyeEffect"		"1"
 	
+	"ADSSpeed"			"72"
 	"Speed"				"275"
 }

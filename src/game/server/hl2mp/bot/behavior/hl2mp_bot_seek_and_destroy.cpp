@@ -8,6 +8,7 @@
 #include "bot/behavior/hl2mp_bot_attack.h"
 #include "bot/behavior/hl2mp_bot_seek_and_destroy.h"
 #include "bot/behavior/hl2mp_bot_get_prop.h"
+#include "bot/sniper/anticitizen_bot_sniper_attack.h"
 #include "nav_mesh.h"
 
 extern ConVar hl2mp_bot_path_lookahead_range;
@@ -80,7 +81,14 @@ ActionResult< CHL2MPBot >	CHL2MPBotSeekAndDestroy::Update( CHL2MPBot *me, float 
 		if ( me->IsRangeLessThan( threat->GetLastKnownPosition(), engageRange ) )
 		{
 			me->SpeakSentenceForConcept(MP_SENTENCE_REFIND_ENEMY);
-			return SuspendFor( new CHL2MPBotAttack, "Going after an enemy" );
+			if (me->GetPlayerClass() == CLS_COMBINE_ASSASSIN)
+			{
+				return SuspendFor(new CHL2MPBotSniperAttack, "Going after an enemy");
+			}
+			else
+			{
+				return SuspendFor(new CHL2MPBotAttack, "Going after an enemy");
+			}
 		}
 	}
 	else if ( !me->IsPropHater() )

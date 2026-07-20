@@ -332,6 +332,14 @@ $Project "Server (ANTICITIZEN)"
 					$File	"anticitizen\bot\squad\anticitizen_bot_escort_squad_leader.cpp"
 					$File	"anticitizen\bot\squad\anticitizen_bot_escort_squad_leader.h"
 				}
+				
+				$Folder "Sniper"
+				{
+					$File	"anticitizen\bot\sniper\anticitizen_bot_sniper_attack.cpp"
+					$File	"anticitizen\bot\sniper\anticitizen_bot_sniper_attack.h"
+					$File	"anticitizen\bot\sniper\anticitizen_bot_sniper_lurk.cpp"
+					$File	"anticitizen\bot\sniper\anticitizen_bot_sniper_lurk.h"
+				}
 			}
 			
 			$Folder	"Weapons"

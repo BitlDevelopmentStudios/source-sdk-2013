@@ -535,7 +535,7 @@ void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
 			m_HL2Local.m_bNewSprinting = bSprinting;
 
 			CBaseCombatWeapon* myWeapon = GetActiveWeapon();
-			if (info.bADSWeapons && myWeapon && myWeapon->IsIronsighted())
+			if (myWeapon && ((info.bADSWeapons && myWeapon->IsIronsighted()) || myWeapon->IsWeaponZoomed()))
 			{
 				mv->m_flClientMaxSpeed = info.flADSSpeed;
 			}

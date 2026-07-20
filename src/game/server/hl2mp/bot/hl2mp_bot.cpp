@@ -26,6 +26,10 @@ ConVar hl2mp_bot_notice_quiet_gunfire_range( "hl2mp_bot_notice_quiet_gunfire_ran
 ConVar hl2mp_bot_prefix_name_with_difficulty( "hl2mp_bot_prefix_name_with_difficulty", "0", FCVAR_GAMEDLL, "Append the skill level of the bot to the bot's name" );
 ConVar hl2mp_bot_near_point_travel_distance( "hl2mp_bot_near_point_travel_distance", "750", FCVAR_CHEAT, "If within this travel distance to the current point, bot is 'near' it" );
 
+ConVar anticitizen_bot_sniper_spot_search_count("anticitizen_bot_sniper_spot_search_count", "10", FCVAR_CHEAT, "Search this many times per behavior update frame");
+ConVar anticitizen_bot_sniper_spot_epsilon("anticitizen_bot_sniper_spot_epsilon", "100", FCVAR_CHEAT);
+ConVar anticitizen_bot_sniper_spot_max_count("anticitizen_bot_sniper_spot_max_count", "10", FCVAR_CHEAT, "Stop searching for sniper spots when each side has found this many");
+
 ConVar hl2mp_bot_debug_tags( "hl2mp_bot_debug_tags", "0", FCVAR_CHEAT, "ent_text will only show tags on bots" );
 
 ConVar hl2mp_bot_ignore_real_players( "hl2mp_bot_ignore_real_players", "0", FCVAR_CHEAT );
@@ -114,7 +118,7 @@ int Bot_GetClassByName(const char* string)
 	{
 		iTeam = CLS_COMBINE_ELITE;
 	}
-	else if (!stricmp(string, "assassin"))
+	else if (!stricmp(string, "assassin") || !stricmp(string, "sniper"))
 	{
 		iTeam = CLS_COMBINE_ASSASSIN;
 	}
@@ -2333,6 +2337,10 @@ void CHL2MPBot::ScriptGetAllTags( HSCRIPT hTable )
 Action< CHL2MPBot > *CHL2MPBot::OpportunisticallyUseWeaponAbilities( void )
 {
 	if (GetDifficulty() <= CHL2MPBot::DifficultyType::NORMAL)
+		return NULL;
+
+	// don't use weapon abilities at this time.
+	if (GetPlayerClass() == CLS_COMBINE_ASSASSIN)
 		return NULL;
 
 	if ( !m_opportunisticTimer.IsElapsed() )

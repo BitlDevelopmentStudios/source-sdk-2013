@@ -319,7 +319,7 @@ void CBasePlayer::ItemPostFrame()
 
 		if (FStrEq(pWeapon->GetClassname(), "weapon_sniperrifle"))
 		{
-			pSniperRifle = (CWeaponSniperRifle*)pSniperRifle;
+			pSniperRifle = (CWeaponSniperRifle*)pWeapon;
 			break;
 		}
 	}

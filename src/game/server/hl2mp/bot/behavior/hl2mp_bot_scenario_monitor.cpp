@@ -17,6 +17,9 @@
 #include "bot/behavior/hl2mp_bot_get_health.h"
 #include "bot/behavior/hl2mp_bot_get_ammo.h"
 
+#include "bot/sniper/anticitizen_bot_sniper_lurk.h"
+#include "weapon_sniperrifle.h"
+
 #include "bot/behavior/hl2mp_bot_attack.h"
 #include "bot/behavior/hl2mp_bot_seek_and_destroy.h"
 
@@ -53,6 +56,11 @@ Action< CHL2MPBot > *CHL2MPBotScenarioMonitor::InitialContainedAction( CHL2MPBot
 // Returns Action specific to the scenario and my class
 Action< CHL2MPBot > *CHL2MPBotScenarioMonitor::DesiredScenarioAndClassAction( CHL2MPBot *me )
 {
+	if (me->GetPlayerClass() == CLS_COMBINE_ASSASSIN)
+	{
+		return new CHL2MPBotSniperLurk;
+	}
+
 	return new CHL2MPBotSeekAndDestroy;
 }
 

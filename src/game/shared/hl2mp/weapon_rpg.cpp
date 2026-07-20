@@ -83,6 +83,8 @@ public:
 
 	void	MakeInvisible( void );
 
+	void	SetType(int type) { m_nType = type; }
+
 #ifdef CLIENT_DLL
 
 	virtual bool			IsTransparent( void ) { return true; }
@@ -99,6 +101,7 @@ protected:
 	EHANDLE				m_hTargetEnt;
 	bool				m_bVisibleLaserDot;
 	bool				m_bIsOn;
+	CNetworkVar(int, m_nType);
 
 	DECLARE_NETWORKCLASS();
 	DECLARE_DATADESC();
@@ -109,6 +112,11 @@ public:
 IMPLEMENT_NETWORKCLASS_ALIASED( LaserDot, DT_LaserDot )
 
 BEGIN_NETWORK_TABLE( CLaserDot, DT_LaserDot )
+#ifdef CLIENT_DLL
+	RecvPropInt(RECVINFO(m_nType)),
+#else
+	SendPropInt(SENDINFO(m_nType)),
+#endif
 END_NETWORK_TABLE()
 
 #ifndef CLIENT_DLL
@@ -1349,6 +1357,7 @@ void CAPCMissile::ComputeActualDotPosition( CLaserDot *pLaserDot, Vector *pActua
 #define	RPG_BEAM_SPRITE		"effects/laser1.vmt"
 #define	RPG_BEAM_SPRITE_NOZ	"effects/laser1_noz.vmt"
 #define	RPG_LASER_SPRITE	"sprites/redglow1.vmt"
+#define	SNIPER_LASER_SPRITE	"sprites/blueglow1.vmt"
 
 //=============================================================================
 // RPG
@@ -2463,10 +2472,24 @@ CBaseEntity *CreateLaserDot( const Vector &origin, CBaseEntity *pOwner, bool bVi
 	return CLaserDot::Create( origin, pOwner, bVisibleDot );
 }
 
+CBaseEntity* CreateLaserDotEx(const Vector& origin, CBaseEntity* pOwner, bool bVisibleDot, int iType)
+{
+	CLaserDot* pDot = CLaserDot::Create(origin, pOwner, bVisibleDot);
+	pDot->SetType(iType);
+
+	return pDot;
+}
+
 void SetLaserDotTarget( CBaseEntity *pLaserDot, CBaseEntity *pTarget )
 {
 	CLaserDot *pDot = assert_cast< CLaserDot* >(pLaserDot );
 	pDot->SetTargetEntity( pTarget );
+}
+
+void SetLaserDotPostition(CBaseEntity* pLaserDot, const Vector& origin, const Vector& normal)
+{
+	CLaserDot* pDot = assert_cast<CLaserDot*>(pLaserDot);
+	pDot->SetLaserPosition(origin, normal);
 }
 
 void EnableLaserDot( CBaseEntity *pLaserDot, bool bEnable )
@@ -2486,6 +2509,7 @@ CLaserDot::CLaserDot( void )
 {
 	m_hTargetEnt = NULL;
 	m_bIsOn = true;
+	m_nType = 0;
 #ifndef CLIENT_DLL
 	g_LaserDotList.Insert( this );
 #endif
@@ -2584,7 +2608,8 @@ void CLaserDot::MakeInvisible( void )
 //-----------------------------------------------------------------------------
 int CLaserDot::DrawModel( int flags )
 {
-	color32 color={255,255,255,255};
+	color32 color = {255,255,255,255};
+
 	Vector	vecAttachment, vecDir;
 	QAngle	angles;
 
@@ -2641,7 +2666,14 @@ void CLaserDot::OnDataChanged( DataUpdateType_t updateType )
 {
 	if ( updateType == DATA_UPDATE_CREATED )
 	{
-		m_hSpriteMaterial.Init( RPG_LASER_SPRITE, TEXTURE_GROUP_CLIENT_EFFECTS );
+		if (m_nType == 1)
+		{
+			m_hSpriteMaterial.Init(SNIPER_LASER_SPRITE, TEXTURE_GROUP_CLIENT_EFFECTS);
+		}
+		else
+		{
+			m_hSpriteMaterial.Init(RPG_LASER_SPRITE, TEXTURE_GROUP_CLIENT_EFFECTS);
+		}
 	}
 }
 

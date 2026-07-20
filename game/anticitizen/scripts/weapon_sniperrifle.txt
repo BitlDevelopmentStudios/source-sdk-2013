@@ -12,7 +12,7 @@ WeaponData
 
 	"clip_size"		"-1"
 	"clip2_size"		"-1"
-	"default_clip"		"100"
+	"default_clip"		"25"
 	"default_clip2"		"-1"
 	"primary_ammo"		"SniperRound"
 	"secondary_ammo"	"None"
@@ -29,6 +29,7 @@ WeaponData
 		"single_shot"	"Weapon_SniperRifle.Single"
 		"special1"		"Weapon_SniperRifle.Special1"
 		"special2"		"Weapon_SniperRifle.Special2"
+		"special3"		"Weapon_SniperRifle.ChargeProgress"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.

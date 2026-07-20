@@ -8,21 +8,25 @@
 #include "cbase.h"
 #include "weapon_sniperrifle.h"
 
-#define SNIPER_BEAM_TEX "effects/bluelaser1.vmt"
-
 IMPLEMENT_NETWORKCLASS_ALIASED( WeaponSniperRifle, DT_WeaponSniperRifle )
 
 BEGIN_NETWORK_TABLE( CWeaponSniperRifle, DT_WeaponSniperRifle )
 #ifdef CLIENT_DLL
 	RecvPropBool(RECVINFO(m_bInZoom)),
+	RecvPropFloat(RECVINFO(m_flRechargeTime)),
+	RecvPropBool(RECVINFO(m_bLaserOn)),
 #else
 	SendPropBool(SENDINFO(m_bInZoom)),
+	SendPropFloat(SENDINFO(m_flRechargeTime)),
+	SendPropBool(SENDINFO(m_bLaserOn)),
 #endif
 END_NETWORK_TABLE()
 
 #ifdef CLIENT_DLL
 BEGIN_PREDICTION_DATA(CWeaponSniperRifle)
 DEFINE_PRED_FIELD(m_bInZoom, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
+DEFINE_PRED_FIELD(m_flRechargeTime, FIELD_FLOAT, FTYPEDESC_INSENDTABLE),
+DEFINE_PRED_FIELD(m_bLaserOn, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 END_PREDICTION_DATA()
 #endif
 
@@ -31,8 +35,9 @@ PRECACHE_WEAPON_REGISTER( weapon_sniperrifle );
 
 acttable_t CWeaponSniperRifle::m_acttable[] = 
 {
+	/*
 	{ ACT_MP_STAND_IDLE,				ACT_HL2AC_IDLE_SNIPER,					false },
-	{ ACT_MP_CROUCH_IDLE,				ACT_HL2AC_CROUCH_SNIPER,			false },
+	{ ACT_MP_CROUCH_IDLE,				ACT_HL2AC_CROUCH_SNIPER,				false },
 
 	{ ACT_MP_RUN,						ACT_HL2AC_RUN_SNIPER,					false },
 	{ ACT_MP_CROUCHWALK,				ACT_HL2AC_WALK_CROUCH_SNIPER,			false },
@@ -44,8 +49,24 @@ acttable_t CWeaponSniperRifle::m_acttable[] =
 	{ ACT_MP_RELOAD_CROUCH,				ACT_HL2AC_GESTURE_RELOAD_SNIPER,		false },
 
 	{ ACT_MP_JUMP,						ACT_HL2AC_JUMP_SNIPER,					false },
+	*/
 
-	{ ACT_RANGE_ATTACK1,				ACT_RANGE_ATTACK_SNIPER_RIFLE,				false },
+	// looks better with the ar2 anims
+	{ ACT_MP_STAND_IDLE,				ACT_HL2MP_IDLE_AR2,					false },
+	{ ACT_MP_CROUCH_IDLE,				ACT_HL2MP_IDLE_CROUCH_AR2,			false },
+
+	{ ACT_MP_RUN,						ACT_HL2MP_RUN_AR2,					false },
+	{ ACT_MP_CROUCHWALK,				ACT_HL2MP_WALK_CROUCH_AR2,			false },
+
+	{ ACT_MP_ATTACK_STAND_PRIMARYFIRE,	ACT_HL2MP_GESTURE_RANGE_ATTACK_AR2,	false },
+	{ ACT_MP_ATTACK_CROUCH_PRIMARYFIRE,	ACT_HL2MP_GESTURE_RANGE_ATTACK_AR2,	false },
+
+	{ ACT_MP_RELOAD_STAND,				ACT_HL2MP_GESTURE_RELOAD_AR2,		false },
+	{ ACT_MP_RELOAD_CROUCH,				ACT_HL2MP_GESTURE_RELOAD_AR2,		false },
+
+	{ ACT_MP_JUMP,						ACT_HL2MP_JUMP_AR2,					false },
+
+	{ ACT_RANGE_ATTACK1,				ACT_RANGE_ATTACK_SNIPER_RIFLE,		false },
 };
 
 IMPLEMENT_ACTTABLE( CWeaponSniperRifle );
@@ -57,18 +78,30 @@ CWeaponSniperRifle::CWeaponSniperRifle( void )
 {
 	m_bReloadsSingly	= false;
 	m_bFiresUnderwater	= false;
-	m_fMaxRange1 = 2048;
+	m_fMaxRange1 = SNIPER_RANGE;
+	m_flRechargeTime = 0;
 	m_bInZoom = false;
+	m_bLaserOn = false;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+CWeaponSniperRifle::~CWeaponSniperRifle()
+{
+#ifndef CLIENT_DLL
+	if (m_hLaserDot)
+	{
+		UTIL_Remove(m_hLaserDot);
+		m_hLaserDot = NULL;
+	}
+#endif
 }
 
 void CWeaponSniperRifle::Precache(void)
 {
 	PrecacheParticleSystem("hunter_muzzle_flash");
-	UTIL_PrecacheOther("sniperbullet");
-#ifndef CLIENT_DLL
-	sHaloSprite = PrecacheModel("sprites/light_glow03.vmt");
-#endif
-	PrecacheModel(SNIPER_BEAM_TEX);
+	PrecacheModel("sprites/blueglow1.vmt");
 
 	BaseClass::Precache();
 }
@@ -80,6 +113,12 @@ void CWeaponSniperRifle::SecondaryAttack(void)
 {
 	//NOTENOTE: The zooming is handled by the post/busy frames
 }
+
+extern ConVar sk_max_sniper_round;
+#define SNIPER_RECHARGE_TIME 0.25f
+#define SNIPER_RECHARGE_ZOOMED_TIME 0.5f
+#define SNIPER_RECHARGE_HOLSTERED_TIME 0.1f
+#define SNIPER_LASER_PERSIST_TIME 0.5f
 
 //-----------------------------------------------------------------------------
 // Purpose:
@@ -94,10 +133,12 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 		return;
 	}
 
-	if (!HasPrimaryAmmo())
+	int iAmmoCount = pPlayer->GetAmmoCount(m_iPrimaryAmmoType);
+
+	if (!HasPrimaryAmmo() || iAmmoCount < SNIPER_CHARGE_DRAIN)
 	{
 		WeaponSound(EMPTY);
-		m_flNextPrimaryAttack = 0.15;
+		m_flNextPrimaryAttack = gpGlobals->curtime + 0.2f;
 		return;
 	}
 
@@ -121,16 +162,18 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 	m_flNextPrimaryAttack = gpGlobals->curtime + SequenceDuration() + 1.5f;
 	m_flNextSecondaryAttack = gpGlobals->curtime + SequenceDuration() + 1.5f;
 
-	// enough for 4 shots
-	pPlayer->RemoveAmmo(25, m_iPrimaryAmmoType);
-
 	Vector vecSrc		= pPlayer->Weapon_ShootPosition();
 	Vector vecAiming	= pPlayer->GetAutoaimVector( AUTOAIM_5DEGREES );	
 
 	CreateMuzzleSmokeEffect();
 
-	FireBulletsInfo_t info( 1, vecSrc, vecAiming, vec3_origin, MAX_TRACE_LENGTH, m_iPrimaryAmmoType );
+	FireBulletsInfo_t info( 1, vecSrc, vecAiming, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType );
 	info.m_pAttacker = pPlayer;
+
+	if (iAmmoCount < sk_max_sniper_round.GetInt())
+	{
+		info.m_flDamageScale = 0.50f;
+	}
 
 	// Fire the bullets, and force the first shot to be perfectly accuracy
 	pPlayer->FireBullets( info );
@@ -148,6 +191,11 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 	}
 #endif // CLIENT_DLL
 
+	// enough for 4 shots
+	pPlayer->RemoveAmmo(SNIPER_CHARGE_DRAIN, m_iPrimaryAmmoType);
+	// don't immediately start charging.
+	m_flRechargeTime = gpGlobals->curtime + SNIPER_RECHARGE_TIME;
+
 	pPlayer->ViewPunch( QAngle( -8, random->RandomFloat( -2, 2 ), 0 ) );
 #ifndef CLIENT_DLL
 	pPlayer->SetMuzzleFlashTime(gpGlobals->curtime + 0.5);
@@ -161,7 +209,19 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 	}
 }
 
-extern ConVar sk_max_sniper_round;
+bool CWeaponSniperRifle::ShouldBeep(void)
+{
+	CBasePlayer* pPlayer = ToBasePlayer(GetOwner());
+
+	if (pPlayer)
+	{
+		int iAmmoCount = pPlayer->GetAmmoCount(m_iPrimaryAmmoType);
+		return ((iAmmoCount < sk_max_sniper_round.GetInt()) && 
+			   (((iAmmoCount % SNIPER_CHARGE_DRAIN) == 0) || (iAmmoCount == (sk_max_sniper_round.GetInt() - 1))));
+	}
+
+	return false;
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -192,13 +252,7 @@ void CWeaponSniperRifle::ItemBusyFrame(void)
 //-----------------------------------------------------------------------------
 bool CWeaponSniperRifle::Holster(CBaseCombatWeapon* pSwitchingTo)
 {
-	if (m_bInZoom)
-	{
-		ToggleZoom();
-#ifndef CLIENT_DLL
-		LaserOff();
-#endif
-	}
+	TurnOff();
 
 	return BaseClass::Holster(pSwitchingTo);
 }
@@ -208,15 +262,19 @@ bool CWeaponSniperRifle::Holster(CBaseCombatWeapon* pSwitchingTo)
 //-----------------------------------------------------------------------------
 void CWeaponSniperRifle::Drop(const Vector& vecVelocity)
 {
+	TurnOff();
+
+	BaseClass::Drop(vecVelocity);
+}
+
+void CWeaponSniperRifle::TurnOff(void)
+{
 	if (m_bInZoom)
 	{
 		ToggleZoom();
-#ifndef CLIENT_DLL
-		LaserOff();
-#endif
 	}
 
-	BaseClass::Drop(vecVelocity);
+	LaserOff();
 }
 
 //-----------------------------------------------------------------------------
@@ -239,18 +297,71 @@ void CWeaponSniperRifle::ToggleZoom(void)
 	}
 
 #ifndef CLIENT_DLL
+	color32 lightBlue = { 0, 100, 255, 32 };
+	float flZoomTime = 0.5f;
+
 	if (m_bInZoom)
 	{
-		if (pPlayer->SetFOV(this, 0, 0.5f))
+		if (pPlayer->SetFOV(this, 0, flZoomTime))
 		{
 			m_bInZoom = false;
+			UTIL_ScreenFade(pPlayer, lightBlue, flZoomTime, 0, (FFADE_IN | FFADE_PURGE));
 		}
 	}
 	else
 	{
-		if (pPlayer->SetFOV(this, 20, 0.5f))
+		if (pPlayer->SetFOV(this, 20, flZoomTime))
 		{
 			m_bInZoom = true;
+			UTIL_ScreenFade(pPlayer, lightBlue, flZoomTime, 0, (FFADE_OUT | FFADE_PURGE | FFADE_STAYOUT));
+		}
+	}
+#endif
+}
+
+void CWeaponSniperRifle::Charge(int iState)
+{
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
+
+	if (!pPlayer)
+	{
+		return;
+	}
+
+#ifndef CLIENT_DLL
+	int iAmmoCount = pPlayer->GetAmmoCount(m_iPrimaryAmmoType);
+
+	if (iAmmoCount < sk_max_sniper_round.GetInt())
+	{
+		if (m_flRechargeTime < gpGlobals->curtime)
+		{
+			pPlayer->GiveAmmo(1, m_iPrimaryAmmoType, true);
+
+			switch (iState)
+			{
+				case CHARGE_STATE_ACTIVE:
+				{
+					m_flRechargeTime = gpGlobals->curtime + SNIPER_RECHARGE_TIME;
+					break;
+				}
+
+				case CHARGE_STATE_ZOOMED:
+				{
+					m_flRechargeTime = gpGlobals->curtime + SNIPER_RECHARGE_ZOOMED_TIME;
+					break;
+				}
+
+				case CHARGE_STATE_HOLSTERED:
+				{
+					m_flRechargeTime = gpGlobals->curtime + SNIPER_RECHARGE_HOLSTERED_TIME;
+					break;
+				}
+			}
+
+			if (ShouldBeep())
+			{
+				pPlayer->EmitSound("Weapon_SniperRifle.ChargeProgress");
+			}
 		}
 	}
 #endif
@@ -268,7 +379,6 @@ void CWeaponSniperRifle::ItemPostFrame(void)
 	// Allow zoom toggling
 	CheckZoomToggle();
 
-#ifndef CLIENT_DLL
 	if (m_bInZoom)
 	{
 		LaserOn();
@@ -278,13 +388,7 @@ void CWeaponSniperRifle::ItemPostFrame(void)
 		LaserOff();
 	}
 
-	int iAmmoCount = pPlayer->GetAmmoCount(m_iPrimaryAmmoType);
-
-	if (iAmmoCount < sk_max_sniper_round.GetInt())
-	{
-		pPlayer->GiveAmmo(1, m_iPrimaryAmmoType, true);
-	}
-#endif
+	Charge(m_bInZoom ? CHARGE_STATE_ZOOMED : CHARGE_STATE_ACTIVE);
 
 	BaseClass::ItemPostFrame();
 }
@@ -298,14 +402,7 @@ void CWeaponSniperRifle::HolsterThink(void)
 		return;
 	}
 
-#ifndef CLIENT_DLL
-	int iAmmoCount = pPlayer->GetAmmoCount(m_iPrimaryAmmoType);
-
-	if (iAmmoCount < sk_max_sniper_round.GetInt())
-	{
-		pPlayer->GiveAmmo(1, m_iPrimaryAmmoType, true);
-	}
-#endif
+	Charge(CHARGE_STATE_HOLSTERED);
 }
 
 //-----------------------------------------------------------------------------
@@ -325,39 +422,33 @@ void CWeaponSniperRifle::DoImpactEffect(trace_t& tr, int nDamageType)
 	BaseClass::DoImpactEffect(tr, nDamageType);
 }
 
-#ifndef CLIENT_DLL
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 void CWeaponSniperRifle::LaserOff(void)
 {
-	if (m_pBeam)
+	m_bLaserOn = false;
+
+#ifndef CLIENT_DLL
+	// Kill the dot completely
+	if (m_hLaserDot)
 	{
-		UTIL_Remove(m_pBeam);
-		m_pBeam = NULL;
+		EnableLaserDot(m_hLaserDot, false);
+		UTIL_Remove(m_hLaserDot);
+		m_hLaserDot = NULL;
 	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-#define LASER_LEAD_DIST	64
 void CWeaponSniperRifle::LaserOn(void)
 {
+#ifndef CLIENT_DLL
 	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
 
 	if (!pPlayer)
 	{
 		return;
-	}
-
-	if (!m_pBeam)
-	{
-		m_pBeam = CBeam::BeamCreate("effects/bluelaser1.vmt", 1.0f);
-		m_pBeam->SetColor(0, 100, 255);
-	}
-	else
-	{
-		// Beam seems to be on.
-		//return;
 	}
 
 	// The beam is backwards, sortof. The endpoint is the sniper. This is
@@ -378,19 +469,19 @@ void CWeaponSniperRifle::LaserOn(void)
 
 	// Get the vectors
 	vecStart = muzzlePoint;
-	vecStop = vecStart + vecDir * MAX_TRACE_LENGTH;
+	vecStop = vecStart + vecDir * m_fMaxRange1;
 
 	// Do the TraceLine
 	UTIL_TraceLine(vecStart, vecStop, MASK_ALL, this, COLLISION_GROUP_NONE, &tr);
 
-	m_pBeam->PointEntInit(tr.endpos, this);
-	m_pBeam->SetBrightness(255);
-	m_pBeam->SetNoise(0);
-	m_pBeam->SetWidth(1.0f);
-	m_pBeam->SetEndWidth(0);
-	m_pBeam->SetScrollRate(0);
-	m_pBeam->SetFadeLength(0);
-	m_pBeam->SetHaloTexture(sHaloSprite);
-	m_pBeam->SetHaloScale(4.0f);
-}
+	if (m_hLaserDot == NULL)
+	{
+		m_hLaserDot = CreateLaserDotEx(GetAbsOrigin(), this, false, 1);
+	}
+
+	SetLaserDotPostition(m_hLaserDot, tr.endpos, tr.plane.normal);
+	EnableLaserDot(m_hLaserDot, true);
 #endif
+
+	m_bLaserOn = true;
+}

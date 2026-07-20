@@ -151,6 +151,18 @@ public:
 	void SpawnEye();
 	void KillEye();
 
+	bool IsCurrentWeaponZoomed() 
+	{ 
+		CBaseCombatWeapon* pWeapon = GetActiveWeapon();
+
+		if (pWeapon && pWeapon->IsWeaponZoomed())
+		{
+			return false;
+		}
+
+		return false;
+	}
+
 	void CheckChatText( char *p, int bufsize );
 
 	void State_Transition( HL2MPPlayerState newState );

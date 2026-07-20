@@ -404,6 +404,7 @@ public:
 	virtual void	ItemPostFrame( void );
 	virtual void	ItemBusyFrame( void );
 	virtual bool	SendWeaponAnim( int iActivity );
+	virtual bool	IsWeaponZoomed() { return m_bInZoom; }		// Is this weapon in its 'zoomed in' mode?
 
 #ifndef CLIENT_DLL
 	virtual void Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
