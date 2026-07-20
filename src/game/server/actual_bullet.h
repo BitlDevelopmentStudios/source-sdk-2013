@@ -14,14 +14,17 @@ class CActualBullet : public CBaseAnimating
 public:
 	void Start(void);
 	void Think(void);
+	void DoImpactEffect(trace_t& tr, int nDamageType);
 
 	Vector m_vecDir;
 	int m_Speed;
 	FireBulletsInfo_t info;
+	bool m_ImpactEffect;
+	const char* m_ImpactEffectName;
 };
 
 ///so this is the actual bullet creation function.
-inline void FireActualBullet(FireBulletsInfo_t &info, int iSpeed, const char* tracertype)
+inline void FireActualBullet(FireBulletsInfo_t &info, int iSpeed, const char* tracertype, bool bWhiz = false, bool bImpactEffect = false, const char *szName = "")
 {
 	if (!info.m_pAttacker)
 	{
@@ -41,11 +44,13 @@ inline void FireActualBullet(FireBulletsInfo_t &info, int iSpeed, const char* tr
 		CActualBullet *pBullet = (CActualBullet*)CBaseEntity::Create("actual_bullet", info.m_vecSrc, vec3_angle, info.m_pAttacker);
 		pBullet->m_vecDir = vecShotDir;
 		pBullet->m_Speed = iSpeed;
+		pBullet->m_ImpactEffect = bImpactEffect;
+		pBullet->m_ImpactEffectName = szName;
 		pBullet->SetOwnerEntity(info.m_pAttacker);
 		pBullet->SetAbsOrigin(info.m_vecSrc);
 		pBullet->info = info;
 		pBullet->Start();
-		UTIL_Tracer(info.m_vecSrc, tr.endpos, info.m_pAttacker->entindex(), -1, (float)iSpeed, false, tracertype, 0);
+		UTIL_Tracer(info.m_vecSrc, tr.endpos, info.m_pAttacker->entindex(), -1, (float)iSpeed, bWhiz, tracertype, 0);
 	}
 }
 

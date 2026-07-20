@@ -1,5 +1,6 @@
 #include "cbase.h"
 #include "actual_bullet.h"
+#include "te_effect_dispatch.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -54,4 +55,24 @@ void CActualBullet::Think(void)
 	{
 		SetAbsOrigin(vecEnd);
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Input  : &tr - 
+//			nDamageType - 
+//-----------------------------------------------------------------------------
+void CActualBullet::DoImpactEffect(trace_t& tr, int nDamageType)
+{
+	if (m_ImpactEffect)
+	{
+		CEffectData data;
+
+		data.m_vOrigin = tr.endpos + (tr.plane.normal * 1.0f);
+		data.m_vNormal = tr.plane.normal;
+
+		DispatchEffect(m_ImpactEffectName, data);
+	}
+
+	BaseClass::DoImpactEffect(tr, nDamageType);
 }
