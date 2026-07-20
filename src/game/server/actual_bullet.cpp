@@ -45,7 +45,8 @@ void CActualBullet::Think(void)
 		info2.m_flDistance = flDist;
 		info2.m_iAmmoType = info.m_iAmmoType;
 		info2.m_iTracerFreq = 0;
-		GetOwnerEntity()->FireBullets(info2);
+		info2.m_pAttacker = GetOwnerEntity();
+		FireBullets(info2);
 		SetThink(NULL);
 		UTIL_Remove(this);
 	}
