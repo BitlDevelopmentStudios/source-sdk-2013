@@ -30,6 +30,7 @@ Alpha v2:
 - Added a new class: the Overwatch Female Assassin.
 	- Primary Weapon: The Overwatch Sniper Rifle - A powerful sniper rifle with a rechargable battery that adjusts damage based on charge.
 	- Secondary Weapon: Dual 9mm Pistols
+- Fixed a glitch that sometimes causes tips to not load.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.
