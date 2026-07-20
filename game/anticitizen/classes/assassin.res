@@ -54,6 +54,6 @@
 		"visible"		"1"
 		"enabled"		"1"
 		"tabPosition"		"0"
-		"image"			"classmenu/icon_soldier"
+		"image"			"classmenu/icon_assassin"
 	}
 }
