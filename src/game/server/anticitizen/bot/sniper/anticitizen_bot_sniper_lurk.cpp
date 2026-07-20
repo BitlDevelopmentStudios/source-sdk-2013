@@ -35,7 +35,7 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperLurk::OnStart( CHL2MPBot *me, Action< C
 	m_isAtHome = false;
 	m_failCount = 0;
 
-	m_isOpportunistic = anticitizen_bot_sniper_allow_opportunistic.GetBool();
+	//m_isOpportunistic = anticitizen_bot_sniper_allow_opportunistic.GetBool();
 
 	return Continue();
 }
@@ -44,16 +44,8 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperLurk::OnStart( CHL2MPBot *me, Action< C
 //---------------------------------------------------------------------------------------------
 ActionResult< CHL2MPBot >	CHL2MPBotSniperLurk::Update( CHL2MPBot *me, float interval )
 {
-#ifdef TF_RAID_MODE
-	if ( TFGameRules()->IsRaidMode() )
-	{
-	}
-	else
-#endif
-	{
-		// continuously search for good sniping spots
-		FindHidingSpot(me);
-	}
+	// continuously search for good sniping spots
+	FindHidingSpot(me);
 
 	// aim at bad guys
 	const CKnownEntity *threat = me->GetVisionInterface()->GetPrimaryKnownThreat();
@@ -90,19 +82,10 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperLurk::Update( CHL2MPBot *me, float inte
 		if ( m_isOpportunistic )
 		{
 			// switch to our sniper rifle
-
 			CBaseCombatWeapon* myGun = me->Weapon_OwnsThisType("weapon_sniperrifle");
-			if (myGun && me->GetAmmoCount(myGun->GetPrimaryAmmoType()) >= SNIPER_CHARGE_DRAIN)
+			if (myGun)
 			{
 				me->Weapon_Switch(myGun);
-			}
-			else
-			{
-				myGun = me->Weapon_OwnsThisType("weapon_dualpistols");
-				if (myGun)
-				{
-					me->Weapon_Switch(myGun);
-				}
 			}
 
 			isSightingRifle = true;
@@ -160,21 +143,13 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperLurk::Update( CHL2MPBot *me, float inte
 	if ( isSightingRifle )
 	{
 		CBaseCombatWeapon* myGun = me->Weapon_OwnsThisType("weapon_sniperrifle");
-		if (myGun && me->GetAmmoCount(myGun->GetPrimaryAmmoType()) >= SNIPER_CHARGE_DRAIN)
+		if (myGun)
 		{
 			me->Weapon_Switch(myGun);
 			if (!me->IsCurrentWeaponZoomed())
 			{
 				// zoom in and stand still
 				me->PressAltFireButton();
-			}
-		}
-		else
-		{
-			myGun = me->Weapon_OwnsThisType("weapon_dualpistols");
-			if (myGun)
-			{
-				me->Weapon_Switch(myGun);
 			}
 		}
 	}

@@ -39,22 +39,10 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperAttack::OnStart( CHL2MPBot *me, Action<
 ActionResult< CHL2MPBot >	CHL2MPBotSniperAttack::Update( CHL2MPBot *me, float interval )
 {
 	// switch to our sniper rifle
-
-	bool bUsingSecondary = false;
-
 	CBaseCombatWeapon *myGun = me->Weapon_OwnsThisType("weapon_sniperrifle");
-	if ( myGun && me->GetAmmoCount(myGun->GetPrimaryAmmoType()) >= SNIPER_CHARGE_DRAIN)
+	if ( myGun)
 	{
 		me->Weapon_Switch( myGun );
-	}
-	else
-	{
-		bUsingSecondary = true;
-		myGun = me->Weapon_OwnsThisType("weapon_dualpistols");
-		if (myGun)
-		{
-			me->Weapon_Switch(myGun);
-		}
 	}
 
 	// shoot at bad guys
@@ -83,6 +71,11 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperAttack::Update( CHL2MPBot *me, float in
 
 	//me->EquipBestWeaponForThreat( threat );
 
+	if (me->GetAmmoCount(myGun->GetPrimaryAmmoType()) >= SNIPER_CHARGE_DRAIN)
+	{
+		return SuspendFor(new CHL2MPBotRetreatToCover, "Our weapon is empty");
+	}
+
 	if ( me->IsDistanceBetweenLessThan( threat->GetLastKnownPosition(), anticitizen_bot_sniper_flee_range.GetFloat() ) )
 	{
 		return SuspendFor( new CHL2MPBotRetreatToCover, "Retreating from nearby enemy" );
@@ -96,12 +89,9 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperAttack::Update( CHL2MPBot *me, float in
 	// we have a target
 	m_lingerTimer.Start( RandomFloat( 0.75f, 1.25f ) * anticitizen_bot_sniper_linger_time.GetFloat() );
 
-	if (!bUsingSecondary)
+	if (!me->IsCurrentWeaponZoomed())
 	{
-		if (!me->IsCurrentWeaponZoomed())
-		{
-			me->PressAltFireButton();
-		}
+		me->PressAltFireButton();
 	}
 
 	return Continue();
