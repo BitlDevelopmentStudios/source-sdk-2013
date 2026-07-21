@@ -45,6 +45,11 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperAttack::Update( CHL2MPBot *me, float in
 		me->Weapon_Switch( myGun );
 	}
 
+	if (me->GetAmmoCount(myGun->GetPrimaryAmmoType()) < SNIPER_CHARGE_DRAIN)
+	{
+		return SuspendFor(new CHL2MPBotRetreatToCover, "Our weapon is empty");
+	}
+
 	// shoot at bad guys
 	const CKnownEntity *threat = me->GetVisionInterface()->GetPrimaryKnownThreat();
 
@@ -70,11 +75,6 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperAttack::Update( CHL2MPBot *me, float in
 	}
 
 	//me->EquipBestWeaponForThreat( threat );
-
-	if (me->GetAmmoCount(myGun->GetPrimaryAmmoType()) >= SNIPER_CHARGE_DRAIN)
-	{
-		return SuspendFor(new CHL2MPBotRetreatToCover, "Our weapon is empty");
-	}
 
 	if ( me->IsDistanceBetweenLessThan( threat->GetLastKnownPosition(), anticitizen_bot_sniper_flee_range.GetFloat() ) )
 	{

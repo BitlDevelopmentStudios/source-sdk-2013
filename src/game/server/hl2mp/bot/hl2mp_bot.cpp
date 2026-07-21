@@ -1949,6 +1949,26 @@ bool CHL2MPBot::IsQuietWeapon( CBaseHL2MPCombatWeapon *weapon ) const
 	return false;
 }
 
+bool CHL2MPBot::IsSniperRifle(CBaseHL2MPCombatWeapon* weapon) const
+{
+	if (weapon == MY_CURRENT_GUN)
+	{
+		weapon = dynamic_cast<CBaseHL2MPCombatWeapon*>(GetActiveWeapon());
+	}
+
+	if (!IsCombatWeapon(weapon))
+		return false;
+
+	if (weapon)
+	{
+		if (FClassnameIs(weapon, "weapon_sniperrifle"))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
 
 //-----------------------------------------------------------------------------------------------------
 // Return true if a weapon has no obstructions along the line between the given points

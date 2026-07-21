@@ -16,6 +16,7 @@
 #include "bot/behavior/nav_entities/hl2mp_bot_nav_ent_move_to.h"
 #include "bot/behavior/nav_entities/hl2mp_bot_nav_ent_wait.h"
 #include "bot/behavior/hl2mp_bot_tactical_monitor.h"
+#include "weapon_sniperrifle.h"
 
 
 extern ConVar hl2mp_bot_health_ok_ratio;
@@ -697,6 +698,15 @@ void CHL2MPBotMainAction::FireWeaponAtEnemy( CHL2MPBot *me )
 							// don't fire, we'd only hit the world or a non-player or non-sentry
 							return;
 						}
+					}
+				}
+
+				if (me->IsSniperRifle(MY_CURRENT_GUN))
+				{
+					if (me->GetAmmoCount(me->GetActiveWeapon()->GetPrimaryAmmoType()) < SNIPER_CHARGE_DRAIN)
+					{
+						// wait for our weapon to charge before firing again.
+						return;
 					}
 				}
 

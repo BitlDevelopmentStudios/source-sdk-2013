@@ -144,6 +144,8 @@ public:
 	bool IsBarrageAndReloadWeapon( CBaseHL2MPCombatWeapon *weapon ) const;	// return true if given weapon has small clip and long reload cost (ie: rocket launcher, etc)
 	bool IsQuietWeapon( CBaseHL2MPCombatWeapon *weapon ) const;				// return true if given weapon doesn't make much sound when used (ie: spy knife, etc)
 
+	bool IsSniperRifle(CBaseHL2MPCombatWeapon* weapon) const;				// return true if given weapon doesn't make much sound when used (ie: spy knife, etc)
+
 	bool IsEnvironmentNoisy( void ) const;							// return true if there are/have been loud noises (ie: non-quiet weapons) nearby very recently
 
 	bool IsEnemy( const CBaseEntity* them ) const OVERRIDE;

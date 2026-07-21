@@ -37,23 +37,24 @@ WeaponData
 	{
 		"weapon"
 		{
-				"font"		"WeaponIcons"
-				"character"	"e"
+				"file"		"VGUI\hud\weapons\weapon_sniperrifle_hud"
+				"x"			"0"
+				"y"			"0"
+				"width"		"128"
+				"height"	"64"
 		}
 		"weapon_s"
 		{	
-				"font"		"WeaponIconsSelected"
-				"character"	"e"
-		}
-		"weapon_small"
-		{
-				"font"		"WeaponIconsSmall"
-				"character"	"e"
+				"file"		"VGUI\hud\weapons\weapon_sniperrifle_hud"
+				"x"			"0"
+				"y"			"0"
+				"width"		"128"
+				"height"	"64"
 		}
 		"ammo"
 		{
 				"font"		"WeaponIconsSmall"
-				"character"	"q"
+				"character"	"u"
 		}
 		"crosshair"
 		{

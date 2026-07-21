@@ -36,13 +36,19 @@ WeaponData
 	{
 		"weapon"
 		{
-				"font"		"WeaponIcons"
-				"character"	"d"
+				"file"		"VGUI\hud\weapons\weapon_dualpistols_hud"
+				"x"			"0"
+				"y"			"0"
+				"width"		"128"
+				"height"	"64"
 		}
 		"weapon_s"
 		{	
-				"font"		"WeaponIconsSelected"
-				"character"	"d"
+				"file"		"VGUI\hud\weapons\weapon_dualpistols_hud"
+				"x"			"0"
+				"y"			"0"
+				"width"		"128"
+				"height"	"64"
 		}
 		"weapon_small"
 		{

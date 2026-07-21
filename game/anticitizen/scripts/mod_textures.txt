@@ -178,6 +178,14 @@
 				"font"		"HL2MPTypeDeath"
 				"character"	"-"
 		}
+		"death_dualpistols"
+		{
+				"file"		"VGUI\hud\weapons\weapon_dualpistols_killicon"
+				"x"			"0"
+				"y"			"0"
+				"width"		"64"
+				"height"	"32"
+		}
 		"death_physics"
 		{
 				"font"		"HL2MPTypeDeath"
@@ -222,6 +230,22 @@
 				"x"			"0"
 				"y"			"0"
 				"width"		"64"
+				"height"	"32"
+		}
+		"death_sniperrifle"
+		{
+				"file"		"VGUI\hud\weapons\weapon_sniperrifle_killicon"
+				"x"			"0"
+				"y"			"0"
+				"width"		"128"
+				"height"	"32"
+		}
+		"death_actual_bullet"
+		{
+				"file"		"VGUI\hud\weapons\weapon_sniperrifle_killicon"
+				"x"			"0"
+				"y"			"0"
+				"width"		"128"
 				"height"	"32"
 		}
 		"voice_player"
