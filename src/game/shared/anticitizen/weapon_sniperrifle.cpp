@@ -118,10 +118,7 @@ extern ConVar sk_max_sniper_round;
 #define SNIPER_RECHARGE_TIME 0.25f
 #define SNIPER_RECHARGE_ZOOMED_TIME 0.5f
 #define SNIPER_RECHARGE_HOLSTERED_TIME 0.1f
-//#define SNIPER_BULLET_SPEED 6000.0f
-// we SHOULD use the npc bullet speed, but we need something more easier to lead.
-// so we're doing the npc bullet speed plus 1.25x nerf.
-#define SNIPER_BULLET_SPEED 4800.0f
+#define SNIPER_BULLET_SPEED 6000.0f
 
 //-----------------------------------------------------------------------------
 // Purpose:
