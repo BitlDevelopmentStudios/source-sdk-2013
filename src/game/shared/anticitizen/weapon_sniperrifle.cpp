@@ -8,6 +8,8 @@
 #include "cbase.h"
 #include "weapon_sniperrifle.h"
 
+extern ConVar sk_max_sniper_round;
+
 IMPLEMENT_NETWORKCLASS_ALIASED( WeaponSniperRifle, DT_WeaponSniperRifle )
 
 BEGIN_NETWORK_TABLE( CWeaponSniperRifle, DT_WeaponSniperRifle )
@@ -113,12 +115,6 @@ void CWeaponSniperRifle::SecondaryAttack(void)
 {
 	//NOTENOTE: The zooming is handled by the post/busy frames
 }
-
-extern ConVar sk_max_sniper_round;
-#define SNIPER_RECHARGE_TIME 0.25f
-#define SNIPER_RECHARGE_ZOOMED_TIME 0.5f
-#define SNIPER_RECHARGE_HOLSTERED_TIME 0.1f
-#define SNIPER_BULLET_SPEED 6000.0f
 
 //-----------------------------------------------------------------------------
 // Purpose:

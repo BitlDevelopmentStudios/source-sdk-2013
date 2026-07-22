@@ -32,6 +32,8 @@ Alpha v2:
 	- Secondary Weapon: Dual 9mm Pistols
 - Fixed a glitch that sometimes causes tips to not load.
 - Buffed Pistol damage from 5 to 7.
+- Fixed bugs when spawning bots as specific classes.
+- bot_add commands will now force bots to a random class if a sepcific class isn't defined.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.

@@ -8,22 +8,21 @@
 
 #include "bot/hl2mp_bot.h"
 #include "bot/sniper/anticitizen_bot_sniper_lurk.h"
-#include "bot/sniper/anticitizen_bot_sniper_attack.h"
+#include "bot/sniper/anticitizen_bot_sniper_pistol_attack.h"
 #include "bot/behavior/hl2mp_bot_retreat_to_cover.h"
-#include "bot/behavior/hl2mp_bot_melee_attack.h"
+#include "bot/behavior/hl2mp_bot_attack.h"
+#include "bot/behavior/hl2mp_bot_seek_and_destroy.h"
 #include "weapon_sniperrifle.h"
 
 #include "nav_mesh.h"
 
-extern ConVar hl2mp_bot_path_lookahead_range;
-extern ConVar anticitizen_bot_sniper_flee_range;
-extern ConVar anticitizen_bot_sniper_melee_range;
-
 extern float SkewedRandomValue( void );
 
+ConVar anticitizen_bot_sniper_pistol_range("anticitizen_bot_sniper_pistol_range", "500", FCVAR_CHEAT, "If threat is closer than this, attack with pistol");
 ConVar anticitizen_bot_sniper_patience_duration( "anticitizen_bot_sniper_patience_duration", "10", FCVAR_CHEAT, "How long a Sniper bot will wait without seeing an enemy before picking a new spot" );
 ConVar anticitizen_bot_sniper_target_linger_duration( "anticitizen_bot_sniper_target_linger_duration", "2", FCVAR_CHEAT, "How long a Sniper bot will keep toward at a target it just lost sight of" );
 ConVar anticitizen_bot_sniper_allow_opportunistic( "anticitizen_bot_sniper_allow_opportunistic", "1", FCVAR_NONE, "If set, Snipers will stop on their way to their preferred lurking spot to snipe at opportunistic targets" );
+ConVar anticitizen_bot_sniper_linger_time("anticitizen_bot_sniper_linger_time", "5", FCVAR_CHEAT, "How long Sniper will wait around after losing his target before giving up");
 
 //---------------------------------------------------------------------------------------------
 ActionResult< CHL2MPBot >	CHL2MPBotSniperLurk::OnStart( CHL2MPBot *me, Action< CHL2MPBot > *priorAction )
@@ -44,11 +43,18 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperLurk::OnStart( CHL2MPBot *me, Action< C
 //---------------------------------------------------------------------------------------------
 ActionResult< CHL2MPBot >	CHL2MPBotSniperLurk::Update( CHL2MPBot *me, float interval )
 {
-	// continuously search for good sniping spots
-	FindHidingSpot(me);
-
 	// aim at bad guys
 	const CKnownEntity *threat = me->GetVisionInterface()->GetPrimaryKnownThreat();
+
+	if (threat)
+	{
+		// continuously search for good sniping spots
+		FindHidingSpot(me);
+	}
+	else
+	{
+		return SuspendFor(new CHL2MPBotSeekAndDestroy, "Assassin is hunting");
+	}
 
 	if ( threat && !threat->GetEntity()->IsAlive() )
 	{
@@ -65,10 +71,10 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperLurk::Update( CHL2MPBot *me, float inte
 	{
 		m_failCount = 0;
 
-		if ( me->IsDistanceBetweenLessThan( threat->GetLastKnownPosition(), anticitizen_bot_sniper_melee_range.GetFloat() ) )
+		CBaseCombatWeapon* pSniperWeapon = me->Weapon_OwnsThisType("weapon_sniperrifle");
+		if (pSniperWeapon && me->GetAmmoCount(me->GetActiveWeapon()->GetPrimaryAmmoType()) < SNIPER_CHARGE_DRAIN)
 		{
-			const float giveUpRange = 1.25f * anticitizen_bot_sniper_melee_range.GetFloat();
-			return SuspendFor( new CHL2MPBotMeleeAttack( giveUpRange ), "Melee attacking nearby threat" );
+			return SuspendFor( new CHL2MPBotSniperPistolAttack, "Pistol attacking nearby threat" );
 		}
 	}
 
@@ -82,10 +88,11 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperLurk::Update( CHL2MPBot *me, float inte
 		if ( m_isOpportunistic )
 		{
 			// switch to our sniper rifle
-			CBaseCombatWeapon* myGun = me->Weapon_OwnsThisType("weapon_sniperrifle");
+			CBaseHL2MPCombatWeapon* myGun = (CBaseHL2MPCombatWeapon*)me->Weapon_OwnsThisType("weapon_sniperrifle");
 			if (myGun)
 			{
-				me->Weapon_Switch(myGun);
+				me->PopRequiredWeapon();
+				me->PushRequiredWeapon(myGun);
 			}
 
 			isSightingRifle = true;
@@ -101,10 +108,11 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperLurk::Update( CHL2MPBot *me, float inte
 		else
 		{
 			// switch to our SMG and fire while we run
-			CBaseCombatWeapon *myGun = me->Weapon_OwnsThisType("weapon_dualpistols");
-			if ( myGun )
+			CBaseHL2MPCombatWeapon* myOtherGun = (CBaseHL2MPCombatWeapon*)me->Weapon_OwnsThisType("weapon_dualpistols");
+			if (myOtherGun)
 			{
-				me->Weapon_Switch( myGun );
+				me->PopRequiredWeapon();
+				me->PushRequiredWeapon(myOtherGun);
 			}
 		}
 	}
@@ -142,9 +150,11 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperLurk::Update( CHL2MPBot *me, float inte
 
 	if ( isSightingRifle )
 	{
-		CBaseCombatWeapon* myGun = me->Weapon_OwnsThisType("weapon_sniperrifle");
+		CBaseHL2MPCombatWeapon* myGun = (CBaseHL2MPCombatWeapon*)me->Weapon_OwnsThisType("weapon_sniperrifle");
 		if (myGun)
 		{
+			me->PopRequiredWeapon();
+			me->PushRequiredWeapon(myGun);
 			me->Weapon_Switch(myGun);
 			if (!me->IsCurrentWeaponZoomed())
 			{

@@ -337,8 +337,8 @@ $Project "Server (ANTICITIZEN)"
 				
 				$Folder "Sniper"
 				{
-					$File	"anticitizen\bot\sniper\anticitizen_bot_sniper_attack.cpp"
-					$File	"anticitizen\bot\sniper\anticitizen_bot_sniper_attack.h"
+					$File	"anticitizen\bot\sniper\anticitizen_bot_sniper_pistol_attack.cpp"
+					$File	"anticitizen\bot\sniper\anticitizen_bot_sniper_pistol_attack.h"
 					$File	"anticitizen\bot\sniper\anticitizen_bot_sniper_lurk.cpp"
 					$File	"anticitizen\bot\sniper\anticitizen_bot_sniper_lurk.h"
 				}

@@ -86,11 +86,11 @@ bool IsClassName(const char* string)
 	{
 		return true;
 	}
-	else if (!stricmp(string, "elite"))
+	else if (!stricmp(string, "elite") || !stricmp(string, "super_soldier"))
 	{
 		return true;
 	}
-	else if (!stricmp(string, "assassin"))
+	else if (!stricmp(string, "assassin") || !stricmp(string, "sniper"))
 	{
 		return true;
 	}
@@ -101,7 +101,7 @@ bool IsClassName(const char* string)
 //-----------------------------------------------------------------------------------------------------
 int Bot_GetClassByName(const char* string)
 {
-	int iTeam = CLS_INVALID;
+	int iTeam = CLS_RAND;
 	if (!stricmp(string, "police"))
 	{
 		iTeam = CLS_METROPOLICE;
@@ -114,7 +114,7 @@ int Bot_GetClassByName(const char* string)
 	{
 		iTeam = CLS_COMBINE_SHOTGUNNER;
 	}
-	else if (!stricmp(string, "elite"))
+	else if (!stricmp(string, "elite") || !stricmp(string, "super_soldier"))
 	{
 		iTeam = CLS_COMBINE_ELITE;
 	}
@@ -333,12 +333,7 @@ void CC_BotAdd(const CCommand& args)
 
 			engine->SetFakeClientConVarValue( pBot->edict(), "name", name );
 
-			int iClass = i;
-
-			if (iClass > CLS_LAST_COMBINE_CLASS)
-			{
-				iClass = CLS_RAND;
-			}
+			int iClass = Bot_GetClassByName(teamname);
 
 			pBot->HandleCommand_JoinClass(iClass);
 			// team is chosen by the game.....
@@ -1797,7 +1792,10 @@ void CHL2MPBot::PushRequiredWeapon( CBaseHL2MPCombatWeapon *weapon )
 // Pop top required weapon off of stack and discard
 void CHL2MPBot::PopRequiredWeapon( void )
 {
-	m_requiredWeaponStack.Pop();
+	if (m_requiredWeaponStack.Count())
+	{
+		m_requiredWeaponStack.Pop();
+	}
 }
 
 
