@@ -30,6 +30,7 @@ Klow on the Combine Overwiki for the following SVG conversions of the following 
 - Overwatch Soldier triangle symbol
 - Combine Claw logo
 - Overwatch Elite logo (also used for the Shotgun Soldier logo.
+- Advisor claw logo (modified for the Female Assassin's icon)
 
 Facepunch Studios for the c_weapon HEV arms and animations.
 
