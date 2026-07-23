@@ -1823,7 +1823,10 @@ void CHL2MPBot::PushRequiredWeapon( CBaseHL2MPCombatWeapon *weapon )
 // Pop top required weapon off of stack and discard
 void CHL2MPBot::PopRequiredWeapon( void )
 {
-	m_requiredWeaponStack.Pop();
+	if (m_requiredWeaponStack.Count())
+	{
+		m_requiredWeaponStack.Pop();
+	}
 }
 
 
