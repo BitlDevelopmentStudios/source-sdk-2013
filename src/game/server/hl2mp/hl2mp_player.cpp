@@ -253,12 +253,17 @@ CHL2MP_Player::CHL2MP_Player()
 	m_angEyeAngles.Init();
 
 	m_flNextModelChangeTime = 0.0f;
+	m_flNextSentenceTime = 0.0f;
 	m_flNextTeamChangeTime = 0.0f;
+	m_flNextPainSoundTime = 0.0f;
 
 	m_iSpawnInterpCounter = 0;
 
     m_bEnterObserver = false;
 	m_bReady = false;
+
+	m_bFreemanAtLowHealth = false;
+	m_bAllowSpawnProtection = false;
 
 	m_bInitialSpawn = true;
 
@@ -1850,7 +1855,7 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 
 		if ((pPlayer != NULL) && (pPlayer != this))
 		{
-			CHalfLife2* pHL2GameRules = static_cast<CHalfLife2*>(g_pGameRules);
+			//CHalfLife2* pHL2GameRules = static_cast<CHalfLife2*>(g_pGameRules);
 
 			// Attempt to drop health
 			//if (pHL2GameRules->NPC_ShouldDropHealth(pPlayer))
