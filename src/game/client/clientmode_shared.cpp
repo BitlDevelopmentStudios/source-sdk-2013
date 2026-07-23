@@ -1107,9 +1107,7 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 			return;
 
 		int team = event->GetInt( "team" );
-#ifdef TF_CLIENT_DLL
 		bool bAutoTeamed = event->GetInt( "autoteam", false );
-#endif
 		bool bSilent = event->GetInt( "silent", false );
 
 		const char *pszName = event->GetString( "name" );
@@ -1122,8 +1120,8 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 			int iPlayerIndex = engine->GetPlayerForUserID( event->GetInt( "userid" ) );
 			UTIL_GetFilteredPlayerNameAsWChar( iPlayerIndex, pszName, wszPlayerName );
 
-#ifdef TF_CLIENT_DLL
 			bool bUsingCustomTeamName = false;
+#ifdef TF_CLIENT_DLL
 			C_TFTeam *pTeam = GetGlobalTFTeam( team );
 			const wchar_t *wszTeam = pTeam ? pTeam->Get_Localized_Name() : L"";
 			bUsingCustomTeamName = pTeam ? pTeam->IsUsingCustomTeamName() : false;
