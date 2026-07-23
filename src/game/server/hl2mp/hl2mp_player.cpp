@@ -1976,7 +1976,8 @@ void CHL2MP_Player::KillEye()
 {
 	if (m_pEyeTrail != NULL)
 	{
-		m_pEyeTrail->Remove();
+		m_pEyeTrail->SetThink(&CBaseEntity::SUB_Remove);
+		m_pEyeTrail->SetNextThink(gpGlobals->curtime + 0.1);
 		m_pEyeTrail = NULL;
 	}
 }
