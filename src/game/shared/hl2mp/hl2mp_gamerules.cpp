@@ -163,6 +163,7 @@ static const char *s_PreserveEnts[] =
 	#endif
 	"worldspawn",
 	"point_devshot_camera",
+	"env_spritetrail", // players spawn with and manage this entity themselves
 	"", // END Marker
 };
 
