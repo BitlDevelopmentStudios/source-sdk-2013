@@ -3129,6 +3129,7 @@ HSCRIPT CNavMesh::ScriptGetNavAreaByID( int areaID )
 		return ToHScript( area );
 	}
 
+	return NULL;
 }
 
 //--------------------------------------------------------------------------------------------------------
@@ -3139,6 +3140,8 @@ HSCRIPT CNavMesh::ScriptGetNavArea( const Vector &pos, float beneathLimt )
 	{
 		return ToHScript( area );
 	}
+
+	return NULL;
 }
 
 //--------------------------------------------------------------------------------------------------------
@@ -3149,8 +3152,9 @@ HSCRIPT CNavMesh::ScriptGetNearestNavArea( const Vector &pos, float maxDist, boo
 	{
 		return ToHScript( area );
 	}
-}
 
+	return NULL;
+}
 
 //--------------------------------------------------------------------------------------------------------
 bool CNavMesh::ScriptGetNavAreasFromBuildPath( HSCRIPT hStartArea, HSCRIPT hGoalArea, const Vector &goalPos, float maxPathLength, int teamID, bool ignoreNavBlockers, HSCRIPT hTable )

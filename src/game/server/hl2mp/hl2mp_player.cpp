@@ -167,6 +167,9 @@ CHL2MP_Player::CHL2MP_Player()
 
 	m_angEyeAngles.Init();
 
+	m_iModelType = TEAM_UNASSIGNED;
+	m_iPlayerState = STATE_ACTIVE;
+
 	m_flNextModelChangeTime = 0.0f;
 	m_flNextTeamChangeTime = 0.0f;
 
