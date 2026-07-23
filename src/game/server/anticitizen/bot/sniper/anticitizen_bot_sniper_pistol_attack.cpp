@@ -38,7 +38,15 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperPistolAttack::Update( CHL2MPBot *me, fl
 	}
 
 	CBaseCombatWeapon* pSniperWeapon = me->Weapon_OwnsThisType("weapon_sniperrifle");
-	if (me->GetAmmoCount(pSniperWeapon->GetPrimaryAmmoType()) >= SNIPER_CHARGE_DRAIN)
+
+	int iMinChargeLevel = SNIPER_CHARGE_LEVEL_TO_WAIT_FOR_NORMAL;
+
+	if (me->GetDifficulty() >= CHL2MPBot::DifficultyType::HARD)
+	{
+		iMinChargeLevel = SNIPER_CHARGE_LEVEL_TO_WAIT_FOR_HARD;
+	}
+
+	if (me->GetAmmoCount(pSniperWeapon->GetPrimaryAmmoType()) >= iMinChargeLevel)
 	{
 		me->PopRequiredWeapon();
 		return Done("Sniper is charged");

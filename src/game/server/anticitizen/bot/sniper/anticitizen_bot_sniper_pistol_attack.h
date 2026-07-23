@@ -5,6 +5,9 @@
 
 #include "Path/NextBotChasePath.h"
 
+#define SNIPER_CHARGE_LEVEL_TO_WAIT_FOR_NORMAL 75
+#define SNIPER_CHARGE_LEVEL_TO_WAIT_FOR_HARD 100
+
 class CHL2MPBotSniperPistolAttack : public Action< CHL2MPBot >
 {
 public:

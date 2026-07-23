@@ -156,7 +156,7 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperLurk::Update( CHL2MPBot *me, float inte
 			me->PopRequiredWeapon();
 			me->PushRequiredWeapon(myGun);
 			me->Weapon_Switch(myGun);
-			if (!me->IsCurrentWeaponZoomed())
+			if (threat && threat->IsVisibleInFOVNow() && !me->IsCurrentWeaponZoomed())
 			{
 				// zoom in and stand still
 				me->PressAltFireButton();
