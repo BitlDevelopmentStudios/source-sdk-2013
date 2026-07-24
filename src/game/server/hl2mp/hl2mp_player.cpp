@@ -326,6 +326,7 @@ void CHL2MP_Player::Precache( void )
 
 	UTIL_PrecacheOther("item_healthvial");
 	UTIL_PrecacheOther("weapon_frag");
+	UTIL_PrecacheOther("item_battery");
 	UTIL_PrecacheOther("item_ammo_ar2_altfire");
 }
 
@@ -1903,19 +1904,16 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 								vel[2] = 0.0f;
 								pObj->AddVelocity(&vel, &angImp);
 							}
-
-							if (info.GetDamageType() & DMG_DISSOLVE)
-							{
-								CBaseAnimating* pAnimating = dynamic_cast<CBaseAnimating*>(pItem);
-
-								if (pAnimating)
-								{
-									pAnimating->Dissolve(NULL, gpGlobals->curtime, false, ENTITY_DISSOLVE_NORMAL);
-								}
-							}
 						}
 					}
 				}
+			}
+
+			CWeaponSniperRifle* pSniper = (CWeaponSniperRifle*)Weapon_OwnsThisType("weapon_sniperrifle");
+
+			if (pSniper && (GetAmmoCount(pSniper->GetPrimaryAmmoType()) >= SNIPER_CHARGE_DRAIN))
+			{
+				DropItem("item_battery", WorldSpaceCenter() + RandomVector(-4, 4), RandomAngle(0, 360));
 			}
 		}
 	}

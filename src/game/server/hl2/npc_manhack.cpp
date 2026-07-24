@@ -393,15 +393,7 @@ void CNPC_Manhack::Event_Killed( const CTakeDamageInfo &info )
 		SoundInit();
 	}
 
-	CItem* pBattery = (CItem*)CreateEntityByName("item_battery");
-	if (pBattery)
-	{
-		pBattery->SetAbsOrigin(GetAbsOrigin());
-		pBattery->SetAbsVelocity(GetAbsVelocity());
-		pBattery->SetLocalAngularVelocity(GetLocalAngularVelocity());
-		pBattery->ActivateWhenAtRest();
-		pBattery->Spawn();
-	}
+	DropItem("item_battery", WorldSpaceCenter() + RandomVector(-4, 4), RandomAngle(0, 360));
 
 	// Always gib when clubbed or blasted or crushed, or just randomly
 	if ( ( info.GetDamageType() & (DMG_CLUB|DMG_CRUSH|DMG_BLAST) ) || ( random->RandomInt( 0, 1 ) ) )
@@ -2187,6 +2179,8 @@ void CNPC_Manhack::Precache(void)
 	PrecacheModel("models/manhack.mdl");
 	PrecacheModel( MANHACK_GLOW_SPRITE );
 	PropBreakablePrecacheAll( MAKE_STRING("models/manhack.mdl") );
+
+	UTIL_PrecacheOther("item_battery");
 	
 	PrecacheScriptSound( "NPC_Manhack.Die" );
 	PrecacheScriptSound( "NPC_Manhack.Bat" );

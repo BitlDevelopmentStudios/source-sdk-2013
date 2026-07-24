@@ -72,7 +72,7 @@ ActionResult< CHL2MPBot >	CHL2MPBotSniperLurk::Update( CHL2MPBot *me, float inte
 		m_failCount = 0;
 
 		CBaseCombatWeapon* pSniperWeapon = me->Weapon_OwnsThisType("weapon_sniperrifle");
-		if (pSniperWeapon && me->GetAmmoCount(me->GetActiveWeapon()->GetPrimaryAmmoType()) < SNIPER_CHARGE_DRAIN)
+		if (pSniperWeapon && (pSniperWeapon == me->GetActiveWeapon()) && (me->GetAmmoCount(pSniperWeapon->GetPrimaryAmmoType()) < SNIPER_CHARGE_DRAIN))
 		{
 			return SuspendFor( new CHL2MPBotSniperPistolAttack, "Pistol attacking nearby threat" );
 		}

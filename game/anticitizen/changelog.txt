@@ -40,6 +40,7 @@ Alpha v2:
 - Added tags for convars for use with Quick Search.
 - Improved UI theme.
 - Slightly reduced air movement restrictions on soldier classes.
+- Dropped Energy Balls no longer dissolve if the Combine Elite was dissolved.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.
