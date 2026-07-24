@@ -659,7 +659,8 @@ void CServerFinderDialog::LoadMaps(const char *pszPathID)
 		Q_snprintf( mapname, sizeof(mapname), "maps/%s", pszFilename );
 		if ( !g_pFullFileSystem->FileExists( mapname, pszPathID ) )
 		{
-			goto nextFile;
+			pszFilename = g_pFullFileSystem->FindNext(findHandle);
+			continue;
 		}
 
 		// remove the text 'maps/' and '.bsp' from the file name to get the map name
@@ -673,19 +674,35 @@ void CServerFinderDialog::LoadMaps(const char *pszPathID)
 		{
 			Q_strncpy( mapname, pszFilename, sizeof(mapname) - 1 );
 		}
+
 		char *ext = Q_strstr( mapname, ".bsp" );
 		if ( ext )
 		{
 			*ext = 0;
 		}
 
+		KeyValues* kvHidden = NULL;
+
+		KeyValuesAD pModData("GameInfo");
+		if (pModData->LoadFromFile(g_pFullFileSystem, "gameinfo.txt"))
+		{
+			kvHidden = pModData->FindKey("hidden_maps");
+		}
+
+		if (kvHidden)
+		{
+			if (kvHidden->GetInt(mapname, 0))
+			{
+				pszFilename = g_pFullFileSystem->FindNext(findHandle);
+				continue;
+			}
+		}
+
 		// add to the map list
 		m_pMapList->AddItem( mapname, new KeyValues( "data", "mapname", mapname ) );
-
-		// get the next file
-	nextFile:
-		pszFilename = g_pFullFileSystem->FindNext( findHandle );
+		pszFilename = g_pFullFileSystem->FindNext(findHandle);
 	}
+
 	g_pFullFileSystem->FindClose( findHandle );
 }
 
