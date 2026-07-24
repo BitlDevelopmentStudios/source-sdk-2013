@@ -517,6 +517,23 @@ public:
 	PlayerAnimEvent_t	Get3rdPersonPrimaryAttackActivity(void) OVERRIDE;
 	void 				CreateMuzzleSmokeEffect() OVERRIDE;
 
+	virtual const Vector& GetBulletSpread(void)
+	{
+		static Vector cone;
+
+		float ramp = RemapValClamped(m_flAccuracyPenalty,
+			0.0f,
+			PISTOL_ACCURACY_MAXIMUM_PENALTY_TIME,
+			0.0f,
+			1.0f);
+
+		// We lerp from very accurate to inaccurate over time
+		// the dual pistols are slightly more accurate, however.
+		VectorLerp(VECTOR_CONE_1DEGREES, VECTOR_CONE_4DEGREES, ramp, cone);
+
+		return cone;
+	}
+
 	bool		ShouldSwitchPistol(void) { return ((m_nNumShotsFired % 2) == 0); }
 
 	DECLARE_ACTTABLE();
