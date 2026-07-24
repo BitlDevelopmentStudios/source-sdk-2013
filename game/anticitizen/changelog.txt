@@ -30,7 +30,7 @@ Alpha v2:
 - Added a new class: the Overwatch Female Assassin.
 	- Primary Weapon: The Overwatch Sniper Rifle - A powerful sniper rifle with a rechargable battery that adjusts damage based on charge.
 	- Secondary Weapon: Dual 9mm Pistols.
-	- Fast movement with a more lenient bunnyhopping penalty.
+	- Fast movement, with movement mechanics similar to HL2DM movement.
 - Fixed a glitch that sometimes causes tips to not load.
 - Buffed Pistol damage from 5 to 7.
 - Fixed bugs when spawning bots as specific classes.

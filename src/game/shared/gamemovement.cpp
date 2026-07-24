@@ -2406,7 +2406,7 @@ void CGameMovement::PreventBunnyJumping()
 
 			if (info.iMovementType == MOVE_TYPE_MPMOVEMENT)
 			{
-				//assassins can move a little faster.
+				//mp movement brings movement closer to HL2DM.
 				bDisableBhoppingPrevention = true;
 			}
 		}
