@@ -7,7 +7,7 @@ PlayerClassDatafile
 	"selectcmd"			"class_assassin"
 
 	// CAnticitizen_FilePlayerClassInfo_t members
-	"ClassType"			"1" // 0 = none, 1 = low, 2 = mid, 3 = high, 4 = freeman
+	"ClassType"			"3" // 0 = none, 1 = low, 2 = mid, 3 = high, 4 = freeman
 	
 	"Grenades"			"-1"
 	

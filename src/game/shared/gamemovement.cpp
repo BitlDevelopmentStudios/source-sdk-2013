@@ -2384,8 +2384,9 @@ void CGameMovement::PlaySwimSound()
 	MoveHelper()->StartSound( mv->GetAbsOrigin(), "Player.Swim" );
 }
 
-// Only allow bunny jumping up to 1.2x server / player maxspeed setting
+// Only allow bunny jumping up to 1.25x server / player maxspeed setting
 #define BUNNYJUMP_MAX_SPEED_FACTOR 1.1f
+#define BUNNYJUMP_MAX_SPEED_FACTOR_SPRINTING 1.25f
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -2415,6 +2416,13 @@ void CGameMovement::PreventBunnyJumping()
 	if (!bDisableBhoppingPrevention)
 	{
 		float movementFactor = BUNNYJUMP_MAX_SPEED_FACTOR;
+
+		CHLMoveData* pMoveData = (CHLMoveData*)mv;
+
+		if (pMoveData->m_bIsSprinting && !player->m_Local.m_bDucked)
+		{
+			movementFactor = BUNNYJUMP_MAX_SPEED_FACTOR_SPRINTING;
+		}
 
 		float maxscaledspeed = movementFactor * player->m_flMaxspeed;
 		if (maxscaledspeed <= 0.0f)
