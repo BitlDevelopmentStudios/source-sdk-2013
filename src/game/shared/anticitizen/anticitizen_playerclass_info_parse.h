@@ -46,6 +46,16 @@ typedef enum {
 	NUM_VOICE_TYPES,
 } ClassVoice_t;
 
+typedef enum {
+	MOVE_TYPE_NONE,
+	MOVE_TYPE_SPMOVEMENT,
+	MOVE_TYPE_ASSASSINMOVEMENT,
+
+	// Add new weapon types here
+
+	NUM_MOVE_TYPES,
+} ClassMovementType_t;
+
 #define	DEFAULT_NORM_SPEED 190
 #define	DEFAULT_SPRINT_SPEED 320
 #define	DEFAULT_ADS_SPEED 150
@@ -84,9 +94,9 @@ public:
 	int						iManhacks;
 	int						iCrates;
 	int						iTurret;
+	bool					iMovementType;
 
 	bool					bAllWeapons;
-	bool					bSPMovement;
 	bool					bSuit;
 	bool					bADSWeapons;
 	bool					bCanThrowGrenade;

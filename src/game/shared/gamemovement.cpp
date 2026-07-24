@@ -1761,7 +1761,7 @@ void CGameMovement::AirAccelerate( Vector& wishdir, float wishspeed, float accel
 		{
 			const CAnticitizen_FilePlayerClassInfo_t& info = pHL2MPPlayer->GetPlayerClassInfo();
 
-			if (info.bSPMovement)
+			if (info.iMovementType == MOVE_TYPE_SPMOVEMENT)
 			{
 				accelspeed = accel * wishspeed * gpGlobals->frametime * player->m_surfaceFriction;
 			}
@@ -2386,14 +2386,34 @@ void CGameMovement::PlaySwimSound()
 
 // Only allow bunny jumping up to 1.2x server / player maxspeed setting
 #define BUNNYJUMP_MAX_SPEED_FACTOR 1.1f
+#define BUNNYJUMP_MAX_SPEED_FACTOR_ASSASSIN 1.3f
 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 void CGameMovement::PreventBunnyJumping()
 {
+	float movementFactor = BUNNYJUMP_MAX_SPEED_FACTOR;
+
 	// Speed at which bunny jumping is limited
-	float maxscaledspeed = BUNNYJUMP_MAX_SPEED_FACTOR * player->m_flMaxspeed;
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(player);
+
+	// Add a little forward velocity based on your current forward velocity - if you are not sprinting.
+	if (pHL2MPPlayer)
+	{
+		if (pHL2MPPlayer->GetPlayerClass() > CLS_INVALID)
+		{
+			const CAnticitizen_FilePlayerClassInfo_t& info = pHL2MPPlayer->GetPlayerClassInfo();
+
+			if (info.iMovementType == MOVE_TYPE_ASSASSINMOVEMENT)
+			{
+				//assassins can move a little faster.
+				movementFactor = BUNNYJUMP_MAX_SPEED_FACTOR_ASSASSIN;
+			}
+		}
+	}
+
+	float maxscaledspeed = movementFactor * player->m_flMaxspeed;
 	if (maxscaledspeed <= 0.0f)
 		return;
 
@@ -2484,7 +2504,7 @@ bool CGameMovement::CheckJumpButton( void )
 		{
 			const CAnticitizen_FilePlayerClassInfo_t& info = pHL2MPPlayer->GetPlayerClassInfo();
 
-			if (!info.bSPMovement)
+			if (info.iMovementType != MOVE_TYPE_SPMOVEMENT)
 			{
 				PreventBunnyJumping();
 			}
@@ -2557,7 +2577,7 @@ bool CGameMovement::CheckJumpButton( void )
 		{
 			const CAnticitizen_FilePlayerClassInfo_t& info = pHL2MPPlayer->GetPlayerClassInfo();
 
-			if (info.bSPMovement)
+			if (info.iMovementType == MOVE_TYPE_SPMOVEMENT)
 			{
 				CHLMoveData* pMoveData = (CHLMoveData*)mv;
 

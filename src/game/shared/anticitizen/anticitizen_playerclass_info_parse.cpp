@@ -10,7 +10,6 @@
 CAnticitizen_FilePlayerClassInfo_t::CAnticitizen_FilePlayerClassInfo_t()
 {
 	bAllWeapons = false;
-	bSPMovement = false;
 	bSuit = false;
 	bADSWeapons = false;
 	bCanThrowGrenade = false;
@@ -20,6 +19,7 @@ CAnticitizen_FilePlayerClassInfo_t::CAnticitizen_FilePlayerClassInfo_t()
 	bOverlay = false;
 	m_szCArmModel[0] = 0;
 	iCArmSkin = 0;
+	iMovementType = 0;
 	iClassType = CLS_TYPE_NONE;
 	flNormSpeed = DEFAULT_NORM_SPEED;
 	flSprintSpeed = DEFAULT_SPRINT_SPEED;
@@ -40,7 +40,8 @@ void CAnticitizen_FilePlayerClassInfo_t::Parse(KeyValues* pKeyValuesData, const 
 	iClassType = pKeyValuesData->GetInt("ClassType", CLS_TYPE_NONE);
 	iSentenceVoice = pKeyValuesData->GetInt("VoiceMode", VOICE_TYPE_NONE);
 	bAllWeapons = pKeyValuesData->GetBool("AllWeapons");
-	bSPMovement = pKeyValuesData->GetBool("SPMovement");
+	// just so gordon's movemnt works with this new system.
+	iMovementType = pKeyValuesData->GetInt("MovementType", MOVE_TYPE_NONE);
 	bSuit = pKeyValuesData->GetBool("HEVSuit");
 	bTwoHandedWeaponAnims = pKeyValuesData->GetBool("TwoHandedWeaponAnims");
 
