@@ -35,6 +35,7 @@ Alpha v2:
 - Fixed bugs when spawning bots as specific classes.
 - bot_add commands will now force bots to a random class if a sepcific class isn't defined.
 - Added hidden_maps support to Quick Search.
+- Added tags for convars for use with Quick Search.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.
