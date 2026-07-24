@@ -529,7 +529,7 @@ public:
 
 		// We lerp from very accurate to inaccurate over time
 		// the dual pistols are slightly more accurate, however.
-		VectorLerp(VECTOR_CONE_1DEGREES, VECTOR_CONE_5DEGREES, ramp, cone);
+		VectorLerp(VECTOR_CONE_1DEGREES, VECTOR_CONE_4DEGREES, ramp, cone);
 
 		return cone;
 	}
