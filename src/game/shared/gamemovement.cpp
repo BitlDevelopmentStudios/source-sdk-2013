@@ -2386,14 +2386,13 @@ void CGameMovement::PlaySwimSound()
 
 // Only allow bunny jumping up to 1.2x server / player maxspeed setting
 #define BUNNYJUMP_MAX_SPEED_FACTOR 1.1f
-#define BUNNYJUMP_MAX_SPEED_FACTOR_ASSASSIN 1.3f
 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 void CGameMovement::PreventBunnyJumping()
 {
-	float movementFactor = BUNNYJUMP_MAX_SPEED_FACTOR;
+	bool bDisableBhoppingPrevention = false;
 
 	// Speed at which bunny jumping is limited
 	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(player);
@@ -2405,27 +2404,32 @@ void CGameMovement::PreventBunnyJumping()
 		{
 			const CAnticitizen_FilePlayerClassInfo_t& info = pHL2MPPlayer->GetPlayerClassInfo();
 
-			if (info.iMovementType == MOVE_TYPE_ASSASSINMOVEMENT)
+			if (info.iMovementType == MOVE_TYPE_MPMOVEMENT)
 			{
 				//assassins can move a little faster.
-				movementFactor = BUNNYJUMP_MAX_SPEED_FACTOR_ASSASSIN;
+				bDisableBhoppingPrevention = true;
 			}
 		}
 	}
 
-	float maxscaledspeed = movementFactor * player->m_flMaxspeed;
-	if (maxscaledspeed <= 0.0f)
-		return;
+	if (!bDisableBhoppingPrevention)
+	{
+		float movementFactor = BUNNYJUMP_MAX_SPEED_FACTOR;
 
-	// Current player speed
-	float spd = mv->m_vecVelocity.Length();
-	if (spd <= maxscaledspeed)
-		return;
+		float maxscaledspeed = movementFactor * player->m_flMaxspeed;
+		if (maxscaledspeed <= 0.0f)
+			return;
 
-	// Apply this cropping fraction to velocity
-	float fraction = (maxscaledspeed / spd);
+		// Current player speed
+		float spd = mv->m_vecVelocity.Length();
+		if (spd <= maxscaledspeed)
+			return;
 
-	mv->m_vecVelocity *= fraction;
+		// Apply this cropping fraction to velocity
+		float fraction = (maxscaledspeed / spd);
+
+		mv->m_vecVelocity *= fraction;
+	}
 }
 
 //-----------------------------------------------------------------------------

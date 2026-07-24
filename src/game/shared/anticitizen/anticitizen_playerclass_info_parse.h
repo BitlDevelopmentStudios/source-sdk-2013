@@ -49,7 +49,7 @@ typedef enum {
 typedef enum {
 	MOVE_TYPE_NONE,
 	MOVE_TYPE_SPMOVEMENT,
-	MOVE_TYPE_ASSASSINMOVEMENT,
+	MOVE_TYPE_MPMOVEMENT,
 
 	// Add new weapon types here
 
@@ -94,7 +94,7 @@ public:
 	int						iManhacks;
 	int						iCrates;
 	int						iTurret;
-	bool					iMovementType;
+	int						iMovementType;
 
 	bool					bAllWeapons;
 	bool					bSuit;
