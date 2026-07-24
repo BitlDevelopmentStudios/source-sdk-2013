@@ -1260,6 +1260,47 @@ bool CHL2MPRules::CanHavePlayerItem( CBasePlayer *pPlayer, CBaseCombatWeapon *pI
 	return BaseClass::CanHavePlayerItem( pPlayer, pItem );
 }
 
+typedef bool (*BIgnoreConvarChangeFunc)(void);
+
+struct convar_tags_t
+{
+	const char* pszConVar;
+	const char* pszTag;
+	BIgnoreConvarChangeFunc ignoreConvarFunc;
+};
+
+// The list of convars that automatically turn on tags when they're changed.
+// Convars in this list need to have the FCVAR_NOTIFY flag set on them, so the
+// tags are recalculated and uploaded to the master server when the convar is changed.
+convar_tags_t convars_to_check_for_tags[] =
+{
+	{ "mp_friendlyfire", "friendlyfire", NULL },
+	{ "mp_respawnwavetime", "respawntimes", NULL },
+	{ "mp_fadetoblack", "fadetoblack", NULL },
+	{ "mp_disable_respawn_times", "norespawntime", NULL },
+	{ "hl2mp_bot_count", "bots", NULL },
+};
+
+//-----------------------------------------------------------------------------
+// Purpose: Engine asks for the list of convars that should tag the server
+//-----------------------------------------------------------------------------
+void CHL2MPRules::GetTaggedConVarList(KeyValues* pCvarTagList)
+{
+	BaseClass::GetTaggedConVarList(pCvarTagList);
+
+	for (int i = 0; i < ARRAYSIZE(convars_to_check_for_tags); i++)
+	{
+		if (convars_to_check_for_tags[i].ignoreConvarFunc && convars_to_check_for_tags[i].ignoreConvarFunc())
+			continue;
+
+		KeyValues* pKV = new KeyValues("tag");
+		pKV->SetString("convar", convars_to_check_for_tags[i].pszConVar);
+		pKV->SetString("tag", convars_to_check_for_tags[i].pszTag);
+
+		pCvarTagList->AddSubKey(pKV);
+	}
+}
+
 #endif
 
 //=========================================================

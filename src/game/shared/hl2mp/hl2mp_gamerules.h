@@ -127,6 +127,7 @@ public:
 	virtual float FlWeaponTryRespawn( CBaseCombatWeapon *pWeapon );
 	virtual Vector VecWeaponRespawnSpot( CBaseCombatWeapon *pWeapon );
 	virtual int WeaponShouldRespawn( CBaseCombatWeapon *pWeapon );
+	virtual void GetTaggedConVarList(KeyValues* pCvarTagList);
 	virtual int GetRemainingSoldierCount(void);
 	virtual void CheckLastMemberLeft(void);
 	virtual void SelectFreeman(void);
