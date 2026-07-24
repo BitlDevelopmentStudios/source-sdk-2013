@@ -1909,7 +1909,7 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 				}
 			}
 
-			CWeaponSniperRifle* pSniper = (CWeaponSniperRifle*)Weapon_OwnsThisType("weapon_sniperrifle");
+			CBaseCombatWeapon* pSniper = Weapon_OwnsThisType("weapon_sniperrifle");
 
 			if (pSniper && (GetAmmoCount(pSniper->GetPrimaryAmmoType()) >= SNIPER_CHARGE_DRAIN))
 			{
