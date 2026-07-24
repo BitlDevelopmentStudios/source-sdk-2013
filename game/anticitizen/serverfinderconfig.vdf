@@ -1,7 +1,7 @@
 "ServerFinderConfig"
 {
-	"map"		"ep1_citadel_00"
-	"israndommap"		"1"
+	"map"		"dm_powerhouse"
+	"israndommap"		"0"
 	"maxplayers"		"7"
 	"MaxPing"		"0"
 	"RespawnTimes"		"0"
