@@ -167,8 +167,6 @@ static const char *s_PreserveEnts[] =
 	"", // END Marker
 };
 
-
-
 #ifdef CLIENT_DLL
 	void RecvProxy_HL2MPRules( const RecvProp *pProp, void **pOut, void *pData, int objectID )
 	{
@@ -253,6 +251,7 @@ CHL2MPRules::CHL2MPRules()
 	m_bGaveGameEndAchievements = false;
 	m_bSentGameEndEvent = false;
 	m_bStrippedFlags = false;
+	m_bJustEnded = false;
 	m_uiFreemanID = 0;
 	m_uiLastFreemanID = 0;
 	m_iNumTimesFreemanIDShowedUpIFuckingHateThis = 0;
