@@ -356,7 +356,7 @@ void CHL2MP_Player::GiveAllItems( void )
 	CBasePlayer::GiveAmmo(16, "XBowBolt");
 
 	CBasePlayer::GiveAmmo(3, "grenade");
-	CBasePlayer::GiveAmmo(3, "slam");
+	//CBasePlayer::GiveAmmo(3, "slam");
 
 	if (GetPlayerClass() ==  CLS_FREEMAN)
 	{
@@ -375,7 +375,7 @@ void CHL2MP_Player::GiveAllItems( void )
 
 		GiveNamedItem("weapon_rpg");
 
-		GiveNamedItem("weapon_slam");
+		//GiveNamedItem("weapon_slam");
 
 		GiveNamedItem("weapon_physcannon");
 	}
@@ -1760,7 +1760,7 @@ int CHL2MP_Player::GetMaxAmmo( int iAmmoIndex ) const
 	return GetAmmoDef()->MaxCarry( iAmmoIndex );
 }
 
-void CHL2MP_Player::DetonateTripmines( void )
+/*void CHL2MP_Player::DetonateTripmines(void)
 {
 	CBaseEntity *pEntity = NULL;
 
@@ -1775,7 +1775,7 @@ void CHL2MP_Player::DetonateTripmines( void )
 
 	// Play sound for pressing the detonator
 	EmitSound( "Weapon_SLAM.SatchelDetonate" );
-}
+}*/
 
 //=========================================================
 // DropItem - dead npc drops named item
@@ -1848,7 +1848,7 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 	if (GetTeamNumber() != TEAM_SPECTATOR)
 		CreateRagdollEntity();
 
-	DetonateTripmines();
+	//DetonateTripmines();
 
 	CBaseEntity* pAttacker = info.GetAttacker();
 

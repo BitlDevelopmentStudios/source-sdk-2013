@@ -1872,7 +1872,7 @@ CAmmoDef *GetAmmoDef()
 		def.AddAmmoType("ammo_proto1",			DMG_BULLET,				TRACER_LINE,			0, 0, 10, 0, 0 );
 #endif // HL2_EPISODIC
 		def.AddAmmoType("Manhacks", DMG_SLASH, TRACER_NONE, 0, 0, "sk_max_manhacks", 0, 0);
-		def.AddAmmoType("slam", DMG_BURN, TRACER_NONE, 0, 0, "sk_max_slam", 0, 0);
+		//def.AddAmmoType("slam", DMG_BURN, TRACER_NONE, 0, 0, "sk_max_slam", 0, 0);
 		def.AddAmmoType("Crate", DMG_CLUB, TRACER_NONE, 0, 0, "sk_max_crate", 0, 0);
 		def.AddAmmoType("Turret", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_npc_dmg_turret", "sk_npc_dmg_turret", "sk_max_turret", BULLET_IMPULSE(200, 1225), 0);
 	}

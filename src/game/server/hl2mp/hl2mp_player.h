@@ -141,7 +141,7 @@ public:
 
 	int	GetMaxAmmo( int iAmmoIndex ) const;
 	
-	void  DetonateTripmines( void );
+	//void  DetonateTripmines( void );
 
 	void Reset(bool gameend = false);
 

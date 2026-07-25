@@ -4,7 +4,7 @@
 #include "fmtstr.h"
 
 #include "hl2mp_gamerules.h"
-#include "hl2mp/weapon_slam.h"
+//#include "hl2mp/weapon_slam.h"
 #include "NextBot/NavMeshEntities/func_nav_prerequisite.h"
 
 #include "bot/hl2mp_bot.h"

@@ -394,8 +394,8 @@ $Project "Server (ANTICITIZEN)"
 				{
 					$Folder "Nav Entities"
 					{
-						$File	"hl2mp\bot\behavior\nav_entities\hl2mp_bot_nav_ent_destroy_entity.cpp"
-						$File	"hl2mp\bot\behavior\nav_entities\hl2mp_bot_nav_ent_destroy_entity.h"
+						//$File	"hl2mp\bot\behavior\nav_entities\hl2mp_bot_nav_ent_destroy_entity.cpp"
+						//$File	"hl2mp\bot\behavior\nav_entities\hl2mp_bot_nav_ent_destroy_entity.h"
 						$File	"hl2mp\bot\behavior\nav_entities\hl2mp_bot_nav_ent_move_to.cpp"
 						$File	"hl2mp\bot\behavior\nav_entities\hl2mp_bot_nav_ent_move_to.h"
 						$File	"hl2mp\bot\behavior\nav_entities\hl2mp_bot_nav_ent_wait.cpp"

@@ -4,7 +4,7 @@
 #include "fmtstr.h"
 
 #include "hl2mp_gamerules.h"
-#include "hl2mp/weapon_slam.h"
+//#include "hl2mp/weapon_slam.h"
 #include "NextBot/NavMeshEntities/func_nav_prerequisite.h"
 
 #include "bot/hl2mp_bot.h"
@@ -77,7 +77,7 @@ void CHL2MPBotTacticalMonitor::MonitorArmedStickyBombs( CHL2MPBot *me )
 		m_stickyBombCheckTimer.Start( RandomFloat( 0.3f, 1.0f ) );
 
 		// are there any enemies on/near my sticky bombs?
-		CWeapon_SLAM *slam = dynamic_cast< CWeapon_SLAM* >( me->Weapon_OwnsThisType( "weapon_slam" ) );
+		/*CWeapon_SLAM* slam = dynamic_cast< CWeapon_SLAM* >(me->Weapon_OwnsThisType("weapon_slam"));
 		if ( slam )
 		{
 			const CUtlVector< CBaseEntity* > &satchelVector = slam->GetSatchelVector();
@@ -124,7 +124,7 @@ void CHL2MPBotTacticalMonitor::MonitorArmedStickyBombs( CHL2MPBot *me )
 					}
 				}
 			}
-		}
+		}*/
 	}
 }
 
@@ -247,7 +247,7 @@ ActionResult< CHL2MPBot >	CHL2MPBotTacticalMonitor::Update( CHL2MPBot *me, float
 	}
 
 	// detonate sticky bomb traps when victims are near
-	MonitorArmedStickyBombs( me );
+	//MonitorArmedStickyBombs( me );
 
 	me->UpdateDelayedThreatNotices();
 

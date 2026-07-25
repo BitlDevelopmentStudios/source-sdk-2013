@@ -1834,7 +1834,7 @@ bool CHL2MPBot::IsHitScanWeapon( CBaseHL2MPCombatWeapon *weapon ) const
 	{
 		if ( FClassnameIs( weapon, "weapon_rpg" ) ||
 			 FClassnameIs( weapon, "weapon_frag" ) ||
-			 FClassnameIs( weapon, "weapon_slam" ) ||
+			 /*FClassnameIs(weapon, "weapon_slam") ||*/
 			 FClassnameIs( weapon, "weapon_crowbar" ) ||
 			 FClassnameIs( weapon, "weapon_stunstick" ) ||
 			 FClassnameIs( weapon, "weapon_crossbow" ) ||
