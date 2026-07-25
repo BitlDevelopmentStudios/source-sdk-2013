@@ -125,7 +125,7 @@
 
 			platform			|appid_243750|platform/platform_misc.vpk
 
-			// this mounts hl2mp maps, assuming they are in the same drive and same drive partition as SDK 2013.
+			// this mounts hl2mp maps, assuming they are installed alongside SDK 2013.
 			game                			|appid_320|hl2mp
 			// we then overwrite the extra files with what we have in sdk 2013.
 			game				|appid_243750|hl2mp
