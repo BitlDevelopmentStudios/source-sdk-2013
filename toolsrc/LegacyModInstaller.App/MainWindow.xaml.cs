@@ -28,7 +28,7 @@ namespace LegacyModInstaller.App
         private ModData data;
         private string ModJsonFile = AppDomain.CurrentDomain.BaseDirectory + "data/mod.json";
         private string ModLogoFile = AppDomain.CurrentDomain.BaseDirectory + "data/logo.png";
-        private string ModZipFile = AppDomain.CurrentDomain.BaseDirectory + "data/mod.zip";
+        private string ModZipFile;
         #endregion
 
         #region Window Logic
@@ -40,12 +40,6 @@ namespace LegacyModInstaller.App
 
         private void window_loaded(object sender, RoutedEventArgs e)
         {
-            if (!File.Exists(ModZipFile))
-            {
-                CreateMessageBox("No mod file data found.");
-                Close();
-            }
-
             if (File.Exists(ModLogoFile))
             {
                 Uri uri = new Uri(ModLogoFile, UriKind.RelativeOrAbsolute);
@@ -53,7 +47,7 @@ namespace LegacyModInstaller.App
             }
             else
             {
-                CreateMessageBox("No mod logo found.");
+                CreateMessageBox("No mod logo found. Place a logo.png file in the \"data\" folder.");
                 Close();
             }
 
@@ -64,7 +58,16 @@ namespace LegacyModInstaller.App
             }
             else
             {
-                CreateMessageBox("No mod info data found.");
+                CreateMessageBox("No mod info data found. Place a mod.json file in the \"data\" folder.");
+                Close();
+            }
+
+            string baseFileName = data.ModInstallDir + ".zip";
+            ModZipFile = AppDomain.CurrentDomain.BaseDirectory + baseFileName;
+
+            if (!File.Exists(ModZipFile))
+            {
+                CreateMessageBox("\"" + ModZipFile + "\" not found.");
                 Close();
             }
         }
