@@ -17,7 +17,7 @@ $Group "gamedlls"
 $Group "game"
 {
 	"client"
-	"launcher_main"
+	//"launcher_main"
 	"mathlib"
 	"matsys_controls"
 	"raytrace"
