@@ -1,0 +1,3 @@
+[submodule "toolsrc/Mod-Installer"]
+	path = toolsrc/Mod-Installer
+	url = https://github.com/BitlDevelopmentStudios/Mod-Installer

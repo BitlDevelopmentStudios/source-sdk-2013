@@ -506,7 +506,7 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-game/*.exe
+game/*_win64.exe
 game/bin/x64/*.exe
 game/bin/x64/*.dll
 game/*/downloadlists/*.lst
@@ -523,3 +523,6 @@ mapsrc/*/*.vmx
 mapsrc/*/*.bsp
 vpksrc/*.privatekey.vdf
 *.vpk
+game/data/mod.zip
+game/ModInstaller.exe
+game/ModInstaller.exe.config
