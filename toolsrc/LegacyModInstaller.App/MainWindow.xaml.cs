@@ -42,6 +42,7 @@ namespace LegacyModInstaller.App
         {
             if (!File.Exists(ModZipFile))
             {
+                CreateMessageBox("No mod file data found.");
                 Close();
             }
 
@@ -52,6 +53,7 @@ namespace LegacyModInstaller.App
             }
             else
             {
+                CreateMessageBox("No mod logo found.");
                 Close();
             }
 
@@ -62,6 +64,7 @@ namespace LegacyModInstaller.App
             }
             else
             {
+                CreateMessageBox("No mod info data found.");
                 Close();
             }
         }
