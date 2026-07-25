@@ -286,7 +286,6 @@
             x:Name="Logo"
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
-            Margin="0,17,0,0" 
-            Stretch="UniformToFill" />
+            Margin="0,17,0,0" />
     </Grid>
 </Window>
