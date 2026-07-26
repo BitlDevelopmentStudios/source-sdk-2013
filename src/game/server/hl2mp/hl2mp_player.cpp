@@ -2252,6 +2252,26 @@ CBaseEntity* CHL2MP_Player::EntSelectSpawnPoint( void )
 	if (gEntList.FindEntityByClassname(NULL, pSpawnpointName) == NULL)
 	{
 		pSpawnpointName = "info_player_deathmatch";
+
+		if (gEntList.FindEntityByClassname(NULL, pSpawnpointName) == NULL)
+		{
+			Warning("Warning: Using team specific spawns!!! Please use info_player_deathmatch or info_player_start for spectator cameras!!!\n");
+
+			if (random->RandomInt(0, 1) == 1)
+			{
+				pSpawnpointName = "info_player_freeman";
+
+				if (gEntList.FindEntityByClassname(NULL, pSpawnpointName) == NULL)
+				{
+					pSpawnpointName = "info_player_rebel";
+				}
+			}
+			else
+			{
+				pSpawnpointName = "info_player_combine";
+			}
+		}
+
 		pLastSpawnPoint = g_pLastSpawn;
 	}
 
@@ -2259,6 +2279,7 @@ CBaseEntity* CHL2MP_Player::EntSelectSpawnPoint( void )
 	// Randomize the start spot
 	for ( int i = random->RandomInt(1,5); i > 0; i-- )
 		pSpot = gEntList.FindEntityByClassname( pSpot, pSpawnpointName );
+
 	if ( !pSpot )  // skip over the null point
 		pSpot = gEntList.FindEntityByClassname( pSpot, pSpawnpointName );
 
