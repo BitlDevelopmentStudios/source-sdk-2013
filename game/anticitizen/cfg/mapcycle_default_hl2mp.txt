@@ -1,5 +1,5 @@
 hunt_prison
-dm_lockdown
+hunt_lockdown
 dm_overwatch
 dm_powerhouse
 dm_resistance

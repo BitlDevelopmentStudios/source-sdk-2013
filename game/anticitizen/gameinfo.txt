@@ -14,6 +14,8 @@
 	{
 		"test_speakers"		1
 		"test_hardware"		1
+
+		"dm_lockdown" 1
 		
 		"ep2_background01" 1
 		"ep2_background02" 1

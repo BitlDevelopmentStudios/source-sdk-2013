@@ -7,3 +7,4 @@
 // Also, note that the "mapcyclefile" convar can be used to specify a particular mapcycle file.
 
 hunt_prison
+hunt_lockdown
