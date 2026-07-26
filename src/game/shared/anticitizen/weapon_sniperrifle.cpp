@@ -157,7 +157,15 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 	// Fire the bullets, and force the first shot to be perfectly accuracy
 	//pPlayer->FireBullets( info );
 #ifndef CLIENT_DLL
-	FireActualBullet(info, SNIPER_BULLET_SPEED, GetTracerType(), true, true, "AR2Impact");
+	FireActualBullet(info, 
+					 SNIPER_BULLET_SPEED, 
+					 GetTracerType(), 
+					 true, 
+					 true, 
+					 "AR2Impact", 
+					 true,
+					 Color(3, 252, 219),
+					 0.085f);
 #endif // CLIENT_DLL
 
 #ifdef CLIENT_DLL
