@@ -6,25 +6,46 @@
 #include "baseentity_shared.h"
 #include "baseanimating.h"
 
+struct LineTracerInfo_t
+{
+	Color color;
+	float speed;
+};
+
 class CActualBullet : public CBaseAnimating
 {
 	DECLARE_CLASS(CActualBullet, CBaseAnimating);
 	DECLARE_DATADESC();
 
 public:
+	CActualBullet(void);
+
 	void Start(void);
 	void Think(void);
 	void DoImpactEffect(trace_t& tr, int nDamageType);
 
+public:
 	Vector m_vecDir;
 	int m_Speed;
 	FireBulletsInfo_t info;
 	bool m_ImpactEffect;
 	const char* m_ImpactEffectName;
+	bool m_Line;
+	LineTracerInfo_t m_LineTracerInfo;
 };
 
+extern ConVar debug_actual_bullet_path;
+
 ///so this is the actual bullet creation function.
-inline void FireActualBullet(FireBulletsInfo_t &info, int iSpeed, const char* tracertype, bool bWhiz = false, bool bImpactEffect = false, const char *szName = "")
+inline void FireActualBullet(FireBulletsInfo_t &info, 
+								int iSpeed, 
+								const char* tracertype, 
+								bool bWhiz = false, 
+								bool bImpactEffect = false, 
+								const char *szImpactEffectName = "",
+								bool bLine = false, 
+								Color cLineColor = Color(255.0f, 255.0f, 255.0f),
+								float flLineSpeed = 0.05f)
 {
 	if (!info.m_pAttacker)
 	{
@@ -41,11 +62,28 @@ inline void FireActualBullet(FireBulletsInfo_t &info, int iSpeed, const char* tr
 		Vector vecShotDir = vecShot.Normalized();
 		trace_t tr;
 		UTIL_TraceLine(info.m_vecSrc, info.m_vecSrc + (vecShotDir * MAX_TRACE_LENGTH), MASK_SHOT, info.m_pAttacker, COLLISION_GROUP_NONE, &tr);
+
+		if (debug_actual_bullet_path.GetBool())
+		{
+			DebugDrawLine(info.m_vecSrc, info.m_vecSrc + (vecShotDir * MAX_TRACE_LENGTH),
+						  255,
+						  0,
+						  0,
+						  false,
+						  1.0f);
+		}
+
 		CActualBullet *pBullet = (CActualBullet*)CBaseEntity::Create("actual_bullet", info.m_vecSrc, vec3_angle, info.m_pAttacker);
 		pBullet->m_vecDir = vecShotDir;
 		pBullet->m_Speed = iSpeed;
 		pBullet->m_ImpactEffect = bImpactEffect;
-		pBullet->m_ImpactEffectName = szName;
+		pBullet->m_ImpactEffectName = szImpactEffectName;
+		if (bLine)
+		{
+			pBullet->m_Line = true;
+			pBullet->m_LineTracerInfo.color = cLineColor;
+			pBullet->m_LineTracerInfo.speed = flLineSpeed;
+		}
 		pBullet->SetOwnerEntity(info.m_pAttacker);
 		pBullet->SetAbsOrigin(info.m_vecSrc);
 		pBullet->info = info;
