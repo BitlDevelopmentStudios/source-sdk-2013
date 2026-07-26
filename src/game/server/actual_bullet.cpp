@@ -5,12 +5,21 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-ConVar debug_actual_bullet("debug_actual_bullet", "0", FCVAR_GAMEDLL);
+ConVar debug_actual_bullet_path("debug_actual_bullet_path", "0", FCVAR_GAMEDLL);
+ConVar debug_actual_bullet_proj("debug_actual_bullet_proj", "0", FCVAR_GAMEDLL);
 
 LINK_ENTITY_TO_CLASS(actual_bullet, CActualBullet);
 
 BEGIN_DATADESC(CActualBullet)
 END_DATADESC()
+
+CActualBullet::CActualBullet(void)
+{
+	m_ImpactEffect = false;
+	m_Line = false;
+	m_LineTracerInfo.color = Color(255.0f, 255.0f, 255.0f);
+	m_LineTracerInfo.speed = 0.05f;
+}
 
 void CActualBullet::Start(void)
 {
@@ -33,8 +42,28 @@ void CActualBullet::Think(void)
 
 	trace_t tr;
 	UTIL_TraceLine(vecStart, vecEnd, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr);
-	if (debug_actual_bullet.GetBool() == true)
-		DebugDrawLine(vecStart, vecEnd, 0, 128, 255, false, 0.05f);
+
+	if (debug_actual_bullet_proj.GetBool())
+	{
+		DebugDrawLine(vecStart, vecEnd, 
+					  0, 
+					  128, 
+					  255, 
+					  false, 
+					  0.1f);
+	}
+	else
+	{
+		if (m_Line)
+		{
+			DebugDrawLine(vecStart, vecEnd,
+						  m_LineTracerInfo.color.r(),
+						  m_LineTracerInfo.color.g(),
+						  m_LineTracerInfo.color.b(),
+						  false,
+						  m_LineTracerInfo.speed);
+		}
+	}
 
 	if (tr.fraction != 1.0)
 	{
