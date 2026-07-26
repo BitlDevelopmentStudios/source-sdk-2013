@@ -1123,7 +1123,7 @@ void CHL2MPRules::GoToIntermission( void )
 
 	for ( int i = 0; i < MAX_PLAYERS; i++ )
 	{
-		CHL2MP_Player *pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex( i ));
+		CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
 
 		if ( !pPlayer )
 			continue;
@@ -1162,6 +1162,8 @@ void CHL2MPRules::LeaveIntermission(void)
 		pPlayer->RemoveFlag(FL_GODMODE);
 		pPlayer->RemoveFlag(FL_NOTARGET);
 		pPlayer->ToggleGlow(false);
+		//SHUT.
+		pPlayer->SentenceStop();
 	}
 #endif
 

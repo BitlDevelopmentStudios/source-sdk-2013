@@ -1949,6 +1949,8 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 	}
 
 	ToggleGlow(false);
+	//SHUT.
+	SentenceStop();
 
 	BaseClass::Event_Killed( subinfo );
 
