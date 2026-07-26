@@ -45,7 +45,7 @@ Alpha v2:
 - Added a new map: hunt_lockdown! A version of dm_lockdown with rearranged spawns and proper HDR lighting support.
 - Improved spawnpoint handling for map creation.
 - Added a health bar for Freeman.
-- Talkative players will now shut the fuck up when the game ends.
+- Talkative players will now shut the fuck up when the game ends, on class switch, or round start.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.

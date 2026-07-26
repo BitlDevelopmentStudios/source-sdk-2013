@@ -959,6 +959,8 @@ void CHL2MPRules::Think( void )
 						pPlayer->RemoveFlag(FL_FROZEN);
 						pPlayer->RemoveFlag(FL_GODMODE);
 						pPlayer->RemoveFlag(FL_NOTARGET);
+						//SHUT.
+						pPlayer->SentenceStop();
 					}
 
 					m_bStrippedFlags = true;
