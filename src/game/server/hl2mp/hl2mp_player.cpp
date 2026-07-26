@@ -999,6 +999,8 @@ void CHL2MP_Player::LoadClass(int iClass)
 		}
 	}
 
+	//SHUT.
+	SentenceStop();
 	RemoveAllItems(true);
 	KillEye();
 
