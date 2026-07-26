@@ -21,6 +21,8 @@
 
 #ifndef CLIENT_DLL
 #include "hl2mp_player.h"
+#else
+#include "c_hl2mp_player.h"
 #endif
 
 #define VEC_CROUCH_TRACE_MIN	HL2MPRules()->GetHL2MPViewVectors()->m_vCrouchTraceMin
@@ -153,6 +155,11 @@ public:
 	int GetEndGameReason(void) { return m_iGameEndReason; }
 	int HasEnded(void) { return m_bJustEnded; }
 	int GetRoundCount(void) { return m_iCurrentRound; }
+
+	virtual CHL2MP_Player* GetFreeman(void);
+	float GetFreemanHealthFraction(void);
+	int GetFreemanHealth(void);
+	int GetFreemanMaxHealth(void);
 	
 #ifndef CLIENT_DLL
 	virtual Vector VecItemRespawnSpot( CItem *pItem );
@@ -167,7 +174,6 @@ public:
 	void	ManageObjectRelocation( void );
 	const char *GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer );
 
-	virtual CHL2MP_Player* GetFreeman() { return pFreeman; }
 	void SetNextPlayerToBecomeFreeman(CHL2MP_Player* pPlayer) 
 	{ 
 		pNextPlayerToBecomeFreeman = pPlayer; 

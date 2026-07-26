@@ -841,4 +841,29 @@
 		"digit_xpos" "95"
 		"digit_ypos" "2"
 	}
+	
+	HudFreemanHealth
+	{
+		"fieldName" "HudFreemanHealth"
+		"visible" "1"
+		"PaintBackgroundType"	"2"
+		"xpos"	"125"
+		"ypos"	"433" [$DECK]
+		"ypos"	"439" [!$DECK]
+		
+		"tall"  "25"
+		"wide"	"150"
+		
+		"text_xpos" "5"
+		"text_ypos" "3"
+		"text_xpos2" "5"
+		"text_ypos2" "13"
+		
+		"BarInsetX" "5"
+		"BarInsetY" "15"
+		"BarWidth" "140"
+		"BarHeight" "5"
+		"BarChunkWidth" "2"
+		"BarChunkGap" "1"
+	}
 }

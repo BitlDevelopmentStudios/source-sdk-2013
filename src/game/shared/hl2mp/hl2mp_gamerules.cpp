@@ -548,16 +548,21 @@ void CHL2MPRules::ReassignSpectators(void)
 
 bool CHL2MPRules::IsFreemanAlive(void)
 {
-#ifndef CLIENT_DLL
+#ifdef CLIENT_DLL
+	C_HL2MP_Player* pFreeman = GetFreeman();
+#endif
+
 	if (!pFreeman)
 		return false;
 
 	if (pFreeman)
 	{
+#ifndef CLIENT_DLL
 		if (pFreeman->IsDisconnecting())
 		{
 			return false;
 		}
+#endif
 
 		if (!pFreeman->IsAlive())
 		{
@@ -574,9 +579,106 @@ bool CHL2MPRules::IsFreemanAlive(void)
 			return false;
 		}
 	}
-#endif
 
 	return true;
+}
+
+#ifdef CLIENT_DLL
+CHL2MP_Player* CHL2MPRules::GetFreeman(void)
+{
+	C_Team* pFreemanTeam = GetGlobalTeam(TEAM_FREEMAN);
+
+	if (pFreemanTeam)
+	{
+		// probably overly complex.
+		if (pFreemanTeam->GetNumPlayers() > 0)
+		{
+			for (int i = 0; i < pFreemanTeam->GetNumPlayers(); ++i)
+			{
+				if (!pFreemanTeam->GetPlayer(i))
+					continue;
+
+				return ToHL2MPPlayer(pFreemanTeam->GetPlayer(i));
+			}
+		}
+	}
+
+	return NULL;
+}
+#else
+CHL2MP_Player* CHL2MPRules::GetFreeman(void)
+{ 
+	return pFreeman; 
+}
+#endif
+
+int CHL2MPRules::GetFreemanHealth(void) 
+{
+#ifdef CLIENT_DLL
+	C_HL2MP_Player* pFreeman = GetFreeman();
+#endif
+
+	if (!pFreeman)
+	{
+		return -1;
+	}
+
+	if (!IsFreemanAlive())
+	{
+		return -1;
+	}
+
+	return pFreeman->GetHealth();
+}
+
+int CHL2MPRules::GetFreemanMaxHealth(void)
+{
+#ifdef CLIENT_DLL
+	C_HL2MP_Player* pFreeman = GetFreeman();
+#endif
+
+	if (!pFreeman)
+	{
+		return -1;
+	}
+
+	if (!IsFreemanAlive())
+	{
+		return -1;
+	}
+
+	float maxHealth = 100.0f;
+
+	if (pFreeman)
+	{
+		// we don't need the class check here lmao
+		const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = pFreeman->GetPlayerClassInfo();
+		maxHealth = pPlayerClassInfo.iHealth;
+	}
+
+	return maxHealth;
+}
+
+float CHL2MPRules::GetFreemanHealthFraction(void)
+{
+#ifdef CLIENT_DLL
+	C_HL2MP_Player* pFreeman = GetFreeman();
+#endif
+
+	if (!pFreeman)
+	{
+		return -1;
+	}
+
+	if (!IsFreemanAlive())
+	{
+		return -1;
+	}
+
+	float healthPerc = (float)GetFreemanHealth() / (float)GetFreemanMaxHealth();
+	healthPerc = clamp(healthPerc, 0.0f, 1.0f);
+
+	return healthPerc;
 }
 
 int CHL2MPRules::CheckCanEndGame(void)
@@ -1021,7 +1123,7 @@ void CHL2MPRules::GoToIntermission( void )
 
 	for ( int i = 0; i < MAX_PLAYERS; i++ )
 	{
-		CBasePlayer *pPlayer = UTIL_PlayerByIndex( i );
+		CHL2MP_Player *pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex( i ));
 
 		if ( !pPlayer )
 			continue;
@@ -1031,6 +1133,8 @@ void CHL2MPRules::GoToIntermission( void )
 		pPlayer->AddFlag(FL_GODMODE);
 		pPlayer->AddFlag(FL_NOTARGET);
 		pPlayer->ToggleGlow(false);
+		//SHUT.
+		pPlayer->SentenceStop();
 	}
 
 	m_bStrippedFlags = false;

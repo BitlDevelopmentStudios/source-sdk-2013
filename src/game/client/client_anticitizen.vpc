@@ -165,6 +165,7 @@ $Project "Client (ANTICITIZEN)"
 			$File	"$SRCDIR\game\shared\anticitizen\achievements_anticitizen.h"
 			$File	"anticitizen\anticitizen_tips.cpp"
 			$File	"anticitizen\anticitizen_tips.h"
+			$File	"anticitizen\anticitizen_hud_freeman_health.cpp"
 			
 			$Folder	"Weapons"
 			{

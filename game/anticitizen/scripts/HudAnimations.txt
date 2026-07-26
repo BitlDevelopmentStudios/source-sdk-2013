@@ -869,3 +869,8 @@ event TimerAbove30
 {
   Animate HudTimer FgColor    "FgColor" Linear  0.0  0.0
 }
+
+event VitalsOn
+{
+  Animate HudFreemanHealth BgColor    "BgColor"	Linear 0.0 0.75
+}
