@@ -288,22 +288,23 @@ void CWeaponSniperRifle::ToggleZoom(void)
 
 #ifndef CLIENT_DLL
 	color32 lightBlue = { 0, 100, 255, 32 };
-	float flZoomTime = 0.5f;
+	float flZoomInTime = 0.5f;
+	float flZoomOutTime = 0.7f;
 
 	if (m_bInZoom)
 	{
-		if (pPlayer->SetFOV(this, 0, flZoomTime))
+		if (pPlayer->SetFOV(this, 0, flZoomOutTime))
 		{
 			m_bInZoom = false;
-			UTIL_ScreenFade(pPlayer, lightBlue, flZoomTime, 0, (FFADE_IN | FFADE_PURGE));
+			UTIL_ScreenFade(pPlayer, lightBlue, flZoomOutTime, 0, (FFADE_IN | FFADE_PURGE));
 		}
 	}
 	else
 	{
-		if (pPlayer->SetFOV(this, 20, flZoomTime))
+		if (pPlayer->SetFOV(this, 20, flZoomInTime))
 		{
 			m_bInZoom = true;
-			UTIL_ScreenFade(pPlayer, lightBlue, flZoomTime, 0, (FFADE_OUT | FFADE_PURGE | FFADE_STAYOUT));
+			UTIL_ScreenFade(pPlayer, lightBlue, flZoomInTime, 0, (FFADE_OUT | FFADE_PURGE | FFADE_STAYOUT));
 		}
 	}
 #endif
