@@ -282,4 +282,17 @@ protected:
 	}
 };
 DECLARE_ACHIEVEMENT(CAchievementKill, ACHIEVEMENT_ANTICITIZEN_GENERAL_KILLS, "ANTICITIZEN_GENERAL_KILLS", 10);
+
+class CAchievementKillFreemanWithOneBullet : public CBaseAchievement
+{
+protected:
+	virtual void Init()
+	{
+		SetFlags(ACH_SAVE_GLOBAL);
+		SetGoal(1);
+	}
+
+	//earned through entity/s itself
+};
+DECLARE_ACHIEVEMENT(CAchievementKillFreemanWithOneBullet, ACHIEVEMENT_ANTICITIZEN_KILL_FREEMAN_ONE_BULLET, "ANTICITIZEN_KILL_FREEMAN_ONE_BULLET", 10);
 #endif // GAME_DLL

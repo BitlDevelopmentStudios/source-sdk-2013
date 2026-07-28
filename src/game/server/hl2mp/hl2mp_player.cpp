@@ -35,6 +35,8 @@
 #include "igameresources.h"
 #include "weapon_sniperrifle.h"
 
+#include "achievements_anticitizen.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -1946,6 +1948,19 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 
 				// this killer becomes freeman next round.
 				HL2MPRules()->SetNextPlayerToBecomeFreeman(pPlayer);
+
+				CBaseCombatWeapon* pSniper = pPlayer->Weapon_OwnsThisType("weapon_sniperrifle");
+				CWeaponSniperRifle* pSniperRifle = (CWeaponSniperRifle*)pSniper;
+
+				if (pSniperRifle)
+				{
+					if ((pPlayer->GetPlayerClass() == CLS_COMBINE_ASSASSIN) &&
+						pPlayer->GetActiveWeapon() == pSniperRifle &&
+						pSniperRifle->m_iPrimaryAttacks == 1)
+					{
+						pPlayer->AwardAchievement(ACHIEVEMENT_ANTICITIZEN_KILL_FREEMAN_ONE_BULLET);
+					}
+				}
 			}
 		}
 	}
