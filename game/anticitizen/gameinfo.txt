@@ -10,6 +10,7 @@
 	supportsvr	1
 	GameData	"anticitizen.fgd"
 	icon		"resource/game"
+	DependsOnAppID 	243730
 	hidden_maps
 	{
 		"test_speakers"		1
