@@ -1,5 +1,5 @@
 {
   "ModName": "ANTICITIZEN ONE",
   "ModInstallDir": "anticitizen",
-  "AdditionalInstructions": "Please restart Steam to see it in your library!\n\n NOTE: Please make sure to install the Source SDK Base 2013 Multiplayer before launching. To do so, install it from the 'TOOLS' category in your Steam library. If you would like to have better control over Steam Networking, make sure you also select the \"prerelease\" beta as well."
+  "AdditionalInstructions": "Please restart Steam to see it in your library!\n\nNOTE: Please make sure to install the Source SDK Base 2013 Multiplayer and the Source SDK Base 2013 Singleplayer before launching. The Source SDK Base 2013 Singleplayer is required for Half-Life 2 Episode 1 and Half-Life 2 Episode 2 content, which is used by this mod.\n\nTo do so, install both from the 'TOOLS' category in your Steam library.\n\nIf you would like to have better control over Steam Networking, make sure you also select the \"prerelease\" beta for Source SDK Base 2013 Multiplayer as well."
 }
