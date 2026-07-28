@@ -846,8 +846,11 @@ void CBase_Admin::InitAdminSystem()
 
 	if ( !ParseAdminFile( "cfg/admin/admins.txt", newAdminMap ) )
 	{
-		Warning( "Error: Unable to load admins.txt\nDoes the file exist and is placed in the right location?\n" );
-		return;
+		if ( !ParseAdminFile( "cfg/admins.txt", newAdminMap ) )
+		{
+			Warning("Error: Unable to load admins.txt\nDoes the file exist and is placed in the right location?\n");
+			return;
+		}
 	}
 
 	// Populate g_AdminList and g_AdminMap directly from parsed data
@@ -873,7 +876,7 @@ void CBase_Admin::InitAdminSystem()
 	strftime( date, sizeof( date ), "%Y%m%d", localtime( &now ) );
 
 	char logFileName[ 256 ];
-	Q_snprintf( logFileName, sizeof( logFileName ), "cfg/admin/logs/ADMINLOG_%s.txt", date );
+	Q_snprintf( logFileName, sizeof( logFileName ), "cfg/admin/logs/ADMINLOG_%s.log", date );
 
 	g_AdminLogFile = filesystem->Open( logFileName, "a+", "GAME" );
 	if ( !g_AdminLogFile )
