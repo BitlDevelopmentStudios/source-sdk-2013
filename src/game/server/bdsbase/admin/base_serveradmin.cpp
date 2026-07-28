@@ -954,7 +954,7 @@ void CBase_Admin::LogAction( CBasePlayer *pAdmin, CBasePlayer *pTarget, const ch
 		strftime( date, sizeof( date ), "%Y%m%d", localtime( &now ) );
 
 		char logFileName[ 256 ];
-		Q_snprintf( logFileName, sizeof( logFileName ), "cfg/admin/logs/ADMINLOG_%s.txt", date );
+		Q_snprintf( logFileName, sizeof( logFileName ), "cfg/admin/logs/ADMINLOG_%s.log", date );
 
 		g_AdminLogFile = filesystem->Open( logFileName, "a+", "GAME" );
 
