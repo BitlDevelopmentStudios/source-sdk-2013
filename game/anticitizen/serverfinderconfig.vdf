@@ -1,8 +1,0 @@
-"ServerFinderConfig"
-{
-	"map"		"dm_powerhouse"
-	"israndommap"		"0"
-	"maxplayers"		"7"
-	"MaxPing"		"0"
-	"RespawnTimes"		"0"
-}
