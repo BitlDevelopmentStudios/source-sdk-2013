@@ -47,3 +47,5 @@ rmdir /S /Q downloadlists\
 rmdir /S /Q save\
 rmdir /S /Q replay\
 rmdir /S /Q screenshots\
+rmdir /S /Q materials\
+rmdir /S /Q sound\
