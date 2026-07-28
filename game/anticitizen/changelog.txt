@@ -46,6 +46,7 @@ Alpha v2:
 - Improved spawnpoint handling for map creation.
 - Added a health bar for Freeman.
 - Talkative players will now shut the fuck up when the game ends, on class switch, or round start.
+- Added a new achievement: OBSOL33T - As an Overwatch Female Assassin, kill Gordon Freeman with the first bullet from your Overwatch Sniper Rifle.
 
 Alpha v1:
 - Added the ability for Overwatch soldiers/metrocops to throw grenades or Manhacks with a single button press.
