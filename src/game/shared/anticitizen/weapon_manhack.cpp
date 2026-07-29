@@ -232,7 +232,7 @@ bool CWeaponManhack::Deploy( void )
 			pOwner->SetBodygroup(1, 0);
 		}
 
-		if ((pOwner->m_nButtons & IN_GRENADE1) && (pOwner->GetPlayerClass() > CLS_INVALID) && (pOwner->GetPlayerClass() != CLS_FREEMAN))
+		if ((pOwner->m_nButtons & IN_GRENADE1) && (pOwner->GetPlayerClass() > CLS_INVALID) && (!pOwner->IsFreeman()))
 		{
 			// this ignores the lowering code. this is okay i feel.
 
@@ -337,7 +337,7 @@ void CWeaponManhack::PrimaryAttack( void )
 		return;
 	}
 
-	bool bCanUseGrenade = ((pOwner->GetPlayerClass() > CLS_INVALID) && (pOwner->GetPlayerClass() != CLS_FREEMAN));
+	bool bCanUseGrenade = ((pOwner->GetPlayerClass() > CLS_INVALID) && (!pOwner->IsFreeman()));
 
 	if ((bCanUseGrenade && (pOwner->m_nButtons & IN_GRENADE1)))
 	{
@@ -425,7 +425,7 @@ void CWeaponManhack::ItemPostFrame( void )
 
 	BaseClass::ItemPostFrame();
 
-	if (pOwner && (pOwner->GetPlayerClass() > CLS_INVALID) && (pOwner->GetPlayerClass() != CLS_FREEMAN))
+	if (pOwner && (pOwner->GetPlayerClass() > CLS_INVALID) && (!pOwner->IsFreeman()))
 	{
 		bool bFired = false;
 
@@ -466,7 +466,7 @@ void CWeaponManhack::ItemPostFrame( void )
 
 			if (pHL2MPPlayer)
 			{
-				if (pHL2MPPlayer->GetPlayerClass() != CLS_FREEMAN)
+				if (!pHL2MPPlayer->IsFreeman())
 				{
 					pHL2MPPlayer->SwitchToNextBestWeapon(this);
 				}

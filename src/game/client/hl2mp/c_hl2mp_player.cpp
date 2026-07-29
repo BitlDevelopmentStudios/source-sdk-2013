@@ -34,6 +34,7 @@
 ConVar sv_infinite_aux_power( "sv_infinite_aux_power", "0", FCVAR_CHEAT | FCVAR_REPLICATED );
 
 ConVar cl_combineoverlay("cl_combineoverlay", "1", FCVAR_ARCHIVE);
+ConVar cl_freeman_hl2deathcamera("cl_freeman_hl2deathcamera", "1", FCVAR_ARCHIVE);
 
 LINK_ENTITY_TO_CLASS( player, C_HL2MP_Player );
 
@@ -100,7 +101,7 @@ void IN_ClassDown(const CCommand& args)
 	if (pPlayer == NULL)
 		return;
 
-	if (pPlayer->GetPlayerClass() == CLS_FREEMAN)
+	if (pPlayer->IsFreeman())
 		return;
 
 	gViewPortInterface->ShowPanel(PANEL_CLASS, true);
@@ -942,7 +943,10 @@ C_BaseAnimating *C_HL2MP_Player::BecomeRagdollOnClient()
 
 void C_HL2MP_Player::CalcView( Vector &eyeOrigin, QAngle &eyeAngles, float &zNear, float &zFar, float &fov )
 {
-	if ( m_lifeState != LIFE_ALIVE && !IsObserver() )
+	bool bCanUseSPDeathCam = (cl_freeman_hl2deathcamera.GetBool() && 
+							(IsFreeman()));
+
+	if ( m_lifeState != LIFE_ALIVE && !IsObserver() && !bCanUseSPDeathCam)
 	{
 		Vector origin = EyePosition();			
 

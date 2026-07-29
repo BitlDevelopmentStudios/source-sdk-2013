@@ -77,7 +77,7 @@ protected:
 			if (pVictim->GetTeamNumber() != pAttacker->GetTeamNumber())
 			{
 				CHL2MP_Player* pHL2MPAttacker = ToHL2MPPlayer(pAttacker);
-				if (pHL2MPAttacker && (pHL2MPAttacker->GetPlayerClass() == CLS_FREEMAN))
+				if (pHL2MPAttacker && (pHL2MPAttacker->IsFreeman()))
 				{
 					CBaseCombatWeapon* pDefaultWeapon = pHL2MPAttacker->Weapon_OwnsThisType("weapon_crowbar");
 

@@ -685,7 +685,7 @@ void CHudWeaponSelection::Paint()
 						{
 							CHL2MP_Player* pPlayer = ToHL2MPPlayer(C_BasePlayer::GetLocalPlayer());
 
-							if (pPlayer && pPlayer->GetPlayerClass() == CLS_FREEMAN)
+							if (pPlayer && pPlayer->IsFreeman())
 							{
 								if (!hud_showemptyweaponslots.GetBool())
 									continue;

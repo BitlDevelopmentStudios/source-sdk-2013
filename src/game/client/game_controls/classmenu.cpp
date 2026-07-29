@@ -147,7 +147,7 @@ void CClassMenu::Update()
 
 	if (pPlayer)
 	{
-		if (pPlayer->GetPlayerClass() == CLS_FREEMAN)
+		if (pPlayer->IsFreeman())
 		{
 			Close();
 		}

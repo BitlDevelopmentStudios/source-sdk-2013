@@ -46,7 +46,7 @@ ActionResult< CHL2MPBot >	CHL2MPBotUseItem::OnStart( CHL2MPBot *me, Action< CHL2
 		}
 		else
 		{
-			if (me->GetPlayerClass() != CLS_FREEMAN)
+			if (!me->IsFreeman())
 			{
 				if (me->GetClassType() != CLS_TYPE_HIGH_TIER)
 				{

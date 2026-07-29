@@ -140,6 +140,7 @@ public:
 	void	SetPlayerClass(int playerclass);
 	int		GetPlayerClass(void);
 	const CAnticitizen_FilePlayerClassInfo_t& GetPlayerClassInfo(void);
+	bool IsFreeman(void);
 
 	// we should get the life count from the server....
 	float	GetLifeCount(void) { return m_iLives; }

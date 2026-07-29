@@ -73,7 +73,7 @@ public:
 				return true;
 			}
 
-			if (m_me->GetPlayerClass() == CLS_FREEMAN)
+			if (m_me->IsFreeman())
 			{
 				if (candidate->ClassMatches("func_recharge"))
 				{
@@ -243,7 +243,7 @@ bool CHL2MPBotGetHealth::IsPossible( CHL2MPBot *me )
 		hHealthKits.AddToTail(healthkit);
 	}
 
-	if (me->GetPlayerClass() == CLS_FREEMAN)
+	if (me->IsFreeman())
 	{
 		healthkit = NULL;
 		while ((healthkit = gEntList.FindEntityByClassname(healthkit, "func_recharge")) != NULL)

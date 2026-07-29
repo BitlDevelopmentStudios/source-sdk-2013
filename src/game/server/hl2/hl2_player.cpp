@@ -2648,7 +2648,7 @@ int CHL2_Player::GiveAmmo( int nCount, int nAmmoIndex, bool bSuppressSound)
 
 	CHL2MP_Player* pPlayer = ToHL2MPPlayer(this);
 
-	if (pPlayer && pPlayer->GetPlayerClass() == CLS_FREEMAN)
+	if (pPlayer && pPlayer->IsFreeman())
 	{
 		if (!HasAnyAmmoOfType(nAmmoIndex))
 		{
@@ -2691,7 +2691,7 @@ bool CHL2_Player::Weapon_CanUse( CBaseCombatWeapon *pWeapon )
 {	
 	CHL2MP_Player* pPlayer = ToHL2MPPlayer(this);
 
-	if (pPlayer && pPlayer->GetPlayerClass() == CLS_FREEMAN)
+	if (pPlayer && pPlayer->IsFreeman())
 	{
 		if (pWeapon->ClassMatches("weapon_stunstick"))
 		{

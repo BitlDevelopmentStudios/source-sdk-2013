@@ -422,7 +422,7 @@ void CWeaponAR2::SecondaryAttack( void )
 	if ( pPlayer == NULL )
 		return;
 
-	if ((pPlayer->GetPlayerClass() > CLS_INVALID) && (pPlayer->GetPlayerClass() != CLS_FREEMAN))
+	if ((pPlayer->GetPlayerClass() > CLS_INVALID) && (!pPlayer->IsFreeman()))
 	{
 		const CAnticitizen_FilePlayerClassInfo_t& info = pPlayer->GetPlayerClassInfo();
 

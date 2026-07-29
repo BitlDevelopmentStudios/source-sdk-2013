@@ -219,7 +219,7 @@ void CWeaponCrate::PrimaryAttack( void )
 
 	if (pHL2MPPlayer)
 	{
-		if (pHL2MPPlayer->GetPlayerClass() != CLS_FREEMAN)
+		if (!pHL2MPPlayer->IsFreeman())
 		{
 			pHL2MPPlayer->SwitchToNextBestWeapon(this);
 		}

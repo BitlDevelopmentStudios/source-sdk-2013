@@ -239,7 +239,7 @@ public:
 		return GetLifeCount();
 	}
 
-	bool IsFreeman(void) { return (GetPlayerClass() == CLS_FREEMAN); }
+	bool IsFreeman(void);
 
 	void	ScriptSetPlayerClass(int iclass) { HandleCommand_JoinClass(iclass, false); };
 

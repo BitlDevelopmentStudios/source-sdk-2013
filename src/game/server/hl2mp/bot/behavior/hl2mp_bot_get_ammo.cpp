@@ -51,7 +51,7 @@ public:
 		if ( !pItem )
 			return false;
 
-		if (m_me->GetPlayerClass() != CLS_FREEMAN)
+		if (!m_me->IsFreeman())
 		{
 			if (!m_me->IsAllowedToPickupWeapons())
 			{
@@ -150,7 +150,7 @@ bool CHL2MPBotGetAmmo::IsPossible( CHL2MPBot *me )
 		return false;
 	}
 
-	if (me->GetPlayerClass() != CLS_FREEMAN)
+	if (!me->IsFreeman())
 	{
 		if (!me->IsAllowedToPickupWeapons())
 		{

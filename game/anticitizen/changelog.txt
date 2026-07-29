@@ -1,5 +1,6 @@
 Alpha v3:
 - Added a basic server admin command module for ANTICITIZEN ONE.
+- Gordon Freeman's death camera has been set to the one used in Half-Life 2 and Episodes by default. This can be disabled with the cl_freeman_hl2deathcamera ConVar.
 
 Alpha v2:
 - Fixed a problem where the close button on the Tips panel didn't work.

@@ -544,7 +544,7 @@ bool CPropCombineBall::WasFiredByFakeNPC() const
 	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwnerEntity());
 
 	// fake it.
-	if (pPlayer && pPlayer->GetPlayerClass() != CLS_FREEMAN)
+	if (pPlayer && !pPlayer->IsFreeman())
 	{
 		return true;
 	}

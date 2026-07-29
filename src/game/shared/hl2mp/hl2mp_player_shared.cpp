@@ -112,7 +112,7 @@ Vector CHL2MP_Player::GetAttackSpread( CBaseCombatWeapon *pWeapon, CBaseEntity *
 	{
 		int proficiency = WEAPON_PROFICIENCY_PERFECT;
 
-		if (GetPlayerClass() != CLS_FREEMAN)
+		if (!IsFreeman())
 		{
 			const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
 
@@ -637,6 +637,11 @@ int CHL2MP_Player::GetPlayerClass(void)
 const CAnticitizen_FilePlayerClassInfo_t& CHL2MP_Player::GetPlayerClassInfo(void)
 {
 	return g_Anticitizen_PR->GetPlayerClassInfo(GetPlayerClass());
+}
+
+bool CHL2MP_Player::IsFreeman(void)
+{ 
+	return (GetPlayerClass() == CLS_FREEMAN); 
 }
 
 extern ConVar hl2mp_avoidteammates;

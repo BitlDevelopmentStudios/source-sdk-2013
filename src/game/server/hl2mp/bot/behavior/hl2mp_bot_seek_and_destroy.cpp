@@ -114,7 +114,7 @@ ActionResult< CHL2MPBot >	CHL2MPBotSeekAndDestroy::Update( CHL2MPBot *me, float 
 		{
 			bEntityVisible = true;
 
-			if (me->GetPlayerClass() != CLS_FREEMAN)
+			if (!me->IsFreeman())
 			{
 				if (!me->IsAllowedToPickupWeapons())
 				{
@@ -321,7 +321,7 @@ void CHL2MPBotSeekAndDestroy::RecomputeSeekPath( CHL2MPBot *me )
 		return;
 	}
 
-	if (me->GetPlayerClass() == CLS_FREEMAN)
+	if (me->IsFreeman())
 	{
 		// Don't try to find weapons if the timer elapsed. Probably went bad?
 		if (!m_bTimerElapsed && !me->IsPropFreak())

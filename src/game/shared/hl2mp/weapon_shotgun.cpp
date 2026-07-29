@@ -490,7 +490,7 @@ void CWeaponShotgun::SecondaryAttack( void )
 	}
 
 	// shotgunner cannot use secondary fire
-	if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
+	if (!pPlayer->IsFreeman())
 	{
 		return;
 	}

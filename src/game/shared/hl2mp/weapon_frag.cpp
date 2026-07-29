@@ -247,7 +247,7 @@ bool CWeaponFrag::Deploy( void )
 
 	CHL2MP_Player* pOwner = ToHL2MPPlayer(GetOwner());
 
-	if (pOwner && (pOwner->m_nButtons & IN_GRENADE1) && (pOwner->GetPlayerClass() > CLS_INVALID) && (pOwner->GetPlayerClass() != CLS_FREEMAN))
+	if (pOwner && (pOwner->m_nButtons & IN_GRENADE1) && (pOwner->GetPlayerClass() > CLS_INVALID) && (!pOwner->IsFreeman()))
 	{
 		// this ignores the lowering code. this is okay i feel.
 
@@ -333,7 +333,7 @@ float CWeaponFrag::GetTimerTime(CHL2MP_Player* pPlayer)
 
 	if (pPlayer)
 	{
-		if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
+		if (!pPlayer->IsFreeman())
 		{
 			timer = NPC_GRENADE_TIMER;
 		}
@@ -393,7 +393,7 @@ void CWeaponFrag::PrimaryAttack( void )
 		return;
 	}
 
-	bool bCanUseGrenade = ((pOwner->GetPlayerClass() > CLS_INVALID) && (pOwner->GetPlayerClass() != CLS_FREEMAN));
+	bool bCanUseGrenade = ((pOwner->GetPlayerClass() > CLS_INVALID) && (!pOwner->IsFreeman()));
 
 	if ((bCanUseGrenade && (pOwner->m_nButtons & IN_GRENADE1)))
 	{
@@ -481,7 +481,7 @@ void CWeaponFrag::ItemPostFrame( void )
 
 	BaseClass::ItemPostFrame();
 
-	if (pOwner && (pOwner->GetPlayerClass() > CLS_INVALID) && (pOwner->GetPlayerClass() != CLS_FREEMAN))
+	if (pOwner && (pOwner->GetPlayerClass() > CLS_INVALID) && (!pOwner->IsFreeman()))
 	{
 		bool bFired = false;
 
@@ -522,7 +522,7 @@ void CWeaponFrag::ItemPostFrame( void )
 
 			if (pHL2MPPlayer)
 			{
-				if (pHL2MPPlayer->GetPlayerClass() != CLS_FREEMAN)
+				if (!pHL2MPPlayer->IsFreeman())
 				{
 					pHL2MPPlayer->SwitchToNextBestWeapon(this);
 				}

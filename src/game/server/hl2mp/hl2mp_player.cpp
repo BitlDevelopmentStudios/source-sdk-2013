@@ -334,14 +334,14 @@ void CHL2MP_Player::Precache( void )
 
 void CHL2MP_Player::GiveAllItems( void )
 {
-	if (GetPlayerClass() == CLS_FREEMAN)
+	if (IsFreeman())
 	{
 		EquipSuit();
 	}
 
 	TakeHealth(GetMaxHealth(), DMG_GENERIC);
 
-	if (GetPlayerClass() == CLS_FREEMAN)
+	if (IsFreeman())
 	{
 		const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = GetPlayerClassInfo();
 		SetArmorValue(pPlayerClassInfo.iSuitArmor);
@@ -1353,7 +1353,7 @@ bool CHL2MP_Player::HandleCommand_JoinTeam( int team )
 		return false;
 	}
 
-	if (GetPlayerClass() == CLS_FREEMAN)
+	if (IsFreeman())
 	{
 		Warning("Cannot join another team as Freeman.\n");
 		return false;
@@ -1426,7 +1426,7 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass, bool brespawn)
 		return false;
 	}
 
-	if (GetPlayerClass() == CLS_FREEMAN)
+	if (IsFreeman())
 	{
 		Warning("Dr. Freeman? Can you hear me? Do not go into the light!\n");
 		return false;
@@ -1502,7 +1502,7 @@ bool CHL2MP_Player::ClientCommand( const CCommand &args )
 			Warning("Player sent bad joinclass syntax\n");
 		}
 
-		if (GetPlayerClass() == CLS_FREEMAN)
+		if (IsFreeman())
 		{
 			Warning("Cannot join another class as Freeman.\n");
 			return true;
@@ -1857,7 +1857,7 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 	CBaseEntity* pAttacker = info.GetAttacker();
 
 	// if we're a combine, drop a health vial or grenade on death like the actual NPC. This uses the item spawning code too!
-	if ((GetPlayerClass() != CLS_FREEMAN))
+	if ((!IsFreeman()))
 	{
 		CBasePlayer* pPlayer = ToBasePlayer(info.GetAttacker());
 
@@ -2041,7 +2041,7 @@ int CHL2MP_Player::OnTakeDamage_Alive(const CTakeDamageInfo& info)
 
 			if (pPlayer)
 			{
-				if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
+				if (!pPlayer->IsFreeman())
 				{
 					pPlayer->SayFreemanLowHealthLine();
 				}

@@ -70,7 +70,7 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 					   !bHasRangedWeapon &&
 					   me->GetDifficulty() > CHL2MPBot::EASY;
 
-	bool bAllowEliteSecondary = ((me->GetPlayerClass() != CLS_FREEMAN) &&
+	bool bAllowEliteSecondary = ((!me->IsFreeman()) &&
 		(me->GetClassType() == CLS_TYPE_HIGH_TIER) &&
 		(me->GetDifficulty() >= CHL2MPBot::DifficultyType::HARD));
 
@@ -88,7 +88,7 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 			{
 				if (!bAllowEliteSecondary)
 				{
-					if ((me->GetPlayerClass() != CLS_FREEMAN) && (me->GetClassType() == CLS_TYPE_HIGH_TIER))
+					if ((!me->IsFreeman()) && (me->GetClassType() == CLS_TYPE_HIGH_TIER))
 					{
 						me->DebugConColorMsg(NEXTBOT_BEHAVIOR, Color(255, 0, 0, 255), "NON-HARD ELITE IS SPRINTING!! ENERGY BALLS CANNOT FIRE.");
 					}
@@ -150,7 +150,7 @@ ActionResult< CHL2MPBot >	CHL2MPBotAttack::Update( CHL2MPBot *me, float interval
 				{
 					if (!bAllowEliteSecondary)
 					{
-						if ((me->GetPlayerClass() != CLS_FREEMAN) && (me->GetClassType() == CLS_TYPE_HIGH_TIER))
+						if ((!me->IsFreeman()) && (me->GetClassType() == CLS_TYPE_HIGH_TIER))
 						{
 							me->DebugConColorMsg(NEXTBOT_BEHAVIOR, Color(255, 0, 0, 255), "NON-HARD ELITE IS SPRINTING!! ENERGY BALLS CANNOT FIRE.");
 						}

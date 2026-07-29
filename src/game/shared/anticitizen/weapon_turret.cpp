@@ -576,7 +576,7 @@ void CWeaponTurret::DecrementAmmo(CBaseCombatCharacter* pOwner)
 
 	if (pPlayer)
 	{
-		if (pPlayer->GetPlayerClass() != CLS_FREEMAN)
+		if (!pPlayer->IsFreeman())
 		{
 			pPlayer->SwitchToNextBestWeapon(this);
 		}
