@@ -955,6 +955,7 @@ bool CServerGameDLL::IsRestoring()
 }
 
 float g_flServerCurTime = 0.0f;
+bool g_bBackground = false;
 
 // Called any time a new level is started (after GameInit() also on level transitions within a game)
 bool CServerGameDLL::LevelInit( const char *pMapName, char const *pMapEntities, char const *pOldLevel, char const *pLandmarkName, bool loadGame, bool background )
@@ -962,6 +963,7 @@ bool CServerGameDLL::LevelInit( const char *pMapName, char const *pMapEntities, 
 	VPROF("CServerGameDLL::LevelInit");
 
 	g_flServerCurTime = gpGlobals->curtime;
+	g_bBackground = background;
 
 #ifdef USES_ECON_ITEMS
 	GameItemSchema_t *pItemSchema = ItemSystem()->GetItemSchema();
@@ -970,12 +972,6 @@ bool CServerGameDLL::LevelInit( const char *pMapName, char const *pMapEntities, 
 		pItemSchema->BInitFromDelayedBuffer();
 	}
 #endif // USES_ECON_ITEMS
-
-	// admin system is for MP games only.
-	if (!background && (gpGlobals->maxClients > 1))
-	{
-		CBase_Admin::InitAdminSystem();
-	}
 
 	ResetWindspeed();
 	UpdateChapterRestrictions( pMapName );
@@ -1155,6 +1151,12 @@ void CServerGameDLL::ServerActivate( edict_t *pEdictList, int edictCount, int cl
 	if ( !g_pDeveloper->GetInt() )
 	{
 		think_limit.SetValue( 0 );
+	}
+
+	// admin system is for MP games only.
+	if (!g_bBackground && (gpGlobals->maxClients > 1))
+	{
+		CBase_Admin::InitAdminSystem();
 	}
 
 #ifndef _XBOX
