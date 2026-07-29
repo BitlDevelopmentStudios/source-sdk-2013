@@ -639,11 +639,6 @@ const CAnticitizen_FilePlayerClassInfo_t& CHL2MP_Player::GetPlayerClassInfo(void
 	return g_Anticitizen_PR->GetPlayerClassInfo(GetPlayerClass());
 }
 
-const CAnticitizen_FilePlayerClassInfo_t& UTIL_GetPlayerClassInfo(int iClass)
-{
-	return g_Anticitizen_PR->GetPlayerClassInfo(iClass);
-}
-
 extern ConVar hl2mp_avoidteammates;
 
 //-----------------------------------------------------------------------------

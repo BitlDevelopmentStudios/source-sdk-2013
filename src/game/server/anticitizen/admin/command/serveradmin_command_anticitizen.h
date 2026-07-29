@@ -42,7 +42,7 @@ static void ClassPlayerCommand(const CCommand& args)
 	if (!ParsePlayerTargets(pAdmin, replySource, partialName, targetPlayers, pTarget))
 		return;
 
-	const char* className = UTIL_GetPlayerClassInfo(classIndex).m_szPlayerClassName;
+	const char* className = g_Anticitizen_PR->GetPlayerClassInfo(classIndex).m_szPlayerClassName;
 
 	auto MovePlayerToClass = [classIndex](CHL2MP_Player* pPlayer)
 		{
