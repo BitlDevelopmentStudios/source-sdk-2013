@@ -199,6 +199,8 @@ private:
 	float m_flServerCycle;
 };
 
+extern const CAnticitizen_FilePlayerClassInfo_t& UTIL_GetPlayerClassInfo(int iClass);
+
 inline C_HL2MP_Player *ToHL2MPPlayer( CBaseEntity *pEntity )
 {
 	if ( !pEntity || !pEntity->IsPlayer() )
