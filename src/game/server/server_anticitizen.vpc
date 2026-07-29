@@ -312,6 +312,14 @@ $Project "Server (ANTICITIZEN)"
 			}
 		}
 		
+		$Folder	"Admin"
+		{
+			$Folder	"Commands"
+			{
+				$File	"anticitizen\admin\command\serveradmin_command_anticitizen.h"
+			}
+		}
+		
 		$Folder	"ANTICITIZEN"
 		{
 			$File	"anticitizen\player_sentence.cpp"

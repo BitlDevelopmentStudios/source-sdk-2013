@@ -6,6 +6,7 @@
 #ifdef TF_DLL
 #include "tf\admin\command\serveradmin_command_tf.h"
 #endif // TF_DLL
+#include "anticitizen/admin/command/serveradmin_command_anticitizen.h"
 
 //THEN ADD THEM HERE SO THAT THEY CAN BE LOADED
 static void RegisterCommands(void)
@@ -14,6 +15,7 @@ static void RegisterCommands(void)
 #ifdef TF_DLL
 	LoadTFCommandModule();
 #endif // TF_DLL
+	LoadAnticitizenCommandModule();
 }
 
 #endif // SERVERADMIN_COMMAND_REGISTER_H
