@@ -1,5 +1,6 @@
 hunt_prison
 hunt_lockdown
+hunt_lighthouse
 dm_overwatch
 dm_powerhouse
 dm_resistance

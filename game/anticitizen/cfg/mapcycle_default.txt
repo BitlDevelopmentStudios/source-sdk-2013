@@ -8,3 +8,4 @@
 
 hunt_prison
 hunt_lockdown
+hunt_lighthouse
