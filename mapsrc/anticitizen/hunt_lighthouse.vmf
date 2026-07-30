@@ -2,7 +2,7 @@ versioninfo
 {
 	"editorversion" "400"
 	"editorbuild" "8871"
-	"mapversion" "28"
+	"mapversion" "29"
 	"formatversion" "100"
 	"prefab" "0"
 }
@@ -149,7 +149,7 @@ bgimages_plus
 world
 {
 	"id" "1"
-	"mapversion" "28"
+	"mapversion" "29"
 	"classname" "worldspawn"
 	"comment" "Decompiled by BSPSource v1.4.6.1 from d2_coast_10"
 	"detailmaterial" "detail/detailsprites"
@@ -192089,7 +192089,6 @@ entity
 	editor
 	{
 		"color" "0 128 255"
-		"visgroupid" "3"
 		"visgroupshown" "1"
 		"visgroupautoshown" "1"
 		"logicalpos" "[2000 -1768]"
@@ -194026,13 +194025,27 @@ entity
 		"logicalpos" "[0 -8268]"
 	}
 }
+entity
+{
+	"id" "837257"
+	"classname" "info_player_deathmatch"
+	"angles" "0 330 0"
+	"origin" "8224 1536 1857"
+	editor
+	{
+		"color" "0 255 0"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 -7768]"
+	}
+}
 cameras
 {
 	"activecamera" "0"
 	camera
 	{
-		"position" "[8270.07 1182.42 1350.49]"
-		"look" "[8435.52 1182.43 1141.75]"
+		"position" "[8179.91 1564.62 1947.27]"
+		"look" "[8404 1459.18 1849.22]"
 	}
 }
 cordons
