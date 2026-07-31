@@ -182,10 +182,9 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 
 	if (dist > m_fMinRange1)
 	{
-		DevMsg("target exceeds minimum distance, bullet goes zoom\n");
 		float flSpeedBoost = (dist / m_fMinRange1);
-		DevMsg("target speed boost %fx\n", flSpeedBoost);
 		speed = speed * flSpeedBoost;
+		DevMsg("target exceeds minimum distance.\n - speed boost %fx.\n - firing at %f hu/s.\n", flSpeedBoost, speed);
 	}
 
 	FireActualBullet(info, 

@@ -151,19 +151,43 @@ void CRecharge::InputRecharge( inputdata_t &inputdata )
 	Recharge();
 }
 
+bool IsAmmoFull(CBasePlayer *pPlayer, const char* szName)
+{
+	int index = GetAmmoDef()->Index(szName);
+	return (pPlayer->GetAmmoCount(index) == GetAmmoDef()->MaxCarry(index));
+}
+
+enum AmmoTypeRecharge_t
+{
+	AMMO_AR2,
+	AMMO_SNIPER
+};
+
 void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 { 
 	// if it's not a player, ignore
 	if ( !pActivator || !pActivator->IsPlayer() )
 		return;
 
+	int ammoType = AMMO_AR2;
+
 	// Only usable if you have the HEV suit on
 	CBasePlayer* pPlayer = ((CBasePlayer*)pActivator);
 	if (!(pPlayer->IsSuitEquipped()))
 	{
-		bool bIsFullOnAmmo = (pPlayer->GetAmmoCount("AR2") == GetAmmoDef()->MaxCarry(GetAmmoDef()->Index("AR2")));
+		bool bIsFullOnAmmo = true;
 
-		if (!pPlayer->Weapon_OwnsThisType("weapon_ar2") || bIsFullOnAmmo)
+		if (pPlayer->Weapon_OwnsThisType("weapon_ar2"))
+		{
+			bIsFullOnAmmo = IsAmmoFull(pPlayer, "AR2");
+		}
+		else if (pPlayer->Weapon_OwnsThisType("weapon_sniperrifle"))
+		{
+			bIsFullOnAmmo = IsAmmoFull(pPlayer, "SniperRound");
+			ammoType = AMMO_SNIPER;
+		}
+
+		if (bIsFullOnAmmo)
 		{
 			if (m_flSoundTime <= gpGlobals->curtime)
 			{
@@ -255,7 +279,15 @@ void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 		int nIncrementArmor = 20;
 		// LIE.
 		UpdateJuice(m_iJuice - 5);
-		pPlayer->GiveAmmo(nIncrementArmor, GetAmmoDef()->Index("AR2"));
+		if (ammoType == AMMO_AR2)
+		{
+			pPlayer->GiveAmmo(nIncrementArmor, GetAmmoDef()->Index("AR2"));
+		}
+		else if (ammoType == AMMO_SNIPER)
+		{
+			nIncrementArmor = 5;
+			pPlayer->GiveAmmo(nIncrementArmor, GetAmmoDef()->Index("SniperRound"));
+		}
 	}
 
 	// Send the output.
@@ -498,13 +530,26 @@ void CNewRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 	if ( !pActivator || !pActivator->IsPlayer() )
 		return;
 
+	int ammoType = AMMO_AR2;
+
 	CBasePlayer *pPlayer = static_cast<CBasePlayer *>(pActivator);
 
+	// Only usable if you have the HEV suit on
 	if (!(pPlayer->IsSuitEquipped()))
 	{
-		bool bIsFullOnAmmo = (pPlayer->GetAmmoCount("AR2") == GetAmmoDef()->MaxCarry(GetAmmoDef()->Index("AR2")));
+		bool bIsFullOnAmmo = true;
 
-		if (!pPlayer->Weapon_OwnsThisType("weapon_ar2") || bIsFullOnAmmo)
+		if (pPlayer->Weapon_OwnsThisType("weapon_ar2"))
+		{
+			bIsFullOnAmmo = IsAmmoFull(pPlayer, "AR2");
+		}
+		else if (pPlayer->Weapon_OwnsThisType("weapon_sniperrifle"))
+		{
+			bIsFullOnAmmo = IsAmmoFull(pPlayer, "SniperRound");
+			ammoType = AMMO_SNIPER;
+		}
+
+		if (bIsFullOnAmmo)
 		{
 			if (m_flSoundTime <= gpGlobals->curtime)
 			{
@@ -622,7 +667,15 @@ void CNewRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 		int nIncrementArmor = 20;
 		// LIE.
 		UpdateJuice(m_iJuice - 5);
-		pPlayer->GiveAmmo(nIncrementArmor, GetAmmoDef()->Index("AR2"));
+		if (ammoType == AMMO_AR2)
+		{
+			pPlayer->GiveAmmo(nIncrementArmor, GetAmmoDef()->Index("AR2"));
+		}
+		else if (ammoType == AMMO_SNIPER)
+		{
+			nIncrementArmor = 5;
+			pPlayer->GiveAmmo(nIncrementArmor, GetAmmoDef()->Index("SniperRound"));
+		}
 	}
 
 	// Send the output.
