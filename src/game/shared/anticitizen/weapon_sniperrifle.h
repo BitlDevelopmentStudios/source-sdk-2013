@@ -31,7 +31,8 @@
 #define CWeaponSniperRifle C_WeaponSniperRifle
 #endif
 
-#define SNIPER_RANGE 4096
+#define SNIPER_MIN_RANGE 512 // if this is OP, increase to 1024.
+#define SNIPER_MAX_RANGE 16384
 #define SNIPER_CHARGE_DRAIN 25
 #define SNIPER_RECHARGE_TIME 0.25f
 #define SNIPER_RECHARGE_ZOOMED_TIME 0.5f

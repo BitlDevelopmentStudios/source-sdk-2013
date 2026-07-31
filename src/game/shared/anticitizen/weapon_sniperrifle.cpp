@@ -63,7 +63,8 @@ CWeaponSniperRifle::CWeaponSniperRifle( void )
 {
 	m_bReloadsSingly	= false;
 	m_bFiresUnderwater	= false;
-	m_fMaxRange1 = SNIPER_RANGE;
+	m_fMinRange1 = SNIPER_MIN_RANGE;
+	m_fMaxRange1 = SNIPER_MAX_RANGE;
 	m_flRechargeTime = 0;
 	m_bInZoom = false;
 	m_bLaserOn = false;
@@ -157,8 +158,38 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 	// Fire the bullets, and force the first shot to be perfectly accuracy
 	//pPlayer->FireBullets( info );
 #ifndef CLIENT_DLL
+
+	float speed = SNIPER_BULLET_SPEED;
+
+	trace_t tr;
+	Vector vecStart, vecStop, vecDir;
+
+	// Get the angles
+	AngleVectors(pPlayer->EyeAngles(), &vecDir);
+
+	Vector	vForward, vRight, vUp;
+
+	pPlayer->EyeVectors(&vForward, &vRight, &vUp);
+
+	// Get the vectors
+	vecStart = vecSrc;
+	vecStop = vecStart + vecDir * m_fMaxRange1;
+
+	// Do the TraceLine
+	UTIL_TraceLine(vecStart, vecStop, MASK_ALL, this, COLLISION_GROUP_NONE, &tr);
+
+	float dist = UTIL_DistApprox((tr.endpos + (tr.plane.normal * 1.0f)), vecSrc);
+
+	if (dist > m_fMinRange1)
+	{
+		DevMsg("target exceeds minimum distance, bullet goes zoom\n");
+		float flSpeedBoost = (dist / m_fMinRange1);
+		DevMsg("target speed boost %fx\n", flSpeedBoost);
+		speed = speed * flSpeedBoost;
+	}
+
 	FireActualBullet(info, 
-					 SNIPER_BULLET_SPEED, 
+					 speed, 
 					 GetTracerType(), 
 					 true, 
 					 true, 
