@@ -285,7 +285,7 @@ void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 		}
 		else if (ammoType == AMMO_SNIPER)
 		{
-			nIncrementArmor = 5;
+			nIncrementArmor = 3;
 			pPlayer->GiveAmmo(nIncrementArmor, GetAmmoDef()->Index("SniperRound"));
 		}
 	}
@@ -673,7 +673,7 @@ void CNewRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 		}
 		else if (ammoType == AMMO_SNIPER)
 		{
-			nIncrementArmor = 5;
+			nIncrementArmor = 3;
 			pPlayer->GiveAmmo(nIncrementArmor, GetAmmoDef()->Index("SniperRound"));
 		}
 	}
