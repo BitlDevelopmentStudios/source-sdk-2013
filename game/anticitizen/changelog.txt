@@ -6,6 +6,8 @@ Alpha v3:
 - The Sniper Rifle's bullet speed will now increase based on range. This improves the timing and responsiveness between when the bullet is shot and when the bullet hits the target.
 - Sniper Rifles can now be recharged by Combine energy outlets which are plentiful wherever you petrol.
 - Fixed a bug where dropped items respawned after usage.
+- Improved Achievement Panel visuals.
+- Added an infinite ammo admin command.
 
 Alpha v2:
 - Fixed a problem where the close button on the Tips panel didn't work.

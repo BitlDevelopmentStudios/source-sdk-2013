@@ -1665,10 +1665,12 @@ bool CHL2MPRules::IsOfficialMap( void )
 	{
 		// ANTICITIZEN ONE
 		"hunt_prison",
+		"hunt_lockdown",
+		"hunt_lighthouse",
 
 		// hl2mp
 		//"devtest",
-		"dm_lockdown",
+		//"dm_lockdown",
 		"dm_overwatch",
 		"dm_powerhouse",
 		"dm_resistance",

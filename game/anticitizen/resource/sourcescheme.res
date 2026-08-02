@@ -10,8 +10,20 @@ Scheme
 		"AnticitizenOneDarkColor"				"35 75 130 255"
 		"AnticitizenOneDarkColor_Trans"			"35 75 130 128"
 		
+		"AnticitizenOneVeryDarkColor"			"18 42 74 255"
+		"AnticitizenOneVeryDarkColor_Trans"		"18 42 74 128"
+		
 		"AnticitizenOneSelection"				"221 221 221 255"
 		"AnticitizenOneSelection_OutOfFocus"	"168 168 168 255"
+		
+		//AnticitizenOneVeryDarkColor
+		"AchievementsProgressBG"	"18 42 74 255"
+		//AnticitizenOneBaseColor
+		"AchievementsLightGrey"		"47 98 168 255"
+		//AnticitizenOneDarkColor
+		"AchievementsDarkGrey"		"35 75 130 255"
+		//AnticitizenOneSelection
+		"AchievementsInactiveFG"	"221 221 221 255"
 	}
 
 	BaseSettings
