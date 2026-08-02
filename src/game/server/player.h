@@ -176,6 +176,13 @@ enum PlayerConnectedState
 	PlayerDisconnected,
 };
 
+enum
+{
+	INFINITE_AMMO_NONE = 0,
+	INFINITE_AMMO_DEFAULT,
+	INFINITE_AMMO_REQUIRE_RELOAD,
+};
+
 extern bool gInitHUD;
 extern ConVar *sv_cheats;
 
@@ -923,6 +930,9 @@ public:
 	bool					m_bLagCompensation;	// user wants lag compenstation
 	bool					m_bPredictWeapons; //  user has client side predicted weapons
 	bool					m_bRequestPredict; //  user has client prediction enabled
+
+	int					m_iInfiniteAmmoType;
+	bool				m_bInfiniteAmmoControlledByAdminCommands;
 	
 	float		GetDeathTime( void ) { return m_flDeathTime; }
 
@@ -1299,6 +1309,20 @@ public:
 	HSCRIPT	ScriptGetLastWeapon();
 
 	bool ScriptIsFakeClient() const { return this->IsFakeClient(); }
+
+	void ScriptToggleInfiniteAmmo(int iType = INFINITE_AMMO_DEFAULT)
+	{
+		if (!m_bInfiniteAmmoControlledByAdminCommands)
+		{
+			m_bInfiniteAmmoControlledByAdminCommands = true;
+			m_iInfiniteAmmoType = iType;
+		}
+		else if (m_bInfiniteAmmoControlledByAdminCommands)
+		{
+			m_bInfiniteAmmoControlledByAdminCommands = false;
+			m_iInfiniteAmmoType = INFINITE_AMMO_NONE;
+		}
+	}
 	
 private:
 	// NVNT member variable holding if this user is using a haptic device.

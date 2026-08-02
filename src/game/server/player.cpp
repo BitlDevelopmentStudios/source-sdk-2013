@@ -631,6 +631,8 @@ CBasePlayer::CBasePlayer( )
 	m_fLerpTime = 0.1f; // cl_interp default
 	m_bPredictWeapons = true;
 	m_bRequestPredict = true;
+	m_iInfiniteAmmoType = INFINITE_AMMO_NONE;
+	m_bInfiniteAmmoControlledByAdminCommands = false;
 	m_bLagCompensation = false;
 	m_flLaggedMovementValue = 1.0f;
 	m_StuckLast = 0;
@@ -7859,6 +7861,8 @@ BEGIN_ENT_SCRIPTDESC( CBasePlayer, CBaseCombatCharacter, "The player entity." )
 	DEFINE_SCRIPTFUNC_WRAPPED( GetLastWeapon, "" )
 
 	DEFINE_SCRIPTFUNC_WRAPPED( IsFakeClient, "" )
+
+	DEFINE_SCRIPTFUNC_WRAPPED(ToggleInfiniteAmmo, "Toggles infinite ammo. Type is defined based on Constants.InfiniteAmmoState.")
 
 	DEFINE_SCRIPTFUNC( AddHudHideFlags, "Hides a hud element based on Constants.FHideHUD." )
 	DEFINE_SCRIPTFUNC( RemoveHudHideFlags, "Unhides a hud element based on Constants.FHideHUD." )
