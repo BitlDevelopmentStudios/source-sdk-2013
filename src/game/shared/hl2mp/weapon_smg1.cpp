@@ -366,7 +366,7 @@ void CWeaponSMG1::SecondaryAttack( void )
 
 		if (info.iClassType < CLS_TYPE_FREEMAN) // if we're under freeman, skip.
 		{
-			SendWeaponAnim(ACT_VM_DRYFIRE);
+			SendWeaponAnim(ACT_VM_IDLE);
 			BaseClass::WeaponSound(EMPTY);
 			m_flNextEmptySoundTime = m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
 			return;
@@ -376,7 +376,7 @@ void CWeaponSMG1::SecondaryAttack( void )
 	//Must have ammo
 	if ( ( pPlayer->GetAmmoCount( m_iSecondaryAmmoType ) <= 0 ) || ( pPlayer->GetWaterLevel() == 3 ) )
 	{
-		SendWeaponAnim( ACT_VM_DRYFIRE );
+		SendWeaponAnim(ACT_VM_IDLE);
 		BaseClass::WeaponSound( EMPTY );
 		m_flNextEmptySoundTime = m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
 		return;
