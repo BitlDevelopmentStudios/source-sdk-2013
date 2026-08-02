@@ -2585,6 +2585,91 @@ static void ExecVScriptCommand(const CCommand& args)
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: Toggle Infinite Ammo
+//-----------------------------------------------------------------------------
+static void InfiniteAmmoPlayerCommand(const CCommand& args)
+{
+	CBasePlayer* pAdmin = UTIL_GetCommandClient();
+	AdminReplySource replySource = GetCmdReplySource(pAdmin);
+
+	if (!pAdmin && replySource != ADMIN_REPLY_SERVER_CONSOLE)
+	{
+		Msg("Command must be issued by a player or the server console.\n");
+		return;
+	}
+
+	if (args.ArgC() < 3)
+	{
+		AdminReply(replySource, pAdmin, "Usage: sa infiniteammo <name|#userID> [type (1 is normal infinite clip ammo, 2 is infinite reserve ammo)]");
+		return;
+	}
+
+	const char* partialName = args.Arg(2);
+	const char* typeArg = args.Arg(3);
+	int type = atoi(typeArg);
+
+	if (!IsStringDigitsOnly(typeArg))
+	{
+		type = INFINITE_AMMO_DEFAULT;
+	}
+	else if (type <= 0)
+	{
+		type = INFINITE_AMMO_DEFAULT;
+	}
+
+	CUtlVector<CBasePlayer*> targetPlayers;
+	CBasePlayer* pTarget = NULL;
+
+	if (!ParsePlayerTargets(pAdmin, replySource, partialName, targetPlayers, pTarget, true))
+		return;
+
+	if (pTarget)
+	{
+		pTarget->ScriptToggleInfiniteAmmo(type);
+
+		CBase_Admin::LogAction(pAdmin, pTarget, "toggled infinite ammo for", "");
+
+		if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
+		{
+			Msg("Console toggled infinite ammo for player %s.\n", pTarget->GetPlayerName());
+			UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs(
+				"Console toggled infinite ammo for %s\n",
+				pTarget->GetPlayerName()
+			));
+		}
+		else
+		{
+			UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs(
+				"Admin %s toggled infinite ammo for %s\n",
+				pAdmin ? pAdmin->GetPlayerName() : "Console", pTarget->GetPlayerName()
+			));
+		}
+
+		return;
+	}
+
+	for (int i = 0; i < targetPlayers.Count(); i++)
+	{
+		if (targetPlayers[i]->IsAlive())
+		{
+			targetPlayers[i]->ScriptToggleInfiniteAmmo(type);
+		}
+	}
+
+	CUtlString logDetails, chatMessage;
+	BuildGroupTargetMessage(partialName, pAdmin, "toggled infinite ammo for", NULL, logDetails, chatMessage, false, NULL);
+
+	CBase_Admin::LogAction(pAdmin, NULL, "toggled infinite ammo for", logDetails.Get());
+
+	UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs("%s.\n", chatMessage.Get()));
+
+	if (replySource == ADMIN_REPLY_SERVER_CONSOLE)
+	{
+		Msg("Toggled infinite ammo for %d player%s\n", targetPlayers.Count(), targetPlayers.Count() == 1 ? "" : "s");
+	}
+}
+
 #define BASE_COMMAND_MODULE_NAME "Base Commands"
 
 static void LoadBaseCommandModule()
@@ -2613,6 +2698,7 @@ static void LoadBaseCommandModule()
 	REGISTER_ADMIN_COMMAND(BASE_COMMAND_MODULE_NAME, "cvar", true, NULL, "<cvar name> [new value|reset] -> Modify or reset any cvar's value", "h", CVarCommand );
 	REGISTER_ADMIN_COMMAND(BASE_COMMAND_MODULE_NAME, "exec", true, NULL, "<filename> -> Executes a configuration file", "i", ExecFileCommand );
 	REGISTER_ADMIN_COMMAND(BASE_COMMAND_MODULE_NAME, "vscript", true, NULL, "<filename> -> Executes a vscript file", "i", ExecVScriptCommand);
+	REGISTER_ADMIN_COMMAND(BASE_COMMAND_MODULE_NAME, "infiniteammo", true, NULL, "<name|#userID> [type] -> Toggle infinite ammo for a player. Type 1 is normal infinite clip ammo, type 2 is infinite reserve ammo", "f", InfiniteAmmoPlayerCommand);
 	REGISTER_ADMIN_COMMAND(BASE_COMMAND_MODULE_NAME, "rcon", true, NULL, "<command> [value] -> Send a command as if it was written in the server console", "m", RconCommand );
 	REGISTER_ADMIN_COMMAND(BASE_COMMAND_MODULE_NAME, "reloadadmins", false, NULL, "-> Refresh the admin cache", "i", ReloadAdminsCommand );
 	REGISTER_ADMIN_COMMAND(BASE_COMMAND_MODULE_NAME, "help", false, "Check your console for output.\n", "-> Provide instructions on how to use the admin interface", "b", HelpPlayerCommand );

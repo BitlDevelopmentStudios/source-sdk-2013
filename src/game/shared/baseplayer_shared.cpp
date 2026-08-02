@@ -294,12 +294,17 @@ void CBasePlayer::ItemPostFrame()
 #if !defined( CLIENT_DLL )
 	ImpulseCommands();
 
-	if( sv_infinite_ammo.GetBool() && GetActiveWeapon() )
+	if (!m_bInfiniteAmmoControlledByAdminCommands)
+	{
+		m_iInfiniteAmmoType = sv_infinite_ammo.GetInt();
+	}
+
+	if(m_iInfiniteAmmoType && GetActiveWeapon() )
 	{
 		CBaseCombatWeapon* pWeapon = GetActiveWeapon();
 
 		// only refill clip when sv_infinite_ammo == 1 -copperpixel
-		if( sv_infinite_ammo.GetInt() == 1 )
+		if(m_iInfiniteAmmoType == INFINITE_AMMO_DEFAULT)
 		{
 #ifdef TF_DLL
 			CTFWeaponBase* pTFWeapon = dynamic_cast< CTFWeaponBase* >( pWeapon );

@@ -3589,6 +3589,12 @@ DECLARE_SCRIPT_CONST( Server, DIST_EPSILON )
 DECLARE_SCRIPT_CONST_NAMED( Server, "ConstantNamingConvention", "Constants are named as follows: F -> flags, E -> enums, (nothing) -> random values/constants" )
 REGISTER_SCRIPT_CONST_TABLE( Server )
 
+DECLARE_SCRIPT_CONST_TABLE(InfiniteAmmoState)
+DECLARE_SCRIPT_CONST(InfiniteAmmoState, INFINITE_AMMO_NONE)
+DECLARE_SCRIPT_CONST(InfiniteAmmoState, INFINITE_AMMO_DEFAULT)
+DECLARE_SCRIPT_CONST(InfiniteAmmoState, INFINITE_AMMO_REQUIRE_RELOAD)
+REGISTER_SCRIPT_CONST_TABLE(InfiniteAmmoState)
+
 				g_pScriptVM->SetValue( "Constants", vConstantsTable );
 
 				if ( scriptLanguage == SL_SQUIRREL )
