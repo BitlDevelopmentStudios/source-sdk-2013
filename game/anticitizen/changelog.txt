@@ -8,6 +8,7 @@ Alpha v3:
 - Fixed a bug where dropped items respawned after usage.
 - Improved Achievement Panel visuals.
 - Added an infinite ammo admin command.
+- Fixed a bug where you can hide the SMG1 viewmodel by right-clicking.
 
 Alpha v2:
 - Fixed a problem where the close button on the Tips panel didn't work.
