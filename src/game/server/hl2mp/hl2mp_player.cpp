@@ -1821,11 +1821,9 @@ CBaseEntity* CHL2MP_Player::DropItem(const char* pszItemName, Vector vecPos, QAn
 		}
 
 		// Fixes health vials, grenades, etc. respawning
-		if (pItem->IsCombatItem())
-		{
-			pItem->AddSpawnFlags(SF_NORESPAWN);
-		}
-		else if (pItem->IsBaseCombatWeapon())
+		pItem->AddSpawnFlags(SF_NORESPAWN);
+
+		if (pItem->IsBaseCombatWeapon())
 		{
 			// Adding SF_NORESPAWN directly to weapons causes them to be considered level-placed, which we don't want
 			pItem->MyCombatWeaponPointer()->Drop(vec3_origin);
