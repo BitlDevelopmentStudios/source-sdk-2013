@@ -1325,28 +1325,50 @@ bool CBaseCombatWeapon::UsesSecondaryAmmo( void )
 void CBaseCombatWeapon::SetWeaponVisible( bool visible )
 {
 	CBaseViewModel *vm = NULL;
+#ifdef C_ARMS
+	CBaseViewModel *hands = NULL;
+#endif
 
 	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
 	if ( pOwner )
 	{
 		vm = pOwner->GetViewModel( m_nViewModelIndex );
+#ifdef C_ARMS
+		hands = pOwner->GetViewModel(1);
+#endif
 	}
 
 	if ( visible )
 	{
 		RemoveEffects( EF_NODRAW );
+
 		if ( vm )
 		{
 			vm->RemoveEffects( EF_NODRAW );
 		}
+
+#ifdef C_ARMS
+		if ( hands )
+		{
+			hands->RemoveEffects( EF_NODRAW );
+		}
+#endif
 	}
 	else
 	{
 		AddEffects( EF_NODRAW );
+
 		if ( vm )
 		{
 			vm->AddEffects( EF_NODRAW );
 		}
+
+#ifdef C_ARMS
+		if ( hands )
+		{
+			hands->AddEffects( EF_NODRAW );
+		}
+#endif
 	}
 }
 
