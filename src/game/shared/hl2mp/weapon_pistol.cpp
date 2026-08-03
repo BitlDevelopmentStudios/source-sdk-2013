@@ -76,7 +76,7 @@ public:
 											0.0f, 
 											1.0f ); 
 
-			// We lerp from very accurate to inaccurate over time
+		// We lerp from very accurate to inaccurate over time
 		VectorLerp( VECTOR_CONE_1DEGREES, VECTOR_CONE_6DEGREES, ramp, cone );
 
 		if (IsIronsighted())
@@ -545,7 +545,6 @@ public:
 		}
 
 		// We lerp from very accurate to inaccurate over time
-		// the dual pistols are slightly more accurate, however.
 		VectorLerp(VECTOR_CONE_1DEGREES, VECTOR_CONE_6DEGREES, ramp, cone);
 
 		return cone;
