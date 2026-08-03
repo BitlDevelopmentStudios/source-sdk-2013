@@ -54,10 +54,10 @@ public:
 	void	ItemPreFrame( void );
 	void	ItemBusyFrame( void );
 	virtual void	PrimaryAttack( void );
-	void	AddViewKick( void );
+	virtual void	AddViewKick( void );
 	void	DryFire( void );
 
-	void	UpdatePenaltyTime( void );
+	virtual void	UpdatePenaltyTime( void );
 
 	virtual Activity	GetPrimaryAttackActivity( void );
 	virtual PlayerAnimEvent_t	Get3rdPersonPrimaryAttackActivity(void);
@@ -516,20 +516,37 @@ public:
 	Activity			GetPrimaryAttackActivity(void) OVERRIDE;
 	PlayerAnimEvent_t	Get3rdPersonPrimaryAttackActivity(void) OVERRIDE;
 	void 				CreateMuzzleSmokeEffect() OVERRIDE;
+	void				UpdatePenaltyTime(void) OVERRIDE;
+	void				PrimaryAttack(void) OVERRIDE;
+	bool				Reload(void) OVERRIDE;
+	void				AddViewKick(void) OVERRIDE;
 
 	virtual const Vector& GetBulletSpread(void)
 	{
 		static Vector cone;
 
-		float ramp = RemapValClamped(m_flAccuracyPenalty,
-			0.0f,
-			PISTOL_ACCURACY_MAXIMUM_PENALTY_TIME,
-			0.0f,
-			1.0f);
+		float ramp = 1.0f;
+
+		if (ShouldSwitchPistol())
+		{ 
+			ramp = RemapValClamped(m_flAccuracyPenaltyLeft,
+				0.0f,
+				PISTOL_ACCURACY_MAXIMUM_PENALTY_TIME,
+				0.0f,
+				1.0f);
+		}
+		else
+		{
+			ramp = RemapValClamped(m_flAccuracyPenalty,
+				0.0f,
+				PISTOL_ACCURACY_MAXIMUM_PENALTY_TIME,
+				0.0f,
+				1.0f);
+		}
 
 		// We lerp from very accurate to inaccurate over time
 		// the dual pistols are slightly more accurate, however.
-		VectorLerp(VECTOR_CONE_1DEGREES, VECTOR_CONE_4DEGREES, ramp, cone);
+		VectorLerp(VECTOR_CONE_1DEGREES, VECTOR_CONE_6DEGREES, ramp, cone);
 
 		return cone;
 	}
@@ -538,6 +555,9 @@ public:
 
 	DECLARE_ACTTABLE();
 
+public:
+	CNetworkVar(float, m_flAccuracyPenaltyLeft);
+
 private:
 	CWeaponDualPistols(const CWeaponDualPistols&);
 };
@@ -545,10 +565,16 @@ private:
 IMPLEMENT_NETWORKCLASS_ALIASED(WeaponDualPistols, DT_WeaponDualPistols)
 
 BEGIN_NETWORK_TABLE(CWeaponDualPistols, DT_WeaponDualPistols)
+#ifdef CLIENT_DLL
+RecvPropFloat(RECVINFO(m_flAccuracyPenaltyLeft)),
+#else
+SendPropFloat(SENDINFO(m_flAccuracyPenaltyLeft)),
+#endif
 END_NETWORK_TABLE()
 
 #ifdef CLIENT_DLL
 BEGIN_PREDICTION_DATA(CWeaponDualPistols)
+DEFINE_PRED_FIELD(m_flAccuracyPenaltyLeft, FIELD_FLOAT, FTYPEDESC_INSENDTABLE),
 END_PREDICTION_DATA()
 #endif
 
@@ -586,6 +612,7 @@ CWeaponDualPistols::CWeaponDualPistols(void)
 {
 	m_flSoonestPrimaryAttack = gpGlobals->curtime;
 	m_flAccuracyPenalty = 0.0f;
+	m_flAccuracyPenaltyLeft = 0.0f;
 
 	m_fMinRange1 = 24;
 	m_fMaxRange1 = 1500;
@@ -594,6 +621,153 @@ CWeaponDualPistols::CWeaponDualPistols(void)
 
 	m_bFiresUnderwater = true;
 	m_bDontResetShotsFired = true;
+}
+
+void CWeaponDualPistols::PrimaryAttack(void)
+{
+	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+
+	if (!pOwner)
+		return;
+
+	// Abort here to handle burst and auto fire modes
+	if ((UsesClipsForAmmo1() && m_iClip1 == 0) || (!UsesClipsForAmmo1() && !pOwner->GetAmmoCount(m_iPrimaryAmmoType)))
+		return;
+
+	if (!m_bDontResetShotsFired)
+	{
+		if ((gpGlobals->curtime - m_flLastAttackTime) > 0.5f)
+		{
+			m_nNumShotsFired = 0;
+		}
+		else
+		{
+			m_nNumShotsFired++;
+		}
+	}
+	else
+	{
+		m_nNumShotsFired++;
+	}
+
+	m_flLastAttackTime = gpGlobals->curtime;
+	m_flSoonestPrimaryAttack = gpGlobals->curtime + PISTOL_FASTEST_REFIRE_TIME;
+
+	if (pOwner)
+	{
+		// Each time the player fires the pistol, reset the view punch. This prevents
+		// the aim from 'drifting off' when the player fires very quickly. This may
+		// not be the ideal way to achieve this, but it's cheap and it works, which is
+		// great for a feature we're evaluating. (sjb)
+		pOwner->ViewPunchReset();
+	}
+
+	m_nShotsFired++;
+	m_iPrimaryAttacks++;
+
+	pOwner->DoMuzzleFlash();
+
+	// To make the firing framerate independent, we may have to fire more than one bullet here on low-framerate systems, 
+	// especially if the weapon we're firing has a really fast rate of fire.
+	int iBulletsToFire = 0;
+	float fireRate = GetFireRate();
+
+	while (m_flNextPrimaryAttack <= gpGlobals->curtime)
+	{
+		// MUST call sound before removing a round from the clip of a CHLMachineGun
+		WeaponSound(SINGLE, m_flNextPrimaryAttack);
+		m_flNextPrimaryAttack = m_flNextPrimaryAttack + fireRate;
+		iBulletsToFire++;
+	}
+
+	// Make sure we don't fire more than the amount in the clip, if this weapon uses clips
+	if (UsesClipsForAmmo1())
+	{
+		if (iBulletsToFire > m_iClip1)
+			iBulletsToFire = m_iClip1;
+		m_iClip1 -= iBulletsToFire;
+	}
+
+	CreateMuzzleSmokeEffect();
+
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pOwner);
+
+	Vector	vForward, vRight, vUp;
+
+	pHL2MPPlayer->EyeVectors(&vForward, &vRight, &vUp);
+
+	float rawRightVal = 5.0f;
+	float rightMove = (ShouldSwitchPistol() ? (rawRightVal * -1) : rawRightVal);
+
+	Vector	muzzlePoint = pHL2MPPlayer->Weapon_ShootPosition() + vForward * 12.0f + vRight * rightMove + vUp * -3.0f;
+
+	// Fire the bullets
+	FireBulletsInfo_t info;
+	info.m_iShots = iBulletsToFire;
+	info.m_vecSrc = muzzlePoint;
+	info.m_vecDirShooting = pOwner->GetAutoaimVector(AUTOAIM_5DEGREES);
+	info.m_vecSpread = pHL2MPPlayer->GetAttackSpread(this);
+	info.m_flDistance = MAX_TRACE_LENGTH;
+	info.m_iAmmoType = m_iPrimaryAmmoType;
+	info.m_iTracerFreq = 2;
+	FireBullets(info);
+
+	//Factor in the view kick
+	AddViewKick();
+
+	if (!m_iClip1 && pOwner->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
+	{
+		// HEV suit - indicate out of ammo condition
+		pOwner->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
+	}
+
+	Activity act = GetPrimaryAttackActivity();
+	SendWeaponAnim(act);
+	PlayerAnimEvent_t thirdact = Get3rdPersonPrimaryAttackActivity();
+	ToHL2MPPlayer(pOwner)->DoAnimationEvent(thirdact);
+
+	// Add an accuracy penalty which can move past our maximum penalty time if we're really spastic
+	if (ShouldSwitchPistol())
+	{
+		m_flAccuracyPenaltyLeft += PISTOL_ACCURACY_SHOT_PENALTY_TIME;
+	}
+	else
+	{
+		m_flAccuracyPenalty += PISTOL_ACCURACY_SHOT_PENALTY_TIME;
+	}
+}
+
+void CWeaponDualPistols::UpdatePenaltyTime(void)
+{
+	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+
+	if (pOwner == NULL)
+		return;
+
+	// Check our penalty time decay
+	if (((pOwner->m_nButtons & IN_ATTACK) == false) && (m_flSoonestPrimaryAttack < gpGlobals->curtime))
+	{
+		m_flAccuracyPenaltyLeft -= gpGlobals->frametime;
+		m_flAccuracyPenaltyLeft = clamp(m_flAccuracyPenaltyLeft, 0.0f, PISTOL_ACCURACY_MAXIMUM_PENALTY_TIME);
+
+		m_flAccuracyPenalty -= gpGlobals->frametime;
+		m_flAccuracyPenalty = clamp(m_flAccuracyPenalty, 0.0f, PISTOL_ACCURACY_MAXIMUM_PENALTY_TIME);
+	}
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+bool CWeaponDualPistols::Reload(void)
+{
+	bool fRet = DefaultReload(GetMaxClip1(), GetMaxClip2(), ACT_VM_RELOAD);
+	if (fRet)
+	{
+		WeaponSound(RELOAD);
+		ToHL2MPPlayer(GetOwner())->DoAnimationEvent(PLAYERANIMEVENT_RELOAD);
+		m_flAccuracyPenaltyLeft = 0.0f;
+		m_flAccuracyPenalty = 0.0f;
+	}
+	return fRet;
 }
 
 //-----------------------------------------------------------------------------
@@ -659,4 +833,30 @@ void CWeaponDualPistols::CreateMuzzleSmokeEffect()
 	{
 		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, szAttachment, true);
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CWeaponDualPistols::AddViewKick(void)
+{
+	CBasePlayer* pPlayer = ToBasePlayer(GetOwner());
+
+	if (pPlayer == NULL)
+		return;
+
+	QAngle	viewPunch;
+
+	viewPunch.x = SharedRandomFloat("dualpistolpax", 0.25f, 0.5f);
+
+	if (ShouldSwitchPistol())
+	{
+		viewPunch.x = SharedRandomFloat("dualpistolpax", -0.25f, -0.5f);
+	}
+
+	viewPunch.y = SharedRandomFloat("dualpistolpay", -.6f, .6f);
+	viewPunch.z = 0.0f;
+
+	//Add it to the view punch
+	pPlayer->ViewPunch(viewPunch);
 }

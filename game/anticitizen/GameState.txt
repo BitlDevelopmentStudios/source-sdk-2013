@@ -4,7 +4,7 @@
 	{
 		"id"		"1"
 		"value"		"0"
-		"data"		"22"
+		"data"		"23"
 		"hud"		"0"
 		"msg"		"0"
 	}
@@ -12,7 +12,7 @@
 	{
 		"id"		"2"
 		"value"		"0"
-		"data"		"32"
+		"data"		"33"
 		"hud"		"0"
 		"msg"		"0"
 	}
@@ -34,23 +34,23 @@
 	{
 		"id"		"1003"
 		"value"		"0"
-		"data"		"9"
+		"data"		"10"
 		"hud"		"0"
-		"msg"		"1"
+		"msg"		"2"
 	}
 	"6"
 	{
 		"id"		"1004"
 		"value"		"0"
-		"data"		"9"
+		"data"		"10"
 		"hud"		"0"
-		"msg"		"0"
+		"msg"		"1"
 	}
 	"7"
 	{
 		"id"		"1005"
 		"value"		"0"
-		"data"		"9"
+		"data"		"10"
 		"hud"		"0"
 		"msg"		"0"
 	}
