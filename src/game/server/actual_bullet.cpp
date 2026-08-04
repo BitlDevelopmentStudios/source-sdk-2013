@@ -61,7 +61,7 @@ void CActualBullet::Think(void)
 						  m_LineTracerInfo.color.g(),
 						  m_LineTracerInfo.color.b(),
 						  false,
-						  m_LineTracerInfo.speed);
+						  ((tr.fraction != 1.0) ? 0 : m_LineTracerInfo.speed));
 		}
 	}
 
