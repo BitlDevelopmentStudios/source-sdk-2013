@@ -695,7 +695,28 @@ void CWeaponDualPistols::PrimaryAttack(void)
 
 	pHL2MPPlayer->EyeVectors(&vForward, &vRight, &vUp);
 
-	float rawRightVal = 5.0f;
+	float ramp = 1.0f;
+
+	if (ShouldSwitchPistol())
+	{
+		ramp = RemapValClamped(m_flAccuracyPenaltyLeft,
+			0.0f,
+			PISTOL_ACCURACY_MAXIMUM_PENALTY_TIME,
+			0.0f,
+			1.0f);
+	}
+	else
+	{
+		ramp = RemapValClamped(m_flAccuracyPenalty,
+			0.0f,
+			PISTOL_ACCURACY_MAXIMUM_PENALTY_TIME,
+			0.0f,
+			1.0f);
+	}
+
+	// We lerp from very accurate to inaccurate over time
+	float rawRightVal = LerpFloat(3.5f, 7.0f, ramp);
+
 	float rightMove = (ShouldSwitchPistol() ? (rawRightVal * -1) : rawRightVal);
 
 	Vector	muzzlePoint = pHL2MPPlayer->Weapon_ShootPosition() + vForward * 12.0f + vRight * rightMove + vUp * -3.0f;
