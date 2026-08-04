@@ -2,18 +2,21 @@ Alpha v3:
 - Added a basic server admin command module for ANTICITIZEN ONE.
 - Gordon Freeman's death camera has been set to the one used in Half-Life 2 and Episodes by default. This can be disabled with the cl_freeman_hl2deathcamera ConVar.
 - Added a new map: hunt_lighthouse! A map that takes place on a lone Rebel base on the coast, watched over by a massive lighthouse. This map takes place in the same area as the coast lighthouse Gunship battle in Half-Life 2.
-- Increased Sniper Rifle range from 4096 hammer units to 16384 hammer units.
-- The Sniper Rifle's bullet speed will now increase based on range. This improves the timing and responsiveness between when the bullet is shot and when the bullet hits the target.
-- Sniper Rifles can now be recharged by Combine energy outlets which are plentiful wherever you petrol.
 - Fixed a bug where dropped items respawned after usage.
 - Improved Achievement Panel visuals.
 - Added an infinite ammo admin command.
 - Fixed a visual bug where you can hide the SMG1 viewmodel by right-clicking.
-- Overhauled the behavior of the Dual Pistols.
-	- Each pistol now has their own accuracy penalty that applies the next time the pistol is shot.
-	- The view punch now punches based on which pistol is fired.
-	- Each pistol has a greater maximum accuracy penalty.
-	- Bullets from each pistol now shoot in the proper directions.
+- Overwatch Female Assassin overhauls:
+	- Dual Pistols:
+		- Each pistol now has their own accuracy penalty that applies the next time the pistol is shot.
+		- The view punch now punches based on which pistol is fired.
+		- Each pistol has a greater maximum accuracy penalty.
+		- Bullets from each pistol now fire from the individual pistols' muzzles.
+	- Sniper Rifle:
+		- Increased Sniper Rifle range from 4096 hammer units to 16384 hammer units.
+		- The Sniper Rifle's bullet speed will now increase based on range. This improves the timing and responsiveness between when the bullet is shot and when the bullet hits the target.
+		- Sniper Rifles can now be recharged by Combine energy outlets which are plentiful wherever you petrol.
+		- Bullets from the individual pistols' muzzle, ensuring improved accuracy.
 
 Alpha v2:
 - Fixed a problem where the close button on the Tips panel didn't work.

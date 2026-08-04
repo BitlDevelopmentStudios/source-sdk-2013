@@ -143,11 +143,17 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 	m_flNextSecondaryAttack = gpGlobals->curtime + SequenceDuration() + 1.5f;
 
 	Vector vecSrc		= pPlayer->Weapon_ShootPosition();
-	Vector vecAiming	= pPlayer->GetAutoaimVector( AUTOAIM_5DEGREES );	
+	Vector vecAiming	= pPlayer->GetAutoaimVector( AUTOAIM_5DEGREES );
+
+	Vector	vForward, vRight, vUp;
+
+	pPlayer->EyeVectors(&vForward, &vRight, &vUp);
+
+	Vector	muzzlePoint = vecSrc + vForward * 12.0f + vRight * 6.0f + vUp * -3.0f;
 
 	CreateMuzzleSmokeEffect();
 
-	FireBulletsInfo_t info( 1, vecSrc, vecAiming, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType );
+	FireBulletsInfo_t info( 1, muzzlePoint, vecAiming, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType );
 	info.m_pAttacker = pPlayer;
 
 	if (iAmmoCount < sk_max_sniper_round.GetInt())
@@ -167,18 +173,14 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 	// Get the angles
 	AngleVectors(pPlayer->EyeAngles(), &vecDir);
 
-	Vector	vForward, vRight, vUp;
-
-	pPlayer->EyeVectors(&vForward, &vRight, &vUp);
-
 	// Get the vectors
-	vecStart = vecSrc;
+	vecStart = muzzlePoint;
 	vecStop = vecStart + vecDir * m_fMaxRange1;
 
 	// Do the TraceLine
 	UTIL_TraceLine(vecStart, vecStop, MASK_ALL, this, COLLISION_GROUP_NONE, &tr);
 
-	float dist = UTIL_DistApprox((tr.endpos + (tr.plane.normal * 1.0f)), vecSrc);
+	float dist = UTIL_DistApprox((tr.endpos + (tr.plane.normal * 1.0f)), muzzlePoint);
 
 	if (dist > m_fMinRange1)
 	{
