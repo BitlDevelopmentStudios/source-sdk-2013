@@ -197,7 +197,7 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 					 "AR2Impact", 
 					 true,
 					 Color(3, 252, 219),
-					 0.085f);
+					 0.2f);
 #endif // CLIENT_DLL
 
 #ifdef CLIENT_DLL
