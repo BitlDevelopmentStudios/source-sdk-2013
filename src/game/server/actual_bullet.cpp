@@ -56,12 +56,15 @@ void CActualBullet::Think(void)
 	{
 		if (m_Line)
 		{
+			float flspeed = m_LineTracerInfo.speed;
+			DevMsg("%f\n", flspeed);
+
 			DebugDrawLine(vecStart, vecEnd,
 						  m_LineTracerInfo.color.r(),
 						  m_LineTracerInfo.color.g(),
 						  m_LineTracerInfo.color.b(),
 						  false,
-						  ((tr.fraction != 1.0) ? 0.0f : m_LineTracerInfo.speed));
+						  ((tr.fraction != 1.0) ? 0.0f : flspeed));
 		}
 	}
 
