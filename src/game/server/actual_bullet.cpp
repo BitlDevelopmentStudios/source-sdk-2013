@@ -50,7 +50,7 @@ void CActualBullet::Think(void)
 					  128, 
 					  255, 
 					  false, 
-					  0.1f);
+			          ((tr.fraction != 1.0) ? 0.0f : 0.1f));
 	}
 	else
 	{
@@ -61,7 +61,7 @@ void CActualBullet::Think(void)
 						  m_LineTracerInfo.color.g(),
 						  m_LineTracerInfo.color.b(),
 						  false,
-						  ((tr.fraction != 1.0) ? 0 : m_LineTracerInfo.speed));
+						  ((tr.fraction != 1.0) ? 0.0f : m_LineTracerInfo.speed));
 		}
 	}
 

@@ -1,0 +1,22 @@
+//-----------------------------------------------------------------------------
+//	BULLET_PROJ.VPC
+//
+//	Project Script
+//-----------------------------------------------------------------------------
+
+$Configuration
+{
+	$Compiler
+	{
+		$PreprocessorDefinitions		"$BASE;BULLET_PROJ"
+	}
+}
+
+$Project
+{
+	$Folder	"Source Files"
+	{
+		$File	"actual_bullet.cpp"
+		$File	"actual_bullet.h"
+	}
+}
