@@ -6,6 +6,7 @@ Alpha v3:
 - Improved Achievement Panel visuals.
 - Added an infinite ammo admin command.
 - Fixed a visual bug where you can hide the SMG1 viewmodel by right-clicking.
+- Fixed a visual bug where Sniper Rifle bullets appeared to be shooting through walls, even though they weren't.
 - Overwatch Female Assassin overhauls:
 	- Dual Pistols:
 		- Each pistol now has their own accuracy penalty that applies the next time the pistol is shot.
