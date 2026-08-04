@@ -10,6 +10,7 @@ $Macro GAMENAME 	"anticitizen"
 $Include "$SRCDIR\game\server\server_base.vpc"
 $Include "$SRCDIR\game\server\nav_mesh.vpc"
 $Include "$SRCDIR\game\shared\c_arms_include.vpc"
+$Include "$SRCDIR\game\server\bullet_proj_include.vpc"
 
 $Configuration
 {
@@ -332,8 +333,6 @@ $Project "Server (ANTICITIZEN)"
 			$File	"$SRCDIR\game\shared\anticitizen\anticitizen_playerclass_info_parse.h"
 			$File	"$SRCDIR\game\shared\anticitizen\achievements_anticitizen.cpp"
 			$File	"$SRCDIR\game\shared\anticitizen\achievements_anticitizen.h"
-			$File	"actual_bullet.cpp"
-			$File	"actual_bullet.h"
 			
 			$Folder "Bots"
 			{
