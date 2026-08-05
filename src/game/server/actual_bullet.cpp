@@ -21,8 +21,21 @@ CActualBullet::CActualBullet(void)
 	m_LineTracerInfo.speed = 0.05f;
 }
 
+void CActualBullet::Precache(void)
+{
+	if (m_Model)
+	{
+		PrecacheModel(m_ModelName);
+	}
+}
+
 void CActualBullet::Start(void)
 {
+	Precache();
+	if (m_Model)
+	{
+		SetModel(m_ModelName);
+	}
 	SetThink(&CActualBullet::Think);
 	SetNextThink(gpGlobals->curtime);
 	SetOwnerEntity(info.m_pAttacker);
