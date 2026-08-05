@@ -149,7 +149,7 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 
 	pPlayer->EyeVectors(&vForward, &vRight, &vUp);
 
-	Vector	muzzlePoint = vecSrc + vForward * 12.0f + vRight * 6.0f + vUp * -3.0f;
+	Vector	muzzlePoint = vecSrc + vForward * 12.0f + vRight * 1.0f + vUp * -3.0f;
 
 	if (m_bInZoom)
 	{
