@@ -18,7 +18,7 @@ Alpha v3:
 		- Increased Sniper Rifle range from 4096 hammer units to 16384 hammer units.
 		- The Sniper Rifle's bullet speed will now increase based on range. This improves the timing and responsiveness between when the bullet is shot and when the bullet hits the target.
 		- Sniper Rifles can now be recharged by Combine energy outlets which are plentiful wherever you petrol.
-		- Bullets from the individual pistols' muzzle, ensuring improved accuracy.
+		- When unzoomed, the Sniper Rifle's bullets will now fire out from the muzzle.
 
 Alpha v2:
 - Fixed a problem where the close button on the Tips panel didn't work.

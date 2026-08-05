@@ -151,6 +151,11 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 
 	Vector	muzzlePoint = vecSrc + vForward * 12.0f + vRight * 6.0f + vUp * -3.0f;
 
+	if (m_bInZoom)
+	{
+		muzzlePoint = vecSrc;
+	}
+
 	CreateMuzzleSmokeEffect();
 
 	FireBulletsInfo_t info( 1, muzzlePoint, vecAiming, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType );
