@@ -92,6 +92,7 @@ public:
 	virtual int				DrawModel( int flags );
 	virtual void			OnDataChanged( DataUpdateType_t updateType );
 	virtual bool			ShouldDraw( void ) { return (IsEffectActive(EF_NODRAW)==false); }
+	void					ReloadModel(void);
 
 	CMaterialReference	m_hSpriteMaterial;
 #endif
@@ -102,6 +103,9 @@ protected:
 	bool				m_bVisibleLaserDot;
 	bool				m_bIsOn;
 	CNetworkVar(int, m_nType);
+#ifdef CLIENT_DLL
+	int				m_nOldType;
+#endif
 
 	DECLARE_NETWORKCLASS();
 	DECLARE_DATADESC();
@@ -2505,6 +2509,12 @@ void EnableLaserDot( CBaseEntity *pLaserDot, bool bEnable )
 	}
 }
 
+void SetLaserDotType(CBaseEntity* pLaserDot, int iType)
+{
+	CLaserDot* pDot = assert_cast<CLaserDot*>(pLaserDot);
+	pDot->SetType(iType);
+}
+
 CLaserDot::CLaserDot( void )
 {
 	m_hTargetEnt = NULL;
@@ -2659,6 +2669,27 @@ int CLaserDot::DrawModel( int flags )
 	return 1;
 }
 
+const char* GetModelForType(int nType)
+{
+	switch (nType)
+	{
+	case LASER_TYPE_RPG:
+	default:
+		return RPG_LASER_SPRITE;
+		break;
+	case LASER_TYPE_SNIPER:
+		return SNIPER_LASER_SPRITE;
+		break;
+	}
+}
+
+void CLaserDot::ReloadModel(void)
+{
+	const char* szModel = GetModelForType(m_nType);
+	m_hSpriteMaterial.Init(szModel, TEXTURE_GROUP_CLIENT_EFFECTS);
+	m_nOldType = m_nType;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Setup our sprite reference
 //-----------------------------------------------------------------------------
@@ -2666,14 +2697,17 @@ void CLaserDot::OnDataChanged( DataUpdateType_t updateType )
 {
 	if ( updateType == DATA_UPDATE_CREATED )
 	{
-		if (m_nType == 1)
-		{
-			m_hSpriteMaterial.Init(SNIPER_LASER_SPRITE, TEXTURE_GROUP_CLIENT_EFFECTS);
-		}
-		else
-		{
-			m_hSpriteMaterial.Init(RPG_LASER_SPRITE, TEXTURE_GROUP_CLIENT_EFFECTS);
-		}
+		ReloadModel();
+		// don't handle color changes until the next frame.
+		return;
+	}
+	
+	// change our model if needed.
+	if (m_nOldType != m_nType)
+	{
+		m_hSpriteMaterial.Shutdown();
+
+		ReloadModel();
 	}
 }
 

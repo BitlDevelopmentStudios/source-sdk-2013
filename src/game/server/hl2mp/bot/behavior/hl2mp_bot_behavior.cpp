@@ -703,7 +703,8 @@ void CHL2MPBotMainAction::FireWeaponAtEnemy( CHL2MPBot *me )
 
 				if (me->IsSniperRifle(MY_CURRENT_GUN))
 				{
-					if (me->GetAmmoCount(me->GetActiveWeapon()->GetPrimaryAmmoType()) < SNIPER_CHARGE_DRAIN)
+					CWeaponSniperRifle* pSniperWeapon = (CWeaponSniperRifle*)me->Weapon_OwnsThisType("weapon_sniperrifle");
+					if (pSniperWeapon && (pSniperWeapon == me->GetActiveWeapon()) && !pSniperWeapon->IsReady())
 					{
 						// wait for our weapon to charge before firing again.
 						return;

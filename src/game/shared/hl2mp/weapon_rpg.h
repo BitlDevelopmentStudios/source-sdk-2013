@@ -20,6 +20,12 @@
 
 #endif
 
+enum
+{
+	LASER_TYPE_RPG,
+	LASER_TYPE_SNIPER
+};
+
 #ifndef CLIENT_DLL
 #include "Sprite.h"
 #include "npcevent.h"
@@ -110,16 +116,15 @@ private:
 	DECLARE_DATADESC();
 };
 
-
 //-----------------------------------------------------------------------------
 // Laser dot control
 //-----------------------------------------------------------------------------
 CBaseEntity *CreateLaserDot( const Vector &origin, CBaseEntity *pOwner, bool bVisibleDot );
-CBaseEntity* CreateLaserDotEx(const Vector& origin, CBaseEntity* pOwner, bool bVisibleDot, int iType);
+CBaseEntity* CreateLaserDotEx(const Vector& origin, CBaseEntity* pOwner, bool bVisibleDot, int iType = LASER_TYPE_RPG);
 void SetLaserDotTarget( CBaseEntity *pLaserDot, CBaseEntity *pTarget );
 void SetLaserDotPostition(CBaseEntity* pLaserDot, const Vector& origin, const Vector& normal);
 void EnableLaserDot( CBaseEntity *pLaserDot, bool bEnable );
-
+void SetLaserDotType(CBaseEntity* pLaserDot, int iType = LASER_TYPE_RPG);
 
 //-----------------------------------------------------------------------------
 // Specialized mizzizzile

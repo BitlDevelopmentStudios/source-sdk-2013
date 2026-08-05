@@ -70,6 +70,7 @@ public:
 	virtual void	ItemBusyFrame(void);
 	void			Drop(const Vector& vecVelocity);
 	bool			ShouldBeep(void);
+	bool			IsReady(void);
 	void			Charge(int iState);
 
 	void	TurnOff(void);

@@ -19,6 +19,7 @@ Alpha v3:
 		- The Sniper Rifle's bullet speed will now increase based on range. This improves the timing and responsiveness between when the bullet is shot and when the bullet hits the target.
 		- Sniper Rifles can now be recharged by Combine energy outlets which are plentiful wherever you petrol.
 		- When unzoomed, the Sniper Rifle's bullets will now fire out from the muzzle.
+		- The laser dot will now switch colors if the Sniper Rifle is not ready to fire yet.
 
 Alpha v2:
 - Fixed a problem where the close button on the Tips panel didn't work.

@@ -115,7 +115,7 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 
 	int iAmmoCount = pPlayer->GetAmmoCount(m_iPrimaryAmmoType);
 
-	if (!HasPrimaryAmmo() || iAmmoCount < SNIPER_CHARGE_DRAIN)
+	if (!HasPrimaryAmmo() || !IsReady())
 	{
 		WeaponSound(EMPTY);
 		m_flNextPrimaryAttack = gpGlobals->curtime + 0.2f;
@@ -149,7 +149,7 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 
 	pPlayer->EyeVectors(&vForward, &vRight, &vUp);
 
-	Vector	muzzlePoint = vecSrc + vForward * 12.0f + vRight * 1.0f + vUp * -3.0f;
+	Vector	muzzlePoint = vecSrc + vForward * 12.0f + vRight * 2.5f + vUp * -3.0f;
 
 	if (m_bInZoom)
 	{
@@ -245,6 +245,19 @@ bool CWeaponSniperRifle::ShouldBeep(void)
 		int iAmmoCount = pPlayer->GetAmmoCount(m_iPrimaryAmmoType);
 		return ((iAmmoCount < sk_max_sniper_round.GetInt()) && 
 			   (((iAmmoCount % SNIPER_CHARGE_DRAIN) == 0) || (iAmmoCount == (sk_max_sniper_round.GetInt() - 1))));
+	}
+
+	return false;
+}
+
+bool CWeaponSniperRifle::IsReady(void)
+{
+	CBasePlayer* pPlayer = ToBasePlayer(GetOwner());
+
+	if (pPlayer)
+	{
+		int iAmmoCount = pPlayer->GetAmmoCount(m_iPrimaryAmmoType);
+		return (iAmmoCount >= SNIPER_CHARGE_DRAIN);
 	}
 
 	return false;
@@ -487,11 +500,12 @@ void CWeaponSniperRifle::LaserOn(void)
 
 	if (m_hLaserDot == NULL)
 	{
-		m_hLaserDot = CreateLaserDotEx(GetAbsOrigin(), this, false, 1);
+		m_hLaserDot = CreateLaserDotEx(GetAbsOrigin(), this, false, LASER_TYPE_SNIPER);
 	}
 
 	SetLaserDotPostition(m_hLaserDot, (tr.endpos + (tr.plane.normal * 1.0f)), tr.plane.normal);
 	EnableLaserDot(m_hLaserDot, true);
+	SetLaserDotType(m_hLaserDot, (IsReady() ? LASER_TYPE_SNIPER : LASER_TYPE_RPG));
 #endif
 
 	m_bLaserOn = true;

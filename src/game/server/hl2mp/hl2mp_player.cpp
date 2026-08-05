@@ -1911,9 +1911,9 @@ void CHL2MP_Player::Event_Killed( const CTakeDamageInfo &info )
 				}
 			}
 
-			CBaseCombatWeapon* pSniper = Weapon_OwnsThisType("weapon_sniperrifle");
+			CWeaponSniperRifle* pSniper = (CWeaponSniperRifle*)Weapon_OwnsThisType("weapon_sniperrifle");
 
-			if (pSniper && (GetAmmoCount(pSniper->GetPrimaryAmmoType()) >= SNIPER_CHARGE_DRAIN))
+			if (pSniper && pSniper->IsReady())
 			{
 				DropItem("item_battery", WorldSpaceCenter() + RandomVector(-4, 4), RandomAngle(0, 360));
 			}
