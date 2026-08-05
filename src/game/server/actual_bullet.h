@@ -21,6 +21,7 @@ public:
 	CActualBullet(void);
 
 	void Start(void);
+	void Precache(void);
 	void Think(void);
 	void DoImpactEffect(trace_t& tr, int nDamageType);
 
@@ -32,6 +33,8 @@ public:
 	const char* m_ImpactEffectName;
 	bool m_Line;
 	LineTracerInfo_t m_LineTracerInfo;
+	bool m_Model;
+	const char* m_ModelName;
 };
 
 extern ConVar debug_actual_bullet_path;
@@ -45,7 +48,9 @@ inline void FireActualBullet(FireBulletsInfo_t &info,
 								const char *szImpactEffectName = "",
 								bool bLine = false, 
 								Color cLineColor = Color(255.0f, 255.0f, 255.0f),
-								float flLineSpeed = 0.05f)
+								float flLineSpeed = 0.05f, 
+								bool bModel = false, 
+								const char* szModelName = "" )
 {
 	if (!info.m_pAttacker)
 	{
@@ -78,14 +83,23 @@ inline void FireActualBullet(FireBulletsInfo_t &info,
 		pBullet->m_Speed = iSpeed;
 		pBullet->m_ImpactEffect = bImpactEffect;
 		pBullet->m_ImpactEffectName = szImpactEffectName;
+
 		if (bLine)
 		{
 			pBullet->m_Line = true;
 			pBullet->m_LineTracerInfo.color = cLineColor;
 			pBullet->m_LineTracerInfo.speed = flLineSpeed;
 		}
+
+		if (bModel)
+		{
+			pBullet->m_Model = true;
+			pBullet->m_ModelName = szModelName;
+		}
+
 		pBullet->SetOwnerEntity(info.m_pAttacker);
 		pBullet->SetAbsOrigin(info.m_vecSrc);
+		pBullet->SetAbsAngles(info.m_pAttacker->EyeAngles());
 		pBullet->info = info;
 		pBullet->Start();
 		UTIL_Tracer(info.m_vecSrc, tr.endpos, info.m_pAttacker->entindex(), -1, (float)iSpeed, bWhiz, tracertype, 0);
