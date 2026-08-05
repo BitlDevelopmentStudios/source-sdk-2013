@@ -2030,7 +2030,9 @@ void CWeaponRPG::UpdateLaserPosition( Vector vecMuzzlePos, Vector vecEndPos )
 			m_hLaserDot->TurnOff();
 		}
 
-		Vector	laserPos = (tr.endpos + (tr.plane.normal * 1.0f));
+		// switching back to the normal HL2MP one as it looks a bit wierd on the RPG.
+		//Vector	laserPos = (tr.endpos + (tr.plane.normal * 1.0f));
+		Vector	laserPos = tr.endpos;
 		m_hLaserDot->SetLaserPosition( laserPos, tr.plane.normal );
 				
 		if ( tr.DidHitNonWorldEntity() )

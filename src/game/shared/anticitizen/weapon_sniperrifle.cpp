@@ -503,7 +503,9 @@ void CWeaponSniperRifle::LaserOn(void)
 		m_hLaserDot = CreateLaserDotEx(GetAbsOrigin(), this, false, LASER_TYPE_SNIPER);
 	}
 
-	SetLaserDotPostition(m_hLaserDot, (tr.endpos + (tr.plane.normal * 1.0f)), tr.plane.normal);
+
+	Vector	laserPos = (tr.endpos + (tr.plane.normal * 1.0f));
+	SetLaserDotPostition(m_hLaserDot, laserPos, tr.plane.normal);
 	EnableLaserDot(m_hLaserDot, true);
 	SetLaserDotType(m_hLaserDot, (IsReady() ? LASER_TYPE_SNIPER : LASER_TYPE_RPG));
 #endif
