@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------
 //
-// Game data for Half-Life 2 Multiplayer.
+// Game data for ANTICITIZEN ONE.
 //
 //-------------------------------------------------------------------------
 
@@ -39,6 +39,7 @@
 ]
 
 // should these be in here?
-@PointClass base(Weapon) studio("models/weapons/w_crate.mdl") = weapon_crate : "Supply Crate" []
-@PointClass base(Weapon) studio("models/weapons/w_turret.mdl") = weapon_turret : "Placable Turret" []
-@PointClass base(Weapon) studio("models/weapons/w_manhack.mdl") = weapon_manhack : "Throwable Manhack" []
+// no.
+//@PointClass base(Weapon) studio("models/weapons/w_crate.mdl") = weapon_crate : "Supply Crate" []
+//@PointClass base(Weapon) studio("models/weapons/w_turret.mdl") = weapon_turret : "Placable Turret" []
+//@PointClass base(Weapon) studio("models/weapons/w_manhack.mdl") = weapon_manhack : "Throwable Manhack" []
