@@ -11,6 +11,7 @@
 	"$phongexponent" "5"
 	"$phongalbedotint" "1"										
 	"$phongfresnelranges"	"[.1 .5  1]"
+	"$PhongNewBehaviour" "1"
 
 	//rimlight parameters
 	"$rimlight" "1"
