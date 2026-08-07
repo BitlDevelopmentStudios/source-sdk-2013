@@ -8,7 +8,7 @@
 	nohimodel 1
 	nocrosshair 0
 	supportsvr	1
-	GameData	"anticitizen.fgd"
+	GameData	"gamedata/anticitizen.fgd"
 	icon		"resource/game"
 	DependsOnAppID 	243730
 	hidden_maps
