@@ -11,7 +11,7 @@
 		"test_hardware"		1
 	}
 	nodegraph 				0
-	GameData				"tf_edit.fgd"
+	GameData				"gamedata/tf.fgd"
 	AdditionalLocalization	"tf"
 	InstancePath			"maps/instances/"
 	advcrosshair 			1
