@@ -9,7 +9,6 @@ Alpha v3:
 - Fixed a visual bug where Sniper Rifle bullets appeared to be shooting through walls, even though they weren't.
 - Improved Sniper Rifle tracer visibility.
 - Fixed awkward RPG laser dot placement.
-- Fixed various texture compatibility errors with LUX.
 - Overwatch Female Assassin overhauls:
 	- Dual Pistols:
 		- Each pistol now has their own accuracy penalty that applies the next time the pistol is shot.
