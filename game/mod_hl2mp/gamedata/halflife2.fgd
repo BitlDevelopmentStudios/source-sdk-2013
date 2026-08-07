@@ -6,6 +6,7 @@
 
 @include "base.fgd"
 @include "bds.fgd"
+@include "toolsplusplus.fgd"
 
 //-------------------------------------------------------------------------
 //

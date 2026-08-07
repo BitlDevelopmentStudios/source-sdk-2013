@@ -1,6 +1,6 @@
 @include "base.fgd"
 @include "bds.fgd"
-
+@include "toolsplusplus.fgd"
 
 //
 // TF2 game definition file (.fgd) 
