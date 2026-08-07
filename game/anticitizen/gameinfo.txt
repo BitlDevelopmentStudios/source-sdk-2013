@@ -100,15 +100,15 @@
 			default_write_path	|gameinfo_path|.
 			gamebin				|gameinfo_path|bin
 
-			// Load the base BDS vpk file.
-			// MUST BE BUILT AFTER SHADERS.
-			game+mod			|gameinfo_path|bds_base_pak.vpk
-
 			// We search VPK files before ordinary folders, because most files will be found in
 			// VPK and we can avoid making thousands of file system calls to attempt to open files
 			// in folders where they don't exist.  (Searching a VPK is much faster than making an operating
 			// system call.)
 			game+mod			|gameinfo_path|anticitizen_pak.vpk
+
+			// Load the base BDS vpk file.
+			// MUST BE BUILT AFTER SHADERS.
+			game+mod			|gameinfo_path|bds_base_pak.vpk
 
 			game+mod			|appid_243750|hl2mp/hl2mp_english.vpk
 			game+mod			|appid_243750|hl2mp/hl2mp_pak.vpk
