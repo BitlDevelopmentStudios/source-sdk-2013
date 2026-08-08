@@ -1690,7 +1690,7 @@ void CGameMovement::Friction( void )
 					if (moving_fast_enough && bCanPowerSlide)
 					{
 						mv->m_nButtons &= ~IN_SPEED;
-						friction = (friction * 0.2f);
+						friction = (friction * 0.175f);
 						control = sv_stopspeed.GetFloat();
 					}
 				}
