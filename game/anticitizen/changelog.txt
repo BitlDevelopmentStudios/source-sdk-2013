@@ -10,6 +10,7 @@ Alpha v3:
 - Improved Sniper Rifle tracer visibility.
 - Fixed awkward RPG laser dot placement.
 - Fixed sv_pure functionality.
+- Added a scuffed "powerslide" if you crouch while sprinting.
 - Overwatch Female Assassin overhauls:
 	- Dual Pistols:
 		- Each pistol now has their own accuracy penalty that applies the next time the pistol is shot.
