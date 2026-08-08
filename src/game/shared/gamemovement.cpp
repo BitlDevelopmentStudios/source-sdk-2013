@@ -1683,15 +1683,15 @@ void CGameMovement::Friction( void )
 				if (info.iMovementType != MOVE_TYPE_SPMOVEMENT)
 				{
 					bool moving_fast_enough = (speed >= 60.0f);
-					bool bCanPowerSlide = ((info.iMovementType != MOVE_TYPE_MPMOVEMENT) ?
+					bool bCanPowerSlide = (((info.iMovementType != MOVE_TYPE_MPMOVEMENT) && info.bCanSprint) ?
 						((mv->m_nButtons & IN_SPEED) && player->m_Local.m_bDucked) :
 						player->m_Local.m_bDucked);
 
 					if (moving_fast_enough && bCanPowerSlide)
 					{
-						mv->m_nOldButtons |= IN_SPEED;
-						friction = (friction * 0.025f);
-						control = (control * 4.0f);
+						mv->m_nButtons &= ~IN_SPEED;
+						friction = (friction * 0.2f);
+						control = sv_stopspeed.GetFloat();
 					}
 				}
 			}
