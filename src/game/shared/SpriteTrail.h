@@ -62,6 +62,8 @@ public:
 	virtual const Vector &GetRenderOrigin( void );
 	virtual const QAngle &GetRenderAngles( void );
 
+	virtual bool IsMoveParentLocalPlayer(void);
+
 	// On data update
 	virtual void OnPreDataChanged( DataUpdateType_t updateType );
 	virtual void OnDataChanged( DataUpdateType_t updateType );

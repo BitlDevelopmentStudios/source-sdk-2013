@@ -426,12 +426,9 @@ int CSpriteTrail::DrawModel( int flags )
 {
 	VPROF_BUDGET( "CSpriteTrail::DrawModel", VPROF_BUDGETGROUP_PARTICLE_RENDERING );
 
-	if (!m_bDrawForLocalPlayer)
+	if (!m_bDrawForLocalPlayer && IsMoveParentLocalPlayer())
 	{
-		CBasePlayer* pLocalPlayer = CBasePlayer::GetLocalPlayer();
-
-		if (GetMoveParent() == pLocalPlayer)
-			return 0;
+		return 0;
 	}
 	
 	// Must have at least one point
@@ -541,6 +538,16 @@ int CSpriteTrail::DrawModel( int flags )
 	return 1;
 }
 
+bool CSpriteTrail::IsMoveParentLocalPlayer(void)
+{
+	CBasePlayer* pLocalPlayer = CBasePlayer::GetLocalPlayer();
+
+	if (pLocalPlayer && (GetMoveParent() == pLocalPlayer))
+		return true;
+
+	return false;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Output : Vector const&
@@ -549,6 +556,11 @@ const Vector &CSpriteTrail::GetRenderOrigin( void )
 {
 	static Vector vOrigin;
 	vOrigin = GetAbsOrigin();
+
+	if (!m_bDrawForLocalPlayer && IsMoveParentLocalPlayer())
+	{
+		return vOrigin;
+	}
 
 	if ( m_hAttachedToEntity )
 	{
