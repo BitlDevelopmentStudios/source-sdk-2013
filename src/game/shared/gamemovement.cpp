@@ -1779,7 +1779,7 @@ void CGameMovement::AirAccelerate( Vector& wishdir, float wishspeed, float accel
 	else
 		accelspeed = accel * wishspeed * gpGlobals->frametime * player->m_surfaceFriction;
 
-	// for freeman, use the busted acceleration. for the combine, use the fixed acceleration. 
+	// for freeman/mp movement, use the busted acceleration. for the combine, use the fixed acceleration. 
 	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(player);
 	if (pHL2MPPlayer)
 	{
@@ -1787,7 +1787,7 @@ void CGameMovement::AirAccelerate( Vector& wishdir, float wishspeed, float accel
 		{
 			const CAnticitizen_FilePlayerClassInfo_t& info = pHL2MPPlayer->GetPlayerClassInfo();
 
-			if (info.iMovementType == MOVE_TYPE_SPMOVEMENT)
+			if ((info.iMovementType == MOVE_TYPE_SPMOVEMENT) || (info.iMovementType == MOVE_TYPE_MPMOVEMENT))
 			{
 				accelspeed = accel * wishspeed * gpGlobals->frametime * player->m_surfaceFriction;
 			}
