@@ -1671,32 +1671,6 @@ void CGameMovement::Friction( void )
 			control = (speed < sv_stopspeed.GetFloat()) ? sv_stopspeed.GetFloat() : speed;
 		}
 
-		// for the combine, decrease friction if we stopped sprinting then move to a crouch
-		// this allows us to do a scuffed powerslide
-		CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(player);
-		if (pHL2MPPlayer)
-		{
-			if (pHL2MPPlayer->GetPlayerClass() > CLS_INVALID)
-			{
-				const CAnticitizen_FilePlayerClassInfo_t& info = pHL2MPPlayer->GetPlayerClassInfo();
-
-				if (info.iMovementType != MOVE_TYPE_SPMOVEMENT)
-				{
-					bool moving_fast_enough = (speed >= 60.0f);
-					bool bCanPowerSlide = (((info.iMovementType != MOVE_TYPE_MPMOVEMENT) && info.bCanSprint) ?
-						((mv->m_nButtons & IN_SPEED) && player->m_Local.m_bDucked) :
-						player->m_Local.m_bDucked);
-
-					if (moving_fast_enough && bCanPowerSlide)
-					{
-						mv->m_nButtons &= ~IN_SPEED;
-						friction = (friction * 0.175f);
-						control = sv_stopspeed.GetFloat();
-					}
-				}
-			}
-		}
-
 		// Add the amount to the drop amount.
 		drop += control*friction*gpGlobals->frametime;
 	}
