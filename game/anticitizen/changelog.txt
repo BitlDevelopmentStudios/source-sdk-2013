@@ -11,6 +11,8 @@ Alpha v3:
 - Fixed awkward RPG laser dot placement.
 - Fixed sv_pure functionality.
 - Further improved Overwatch Female Assassin movement.
+- Composed an original theme for the main menu (https://bitl.bandcamp.com/track/anticitizen-one-2)
+- Changed the main menu button sounds a bit.
 - Overwatch Female Assassin overhauls:
 	- Dual Pistols:
 		- Each pistol now has their own accuracy penalty that applies the next time the pistol is shot.
