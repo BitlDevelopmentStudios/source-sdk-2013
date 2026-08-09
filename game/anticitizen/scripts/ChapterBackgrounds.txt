@@ -7,4 +7,5 @@
 	5	"background05"
 	6	"background06"
 	7	"background07"
+	8	"background08"
 }
