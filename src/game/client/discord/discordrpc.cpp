@@ -106,7 +106,7 @@ void DiscordRPC::SetStatus_Menu()
 	DiscordRichPresence discordPresence;
 	memset( &discordPresence, 0, sizeof(discordPresence) );
 
-	discordPresence.state = "In-Game";
+	discordPresence.state = "Idle";
 	discordPresence.details = "Main Menu";
 	discordPresence.largeImageKey = DISCORDRPC_GAMELOGO_KEY;
 	discordPresence.largeImageText = DISCORDRPC_GAMELOGO_TEXT;
@@ -115,17 +115,21 @@ void DiscordRPC::SetStatus_Menu()
 }
 
 
-void DiscordRPC::SetStatus_Game( const char* pMapName )
+void DiscordRPC::SetStatus_Game( const char* pMapName, const char* pServerName, int iCurPlayers, int iMaxPlayers )
 {
 	if (g_bTextMode) return;
 
 	DiscordRichPresence discordPresence;
 	memset( &discordPresence, 0, sizeof(discordPresence) );
 
-	char buffer[256];
-	discordPresence.state = "In-Game";
-	sprintf( buffer, "Map: %s", pMapName );
-	discordPresence.details = buffer;
+	char buffer[128];
+	sprintf(buffer, "%s (%i/%i)", pServerName, iCurPlayers, iMaxPlayers);
+	discordPresence.state = buffer;
+
+	char buffer2[128];
+	sprintf( buffer2, "Map: %s", pMapName );
+	discordPresence.details = buffer2;
+
 	discordPresence.largeImageKey = pMapName;
 	discordPresence.largeImageText = pMapName;
 	discordPresence.smallImageKey = DISCORDRPC_GAMELOGO_KEY;

@@ -129,6 +129,10 @@ public:
 	// HPE_END
 	//=============================================================================
 
+	// i am not grabbing leaked code or altering this code in any way, so i'm doing this my own way. - Bitl
+	virtual char* GetServerHostName() = 0;
+	virtual void SetServerHostName(const char* name) = 0;
+
 	virtual bool	DoPostScreenSpaceEffects( const CViewSetup *pSetup ) = 0;
 
 	virtual void	DisplayReplayMessage( const char *pLocalizeName, float flDuration, bool bUrgent,

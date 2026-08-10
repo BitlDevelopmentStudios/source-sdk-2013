@@ -125,6 +125,10 @@ public:
 	// HPE_END
 	//=============================================================================
 
+	// i am not grabbing leaked code or altering this code in any way, so i'm doing this my own way. - Bitl
+	virtual char* GetServerHostName() { return m_pHostName; }
+	virtual void SetServerHostName(const char* name);
+
 	virtual bool	DoPostScreenSpaceEffects( const CViewSetup *pSetup );
 
 	virtual void	DisplayReplayMessage( const char *pLocalizeName, float flDuration, bool bUrgent,
@@ -165,6 +169,9 @@ private:
 	vgui::HCursor			m_CursorNone;
 	CBaseHudWeaponSelection *m_pWeaponSelection;
 	int						m_nRootSize[2];
+
+private:
+	char			m_pHostName[256];
 };
 
 #endif // CLIENTMODE_NORMAL_H

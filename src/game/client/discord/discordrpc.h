@@ -38,7 +38,7 @@ public:
 
 	void SetStatus( DiscordRichPresence discordPresence );
 	void SetStatus_Menu();
-	void SetStatus_Game( const char* pMapName );
+	void SetStatus_Game( const char* pMapName, const char* pServerName, int iCurPlayers, int iMaxPlayers );
 };
 
 #endif // DISCORDRPC_H
