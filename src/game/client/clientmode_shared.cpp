@@ -366,6 +366,7 @@ void ClientModeShared::Init()
 	ListenForGameEvent( "player_changename" );
 	ListenForGameEvent( "teamplay_broadcast_audio" );
 	ListenForGameEvent( "achievement_earned" );
+	ListenForGameEvent( "server_spawn" );
 
 #if defined( TF_CLIENT_DLL )
 	ListenForGameEvent( "item_found" );
@@ -1315,6 +1316,16 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 			}
 		}
 	}
+	else if (Q_strcmp("server_spawn", eventname) == 0)
+	{
+		// set the hostname.
+		const char* hostname = event->GetString("hostname");
+		
+		if (hostname[0])
+		{
+			SetServerHostName(hostname);
+		}
+	}
 #if defined( TF_CLIENT_DLL )
 	else if ( Q_strcmp( "item_found", eventname ) == 0 )
 	{
@@ -1466,6 +1477,11 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 	{
 		DevMsg( 2, "Unhandled GameEvent in ClientModeShared::FireGameEvent - %s\n", event->GetName()  );
 	}
+}
+
+void ClientModeShared::SetServerHostName(const char* name)
+{
+	Q_memcpy(m_pHostName, name, sizeof(m_pHostName));
 }
 
 void ClientModeShared::UpdateReplayMessages()

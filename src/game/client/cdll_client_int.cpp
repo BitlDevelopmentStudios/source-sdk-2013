@@ -974,6 +974,10 @@ private:
 	void ResetStringTablePointers();
 
 	CUtlVector< IMaterial * > m_CachedMaterials;
+
+#ifdef DISCORD_ENABLED
+	float m_flLastDiscordRPCUpdate;
+#endif
 };
 
 
@@ -1081,6 +1085,9 @@ CHLClient::CHLClient()
 {
 	// Kinda bogus, but the logic in the engine is too convoluted to put it there
 	g_bLevelInitialized = false;
+#ifdef DISCORD_ENABLED
+	m_flLastDiscordRPCUpdate = 0;
+#endif
 }
 
 
@@ -1403,6 +1410,7 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 
 #ifdef DISCORD_ENABLED
 	discordRPC.Init();
+	m_flLastDiscordRPCUpdate = 0;
 #endif
 
 	PatchVphysicsSaveRestore();
@@ -1618,6 +1626,54 @@ void CHLClient::HudUpdate( bool bActive )
 	// I don't think this is necessary any longer, but I will leave it until
 	// I can check into this further.
 	C_BaseTempEntity::CheckDynamicTempEnts();
+
+#ifdef DISCORD_ENABLED
+	float curtime = gpGlobals->curtime;
+
+	if ((curtime > m_flLastDiscordRPCUpdate))
+	{
+		if (engine->IsInGame())
+		{
+			const char* pServerName = "Loading....";
+			int iCur = UTIL_GetPlayerCount();
+			int iMax = engine->GetMaxClients();
+
+			if (GetClientModeNormal() && GetClientModeNormal()->GetServerHostName()[0])
+			{
+				pServerName = GetClientModeNormal()->GetServerHostName();
+			}
+
+			const char* pszFilename = engine->GetLevelName();
+			char mapname[256];
+
+			// remove the text 'maps/' and '.bsp' from the file name to get the map name
+			const char* str = Q_strstr(pszFilename, "maps");
+			if (str)
+			{
+				Q_strncpy(mapname, str + 5, sizeof(mapname) - 1);	// maps + \\ = 5
+			}
+			else
+			{
+				Q_strncpy(mapname, pszFilename, sizeof(mapname) - 1);
+			}
+
+			char* ext = Q_strstr(mapname, ".bsp");
+			if (ext)
+			{
+				*ext = 0;
+			}
+
+			discordRPC.SetStatus_Game(mapname, pServerName, iCur, iMax);
+		}
+		else
+		{
+			discordRPC.SetStatus_Menu();
+		}
+
+		//DevMsg("DISCORD UPDATE %f\n", curtime);
+		m_flLastDiscordRPCUpdate = (curtime + 0.5f);
+	}
+#endif
 
 #ifdef SIXENSE
 	// If we're not connected, update sixense so we can move the mouse cursor when in the menus
@@ -1924,10 +1980,6 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 	ParticleMgr()->LevelInit();
 
 	hudlcd->SetGlobalStat( "(mapname)", pMapName );
-	
-#ifdef DISCORD_ENABLED
-	discordRPC.SetStatus_Game( pMapName );
-#endif
 
 	C_BaseTempEntity::ClearDynamicTempEnts();
 	clienteffects->Flush();
@@ -2064,6 +2116,9 @@ void CHLClient::LevelInitPostEntity( )
 	IGameSystem::LevelInitPostEntityAllSystems();
 	C_PhysPropClientside::RecreateAll();
 	internalCenterPrint->Clear();
+#ifdef DISCORD_ENABLED
+	m_flLastDiscordRPCUpdate = 0;
+#endif
 
 	if (cl_backgroundmap_music.GetBool() && engine->IsLevelMainMenuBackground())
 	{
@@ -2146,7 +2201,7 @@ void CHLClient::LevelShutdown( void )
 	gHUD.LevelShutdown();
 
 #ifdef DISCORD_ENABLED
-	discordRPC.SetStatus_Menu();
+	m_flLastDiscordRPCUpdate = 0;
 #endif
 
 	internalCenterPrint->Clear();
