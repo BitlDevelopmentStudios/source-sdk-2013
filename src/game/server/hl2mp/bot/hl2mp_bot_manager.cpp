@@ -23,7 +23,7 @@ ConVar hl2mp_bot_auto_vacate( "hl2mp_bot_auto_vacate", "1", FCVAR_NONE, "If nonz
 ConVar hl2mp_bot_offline_practice( "hl2mp_bot_offline_practice", "0", FCVAR_NONE, "Tells the server that it is in offline practice mode." );
 ConVar hl2mp_bot_melee_only( "hl2mp_bot_melee_only", "0", FCVAR_GAMEDLL, "If nonzero, HL2MPBots will only use melee weapons" );
 ConVar hl2mp_bot_gravgun_only( "hl2mp_bot_gravgun_only", "0", FCVAR_GAMEDLL, "If nonzero, HL2MPBots will only use gravity gun weapon" );
-ConVar hl2mp_bot_waitforspec("hl2mp_bot_waitforspec", "1", FCVAR_NONE, "If nonzero, new bots won't spawn unless there's already more in the spectator team.");
+ConVar hl2mp_bot_waitforspec("hl2mp_bot_waitforspec", "0", FCVAR_NONE, "If nonzero, new bots won't spawn unless there's already more in the spectator team.");
 
 extern const char *GetRandomBotName( void );
 extern void CreateBotName( CHL2MPBot::DifficultyType skill, char* pBuffer, int iBufferSize );
@@ -309,8 +309,17 @@ void CHL2MPBotManager::MaintainBotQuota()
 		bSpectators = ((nHL2MPBotsOnSpectators > 0));
 	}
 
+	bool bFull = true;
+
+	if (nHL2MPBots < (desiredBotCount + 1))
+	{
+		bFull = false;
+	}
+
 	// add bots if necessary
-	if (desiredBotCount > 0 && bSpectators)
+	if ((desiredBotCount > 0) && 
+		!bFull &&
+		bSpectators)
 	{
 		CHL2MPBot *pBot = GetAvailableBotFromPool();
 		if (pBot == NULL)

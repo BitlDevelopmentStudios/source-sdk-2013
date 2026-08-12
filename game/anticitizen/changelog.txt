@@ -16,6 +16,7 @@ Alpha v3:
 - Improved Discord Rich Presence support.
 	- If connected to a server, the game will now list the server name, plus the current and maximum amount of players in the server (ala Open Fortress and TF2C).
 	- The game will now send RPC updates every 0.5 seconds, meaning that there will be a maximum of 2 requests per second. This is far below the global Discord rate limit of 50 requests per second.
+- Improved bot quota behavior.
 - Overwatch Female Assassin overhauls:
 	- Dual Pistols:
 		- Each pistol now has their own accuracy penalty that applies the next time the pistol is shot.
