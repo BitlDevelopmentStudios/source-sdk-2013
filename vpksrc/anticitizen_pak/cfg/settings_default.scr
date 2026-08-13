@@ -32,7 +32,7 @@
 
 
 // Half-Life Server Configuration Layout Script (stores last settings chosen, too)
-// File generated:  Wed Aug 12 05:09:51 PM
+// File generated:  Fri Apr 02 07:04:35 PM
 //
 //
 // Cvar	-	Setting
@@ -45,7 +45,7 @@ DESCRIPTION SERVER_OPTIONS
 	{
 		"#Valve_Hostname"
 		{ STRING }
-		{ "Bitl's Server" }
+		{ "ANTICITIZEN ONE" }
 	}
 
 	"sv_password"
@@ -62,18 +62,25 @@ DESCRIPTION SERVER_OPTIONS
 		{ "7" }
 	}
 
+	"sv_password"
+	{
+		"#Valve_Server_Password"
+		{ STRING }
+		{ "" }
+	}
+	
 	"hl2mp_bot_quota"
 	{
 		"#Cstrike_Bot_NumberOfBots"
 		{ NUMBER 0 6 }
-		{ "6" }
+		{ "0" }
 	}
-
+	
 	"hl2mp_bot_difficulty"
 	{
 		"#Cstrike_Bot_Difficulty"
 		{
-			LIST
+			LIST	
 			"#Cstrike_Bot_DifficultyMixed" "-1"
 			"#Cstrike_Bot_Difficulty0" "0"
 			"#Cstrike_Bot_Difficulty1" "1"
@@ -103,30 +110,29 @@ DESCRIPTION SERVER_OPTIONS
 		{ BOOL }
 		{ "0" }
 	}
-
+	
 	"mp_forcerespawn"
 	{
 		"#Valve_Force_Respawn"
 		{ BOOL }
 		{ "0" }
 	}
-
+	
 	"mp_disable_respawn_times"
 	{
 		"#Serverfinder_RespawnTimes_Instant"
 		{ BOOL }
 		{ "0" }
 	}
-
+	
 	"sv_gordon_movement_system"
 	{
 		"#anticitizen_freeman_movement"
 		{
-			LIST
+			LIST	
 			"#anticitizen_freeman_movement_07" "0"
 			"#anticitizen_freeman_movement_06" "1"
 		}
 		{ "0" }
 	}
-
 }
