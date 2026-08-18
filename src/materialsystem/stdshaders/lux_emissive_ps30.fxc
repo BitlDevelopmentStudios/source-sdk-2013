@@ -1,7 +1,7 @@
 //===================== File of the LUX Shader Project =====================//
 //
 //	Initial D.	:	27.12.2023 DMY
-//	Last Change :	05.03.2026 DMY
+//	Last Change :	18.08.2026 DMY
 //
 //==========================================================================//
 
@@ -127,7 +127,7 @@ sampler Sampler_SelfIllum		: register(s3);
 sampler Sampler_RealBaseTexture : register(s5);
 
 // c32
-const float3 g_f3MinimumLightTint : register(c32);
+const float3 g_f3MinimumLightTint : register(REGISTER_FLOAT_032);
 
 // c33, c34 used for the Detail Texture
 
@@ -138,6 +138,7 @@ const float4 cEmissiveBlendTint			: register(REGISTER_FLOAT_036);
 // c37 EmissiveBlend Scroll Vector
 const float4 cEmissiveBlendControls		: register(REGISTER_FLOAT_037);
 #define	g_f2EmissiveScrollVector			(cEmissiveBlendControls.xy)
+#define g_f2EmissiveFlowStrength			(cEmissiveBlendControls.zw)
 
 //==========================================================================//
 //	PS Input
@@ -197,7 +198,7 @@ float4 main(PS_INPUT i) : COLOR
 			// Time is now precomputed into the ScrollVector
 			// Instead of doing it every Pixel every Frame..
 			float2 f2FlowValue = tex2D(Sampler_FlowTexture, i.EmissiveTexCoords.xy).rg;
-			float2 f2EmissiveUV = f2FlowValue + g_f2EmissiveScrollVector;
+			float2 f2EmissiveUV = f2FlowValue * g_f2EmissiveFlowStrength + g_f2EmissiveScrollVector;
 		#endif
 
 		// Emissive Texture
