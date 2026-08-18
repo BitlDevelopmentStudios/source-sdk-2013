@@ -1,4 +1,5 @@
 Alpha v3:
+- Updated LUX shaders.
 - Added a basic server admin command module for ANTICITIZEN ONE.
 - Gordon Freeman's death camera has been set to the one used in Half-Life 2 and Episodes by default. This can be disabled with the cl_freeman_hl2deathcamera ConVar.
 - Added a new map: hunt_lighthouse! A map that takes place on a lone Rebel base on the coast, watched over by a massive lighthouse. This map takes place in the same area as the coast lighthouse Gunship battle in Half-Life 2.
