@@ -2,7 +2,7 @@
 //
 //  Original D. :	07.02.2023 DMY - VLG Simple Earliest Date
 //	Initial D.	:	06.05.2026 DMY
-//	Last Change :	18.05.2026 DMY
+//	Last Change :	06.08.2026 DMY
 //
 //==========================================================================//
 
@@ -144,7 +144,8 @@
 	#define g_f2ScreenHalfTexel (cScreenSizes.zw)
 
 	const float4 cSSAOControls		: register(LUX_PS_FLOAT_ASW_SSAOCONTROLS);
-	#define g_f1SSAOStrength (cSSAOControls.x)
+	#define g_f3SSAOTint	 (cSSAOControls.rgb)
+	#define g_f1SSAOStrength (cSSAOControls.w)
 
 	sampler Sampler_SSAO			: register(s11);
 #endif
@@ -578,10 +579,16 @@ float4 main(PS_INPUT i) : COLOR
 	// Make it less strong if that is desired
 	f1SSAO = lerp(1.0f, f1SSAO, g_f1SSAOStrength);
 
-	f3CombinedTerms *= f1SSAO;
+	f3CombinedTerms *= lerp(g_f3SSAOTint, 1.0f, f1SSAO);
 #endif
 
-	float f1Alpha = f4BaseTexture.a; // Using $BaseTexture Alpha for transparency & translucency Effects
+	// Using $BaseTexture Alpha for transparency & translucency Effects
+	float f1Alpha = f4BaseTexture.a;
+
+#if defined(ASWSDK)
+	if (g_bNoOpacity)
+		f1Alpha = 1.0f;
+#endif
 	
 	// Needed for Hammer's Shaded Texture Polygons View
 	// NOTE: This will look wrong with Reflections, but Hammer doesn't have Reflections

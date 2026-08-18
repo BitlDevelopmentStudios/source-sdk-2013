@@ -1,7 +1,7 @@
 //===================== File of the LUX Shader Project =====================//
 //
 //	Initial D.	:	20.01.2023 DMY
-//	Last Change :	23.05.2026 DMY
+//	Last Change :	06.08.2026 DMY
 //
 //==========================================================================//
 
@@ -16,7 +16,11 @@
 #include "lux_model_vs30.inc"
 #include "lux_model_simplified_vs30.inc"
 #include "lux_unlitgeneric_ps30.inc"
-#include "lux_vertexlitgeneric_flashlight_ps30.inc"
+#ifdef ASWSDK
+	#include "lux_vertexlitgeneric_asw_flashlight_ps30.inc"
+#else
+	#include "lux_vertexlitgeneric_flashlight_ps30.inc"
+#endif
 
 // Register Map for this Shader
 #include "../lux_unlitgeneric_registermap.h"
@@ -103,10 +107,15 @@ void UG_SetupSSAODrawNormalVars(SSAODrawNormalPass_Vars_t& SSAODrawNormalVars)
 SHADER_INIT_PARAMS()
 {
 	if (IsDefined(DistanceAlpha) && GetBool(DistanceAlpha))
-		SetBool(ReceiveProjectedTextures, 0);
+		SetBool(ReceiveProjectedTextures, false);
 	else
-		// Usually don't want it!
-		DefaultInt(ReceiveProjectedTextures, 0);
+	{
+		// UnlitGeneric by default cannot receive proj. Textures.
+		// However our Parameter is supposed to act like a bool and other Shaders expect a default Value of 'true'
+		// This is now set to *2* by CBaseShader so we can identify whether it was set in the VMT or not
+		if(GetInt(ReceiveProjectedTextures) == 2)
+			SetBool(ReceiveProjectedTextures, false);
+	}
 
 	DefaultFloat(HDRColorScale, 1.0f);
 
@@ -259,7 +268,6 @@ SHADER_INIT
 		else
 		{
 			// Can only Output Alpha if one of these Blendmodes
-			int nDetailBlendMode = GetInt(DetailBlendMode);
 			if (nDetailBlendMode != 3 && nDetailBlendMode != 8 && nDetailBlendMode != 9)
 			{
 				ClearFlag(MATERIAL_VAR_ALPHATEST);
@@ -367,7 +375,7 @@ SHADER_DRAW
 		//==========================================================================//
 		unsigned int nFlags = VERTEX_POSITION | VERTEX_FORMAT_COMPRESSED;
 
-		if (bHasEnvMap)
+		if (bHasEnvMap || bProjTex)
 			nFlags |= VERTEX_NORMAL;
 
 		if (bHasVertexRGBA)
@@ -382,7 +390,7 @@ SHADER_DRAW
 			nTexCoords = 2;
 
 		int pTexCoordDim[3] = { 2, 2, 3 };
-		int nUserDataSize = bProjTex ? 4 : 0; // Not technically required, we don't use the Tangents.
+		int nUserDataSize = (bProjTex || bHasEnvMap) ? 4 : 0; // Not technically required, we don't use the Tangents.
 
 		pShaderShadow->VertexShaderVertexFormat(nFlags, nTexCoords, pTexCoordDim, nUserDataSize);
 
@@ -424,12 +432,22 @@ SHADER_DRAW
 			SET_STATIC_VERTEX_SHADER(lux_model_simplified_vs30);
 
 			// No Normals so LightCombo 0
-			DECLARE_STATIC_PIXEL_SHADER(lux_vertexlitgeneric_flashlight_ps30);
-			SET_STATIC_PIXEL_SHADER_COMBO(LIGHTCOMBO, 0);
-			SET_STATIC_PIXEL_SHADER_COMBO(WRINKLEMAPS, 0);
-			SET_STATIC_PIXEL_SHADER_COMBO(XBYBASEALPHA, bBlendTintByBaseAlpha + 2 * bDesaturateWithBaseAlpha);
-			SET_STATIC_PIXEL_SHADER_COMBO(DETAILTEXTURE, bHasDetailTexture);
-			SET_STATIC_PIXEL_SHADER(lux_vertexlitgeneric_flashlight_ps30);
+			#ifdef ASWSDK
+				DECLARE_STATIC_PIXEL_SHADER(lux_vertexlitgeneric_asw_flashlight_ps30);
+				SET_STATIC_PIXEL_SHADER_COMBO(LIGHTCOMBO, 0);
+				SET_STATIC_PIXEL_SHADER_COMBO(WRINKLEMAPS, 0);
+				SET_STATIC_PIXEL_SHADER_COMBO(XBYBASEALPHA, bBlendTintByBaseAlpha + 2 * bDesaturateWithBaseAlpha);
+				SET_STATIC_PIXEL_SHADER_COMBO(DETAILTEXTURE, bHasDetailTexture);
+				SET_STATIC_PIXEL_SHADER_COMBO(LIGHTWARPTEXTURE, 0);
+				SET_STATIC_PIXEL_SHADER(lux_vertexlitgeneric_asw_flashlight_ps30);
+			#else
+				DECLARE_STATIC_PIXEL_SHADER(lux_vertexlitgeneric_flashlight_ps30);
+				SET_STATIC_PIXEL_SHADER_COMBO(LIGHTCOMBO, 0);
+				SET_STATIC_PIXEL_SHADER_COMBO(WRINKLEMAPS, 0);
+				SET_STATIC_PIXEL_SHADER_COMBO(XBYBASEALPHA, bBlendTintByBaseAlpha + 2 * bDesaturateWithBaseAlpha);
+				SET_STATIC_PIXEL_SHADER_COMBO(DETAILTEXTURE, bHasDetailTexture);
+				SET_STATIC_PIXEL_SHADER(lux_vertexlitgeneric_flashlight_ps30);
+			#endif
 		}
 		else
 		{
@@ -1023,7 +1041,12 @@ SHADER_DRAW
 
 		// Binds Textures and sends Flashlight Constants
 		// Returns bFlashlightShadows
-		bool bFlashlightShadows = SetupFlashlight();
+		#ifdef ASWSDK
+			bool bUberLight = false;
+			bool bProjTexShadows = SetupFlashlight(&bUberLight);
+		#else
+			bool bProjTexShadows = SetupFlashlight();
+		#endif
 
 		//==========================================================================//
 		// Setup Constant Registers
@@ -1095,13 +1118,24 @@ SHADER_DRAW
 		// Prepare boolean array, yes we need to use BOOL
 		BOOL BBools[REGISTER_BOOL_MAX] = { false };
 
+#if defined(ASWSDK)
+		// ASW Shaders output only $Alpha when not using Opacity. Instead of Opacity * $Alpha
+		// In SFM the later causes Issues with the Model Browser, as BaseAlpha could be something other than Opacity.
+		// NOTE: BT_ADD does not provide Opacity!! 
+		BBools[LUX_PS_BOOL_ASW_NOOPACITY] = (bIsFullyOpaque || nBlendType == BT_ADD);
+#endif
+
 		// b3
-		if(HasFlag(MATERIAL_VAR_VERTEXALPHA))
+		if (HasFlag(MATERIAL_VAR_VERTEXALPHA))
 			BBools[UNLITGENERIC_BOOL_VERTEXALPHA] = true;
+		else
+			BBools[UNLITGENERIC_BOOL_VERTEXALPHA] = false;
 
 		// b12
 		if(HasFlag(MATERIAL_VAR_VERTEXCOLOR))
 			BBools[LUX_PS_BOOL_VERTEXCOLOR] = true;
+		else 
+			BBools[LUX_PS_BOOL_VERTEXCOLOR] = false;
 
 		// b13, b14, b15
 #if FIXED_COMMANDBUFFER
@@ -1126,9 +1160,16 @@ SHADER_DRAW
 			SET_DYNAMIC_VERTEX_SHADER_COMBO(COMPRESSION, HasVertexCompression());
 			SET_DYNAMIC_VERTEX_SHADER(lux_model_simplified_vs30);
 
-			DECLARE_DYNAMIC_PIXEL_SHADER(lux_vertexlitgeneric_flashlight_ps30);
-			SET_DYNAMIC_PIXEL_SHADER_COMBO(PROJTEXSHADOWS, bFlashlightShadows);
-			SET_DYNAMIC_PIXEL_SHADER(lux_vertexlitgeneric_flashlight_ps30);
+			#ifdef ASWSDK
+				DECLARE_DYNAMIC_PIXEL_SHADER(lux_vertexlitgeneric_asw_flashlight_ps30);
+				SET_DYNAMIC_PIXEL_SHADER_COMBO(UBERLIGHT, bUberLight);
+				SET_DYNAMIC_PIXEL_SHADER_COMBO(PROJTEXSHADOWS, bProjTexShadows);
+				SET_DYNAMIC_PIXEL_SHADER(lux_vertexlitgeneric_asw_flashlight_ps30);			
+			#else
+				DECLARE_DYNAMIC_PIXEL_SHADER(lux_vertexlitgeneric_flashlight_ps30);
+				SET_DYNAMIC_PIXEL_SHADER_COMBO(PROJTEXSHADOWS, bProjTexShadows);
+				SET_DYNAMIC_PIXEL_SHADER(lux_vertexlitgeneric_flashlight_ps30);
+			#endif
 		}
 		else
 		{

@@ -1,7 +1,7 @@
 //===================== File of the LUX Shader Project =====================//
 //
 //	Initial D.	:	20.01.2023 DMY
-//	Last Change :	 30.01.2026 DMY
+//	Last Change :	06.08.2026 DMY
 //
 //	Every Shader should include this File!
 //
@@ -46,6 +46,27 @@
 
 // Macro Register Map
 #include "lux_registermap_cpp.h"
+
+#ifdef SFM_COMPATIBILITY
+// ASW ( see RenderParmVector_t in public/renderparm.h )
+// 0 = Global Light Direction
+// 1 = FOW Mins
+// 2 = FOW Maxs
+// 3 = Wind Direction
+
+// SFM
+enum RenderParmVector_SFM_t
+{
+	// ~0x10049AAC
+	// Used in sfm_ambientocclusion_ps30.vcs as 'g_vSphereSamples' on c11, size 16
+	// NOTE: Useless to other Shaders, not set to anything while rendering
+	VECTOR_RENDERPARM_SSAOSPHERESAMPLES = 4,
+
+	// ~0x1003A5B2
+	// Used on ^ Phong Draw Function to get SSAO Tint
+	VECTOR_RENDERPARM_SSAOTINT = 5,
+};
+#endif
 
 //==========================================================================//
 // Available DetailBlendmodes
@@ -162,7 +183,6 @@ struct Vars_NormalMap_t
 	int m_nBumpMap;
 	int m_nBumpFrame;
 	int m_nBumpTransform;
-	int m_nNormalTexture;
 	int m_nSSBump;
 	int m_nSSBumpMathFix;
 	int m_nLightWarpTexture;
@@ -178,12 +198,11 @@ struct Vars_NormalMap_t
 		m_nBumpMap = nBumpMap;
 		m_nBumpFrame = nBumpMap + 1;
 		m_nBumpTransform = nBumpMap + 2;
-		m_nNormalTexture = nBumpMap + 3;
-		m_nSSBump = nBumpMap + 4;
-		m_nSSBumpMathFix = nBumpMap + 5;
-		m_nLightWarpTexture = nBumpMap + 6;
-		m_nLightWarpTextureFrame = nBumpMap + 7;
-		m_nLightWarpNoBump = nBumpMap + 8;	
+		m_nSSBump = nBumpMap + 3;
+		m_nSSBumpMathFix = nBumpMap + 4;
+		m_nLightWarpTexture = nBumpMap + 5;
+		m_nLightWarpTextureFrame = nBumpMap + 6;
+		m_nLightWarpNoBump = nBumpMap + 7;
 	}
 };
 
@@ -666,7 +685,8 @@ SHADER_PARAM(EmissiveBlendScrollVector, SHADER_PARAM_TYPE_VEC2,			"", "A matrix 
 SHADER_PARAM(EmissiveBlendStrength,		SHADER_PARAM_TYPE_FLOAT,		"", "Controls the opacity of the effect. Ranges from 0 to 1; at 0, the effect is invisible, at 1, it is at full strength.")\
 SHADER_PARAM(EmissiveBlendTexture,		SHADER_PARAM_TYPE_TEXTURE,		"", "[RGB] The Texture that scrolls by based on the flowmap and the scrolling speed parameter. Not mapped to a UV.")\
 SHADER_PARAM(EmissiveBlendTint,			SHADER_PARAM_TYPE_COLOR,		"", "Color tint of the effect.")\
-SHADER_PARAM(EmissiveBlendFlowTexture,	SHADER_PARAM_TYPE_TEXTURE,		"", "[RGB] Flowmap used for the $emissiveblendTexture.")\
+SHADER_PARAM(EmissiveBlendFlowTexture,	SHADER_PARAM_TYPE_TEXTURE,		"", "[RG] Flowmap used for the $EmissiveBlendTexture.\n[B] Nothing.\n[A] Nothing.")\
+SHADER_PARAM(EmissiveBlendFlowStrength,	SHADER_PARAM_TYPE_VEC2,			"",	"Intensity Value for the Values derived from $EmissiveBlendFlowTexture.")\
 SHADER_PARAM(EmissiveBlend_NoFlowTransform, SHADER_PARAM_TYPE_MATRIX,	"", "Only usable without flowTexture. Uses actual UV for Emission Texture.")\
 SHADER_PARAM(Time,						SHADER_PARAM_TYPE_FLOAT,		"", "Allows you to hook a custom time based variable to the shader.")\
 SHADER_PARAM(MinimumLightAdditivePass,	SHADER_PARAM_TYPE_BOOL,			"", "Enables Minimum Light Additive Pass.")\

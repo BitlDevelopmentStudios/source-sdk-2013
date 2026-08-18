@@ -1,7 +1,7 @@
 //===================== File of the LUX Shader Project =====================//
 //
 //	Initial D.	:	24.01.2023 DMY
-//	Last Change :	 30.01.2026 DMY
+//	Last Change :	06.08.2026 DMY
 //
 //==========================================================================//
 
@@ -155,6 +155,9 @@ const float4 cDefaultControls							: register(LUX_PS_FLOAT_DEFAULTCONTROLS);
 // Using Macros to then give each Slots a new Name whenever it is needed
 const bool		Bools[16]						: register(b0);
 
+#if defined(ASWSDK)
+#define				g_bNoOpacity				Bools[LUX_PS_BOOL_ASW_NOOPACITY]
+#endif
 
 #define				g_bVertexColor				Bools[LUX_PS_BOOL_VERTEXCOLOR]
 
@@ -312,13 +315,20 @@ float ComputeRangeFogFactor(const float3 f3WorldPos, const float f1Depth)
 		f1DistanceFactor = f1Depth;	
 	}
 
-	// Reciprocal of the Fog Range.
-	// This formats the Distance [Inches] to Linear Values [0..1] for the Lerp
-	// To ensure not going > 1.0f, Saturate() is applied
+	// Apply Reciprocal of the Fog Range to squeeze this into a linear Range
 	f1DistanceFactor *= g_f1FogOORange;
-	f1FogFactor = saturate(min(g_f1FogMaxDensity, f1DistanceFactor - g_f1FogEndOverRange));
 
-	// Stock-Consistency :
+#if defined(ASWSDK)
+	// ASW does FogFactor = FogEndOverRange + (Distance * Range)
+	f1FogFactor = min(g_f1FogMaxDensity, saturate(g_f1FogEndOverRange + f1DistanceFactor));
+#else
+	// SDK does FogFactor = (Distance * Range) - FogEndOverRange
+	// TODO: The Saturate here should probably only apply to the actual FogRange since it could be <= 0 and >= 1
+	// That shouldn't be the case for the FogDensity
+	f1FogFactor = saturate(min(g_f1FogMaxDensity, f1DistanceFactor - g_f1FogEndOverRange));
+#endif
+
+	// Stock-Consistency:
 	// "squaring the factor will get the middle range mixing closer to hardware fog" - common_ps_fxc.h
 	f1FogFactor *= f1FogFactor;
 
