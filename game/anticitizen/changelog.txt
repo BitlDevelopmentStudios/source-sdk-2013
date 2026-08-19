@@ -20,7 +20,7 @@ Alpha v3:
 - Improved bot quota behavior.
 - Added listen server options.
 - "disablelives" is now "sv_disablelives" and is no longer a cheat.
-- Added the ability to set the life count for all classes.
+- Added the ability to set the life count for all classes (Except Freeman).
 - Fixed bugs with Freeman's health bar.
 - Overwatch Female Assassin overhauls:
 	- Dual Pistols:
