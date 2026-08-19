@@ -989,7 +989,8 @@ void CHL2MP_Player::ReplenishTroopAmmoAndHealth(void)
 	CBasePlayer::GiveAmmo((AMMO_TROOP_MAX_BUCKSHOT / 2), "Buckshot");
 }
 
-ConVar disablelives("disablelives", "0", FCVAR_CHEAT);
+ConVar sv_disablelives("sv_disablelives", "0", FCVAR_NOTIFY);
+ConVar sv_lifecount_override("sv_lifecount_override", "0", FCVAR_NOTIFY);
 
 void CHL2MP_Player::LoadClass(int iClass)
 {
@@ -1052,13 +1053,21 @@ void CHL2MP_Player::LoadClass(int iClass)
 			SetMaxHealth(pPlayerClassInfo.iHealth);
 		}
 
-		if (!disablelives.GetBool())
+		if (!sv_disablelives.GetBool())
 		{
 			if ((HL2MPRules()->GetState() > STATE_PREROUND) && m_bInitialSpawn)
 			{
+				// we have lives.
 				if (pPlayerClassInfo.iLives > 0)
 				{
-					SetLifeCount(pPlayerClassInfo.iLives);
+					if (sv_lifecount_override.GetBool() && !pPlayerClassInfo.bLivesNoOverride)
+					{
+						SetLifeCount(sv_lifecount_override.GetInt());
+					}
+					else
+					{
+						SetLifeCount(pPlayerClassInfo.iLives);
+					}
 				}
 			}
 		}

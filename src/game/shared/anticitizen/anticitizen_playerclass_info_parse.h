@@ -105,6 +105,7 @@ public:
 	bool					bTwoHandedWeaponAnims;
 	bool					bOverlay;
 	bool					bHasEyeEffect;
+	bool					bLivesNoOverride;
 
 	float					flNormSpeed;
 	float					flSprintSpeed;

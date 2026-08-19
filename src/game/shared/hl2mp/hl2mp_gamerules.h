@@ -206,6 +206,8 @@ public:
 
 	float GetTimeSinceGameStart() { return (gpGlobals->curtime - m_flTimeSinceGameStart); }
 
+	bool HasRoundStarted() { return (m_flGameStartTime < gpGlobals->curtime); }
+
 	int GetTimerState() { return m_iTimerType; }
 
 	void Announce(bool gameend = false);

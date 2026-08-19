@@ -19,6 +19,9 @@ Alpha v3:
 	- The game will now send RPC updates every 0.5 seconds, meaning that there will be a maximum of 2 requests per second. This is far below the global Discord rate limit of 50 requests per second.
 - Improved bot quota behavior.
 - Added listen server options.
+- "disablelives" is now "sv_disablelives" and is no longer a cheat.
+- Added the ability to set the life count for all classes.
+- Fixed bugs with Freeman's health bar.
 - Overwatch Female Assassin overhauls:
 	- Dual Pistols:
 		- Each pistol now has their own accuracy penalty that applies the next time the pistol is shot.

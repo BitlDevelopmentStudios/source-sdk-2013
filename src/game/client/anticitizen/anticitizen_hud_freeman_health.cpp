@@ -109,8 +109,9 @@ void CHudFreemanHealth::Paint()
 		// get bar chunks
 		int chunkCount = m_flBarWidth / (m_flBarChunkWidth + m_flBarChunkGap);
 		int enabledChunks = (chunkCount * HL2MPRules()->GetFreemanHealthFraction()); //+ 0.5f);
+		bool bFreemanDead = ((HL2MPRules()->GetFreemanHealth() == 0) || !HL2MPRules()->IsFreemanAlive());
 
-		if (!HL2MPRules()->IsFreemanAlive())
+		if (bFreemanDead)
 		{
 			enabledChunks = chunkCount;
 		}
@@ -136,7 +137,7 @@ void CHudFreemanHealth::Paint()
 			surface()->DrawPrintText(L"TARGET VITALS", wcslen(L"TARGET VITALS"));
 		}
 
-		if (HL2MPRules()->IsFreemanAlive())
+		if (!bFreemanDead)
 		{
 			// render the health bar
 

@@ -388,7 +388,7 @@ void CHL2MPRules::PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &inf
 	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pVictim);
 	if (pHL2MPPlayer)
 	{
-		if (!pHL2MPPlayer->m_bInitialSpawn && pHL2MPPlayer->GetLifeCount() >= 0)
+		if (!pHL2MPPlayer->m_bInitialSpawn && pHL2MPPlayer->GetLifeCount() > 0)
 		{
 			pHL2MPPlayer->SetLifeCount(pHL2MPPlayer->GetLifeCount() - 1);
 			DevMsg("LIVES: %i\n", pHL2MPPlayer->GetLifeCount());
@@ -400,13 +400,13 @@ void CHL2MPRules::PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &inf
 }
 
 #ifndef CLIENT_DLL
-extern ConVar disablelives;
+extern ConVar sv_disablelives;
 #endif
 
 int CHL2MPRules::GetRemainingSoldierCount(void)
 {
 #ifndef  CLIENT_DLL
-	if (disablelives.GetBool())
+	if (sv_disablelives.GetBool())
 		return 999;
 
 	if ((m_iRoundState == STATE_PREROUND) || (m_iRoundState == STATE_COMPLETION))
@@ -443,6 +443,12 @@ int CHL2MPRules::GetRemainingSoldierCount(void)
 void CHL2MPRules::CheckLastMemberLeft(void)
 {
 #ifndef CLIENT_DLL
+	if (m_iRoundState != STATE_PLAYING)
+		return;
+
+	if (!HasRoundStarted())
+		return;
+
 	if (GetRemainingSoldierCount() == 1 && !m_bLastSquadMemberAnnounced)
 	{
 		CTeam* pCombine = g_Teams[TEAM_COMBINE];
@@ -905,6 +911,9 @@ void CHL2MPRules::Think( void )
 				if (m_bStartedStartClock && (m_flGameStartTime < gpGlobals->curtime))
 				{
 					m_iRoundState = STATE_PLAYING;
+					// add a delay that is overrided by the below code.
+					// This is to fix a bug where CheckLastMemberLeft() is called too early.
+					m_flGameStartTime = gpGlobals->curtime + 0.15f;
 
 					if (!pFreeman)
 					{
@@ -945,7 +954,7 @@ void CHL2MPRules::Think( void )
 
 		case STATE_PLAYING:
 		{
-			if (m_flGameStartTime < gpGlobals->curtime)
+			if (HasRoundStarted())
 			{
 				if (!m_bStrippedFlags)
 				{

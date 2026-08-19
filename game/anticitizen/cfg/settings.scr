@@ -32,7 +32,7 @@
 
 
 // Half-Life Server Configuration Layout Script (stores last settings chosen, too)
-// File generated:  Wed Aug 12 05:09:51 PM
+// File generated:  Tue Aug 18 11:46:33 PM
 //
 //
 // Cvar	-	Setting
@@ -126,6 +126,20 @@ DESCRIPTION SERVER_OPTIONS
 			"#anticitizen_freeman_movement_07" "0"
 			"#anticitizen_freeman_movement_06" "1"
 		}
+		{ "0" }
+	}
+
+	"sv_lifecount_override"
+	{
+		"#anticitizen_lifecount"
+		{ NUMBER 0 30 }
+		{ "0" }
+	}
+
+	"sv_disablelives"
+	{
+		"#anticitizen_disable_lives"
+		{ BOOL }
 		{ "0" }
 	}
 
