@@ -1,8 +1,0 @@
-"ServerFinderConfig"
-{
-	"map"		"hunt_lighthouse"
-	"israndommap"		"1"
-	"maxplayers"		"7"
-	"MaxPing"		"0"
-	"RespawnTimes"		"0"
-}

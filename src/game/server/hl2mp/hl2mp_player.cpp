@@ -990,7 +990,34 @@ void CHL2MP_Player::ReplenishTroopAmmoAndHealth(void)
 }
 
 ConVar sv_disablelives("sv_disablelives", "0", FCVAR_NOTIFY);
-ConVar sv_lifecount_override("sv_lifecount_override", "0", FCVAR_NOTIFY);
+
+ConVar sv_lifecount_metropolice_override("sv_lifecount_metropolice_override", "0", FCVAR_NOTIFY);
+ConVar sv_lifecount_combine_soldier_override("sv_lifecount_combine_soldier_override", "0", FCVAR_NOTIFY);
+ConVar sv_lifecount_combine_shotgunner_override("sv_lifecount_combine_shotgunner_override", "0", FCVAR_NOTIFY);
+ConVar sv_lifecount_combine_elite_override("sv_lifecount_combine_elite_override", "0", FCVAR_NOTIFY);
+ConVar sv_lifecount_combine_assassin_override("sv_lifecount_combine_assassin_override", "0", FCVAR_NOTIFY);
+ConVar sv_lifecount_freeman_override("sv_lifecount_freeman_override", "0", FCVAR_NOTIFY);
+
+int GetOverrideCvarValueForClassIndex(int iClass)
+{
+	switch (iClass)
+	{
+		case CLS_METROPOLICE:
+			return sv_lifecount_metropolice_override.GetInt();
+		case CLS_COMBINE_SOLDIER:
+			return sv_lifecount_combine_soldier_override.GetInt();
+		case CLS_COMBINE_SHOTGUNNER:
+			return sv_lifecount_combine_shotgunner_override.GetInt();
+		case CLS_COMBINE_ELITE:
+			return sv_lifecount_combine_elite_override.GetInt();
+		case CLS_COMBINE_ASSASSIN:
+			return sv_lifecount_combine_assassin_override.GetInt();
+		case CLS_FREEMAN:
+			return sv_lifecount_freeman_override.GetInt();
+	}
+
+	return -1;
+}
 
 void CHL2MP_Player::LoadClass(int iClass)
 {
@@ -1060,9 +1087,9 @@ void CHL2MP_Player::LoadClass(int iClass)
 				// we have lives.
 				if (pPlayerClassInfo.iLives > 0)
 				{
-					if (sv_lifecount_override.GetBool() && !pPlayerClassInfo.bLivesNoOverride)
+					if (GetOverrideCvarValueForClassIndex(iClass) > 0)
 					{
-						SetLifeCount(sv_lifecount_override.GetInt());
+						SetLifeCount(GetOverrideCvarValueForClassIndex(iClass));
 					}
 					else
 					{

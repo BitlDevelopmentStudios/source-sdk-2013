@@ -89,6 +89,20 @@ DESCRIPTION SERVER_OPTIONS
 		}
 		{ "-1" }
 	}
+	
+	"sv_startwaitime"
+	{
+		"#anticitizen_waitime_round"
+		{ NUMBER 0 90 }
+		{ "30" }
+	}
+	
+	"sv_startplaywaitime"
+	{
+		"#anticitizen_waitime_start"
+		{ NUMBER 0 90 }
+		{ "5" }
+	}
 
 	"mp_weaponstay"
 	{
@@ -136,10 +150,45 @@ DESCRIPTION SERVER_OPTIONS
 		{ "0" }
 	}
 	
-	"sv_lifecount_override"
+	"sv_lifecount_metropolice_override"
 	{
-		"#anticitizen_lifecount"
-		{ NUMBER 0 9 }
+		"#anticitizen_metropolice_lifecount"
+		{ NUMBER 0 16 }
+		{ "0" }
+	}
+	
+	"sv_lifecount_combine_soldier_override"
+	{
+		"#anticitizen_combine_soldier_lifecount"
+		{ NUMBER 0 16 }
+		{ "0" }
+	}
+	
+	"sv_lifecount_combine_shotgunner_override"
+	{
+		"#anticitizen_combine_shotgunner_lifecount"
+		{ NUMBER 0 16 }
+		{ "0" }
+	}
+	
+	"sv_lifecount_combine_elite_override"
+	{
+		"#anticitizen_combine_elite_lifecount"
+		{ NUMBER 0 16 }
+		{ "0" }
+	}
+	
+	"sv_lifecount_combine_assassin_override"
+	{
+		"#anticitizen_combine_assassin_lifecount"
+		{ NUMBER 0 16 }
+		{ "0" }
+	}
+	
+	"sv_lifecount_freeman_override"
+	{
+		"#anticitizen_freeman_lifecount"
+		{ NUMBER 0 16 }
 		{ "0" }
 	}
 	
@@ -148,19 +197,5 @@ DESCRIPTION SERVER_OPTIONS
 		"#anticitizen_disable_lives"
 		{ BOOL }
 		{ "0" }
-	}
-	
-	"sv_startwaitime"
-	{
-		"#anticitizen_waitime_round"
-		{ NUMBER 0 90 }
-		{ "30" }
-	}
-	
-	"sv_startplaywaitime"
-	{
-		"#anticitizen_waitime_start"
-		{ NUMBER 0 90 }
-		{ "5" }
 	}
 }

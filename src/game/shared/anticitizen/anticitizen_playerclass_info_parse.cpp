@@ -17,7 +17,6 @@ CAnticitizen_FilePlayerClassInfo_t::CAnticitizen_FilePlayerClassInfo_t()
 	bCanSprint = true;
 	bSilentFootsteps = false;
 	bOverlay = false;
-	bLivesNoOverride = false;
 	m_szCArmModel[0] = 0;
 	iCArmSkin = 0;
 	iMovementType = 0;
@@ -63,7 +62,6 @@ void CAnticitizen_FilePlayerClassInfo_t::Parse(KeyValues* pKeyValuesData, const 
 	bSilentFootsteps = pKeyValuesData->GetBool("SilentFootsteps");
 	bOverlay = pKeyValuesData->GetBool("CombineOverlay");
 	bHasEyeEffect = pKeyValuesData->GetBool("HasEyeEffect");
-	bLivesNoOverride = pKeyValuesData->GetBool("LivesNoOverride");
 	flNormSpeed = pKeyValuesData->GetFloat("Speed", DEFAULT_NORM_SPEED);
 	flSprintSpeed = pKeyValuesData->GetFloat("SprintSpeed", DEFAULT_SPRINT_SPEED);
 	flADSSpeed = pKeyValuesData->GetFloat("ADSSpeed", DEFAULT_ADS_SPEED);
