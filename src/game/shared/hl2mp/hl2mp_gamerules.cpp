@@ -695,8 +695,12 @@ int CHL2MPRules::CheckCanEndGame(void)
 		return GAME_END_NOTENOUGHPLAYERS;
 	}
 
+#ifdef CLIENT_DLL
+	C_HL2MP_Player* pFreeman = GetFreeman();
+#endif
+
 	// freeman is dead
-	if (!IsFreemanAlive())
+	if (!IsFreemanAlive() && (pFreeman->GetLifeCount() == 0))
 	{
 		return GAME_END_FREEMANDEAD;
 	}
