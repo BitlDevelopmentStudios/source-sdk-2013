@@ -104,6 +104,9 @@ void CHL2MPBotManager::OnMapLoaded( void )
 {
 	NextBotManager::OnMapLoaded();
 
+	// fix bots not spawning on map load
+	m_flNextPeriodicThink = gpGlobals->curtime;
+
 	ClearStuckBotData();
 }
 
