@@ -604,17 +604,21 @@ void CHL2MPRules::ReassignSpectators(void)
 		if (pPlayer->GetTeam() != pSpec)
 			continue;
 
-		if ((UTIL_GetPlayerCount() == sv_minplayerstostart.GetInt()) && (pSpec->GetNumPlayers() >= 1))
+		if (pPlayer != pNextPlayerToBecomeFreeman)
 		{
-			if (pPlayer->m_bChosenToSpectate)
+			if ((UTIL_GetPlayerCount() == sv_minplayerstostart.GetInt()) && (pSpec->GetNumPlayers() >= 1))
 			{
 				pPlayer->m_bChosenToSpectate = false;
+			}
+			else
+			{
+				if (pPlayer->m_bChosenToSpectate)
+					continue;
 			}
 		}
 		else
 		{
-			if (pPlayer->m_bChosenToSpectate)
-				continue;
+			pPlayer->m_bChosenToSpectate = false;
 		}
 
 		pPlayer->ShowViewPortPanel(PANEL_CLASS, false);

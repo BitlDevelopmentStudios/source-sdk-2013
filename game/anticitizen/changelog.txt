@@ -27,7 +27,6 @@ Alpha v3:
 - Fixed Freeman bots trying to use suit chargers when they run out of juice
 - Added an option for spectating.
 	- Spectating can be disabled by setting mp_allowspectators to 0.
-	- Players cannot switch to spectators if they're the last Combine player or if the server's spectator limit has been reached.
 - Overwatch Female Assassin overhauls:
 	- Dual Pistols:
 		- Each pistol now has their own accuracy penalty that applies the next time the pistol is shot.
