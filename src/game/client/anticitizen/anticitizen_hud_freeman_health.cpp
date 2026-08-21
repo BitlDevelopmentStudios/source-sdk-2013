@@ -92,7 +92,7 @@ bool CHudFreemanHealth::ShouldDraw(void)
 
 	bool bFreemanExists = (HL2MPRules() && (HL2MPRules()->GetFreeman() != NULL));
 
-	bool bNeedsDraw = pPlayer && (pPlayer->GetTeamNumber() == TEAM_COMBINE) && bFreemanExists && (GetAlpha() > 0);
+	bool bNeedsDraw = pPlayer && (pPlayer->GetTeamNumber() != TEAM_FREEMAN) && bFreemanExists && (GetAlpha() > 0);
 
 	return (bNeedsDraw && CHudElement::ShouldDraw());
 }
