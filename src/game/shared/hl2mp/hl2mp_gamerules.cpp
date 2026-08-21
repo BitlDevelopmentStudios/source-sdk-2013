@@ -464,7 +464,7 @@ int CHL2MPRules::GetRemainingSoldierCount(void)
 	if (sv_disablelives.GetBool())
 		return 999;
 
-	if ((m_iRoundState == STATE_PREROUND) || (m_iRoundState == STATE_COMPLETION))
+	if (m_iRoundState != STATE_PLAYING)
 		return 0;
 
 	CTeam* pCombine = g_Teams[TEAM_COMBINE];
