@@ -182,6 +182,12 @@ public:
 	{ 
 		pNextPlayerToBecomeFreeman = pPlayer; 
 	}
+
+	CHL2MP_Player* GetNextPlayerToBecomeFreeman(void) 
+	{
+		return pNextPlayerToBecomeFreeman;
+	}
+
 	void PlayerSpawn(CBasePlayer* pPlayer);
 	void OnNavMeshLoad(void);
 

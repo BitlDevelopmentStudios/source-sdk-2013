@@ -569,6 +569,7 @@ void CHL2MPRules::SelectFreeman(void)
 		pPlayer->ChangeTeam(TEAM_FREEMAN);
 		pPlayer->SetPlayerClass(CLS_FREEMAN);
 		pPlayer->SetChosenClass(true);
+		pPlayer->m_bChosenToSpectate = false;
 
 		m_uiFreemanID = pPlayer->GetSteamIDAsUInt64();
 
@@ -604,21 +605,14 @@ void CHL2MPRules::ReassignSpectators(void)
 		if (pPlayer->GetTeam() != pSpec)
 			continue;
 
-		if (pPlayer != pNextPlayerToBecomeFreeman)
+		if ((UTIL_GetPlayerCount() == sv_minplayerstostart.GetInt()) && (pSpec->GetNumPlayers() >= 1))
 		{
-			if ((UTIL_GetPlayerCount() == sv_minplayerstostart.GetInt()) && (pSpec->GetNumPlayers() >= 1))
-			{
-				pPlayer->m_bChosenToSpectate = false;
-			}
-			else
-			{
-				if (pPlayer->m_bChosenToSpectate)
-					continue;
-			}
+			pPlayer->m_bChosenToSpectate = false;
 		}
 		else
 		{
-			pPlayer->m_bChosenToSpectate = false;
+			if (pPlayer->m_bChosenToSpectate)
+				continue;
 		}
 
 		pPlayer->ShowViewPortPanel(PANEL_CLASS, false);
