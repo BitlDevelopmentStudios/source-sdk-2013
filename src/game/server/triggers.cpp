@@ -3801,6 +3801,8 @@ class CTriggerWind : public CBaseVPhysicsTrigger
 public:
 	DECLARE_DATADESC();
 
+	CTriggerWind();
+
 	void	Spawn( void );
 	bool	KeyValue( const char *szKeyName, const char *szValue );
 	void	OnRestore();
