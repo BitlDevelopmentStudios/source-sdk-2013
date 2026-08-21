@@ -75,7 +75,7 @@ REGISTER_GAMERULES_CLASS( CHL2MPRules );
 
 BEGIN_NETWORK_TABLE_NOBASE( CHL2MPRules, DT_HL2MPRules )
 #ifdef CLIENT_DLL
-RecvPropBool(RECVINFO(m_bTeamPlayEnabled)),
+RecvPropBool(RECVINFO(m_bFinalRound)),
 RecvPropBool(RECVINFO(m_bIsInIntermission)),
 RecvPropFloat(RECVINFO(m_flGameStartTime)),
 RecvPropFloat(RECVINFO(m_flGameEndTime)),
@@ -86,7 +86,7 @@ RecvPropInt(RECVINFO(m_iCurrentRound)),
 RecvPropInt(RECVINFO(m_iGameEndReason)),
 RecvPropFloat(RECVINFO(m_flTimeSinceGameStart)),
 #else
-SendPropBool(SENDINFO(m_bTeamPlayEnabled)),
+SendPropBool(SENDINFO(m_bFinalRound)),
 SendPropBool(SENDINFO(m_bIsInIntermission)),
 SendPropFloat(SENDINFO(m_flGameStartTime)),
 SendPropFloat(SENDINFO(m_flGameEndTime)),
@@ -604,8 +604,18 @@ void CHL2MPRules::ReassignSpectators(void)
 		if (pPlayer->GetTeam() != pSpec)
 			continue;
 
-		if (pPlayer->m_bChosenToSpectate)
-			continue;
+		if ((UTIL_GetPlayerCount() == sv_minplayerstostart.GetInt()) && (pSpec->GetNumPlayers() >= 1))
+		{
+			if (pPlayer->m_bChosenToSpectate)
+			{
+				pPlayer->m_bChosenToSpectate = false;
+			}
+		}
+		else
+		{
+			if (pPlayer->m_bChosenToSpectate)
+				continue;
+		}
 
 		pPlayer->ShowViewPortPanel(PANEL_CLASS, false);
 		pPlayer->HandleCommand_JoinClass(CLS_RAND);
@@ -1177,10 +1187,10 @@ void CHL2MPRules::Think( void )
 #endif
 }
 
-void CHL2MPRules::GoToIntermission( void )
+void CHL2MPRules::GoToIntermission(void)
 {
 #ifndef CLIENT_DLL
-	if ( g_fGameOver )
+	if (g_fGameOver)
 		return;
 
 	g_fGameOver = true;
@@ -1194,6 +1204,16 @@ void CHL2MPRules::GoToIntermission( void )
 	{
 		m_iTimerType = TIMERSTATE_RESTART;
 	}
+
+	if (m_iCurrentRound == sv_roundlimit.GetInt())
+	{
+		m_bFinalRound = true;
+	}
+	else
+	{
+		m_bFinalRound = false;
+	}
+
 	m_bIsInIntermission = true;
 	m_flTimeSinceGameStart = 0;
 

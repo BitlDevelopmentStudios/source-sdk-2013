@@ -409,6 +409,23 @@ ActionResult< CHL2MPBot >	CHL2MPBotGetHealth::Update( CHL2MPBot *me, float inter
 						return Done( "Charger is out of juice!" );
 				}
 
+				if (me->IsFreeman())
+				{
+					CRecharge* pWallRecharge = dynamic_cast<CRecharge*>(m_healthKit.Get());
+					if (pWallRecharge)
+					{
+						if (pWallRecharge->GetJuice() == 0)
+							return Done("Charger is out of juice!");
+					}
+
+					CNewRecharge* pWallNewRecharge = dynamic_cast<CNewRecharge*>(m_healthKit.Get());
+					if (pWallNewRecharge)
+					{
+						if (pWallNewRecharge->GetJuice() == 0)
+							return Done("Charger is out of juice!");
+					}
+				}
+
 				float healthRatio = ( float )me->GetHealth() / ( float )me->GetMaxHealth();
 				bool bLowHealth = healthRatio < hl2mp_bot_health_critical_ratio.GetFloat();
 

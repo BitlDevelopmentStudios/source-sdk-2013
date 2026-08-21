@@ -393,6 +393,17 @@ void CHL2MP_Player::Spawn(void)
 
 	BaseClass::Spawn();
 
+	CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(this);
+
+	if (pBot)
+	{
+		if (!m_bChosenClass)
+		{
+			ShowViewPortPanel(PANEL_CLASS, false);
+			HandleCommand_JoinClass(CLS_RAND);
+		}
+	}
+
 	if (!m_bChosenClass || (GetLifeCount() == 0) || m_bChosenToSpectate)
 	{
 		// allows bots to join during a preround.
@@ -408,6 +419,13 @@ void CHL2MP_Player::Spawn(void)
 			}
 		}
 
+		if (!pBot)
+		{
+			if (!m_bChosenClass)
+			{
+				ShowViewPortPanel(PANEL_CLASS);
+			}
+		}
 		
 		ChangeTeam(TEAM_SPECTATOR);
 	}
@@ -1531,9 +1549,10 @@ bool CHL2MP_Player::ClientCommand( const CCommand &args )
 		if ( ShouldRunRateLimitedCommand( args ) )
 		{
 			// instantly join spectators
-			if ((!mp_allowspectators.GetInt() && !IsHLTV()) || 
+			if ((GetTeamNumber() != TEAM_SPECTATOR) && ((!mp_allowspectators.GetInt() && !IsHLTV()) ||
 				((HL2MPRules()->GetSpectatorCount() == sv_spectatorlimit.GetInt())) ||
-				((HL2MPRules()->GetState() == STATE_ACTIVE) && (HL2MPRules()->GetSoldierCount() == 1)))
+				((HL2MPRules()->GetState() == STATE_ACTIVE) && (HL2MPRules()->GetSoldierCount() == 1)) || 
+				HL2MPRules()->LastPlayerAnnounced()))
 			{
 				ClientPrint(this, HUD_PRINTCENTER, "#Cannot_Be_Spectator");
 			}
@@ -2418,7 +2437,7 @@ void CHL2MP_Player::Reset(bool gameend)
 	m_bInitialSpawn = true;
 	if (gameend)
 	{
-		m_bChosenClass = false;
+		m_bChosenToSpectate = false;
 	}
 
 	if (GetActiveWeapon())
@@ -2429,10 +2448,12 @@ void CHL2MP_Player::Reset(bool gameend)
 	RemoveAllItems(true);
 	ResetDeathCount();
 	ResetFragCount();
+
 	if (gameend)
 	{
 		ResetPlayerClass();
 	}
+
 	SetLifeCount(-1);
 }
 

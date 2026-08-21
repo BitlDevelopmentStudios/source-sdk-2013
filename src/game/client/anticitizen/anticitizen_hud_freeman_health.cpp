@@ -128,6 +128,18 @@ void CHudFreemanHealth::Paint()
 
 		wchar_t* tempString = g_pVGuiLocalize->Find("#Anticitizen_FreemanVitals");
 
+		if (pPlayer->GetTeamNumber() == TEAM_SPECTATOR)
+		{
+			if (HL2MPRules()->IsInFinalRound())
+			{
+				tempString = g_pVGuiLocalize->Find("#Anticitizen_FreemanVitals_Spectator");
+			}
+			else
+			{
+				tempString = g_pVGuiLocalize->Find("#Anticitizen_FreemanVitals_Spectator2");
+			}
+		}
+
 		if (tempString)
 		{
 			surface()->DrawPrintText(tempString, wcslen(tempString));

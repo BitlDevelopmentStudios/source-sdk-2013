@@ -19,7 +19,7 @@ ConVar hl2mp_bot_difficulty( "hl2mp_bot_difficulty", "-1", FCVAR_NONE, "Defines 
 ConVar hl2mp_bot_quota( "hl2mp_bot_quota", "0", FCVAR_NONE, "Determines the total number of tf bots in the game." );
 ConVar hl2mp_bot_quota_mode( "hl2mp_bot_quota_mode", "normal", FCVAR_NONE, "Determines the type of quota.\nAllowed values: 'normal', 'fill', and 'match'.\nIf 'fill', the server will adjust bots to keep N players in the game, where N is bot_quota.\nIf 'match', the server will maintain a 1:N ratio of humans to bots, where N is bot_quota." );
 ConVar hl2mp_bot_join_after_player( "hl2mp_bot_join_after_player", "1", FCVAR_NONE, "If nonzero, bots wait until a player joins before entering the game." );
-ConVar hl2mp_bot_auto_vacate( "hl2mp_bot_auto_vacate", "1", FCVAR_NONE, "If nonzero, bots will automatically leave to make room for human players." );
+ConVar hl2mp_bot_auto_vacate( "hl2mp_bot_auto_vacate", "0", FCVAR_NONE, "If nonzero, bots will automatically leave to make room for human players." );
 ConVar hl2mp_bot_offline_practice( "hl2mp_bot_offline_practice", "0", FCVAR_NONE, "Tells the server that it is in offline practice mode." );
 ConVar hl2mp_bot_melee_only( "hl2mp_bot_melee_only", "0", FCVAR_GAMEDLL, "If nonzero, HL2MPBots will only use melee weapons" );
 ConVar hl2mp_bot_gravgun_only( "hl2mp_bot_gravgun_only", "0", FCVAR_GAMEDLL, "If nonzero, HL2MPBots will only use gravity gun weapon" );
@@ -314,7 +314,7 @@ void CHL2MPBotManager::MaintainBotQuota()
 
 	bool bFull = true;
 
-	if (nHL2MPBots < (desiredBotCount + 1))
+	if (nHL2MPBots < desiredBotCount)
 	{
 		bFull = false;
 	}

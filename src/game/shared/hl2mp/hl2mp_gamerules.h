@@ -157,6 +157,8 @@ public:
 	int GetEndGameReason(void) { return m_iGameEndReason; }
 	int HasEnded(void) { return m_bJustEnded; }
 	int GetRoundCount(void) { return m_iCurrentRound; }
+	bool IsInFinalRound(void) { return m_bFinalRound; }
+	bool LastPlayerAnnounced(void) { return m_bLastSquadMemberAnnounced; }
 
 	virtual CHL2MP_Player* GetFreeman(void);
 	float GetFreemanHealthFraction(void);
@@ -218,7 +220,7 @@ public:
 	
 private:
 	
-	CNetworkVar( bool, m_bTeamPlayEnabled );
+	CNetworkVar( bool, m_bFinalRound );
 	CNetworkVar( bool, m_bIsInIntermission );
 	CNetworkVar( float, m_flGameStartTime );
 	CNetworkVar( float, m_flTimeSinceGameStart );

@@ -57,7 +57,6 @@ void FinishClientPutInServer( CHL2MP_Player *pPlayer )
 
 	// notify other clients of player joining the game
 	UTIL_ClientPrintAll( HUD_PRINTNOTIFY, "#Game_connected", sName[0] != 0 ? sName : "<unconnected>" );
-	pPlayer->ShowViewPortPanel( PANEL_CLASS, true );
 }
 
 /*

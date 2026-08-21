@@ -23,6 +23,8 @@ Alpha v3:
 - Added the ability to set the life count for all classes.
 - Fixed bugs with Freeman's health bar.
 - Redid the class menu listing.
+- Improved class menu behavior.
+- Fixed Freeman bots trying to use suit chargers when they run out of juice
 - Added an option for spectating.
 	- Spectating can be disabled by setting mp_allowspectators to 0.
 	- Players cannot switch to spectators if they're the last Combine player or if the server's spectator limit has been reached.
