@@ -9,7 +9,34 @@
 #include "cbase.h"
 #include "baseclientrendertargets.h"						// header	
 #include "materialsystem/imaterialsystemhardwareconfig.h"	// Hardware config checks
+#include "shaderapi/IShaderDevice.h"
+
 #include "tier0/icommandline.h"
+
+IDirect3DDevice9* g_pDirect3DDevice9 = NULL;
+
+static bool FindDX9Device()
+{
+	// Try both DXVK and DirectX 9 mode
+	CreateInterfaceFn cInterface = Sys_GetFactory("shaderapivk");
+	if (!cInterface)
+		cInterface = Sys_GetFactory("shaderapidx9");
+
+	if (!cInterface)
+		return false;
+
+	IShaderDevice* pShaderDevice = (IShaderDevice*)cInterface(SHADER_DEVICE_INTERFACE_VERSION, NULL);
+	if (!pShaderDevice)
+		return false;
+
+	// Dereference the virtual table and access the IsUsingGraphics method
+	byte* pIShaderDevice_IsUsingGraphics = (byte*)(*(void***)pShaderDevice)[5];
+	// Resolve the RIP instruction to get the absolute address
+	byte* ppDirect3DDevice9 = pIShaderDevice_IsUsingGraphics + 8 + *(int32*)(pIShaderDevice_IsUsingGraphics + 3);
+	g_pDirect3DDevice9 = *(IDirect3DDevice9**)ppDirect3DDevice9;
+
+	return g_pDirect3DDevice9 != NULL;
+}
 
 ITexture* CBaseClientRenderTargets::CreateWaterReflectionTexture( IMaterialSystem* pMaterialSystem, int iSize )
 {
@@ -54,6 +81,12 @@ ITexture* CBaseClientRenderTargets::CreateCameraTexture( IMaterialSystem* pMater
 //-----------------------------------------------------------------------------
 void CBaseClientRenderTargets::InitClientRenderTargets( IMaterialSystem* pMaterialSystem, IMaterialSystemHardwareConfig* pHardwareConfig, int iWaterTextureSize, int iCameraTextureSize )
 {
+	if (!FindDX9Device())
+	{
+		Error("Failed to get DirectX9 device pointer");
+		return;
+	}
+
 	// Water effects
 	m_WaterReflectionTexture.Init( CreateWaterReflectionTexture( pMaterialSystem, iWaterTextureSize ) );
 	m_WaterRefractionTexture.Init( CreateWaterRefractionTexture( pMaterialSystem, iWaterTextureSize ) );

@@ -29,6 +29,9 @@
 class IMaterialSystem;
 class IMaterialSystemHardwareConfig;
 
+struct IDirect3DDevice9;
+extern IDirect3DDevice9* g_pDirect3DDevice9;
+
 class CBaseClientRenderTargets : public IClientRenderTargets
 {
 	// no networked vars

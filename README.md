@@ -26,6 +26,7 @@ LOOKING FOR THE OLD BDS BASE WITH QUIVER FORTRESS' SOURCE CODE? Go here: https:/
 - Serverfinder/Quick Search: A quick and easy way for players to start and join servers.
 - Supports Xbox 360 achievement notifications.
 - Full support with the HL2 Survivor animation set.
+- Enables access to the low-level DX9 interface for advanced effects.
 - LUX Shaders are pre-implemented, which includes fixes and improvements for all shaders. Read README_LUX.md for more information. (https://github.com/LUX-Shaders-Team/LUX-Shaders)
 
 ## Additional Credits;
@@ -43,6 +44,7 @@ https://developer.valvesoftware.com/wiki/General_SDK_Snippets_%26_Fixes
 https://developer.valvesoftware.com/wiki/Detail_props/Aspect_ratio_fix
 https://developer.valvesoftware.com/wiki/Env_projectedtexture/fixes
 https://developer.valvesoftware.com/wiki/Muzzle_Flash_Lighting
+https://developer.valvesoftware.com/wiki/Fetching_DirectX_9_Device
 https://developer.valvesoftware.com/wiki/Simple_Projectile_Bullets (partial implementation)
 
 ## Setup:
