@@ -564,7 +564,7 @@ void CHL2MPRules::SelectFreeman(void)
 
 		pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(iRandPlayer));
 
-		if (pPlayer->m_bChosenToSpectate)
+		if (pPlayer->m_bChosenToSpectate || pPlayer->IsDisconnecting())
 		{
 			// reroll.
 			SelectFreeman();

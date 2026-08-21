@@ -24,7 +24,8 @@ Alpha v3:
 - Fixed bugs with Freeman's health bar.
 - Redid the class menu listing.
 - Improved class menu behavior.
-- Fixed Freeman bots trying to use suit chargers when they run out of juice
+- Fixed Freeman bots trying to use suit chargers when they run out of juice.
+- Improved Freeman choosing when the player chosen as Freeman leaves the game.
 - Added an option for spectating.
 	- Spectating can be disabled by setting mp_allowspectators to 0.
 - Overwatch Female Assassin overhauls:
