@@ -1549,12 +1549,15 @@ bool CHL2MP_Player::ClientCommand( const CCommand &args )
 		if ( ShouldRunRateLimitedCommand( args ) )
 		{
 			// instantly join spectators
-			if ((GetTeamNumber() != TEAM_SPECTATOR) && ((!mp_allowspectators.GetInt() && !IsHLTV()) ||
-				((HL2MPRules()->GetSpectatorCount() == sv_spectatorlimit.GetInt())) ||
-				((HL2MPRules()->GetState() == STATE_ACTIVE) && (HL2MPRules()->GetSoldierCount() == 1)) || 
-				HL2MPRules()->LastPlayerAnnounced()))
+			if (!mp_allowspectators.GetInt() && !IsHLTV())
 			{
 				ClientPrint(this, HUD_PRINTCENTER, "#Cannot_Be_Spectator");
+			}
+			else if (((HL2MPRules()->GetSpectatorCount() >= sv_spectatorlimit.GetInt())) ||
+				(HL2MPRules()->GetFreeman() == this) ||
+				((HL2MPRules()->GetState() == STATE_ACTIVE) && ((HL2MPRules()->GetSoldierCount() == 1) || (HL2MPRules()->GetRemainingSoldierCount() == 1))))
+			{
+				ClientPrint(this, HUD_PRINTCENTER, "#Cannot_Be_Spectator_Player");
 			}
 			else
 			{
