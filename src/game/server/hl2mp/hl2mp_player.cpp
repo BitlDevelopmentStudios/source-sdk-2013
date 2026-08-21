@@ -393,7 +393,7 @@ void CHL2MP_Player::Spawn(void)
 
 	BaseClass::Spawn();
 
-	if (!m_bChosenClass || GetLifeCount() == 0)
+	if (!m_bChosenClass || (GetLifeCount() == 0) || m_bChosenToSpectate)
 	{
 		// allows bots to join during a preround.
 		if (GetLifeCount() != 0)
@@ -408,6 +408,7 @@ void CHL2MP_Player::Spawn(void)
 			}
 		}
 
+		
 		ChangeTeam(TEAM_SPECTATOR);
 	}
 	else
@@ -1500,6 +1501,7 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass, bool brespawn)
 	RemoveAllItems(true);
 	SetPlayerClass(iCurClass);
 	m_bChosenClass = true;
+	m_bChosenToSpectate = false;
 
 	if (brespawn)
 	{
@@ -1520,6 +1522,8 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass, bool brespawn)
 	return true;
 }
 
+extern ConVar sv_spectatorlimit;
+
 bool CHL2MP_Player::ClientCommand( const CCommand &args )
 {
 	if ( FStrEq( args[0], "spectate" ) )
@@ -1527,7 +1531,20 @@ bool CHL2MP_Player::ClientCommand( const CCommand &args )
 		if ( ShouldRunRateLimitedCommand( args ) )
 		{
 			// instantly join spectators
-			HandleCommand_JoinTeam( TEAM_SPECTATOR );	
+			if ((!mp_allowspectators.GetInt() && !IsHLTV()) || 
+				((HL2MPRules()->GetSpectatorCount() == sv_spectatorlimit.GetInt())) ||
+				((HL2MPRules()->GetState() == STATE_ACTIVE) && (HL2MPRules()->GetSoldierCount() == 1)))
+			{
+				ClientPrint(this, HUD_PRINTCENTER, "#Cannot_Be_Spectator");
+			}
+			else
+			{
+				m_bChosenToSpectate = true;
+				if (GetTeamNumber() != TEAM_SPECTATOR)
+				{
+					Spawn();
+				}
+			}
 		}
 		return true;
 	}

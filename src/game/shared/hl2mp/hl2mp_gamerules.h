@@ -130,6 +130,8 @@ public:
 	virtual Vector VecWeaponRespawnSpot( CBaseCombatWeapon *pWeapon );
 	virtual int WeaponShouldRespawn( CBaseCombatWeapon *pWeapon );
 	virtual int GetRemainingSoldierCount(void);
+	virtual int GetSoldierCount(void);
+	virtual int GetSpectatorCount(void);
 	virtual void CheckLastMemberLeft(void);
 	virtual void SelectFreeman(void);
 	virtual void ReassignSpectators(void);

@@ -59,6 +59,8 @@ ConVar sv_freemanroundlimit("sv_freemanroundlimit", "3", FCVAR_GAMEDLL | FCVAR_N
 
 ConVar sv_roundlimit("sv_roundlimit", "5", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 
+ConVar sv_spectatorlimit("sv_spectatorlimit", "2", FCVAR_GAMEDLL | FCVAR_NOTIFY);
+
 extern ConVar mp_chattime;
 
 extern CBaseEntity	 *g_pLastCombineSpawn;
@@ -399,6 +401,59 @@ void CHL2MPRules::PlayerKilled( CBasePlayer *pVictim, const CTakeDamageInfo &inf
 #endif
 }
 
+int CHL2MPRules::GetSpectatorCount(void)
+{
+#ifndef CLIENT_DLL
+	CTeam* pSpectatorTeam = g_Teams[TEAM_SPECTATOR];
+	int iSpectators = 0;
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+
+		if (!pPlayer)
+			continue;
+
+		if (pPlayer->GetTeam() != pSpectatorTeam)
+			continue;
+
+		iSpectators += 1;
+	}
+
+	return iSpectators;
+#else
+	return 0;
+#endif
+}
+
+int CHL2MPRules::GetSoldierCount(void)
+{
+#ifndef CLIENT_DLL
+	CTeam* pCombine = g_Teams[TEAM_COMBINE];
+	int iPlayers = 0;
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+
+		if (!pPlayer)
+			continue;
+
+		if (pPlayer->m_bChosenToSpectate)
+			continue;
+
+		if (pPlayer->GetTeam() != pCombine)
+			continue;
+
+		iPlayers += 1;
+	}
+
+	return iPlayers;
+#else
+	return 0;
+#endif
+}
+
 #ifndef CLIENT_DLL
 extern ConVar sv_disablelives;
 #endif
@@ -423,6 +478,9 @@ int CHL2MPRules::GetRemainingSoldierCount(void)
 			continue;
 
 		if (pPlayer->GetLifeCount() == -1)
+			continue;
+
+		if (pPlayer->m_bChosenToSpectate)
 			continue;
 
 		if (pPlayer->GetTeam() != pCombine)
@@ -544,6 +602,9 @@ void CHL2MPRules::ReassignSpectators(void)
 			continue;
 
 		if (pPlayer->GetTeam() != pSpec)
+			continue;
+
+		if (pPlayer->m_bChosenToSpectate)
 			continue;
 
 		pPlayer->ShowViewPortPanel(PANEL_CLASS, false);

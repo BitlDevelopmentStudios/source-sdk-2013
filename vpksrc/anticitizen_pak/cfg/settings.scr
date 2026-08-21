@@ -61,6 +61,20 @@ DESCRIPTION SERVER_OPTIONS
 		{ NUMBER 2 7 }
 		{ "7" }
 	}
+	
+	"sv_minplayerstostart"
+	{
+		"#anticitizen_min_players"
+		{ NUMBER 2 7 }
+		{ "2" }
+	}
+	
+	"sv_spectatorlimit"
+	{
+		"#anticitizen_spectator_limit"
+		{ NUMBER 2 7 }
+		{ "2" }
+	}
 
 	"sv_password"
 	{
@@ -103,12 +117,19 @@ DESCRIPTION SERVER_OPTIONS
 		{ NUMBER 0 90 }
 		{ "5" }
 	}
-
-	"mp_weaponstay"
+	
+	"sv_roundlimit"
 	{
-		"#Valve_Weapons_Stay"
-		{ BOOL }
-		{ "0" }
+		"#anticitizen_max_rounds"
+		{ NUMBER 1 99 }
+		{ "5" }
+	}
+	
+	"sv_freemanroundlimit"
+	{
+		"#anticitizen_max_rounds_freeman"
+		{ NUMBER 1 99 }
+		{ "3" }
 	}
 
 	"mp_footsteps"

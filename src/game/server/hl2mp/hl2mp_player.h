@@ -301,6 +301,7 @@ protected:
 public:
 	bool m_bInitialSpawn;
 	bool m_bFreemanAtLowHealth;
+	bool m_bChosenToSpectate;
 
 private:
 	CPlayer_Sentence< CHL2MP_Player > m_Sentences;
