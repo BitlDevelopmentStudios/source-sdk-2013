@@ -541,24 +541,34 @@ void CHL2MPRules::SelectFreeman(void)
 	if (pFreeman)
 		return;
 
-	int iPlayerCount = UTIL_GetPlayerCount();
-	random->SetSeed(gpGlobals->curtime);
-	int iRandPlayer = random->RandomInt(1, iPlayerCount);
-
-	CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(iRandPlayer));
-
-	if (pPlayer->m_bChosenToSpectate && !pNextPlayerToBecomeFreeman)
-	{
-		// reroll.
-		SelectFreeman();
-		return;
-	}
+	CHL2MP_Player* pPlayer = NULL;
 
 	if (pNextPlayerToBecomeFreeman)
 	{
 		if (!pNextPlayerToBecomeFreeman->IsDisconnecting())
 		{
 			pPlayer = pNextPlayerToBecomeFreeman;
+		}
+		else
+		{
+			pNextPlayerToBecomeFreeman = NULL;
+			SelectFreeman();
+			return;
+		}
+	}
+	else
+	{
+		int iPlayerCount = UTIL_GetPlayerCount();
+		random->SetSeed(gpGlobals->curtime);
+		int iRandPlayer = random->RandomInt(1, iPlayerCount);
+
+		pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(iRandPlayer));
+
+		if (pPlayer->m_bChosenToSpectate)
+		{
+			// reroll.
+			SelectFreeman();
+			return;
 		}
 	}
 

@@ -1549,16 +1549,18 @@ bool CHL2MP_Player::ClientCommand( const CCommand &args )
 	{
 		if ( ShouldRunRateLimitedCommand( args ) )
 		{
+			bool isAtSpecLimit = (HL2MPRules()->GetSpectatorCount() >= sv_spectatorlimit.GetInt());
+			bool isAtMinPlayers = ((UTIL_GetPlayerCount() == sv_minplayerstostart.GetInt()));
+			bool isFreeman = (IsFreeman() || (HL2MPRules()->GetFreeman() == this));
+			bool isLowSoldierCount = (HL2MPRules()->GetSoldierCount() <= 1);
+			bool isLowRemainingSoldierCount = ((HL2MPRules()->GetState() == STATE_PLAYING) && (HL2MPRules()->GetRemainingSoldierCount() <= 1));
+
 			// instantly join spectators
 			if (!mp_allowspectators.GetInt() && !IsHLTV())
 			{
 				ClientPrint(this, HUD_PRINTCENTER, "#Cannot_Be_Spectator");
 			}
-			else if (((HL2MPRules()->GetSpectatorCount() >= sv_spectatorlimit.GetInt())) ||
-				((UTIL_GetPlayerCount() == sv_minplayerstostart.GetInt())) ||
-				(HL2MPRules()->GetFreeman() == this) ||
-				(HL2MPRules()->GetSoldierCount() == 1) || 
-				((HL2MPRules()->GetState() == STATE_ACTIVE) && (HL2MPRules()->GetRemainingSoldierCount() == 1)))
+			else if (isAtSpecLimit || isAtMinPlayers || isFreeman || isLowSoldierCount || isLowRemainingSoldierCount)
 			{
 				if (GetTeamNumber() == TEAM_SPECTATOR)
 				{
