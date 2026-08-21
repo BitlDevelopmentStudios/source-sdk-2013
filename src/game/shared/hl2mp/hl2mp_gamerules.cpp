@@ -254,6 +254,7 @@ CHL2MPRules::CHL2MPRules()
 	m_bSentGameEndEvent = false;
 	m_bStrippedFlags = false;
 	m_bJustEnded = false;
+	m_bReassignSpectators = false;
 	m_uiFreemanID = 0;
 	m_uiLastFreemanID = 0;
 	m_iNumTimesFreemanIDShowedUpIFuckingHateThis = 0;
@@ -546,6 +547,13 @@ void CHL2MPRules::SelectFreeman(void)
 
 	CHL2MP_Player* pPlayer = ToHL2MPPlayer(UTIL_PlayerByIndex(iRandPlayer));
 
+	if (pPlayer->m_bChosenToSpectate && !pNextPlayerToBecomeFreeman)
+	{
+		// reroll.
+		SelectFreeman();
+		return;
+	}
+
 	if (pNextPlayerToBecomeFreeman)
 	{
 		if (!pNextPlayerToBecomeFreeman->IsDisconnecting())
@@ -605,18 +613,11 @@ void CHL2MPRules::ReassignSpectators(void)
 		if (pPlayer->GetTeam() != pSpec)
 			continue;
 
-		if ((UTIL_GetPlayerCount() == sv_minplayerstostart.GetInt()) && (pSpec->GetNumPlayers() >= 1))
-		{
-			pPlayer->m_bChosenToSpectate = false;
-		}
-		else
-		{
-			if (pPlayer->m_bChosenToSpectate)
-				continue;
-		}
+		if (pPlayer->m_bChosenToSpectate)
+			continue;
 
 		pPlayer->ShowViewPortPanel(PANEL_CLASS, false);
-		pPlayer->HandleCommand_JoinClass(CLS_RAND);
+		pPlayer->HandleCommand_JoinClass(CLS_RAND, false);
 	}
 #endif
 }
@@ -993,6 +994,12 @@ void CHL2MPRules::Think( void )
 						SelectFreeman();
 					}
 
+					if (!m_bReassignSpectators)
+					{
+						ReassignSpectators();
+						m_bReassignSpectators = true;
+					}
+
 					if (!m_bCompleteReset)
 					{
 						RestartGame();
@@ -1060,12 +1067,6 @@ void CHL2MPRules::Think( void )
 			}
 			else
 			{
-				if (!m_bReassignSpectators)
-				{
-					ReassignSpectators();
-					m_bReassignSpectators = true;
-				}
-
 				SendHudMessage(NULL, "#Anticitizen_GameStarting", 0.5f);
 				m_iTimerType = TIMERSTATE_GAMESTART;
 

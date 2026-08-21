@@ -324,7 +324,7 @@ void CHL2MP_Player::Precache( void )
 
 	PrecacheScriptSound( "NPC_MetroPolice.Die" );
 	PrecacheScriptSound( "NPC_CombineS.Die" );
-	PrecacheScriptSound( "NPC_Citizen.die" );
+	PrecacheScriptSound("NPC_Citizen.die");
 
 	UTIL_PrecacheOther("item_healthvial");
 	UTIL_PrecacheOther("weapon_frag");
@@ -332,7 +332,7 @@ void CHL2MP_Player::Precache( void )
 	UTIL_PrecacheOther("item_ammo_ar2_altfire");
 }
 
-void CHL2MP_Player::GiveAllItems( void )
+void CHL2MP_Player::GiveAllItems(void)
 {
 	if (IsFreeman())
 	{
@@ -360,7 +360,7 @@ void CHL2MP_Player::GiveAllItems( void )
 	CBasePlayer::GiveAmmo(3, "grenade");
 	//CBasePlayer::GiveAmmo(3, "slam");
 
-	if (GetPlayerClass() ==  CLS_FREEMAN)
+	if (GetPlayerClass() == CLS_FREEMAN)
 	{
 		GiveNamedItem("weapon_crowbar");
 		GiveNamedItem("weapon_stunstick");
@@ -421,7 +421,7 @@ void CHL2MP_Player::Spawn(void)
 
 		if (!pBot)
 		{
-			if (!m_bChosenClass)
+			if (!m_bChosenClass && !m_bChosenToSpectate)
 			{
 				ShowViewPortPanel(PANEL_CLASS);
 			}
@@ -1541,6 +1541,7 @@ bool CHL2MP_Player::HandleCommand_JoinClass(int iclass, bool brespawn)
 }
 
 extern ConVar sv_spectatorlimit;
+extern ConVar sv_minplayerstostart;
 
 bool CHL2MP_Player::ClientCommand( const CCommand &args )
 {
@@ -1554,10 +1555,19 @@ bool CHL2MP_Player::ClientCommand( const CCommand &args )
 				ClientPrint(this, HUD_PRINTCENTER, "#Cannot_Be_Spectator");
 			}
 			else if (((HL2MPRules()->GetSpectatorCount() >= sv_spectatorlimit.GetInt())) ||
+				((UTIL_GetPlayerCount() == sv_minplayerstostart.GetInt())) ||
 				(HL2MPRules()->GetFreeman() == this) ||
-				((HL2MPRules()->GetState() == STATE_ACTIVE) && ((HL2MPRules()->GetSoldierCount() == 1) || (HL2MPRules()->GetRemainingSoldierCount() == 1))))
+				(HL2MPRules()->GetSoldierCount() == 1) || 
+				((HL2MPRules()->GetState() == STATE_ACTIVE) && (HL2MPRules()->GetRemainingSoldierCount() == 1)))
 			{
-				ClientPrint(this, HUD_PRINTCENTER, "#Cannot_Be_Spectator_Player");
+				if (GetTeamNumber() == TEAM_SPECTATOR)
+				{
+					ClientPrint(this, HUD_PRINTCENTER, "#Cannot_Be_Spectator_Player_Spec");
+				}
+				else
+				{
+					ClientPrint(this, HUD_PRINTCENTER, "#Cannot_Be_Spectator_Player");
+				}
 			}
 			else
 			{
