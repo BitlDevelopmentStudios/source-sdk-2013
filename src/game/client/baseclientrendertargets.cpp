@@ -10,6 +10,7 @@
 #include "baseclientrendertargets.h"						// header	
 #include "materialsystem/imaterialsystemhardwareconfig.h"	// Hardware config checks
 #include "shaderapi/IShaderDevice.h"
+#include "DXInterface.h"
 
 #include "tier0/icommandline.h"
 
@@ -85,6 +86,27 @@ void CBaseClientRenderTargets::InitClientRenderTargets( IMaterialSystem* pMateri
 	{
 		Error("Failed to get DirectX9 device pointer");
 		return;
+	}
+	else
+	{
+		// tests it.
+		IDirect3D9 *pD3D = NULL;
+		g_pDirect3DDevice9->GetDirect3D(&pD3D);
+
+		if (pD3D)
+		{
+			UINT adapter = 0;
+			DWORD flags = 0;
+			D3DADAPTER_IDENTIFIER9 identifier;
+			pD3D->GetAdapterIdentifier(adapter, flags, &identifier);
+
+			Msg("Loaded DirectX9 device: %s\n", identifier.Description);
+		}
+		else
+		{
+			Error("Failed to find DirectX9 device");
+			return;
+		}
 	}
 
 	// Water effects
