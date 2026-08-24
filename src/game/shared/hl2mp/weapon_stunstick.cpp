@@ -15,6 +15,7 @@
 #ifndef CLIENT_DLL
 	#include "npc_metropolice.h"
 	#include "te_effect_dispatch.h"
+	#include "bot/hl2mp_bot.h"
 #endif
 
 #ifdef CLIENT_DLL
@@ -309,6 +310,14 @@ void CWeaponStunStick::Hit(trace_t& traceHit, Activity nHitActivity)
 
 				// Force the player to drop anything they were holding
 				pHitPlayer->ForceDropOfCarriedPhysObjects();
+
+				// blind the fucker.
+				CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(pHitPlayer);
+
+				if (pBot)
+				{
+					pBot->m_blindTimer.Start(0.5f);
+				}
 			}
 		}
 

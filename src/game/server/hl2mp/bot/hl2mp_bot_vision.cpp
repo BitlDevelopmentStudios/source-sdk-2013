@@ -93,6 +93,12 @@ bool CHL2MPBotVision::IsIgnored( CBaseEntity* subject ) const
 {
 	CHL2MPBot* me = ( CHL2MPBot* )GetBot()->GetEntity();
 
+	// we ignore all enities if we're blinded.
+	if (!me->m_blindTimer.HasElapsedSinceStart())
+	{
+		return true;
+	}
+
 	if ( me->IsAttentionFocused() )
 	{
 		// our attention is restricted to certain subjects
