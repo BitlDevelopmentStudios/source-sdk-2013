@@ -316,7 +316,7 @@ void CWeaponStunStick::Hit(trace_t& traceHit, Activity nHitActivity)
 
 				if (pBot)
 				{
-					pBot->m_blindTimer.Start(0.5f);
+					pBot->m_blindTimer.Start(0.65f);
 				}
 			}
 		}
