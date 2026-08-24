@@ -63,4 +63,17 @@
 		"team"		"byte"		// which team won the round
 		"winreason"	"byte"		// the reason the team won
 	}
+	
+	"ds_stop"			// round restart
+	{
+	}
+	
+	"ds_screenshot"
+	{
+		"delay"		"float"
+	}
+	
+	"localplayer_respawn"
+	{
+	}
 }

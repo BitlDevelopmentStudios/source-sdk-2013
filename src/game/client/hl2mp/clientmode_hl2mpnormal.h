@@ -32,6 +32,9 @@ public:
 
 	virtual void	Init();
 	virtual int		GetDeathMessageStartHeight( void );
+
+	virtual void	OnDemoRecordStart(char const* pDemoBaseName);
+	virtual void	OnDemoRecordStop(void);
 };
 
 extern IClientMode *GetClientModeNormal();

@@ -69,6 +69,22 @@ int ClientModeHL2MPNormal::GetDeathMessageStartHeight( void )
 	return m_pViewport->GetDeathMessageStartHeight();
 }
 
+void ClientModeHL2MPNormal::OnDemoRecordStart(char const* pDemoBaseName)
+{
+	BaseClass::OnDemoRecordStart(pDemoBaseName);
+}
+
+void ClientModeHL2MPNormal::OnDemoRecordStop()
+{
+	IGameEvent* event = gameeventmanager->CreateEvent("ds_stop");
+	if (event)
+	{
+		gameeventmanager->FireEventClientSide(event);
+	}
+
+	BaseClass::OnDemoRecordStop();
+}
+
 void CHudViewport::CreateDefaultPanels(void)
 {
 	BaseClass::CreateDefaultPanels();

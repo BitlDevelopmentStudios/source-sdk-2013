@@ -19,6 +19,8 @@
 #include "prediction.h"
 #include "bone_setup.h"
 #include "iviewrender.h"
+#include "in_main.h"
+#include "input.h"
 
 // Don't alias here
 #if defined( CHL2MP_Player )
@@ -150,6 +152,18 @@ C_HL2MP_Player::~C_HL2MP_Player( void )
 void C_HL2MP_Player::ClientPlayerRespawn(void)
 {
 	m_iIDEntIndex = 0;
+
+	if (IsLocalPlayer())
+	{
+		// Release the duck toggle key
+		KeyUp(&in_ducktoggle, NULL);
+
+		IGameEvent* event = gameeventmanager->CreateEvent("localplayer_respawn");
+		if (event)
+		{
+			gameeventmanager->FireEventClientSide(event);
+		}
+	}
 }
 
 int C_HL2MP_Player::GetIDTarget() const
