@@ -557,14 +557,14 @@ void CWeaponShotgun::ItemPostFrame( void )
 	if (m_bInReload)
 	{
 		// If I'm primary firing and have one round stop reloading and fire
-		if ((pOwner->m_nButtons & IN_ATTACK ) && (m_iClip1 >=1) && !m_bNeedPump )
+		if ((pOwner->m_nButtons & IN_ATTACK ) && (m_iClip1 >=1) && !m_bNeedPump && !HasLowered())
 		{
 			m_bInReload		= false;
 			m_bNeedPump		= false;
 			m_bDelayedFire1 = true;
 		}
 		// If I'm secondary firing and have two rounds stop reloading and fire
-		else if ((pOwner->m_nButtons & IN_ATTACK2 ) && (m_iClip1 >=2) && !m_bNeedPump )
+		else if ((pOwner->m_nButtons & IN_ATTACK2 ) && (m_iClip1 >=2) && !m_bNeedPump && !HasLowered())
 		{
 			m_bInReload		= false;
 			m_bNeedPump		= false;
@@ -614,11 +614,17 @@ void CWeaponShotgun::ItemPostFrame( void )
 			// If only one shell is left, do a single shot instead	
 			if ( m_iClip1 == 1 )
 			{
-				PrimaryAttack();
+				if (!HasLowered())
+				{
+					PrimaryAttack();
+				}
 			}
 			else if (!pOwner->GetAmmoCount(m_iPrimaryAmmoType))
 			{
-				DryFire();
+				if (!HasLowered())
+				{
+					DryFire();
+				}
 			}
 			else
 			{
@@ -650,7 +656,10 @@ void CWeaponShotgun::ItemPostFrame( void )
 		{
 			if (!pOwner->GetAmmoCount(m_iPrimaryAmmoType))
 			{
-				DryFire();
+				if (!HasLowered())
+				{
+					DryFire();
+				}
 			}
 			else
 			{
@@ -666,13 +675,16 @@ void CWeaponShotgun::ItemPostFrame( void )
 		}
 		else
 		{
-			// If the firing button was just pressed, reset the firing time
-			CBasePlayer *pPlayer = ToBasePlayer( GetOwner() );
-			if ( pPlayer && pPlayer->m_afButtonPressed & IN_ATTACK )
+			if (!HasLowered())
 			{
-				 m_flNextPrimaryAttack = gpGlobals->curtime;
+				// If the firing button was just pressed, reset the firing time
+				CBasePlayer* pPlayer = ToBasePlayer(GetOwner());
+				if (pPlayer && pPlayer->m_afButtonPressed & IN_ATTACK)
+				{
+					m_flNextPrimaryAttack = gpGlobals->curtime;
+				}
+				PrimaryAttack();
 			}
-			PrimaryAttack();
 		}
 	}
 

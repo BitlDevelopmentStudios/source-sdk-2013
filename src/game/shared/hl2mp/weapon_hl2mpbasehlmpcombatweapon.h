@@ -34,6 +34,7 @@ public:
 
 	virtual bool	Ready( void );
 	virtual bool	Lower( void );
+	virtual bool	HasLowered(void) { return m_bLowered; }
 	virtual bool	Deploy( void );
 	virtual bool	Holster( CBaseCombatWeapon *pSwitchingTo );
 	virtual void	WeaponIdle( void );

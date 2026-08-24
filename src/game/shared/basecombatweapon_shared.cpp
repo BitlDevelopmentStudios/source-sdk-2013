@@ -369,10 +369,15 @@ void CBaseCombatWeapon::Precache( void )
 #endif
 		// Precache models (preload to avoid hitch)
 		m_iViewModelIndex = 0;
+		m_iViewModel2HandedIndex = 0;
 		m_iWorldModelIndex = 0;
 		if ( GetViewModel() && GetViewModel()[0] )
 		{
 			m_iViewModelIndex = CBaseEntity::PrecacheModel( GetViewModel() );
+		}
+		if (GetViewModel2Hand() && GetViewModel2Hand()[0])
+		{
+			m_iViewModel2HandedIndex = CBaseEntity::PrecacheModel(GetViewModel2Hand());
 		}
 		if ( GetWorldModel() && GetWorldModel()[0] )
 		{
@@ -410,7 +415,29 @@ const FileWeaponInfo_t &CBaseCombatWeapon::GetWpnData( void ) const
 //-----------------------------------------------------------------------------
 const char *CBaseCombatWeapon::GetViewModel( int /*viewmodelindex = 0 -- this is ignored in the base class here*/ ) const
 {
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
+
+	if (pPlayer && pPlayer->GetPlayerClass() > CLS_INVALID)
+	{
+		const CAnticitizen_FilePlayerClassInfo_t& info = pPlayer->GetPlayerClassInfo();
+		if (info.bTwoHandedWeaponAnims)
+		{
+			if (GetViewModel2Hand() && GetViewModel2Hand()[0])
+			{
+				return GetViewModel2Hand();
+			}
+		}
+	}
+
 	return GetWpnData().szViewModel;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+const char* CBaseCombatWeapon::GetViewModel2Hand(int /*viewmodelindex = 0 -- this is ignored in the base class here*/) const
+{
+	return GetWpnData().szViewModel2Hand;
 }
 
 //-----------------------------------------------------------------------------
@@ -607,6 +634,9 @@ bool CBaseCombatWeapon::IsIronsighted(void)
 void CBaseCombatWeapon::ToggleIronsights(void)
 {
 	if (!HasIronsights())
+		return;
+
+	if (HasLowered())
 		return;
 
 	if (m_bInReload)
@@ -1978,6 +2008,9 @@ void CBaseCombatWeapon::ItemPostFrame( void )
 	// Secondary attack has priority
 	if ( ( pOwner->m_nButtons & IN_ATTACK2 ) )
 	{
+		if (HasLowered())
+			return;
+
 		if ( UsesSecondaryAmmo() && pOwner->GetAmmoCount(m_iSecondaryAmmoType) <= 0 )
 		{
 			if (m_flNextEmptySoundTime < gpGlobals->curtime)
@@ -2023,6 +2056,9 @@ void CBaseCombatWeapon::ItemPostFrame( void )
 	
 	if ( !bFired && (pOwner->m_nButtons & IN_ATTACK) && (m_flNextPrimaryAttack <= gpGlobals->curtime))
 	{
+		if (HasLowered())
+			return;
+
 		// Clip empty? Or out of ammo on a no-clip weapon?
 		if ( !IsMeleeWeapon() &&  
 			(( UsesClipsForAmmo1() && m_iClip1 <= 0) || ( !UsesClipsForAmmo1() && pOwner->GetAmmoCount(m_iPrimaryAmmoType)<=0 )) )
@@ -2725,18 +2761,6 @@ bool CBaseCombatWeapon::SetIdealActivity( Activity ideal )
 	MDLCACHE_CRITICAL_SECTION();
 	int	idealSequence = SelectWeightedSequence(ideal);
 
-	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
-
-	if (pPlayer && pPlayer->GetPlayerClass() > CLS_INVALID)
-	{
-		const CAnticitizen_FilePlayerClassInfo_t& info = pPlayer->GetPlayerClassInfo();
-		Activity twoHandedActivity = GetTwoHandedActivityForActivity(ideal);
-		if (info.bTwoHandedWeaponAnims && (twoHandedActivity > -1))
-		{
-			idealSequence = twoHandedActivity;
-		}
-	}
-
 	if ( idealSequence == -1 )
 		return false;
 
@@ -2916,6 +2940,7 @@ BEGIN_PREDICTION_DATA( CBaseCombatWeapon )
 	// DEFINE_FIELD( m_hWeaponFileInfo, FIELD_SHORT ),
 	DEFINE_PRED_FIELD( m_iState, FIELD_INTEGER, FTYPEDESC_INSENDTABLE ),
 	DEFINE_PRED_FIELD( m_iViewModelIndex, FIELD_INTEGER, FTYPEDESC_INSENDTABLE | FTYPEDESC_MODELINDEX ),
+	DEFINE_PRED_FIELD( m_iViewModel2HandedIndex, FIELD_INTEGER, FTYPEDESC_INSENDTABLE | FTYPEDESC_MODELINDEX ),
 	DEFINE_PRED_FIELD( m_iWorldModelIndex, FIELD_INTEGER, FTYPEDESC_INSENDTABLE | FTYPEDESC_MODELINDEX ),
 	DEFINE_PRED_FIELD_TOL( m_flNextPrimaryAttack, FIELD_FLOAT, FTYPEDESC_INSENDTABLE, TD_MSECTOLERANCE ),
 	DEFINE_PRED_FIELD_TOL( m_flNextSecondaryAttack, FIELD_FLOAT, FTYPEDESC_INSENDTABLE, TD_MSECTOLERANCE ),
@@ -3022,6 +3047,7 @@ BEGIN_DATADESC( CBaseCombatWeapon )
 	DEFINE_FIELD( m_iPosition, FIELD_INTEGER ),
 
 	//	DEFINE_FIELD( m_iViewModelIndex, FIELD_INTEGER ),
+	//  DEFINE_FIELD( m_iViewModel2HandedIndex, FIELD_INTEGER ),
 	//	DEFINE_FIELD( m_iWorldModelIndex, FIELD_INTEGER ),
 	//  DEFINE_FIELD( m_hWeaponFileInfo, ???? ),
 
@@ -3243,6 +3269,7 @@ BEGIN_NETWORK_TABLE(CBaseCombatWeapon, DT_BaseCombatWeapon)
 	SendPropBool(SENDINFO(m_bIsIronsighted)),
 	SendPropFloat(SENDINFO(m_flIronsightedTime)),
 	SendPropModelIndex( SENDINFO(m_iViewModelIndex) ),
+	SendPropModelIndex(SENDINFO(m_iViewModel2HandedIndex)),
 	SendPropModelIndex( SENDINFO(m_iWorldModelIndex) ),
 	SendPropInt( SENDINFO(m_iState ), 8, SPROP_UNSIGNED ),
 	SendPropEHandle( SENDINFO(m_hOwner) ),
@@ -3252,6 +3279,7 @@ BEGIN_NETWORK_TABLE(CBaseCombatWeapon, DT_BaseCombatWeapon)
 	RecvPropInt(RECVINFO(m_bIsIronsighted), 0, RecvProxy_ToggleSights), //note: RecvPropBool is actually RecvPropInt (see its implementation), but we need a proxy
 	RecvPropFloat(RECVINFO(m_flIronsightedTime)),
 	RecvPropInt( RECVINFO(m_iViewModelIndex)),
+	RecvPropInt(RECVINFO(m_iViewModel2HandedIndex)),
 	RecvPropInt( RECVINFO(m_iWorldModelIndex)),
 	RecvPropInt( RECVINFO(m_iState), 0, &CBaseCombatWeapon::RecvProxy_WeaponState ),
 	RecvPropEHandle( RECVINFO(m_hOwner ), RecvProxy_WeaponOwner ),

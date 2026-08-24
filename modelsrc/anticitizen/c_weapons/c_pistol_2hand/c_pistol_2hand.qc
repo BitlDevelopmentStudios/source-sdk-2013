@@ -1,6 +1,6 @@
 // Created by Crowbar 0.74
 
-$modelname "weapons/c_pistol.mdl"
+$modelname "weapons/c_pistol_2hand.mdl"
 
 $bodygroup "studio"
 {
@@ -120,10 +120,10 @@ $animation "a_adjustment" "c_pistol_anims\a_adjustment.smd" {
 	subtract "a_adjustment_corrective_animation" 0
 }
 
-// original anims
+// 2-handed anims by xdshot
 
-$sequence "idle01" {
-	"c_pistol_anims\idle01.smd"
+$sequence "idle01_2hand" {
+	"c_pistol_anims_2hand\idle01_2hand.smd"
 	activity "ACT_VM_IDLE" 1
 	fadein 0.2
 	fadeout 0.2
@@ -132,8 +132,8 @@ $sequence "idle01" {
 	loop
 }
 
-$sequence "idle01empty" {
-	"c_pistol_anims\idle01empty.smd"
+$sequence "idle01empty_2hand" {
+	"c_pistol_anims_2hand\idle01empty_2hand.smd"
 	activity "ACT_VM_IDLE_EMPTY" 1
 	fadein 0.2
 	fadeout 0.2
@@ -142,8 +142,8 @@ $sequence "idle01empty" {
 	loop
 }
 
-$sequence "fire" {
-	"c_pistol_anims\fire.smd"
+$sequence "fire_2hand" {
+	"c_pistol_anims_2hand\fire_2hand.smd"
 	activity "ACT_VM_PRIMARYATTACK" 1
 	{ event AE_MUZZLEFLASH 0 "PISTOL MUZZLE" }
 	{ event 6001 0 "0" }
@@ -154,8 +154,8 @@ $sequence "fire" {
 	fps 30
 }
 
-$sequence "fire1" {
-	"c_pistol_anims\fire1.smd"
+$sequence "fire1_2hand" {
+	"c_pistol_anims_2hand\fire1_2hand.smd"
 	activity "ACT_VM_RECOIL1" 1
 	{ event AE_MUZZLEFLASH 0 "PISTOL MUZZLE" }
 	{ event 6001 0 "0" }
@@ -166,8 +166,8 @@ $sequence "fire1" {
 	fps 30
 }
 
-$sequence "fire2" {
-	"c_pistol_anims\fire2.smd"
+$sequence "fire2_2hand" {
+	"c_pistol_anims_2hand\fire2_2hand.smd"
 	activity "ACT_VM_RECOIL2" 1
 	{ event AE_MUZZLEFLASH 0 "PISTOL MUZZLE" }
 	{ event 6001 0 "0" }
@@ -178,8 +178,8 @@ $sequence "fire2" {
 	fps 30
 }
 
-$sequence "fire3" {
-	"c_pistol_anims\fire3.smd"
+$sequence "fire3_2hand" {
+	"c_pistol_anims_2hand\fire3_2hand.smd"
 	activity "ACT_VM_RECOIL3" 1
 	{ event AE_MUZZLEFLASH 0 "PISTOL MUZZLE" }
 	{ event 6001 0 "0" }
@@ -190,8 +190,8 @@ $sequence "fire3" {
 	fps 30
 }
 
-$sequence "fireempty" {
-	"c_pistol_anims\fireempty.smd"
+$sequence "fireempty_2hand" {
+	"c_pistol_anims_2hand\fireempty_2hand.smd"
 	activity "ACT_VM_DRYFIRE" 1
 	fadein 0.2
 	fadeout 0.2
@@ -199,8 +199,8 @@ $sequence "fireempty" {
 	fps 30
 }
 
-$sequence "draw" {
-	"c_pistol_anims\draw.smd"
+$sequence "draw_2hand" {
+	"c_pistol_anims_2hand\draw_2hand.smd"
 	activity "ACT_VM_DRAW" 1
 	fadein 0.2
 	fadeout 0.2
@@ -209,8 +209,8 @@ $sequence "draw" {
 	fps 30
 }
 
-$sequence "drawempty" {
-	"c_pistol_anims\drawempty.smd"
+$sequence "drawempty_2hand" {
+	"c_pistol_anims_2hand\drawempty_2hand.smd"
 	activity "ACT_VM_DRAW_EMPTY" 1
 	fadein 0.2
 	fadeout 0.2
@@ -218,8 +218,8 @@ $sequence "drawempty" {
 	fps 30
 }
 
-$sequence "reload" {
-	"c_pistol_anims\reload.smd"
+$sequence "reload_2hand" {
+	"c_pistol_anims_2hand\reload_2hand.smd"
 	activity "ACT_VM_RELOAD" 1
 	fadein 0.2
 	fadeout 0.2
@@ -227,8 +227,8 @@ $sequence "reload" {
 	fps 30
 }
 
-$sequence "holster" {
-	"c_pistol_anims\holster.smd"
+$sequence "holster_2hand" {
+	"c_pistol_anims_2hand\holster_2hand.smd"
 	activity "ACT_VM_HOLSTER" 1
 	fadein 0.2
 	fadeout 0.2
@@ -236,8 +236,8 @@ $sequence "holster" {
 	fps 30
 }
 
-$sequence "holsterempty" {
-	"c_pistol_anims\holsterempty.smd"
+$sequence "holsterempty_2hand" {
+	"c_pistol_anims_2hand\holsterempty_2hand.smd"
 	activity "ACT_VM_HOLSTER_EMPTY" 1
 	fadein 0.2
 	fadeout 0.2
@@ -245,8 +245,8 @@ $sequence "holsterempty" {
 	fps 30
 }
 
-$sequence "idletolow" {
-	"c_pistol_anims\idletolow.smd"
+$sequence "idletolow_2hand" {
+	"c_pistol_anims_2hand\idletolow_2hand.smd"
 	activity "ACT_VM_LOWERED_TO_IDLE" 1
 	fadein 0.2
 	fadeout 0.2
@@ -254,8 +254,8 @@ $sequence "idletolow" {
 	fps 30
 }
 
-$sequence "lowtoidle" {
-	"c_pistol_anims\lowtoidle.smd"
+$sequence "lowtoidle_2hand" {
+	"c_pistol_anims_2hand\lowtoidle_2hand.smd"
 	activity "ACT_VM_IDLE_TO_LOWERED" 1
 	fadein 0.2
 	fadeout 0.2
@@ -263,8 +263,8 @@ $sequence "lowtoidle" {
 	fps 30
 }
 
-$sequence "lowidle" {
-	"c_pistol_anims\lowidle.smd"
+$sequence "lowidle_2hand" {
+	"c_pistol_anims_2hand\lowidle_2hand.smd"
 	activity "ACT_VM_IDLE_LOWERED" 1
 	fadein 0.2
 	fadeout 0.2

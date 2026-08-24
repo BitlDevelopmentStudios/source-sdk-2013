@@ -343,6 +343,7 @@ public:
 	// Weapon info accessors for data in the weapon's data file
 	const FileWeaponInfo_t	&GetWpnData( void ) const;
 	virtual const char		*GetViewModel( int viewmodelindex = 0 ) const;
+	virtual const char		*GetViewModel2Hand(int viewmodelindex = 0) const;
 	virtual const char		*GetWorldModel( void ) const;
 	virtual const char		*GetAnimPrefix( void ) const;
 	virtual int				GetMaxClip1( void ) const;
@@ -540,6 +541,7 @@ public:
 	virtual bool			CanLower( void ) { return false; }
 	virtual bool			Ready( void ) { return false; }
 	virtual bool			Lower( void ) { return false; }
+	virtual bool			HasLowered(void) { return false; }
 
 	bool					IsIronsighted(void);
 	virtual void			ToggleIronsights(void);
@@ -612,6 +614,7 @@ public:
 	bool					m_bFiringWholeClip;		// Are we in the middle of firing the whole clip;
 	// Weapon art
 	CNetworkVar( int, m_iViewModelIndex );
+	CNetworkVar( int, m_iViewModel2HandedIndex );
 	CNetworkVar( int, m_iWorldModelIndex );
 	// Sounds
 	float					m_flNextEmptySoundTime;				// delay on empty sound playing

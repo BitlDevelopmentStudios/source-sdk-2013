@@ -520,6 +520,8 @@ void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
 		}
 		else
 		{
+			CBaseHL2MPCombatWeapon* pWeapon = (CBaseHL2MPCombatWeapon*)GetActiveWeapon();
+
 			if (bWantsToChangeSprinting)
 			{
 				if (bWantSprint)
@@ -533,6 +535,21 @@ void CHL2MP_Player::HandleSpeedChanges(CMoveData* mv)
 			}
 
 			m_HL2Local.m_bNewSprinting = bSprinting;
+
+			if (bSprinting)
+			{
+				if (pWeapon && !pWeapon->HasLowered())
+				{
+					pWeapon->Lower();
+				}
+			}
+			else
+			{
+				if (pWeapon && pWeapon->HasLowered())
+				{
+					pWeapon->Ready();
+				}
+			}
 
 			CBaseCombatWeapon* myWeapon = GetActiveWeapon();
 			if (myWeapon && ((info.bADSWeapons && myWeapon->IsIronsighted()) || myWeapon->IsWeaponZoomed()))

@@ -1,6 +1,6 @@
 // Created by Crowbar 0.74
 
-$modelname "weapons/c_irifle.mdl"
+$modelname "weapons/c_irifle_2hand.mdl"
 
 $bodygroup "studio"
 {
@@ -141,10 +141,10 @@ $animation "a_vent_closed" "c_irifle_anims\a_vent_closed.smd" {
 	subtract "a_vent_closed_corrective_animation" 0
 }
 
-// one-handed
+// two-handed
 
-$sequence "IR_idle" {
-	"c_irifle_anims\IR_idle.smd"
+$sequence "IR_idle_2hand" {
+	"c_irifle_anims_2hand\IR_idle_2hand.smd"
 	activity "ACT_VM_IDLE" 1
 	fadein 0.2
 	fadeout 0.2
@@ -153,8 +153,8 @@ $sequence "IR_idle" {
 	loop
 }
 
-$sequence "IR_fire" {
-	"c_irifle_anims\IR_fire.smd"
+$sequence "IR_fire_2hand" {
+	"c_irifle_anims_2hand\IR_fire_2hand.smd"
 	activity "ACT_VM_PRIMARYATTACK" 1
 	{ event AE_MUZZLEFLASH 0 "COMBINE MUZZLE" }
 	fadein 0.2
@@ -164,8 +164,8 @@ $sequence "IR_fire" {
 	fps 30
 }
 
-$sequence "fire2" {
-	"c_irifle_anims\fire2.smd"
+$sequence "fire2_2hand" {
+	"c_irifle_anims_2hand\fire2_2hand.smd"
 	activity "ACT_VM_RECOIL1" 1
 	{ event AE_MUZZLEFLASH 0 "COMBINE MUZZLE" }
 	fadein 0.2
@@ -175,8 +175,8 @@ $sequence "fire2" {
 	fps 30
 }
 
-$sequence "fire3" {
-	"c_irifle_anims\fire3.smd"
+$sequence "fire3_2hand" {
+	"c_irifle_anims_2hand\fire3_2hand.smd"
 	activity "ACT_VM_RECOIL2" 1
 	{ event AE_MUZZLEFLASH 0 "COMBINE MUZZLE" }
 	fadein 0.2
@@ -186,8 +186,8 @@ $sequence "fire3" {
 	fps 30
 }
 
-$sequence "fire4" {
-	"c_irifle_anims\fire4.smd"
+$sequence "fire4_2hand" {
+	"c_irifle_anims_2hand\fire4_2hand.smd"
 	activity "ACT_VM_RECOIL3" 1
 	{ event AE_MUZZLEFLASH 0 "COMBINE MUZZLE" }
 	fadein 0.2
@@ -197,8 +197,8 @@ $sequence "fire4" {
 	fps 30
 }
 
-$sequence "IR_fire2" {
-	"c_irifle_anims\IR_fire2.smd"
+$sequence "IR_fire2_2hand" {
+	"c_irifle_anims_2hand\IR_fire2_2hand.smd"
 	activity "ACT_VM_SECONDARYATTACK" 1
 	{ event AE_MUZZLEFLASH 0 "COMBINE MUZZLE" }
 	fadein 0.2
@@ -207,8 +207,8 @@ $sequence "IR_fire2" {
 	fps 30
 }
 
-$sequence "IR_reload" {
-	"c_irifle_anims\IR_reload.smd"
+$sequence "IR_reload_2hand" {
+	"c_irifle_anims_2hand\IR_reload_2hand.smd"
 	activity "ACT_VM_RELOAD" 1
 	{ event AE_CL_PLAYSOUND 1 "Weapon_AR2.Reload_Rotate" }
 	{ event AE_CL_PLAYSOUND 19 "Weapon_AR2.Reload_Push" }
@@ -218,8 +218,8 @@ $sequence "IR_reload" {
 	fps 30
 }
 
-$sequence "IR_draw" {
-	"c_irifle_anims\IR_draw.smd"
+$sequence "IR_draw_2hand" {
+	"c_irifle_anims_2hand\IR_draw_2hand.smd"
 	activity "ACT_VM_DRAW" 1
 	fadein 0.2
 	fadeout 0.2
@@ -228,8 +228,8 @@ $sequence "IR_draw" {
 	fps 30
 }
 
-$sequence "IR_holster" {
-	"c_irifle_anims\IR_holster.smd"
+$sequence "IR_holster_2hand" {
+	"c_irifle_anims_2hand\IR_holster_2hand.smd"
 	activity "ACT_VM_HOLSTER" 1
 	fadein 0.2
 	fadeout 0.2
@@ -237,8 +237,8 @@ $sequence "IR_holster" {
 	fps 30
 }
 
-$sequence "idletolow" {
-	"c_irifle_anims\idletolow.smd"
+$sequence "idletolow_2hand" {
+	"c_irifle_anims_2hand\idletolow_2hand.smd"
 	activity "ACT_VM_LOWERED_TO_IDLE" 1
 	fadein 0.2
 	fadeout 0.2
@@ -246,8 +246,8 @@ $sequence "idletolow" {
 	fps 30
 }
 
-$sequence "lowtoidle" {
-	"c_irifle_anims\lowtoidle.smd"
+$sequence "lowtoidle_2hand" {
+	"c_irifle_anims_2hand\lowtoidle_2hand.smd"
 	activity "ACT_VM_IDLE_TO_LOWERED" 1
 	fadein 0.2
 	fadeout 0.2
@@ -255,8 +255,8 @@ $sequence "lowtoidle" {
 	fps 30
 }
 
-$sequence "lowidle" {
-	"c_irifle_anims\lowidle.smd"
+$sequence "lowidle_2hand" {
+	"c_irifle_anims_2hand\lowidle_2hand.smd"
 	activity "ACT_VM_IDLE_LOWERED" 1
 	fadein 0.2
 	fadeout 0.2
@@ -265,8 +265,8 @@ $sequence "lowidle" {
 	loop
 }
 
-$sequence "shake" {
-	"c_irifle_anims\shake.smd"
+$sequence "shake_2hand" {
+	"c_irifle_anims_2hand\shake_2hand.smd"
 	activity "ACT_VM_FIDGET" 1
 	fadein 0.2
 	fadeout 0.2

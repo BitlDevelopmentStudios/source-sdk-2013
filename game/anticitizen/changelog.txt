@@ -28,6 +28,7 @@ Alpha v3:
 - Improved Freeman choosing when the player chosen as Freeman leaves the game.
 - Added an option for spectating.
 	- Spectating can be disabled by setting mp_allowspectators to 0.
+- Weapons are now lowered when sprinting.
 - Overwatch Female Assassin overhauls:
 	- Dual Pistols:
 		- Each pistol now has their own accuracy penalty that applies the next time the pistol is shot.
