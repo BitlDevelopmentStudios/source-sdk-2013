@@ -61,6 +61,8 @@ ConVar sv_roundlimit("sv_roundlimit", "5", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 
 ConVar sv_spectatorlimit("sv_spectatorlimit", "2", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 
+ConVar sv_friendlyfire_deathnotice("sv_friendlyfire_deathnotice", "0", FCVAR_GAMEDLL | FCVAR_NOTIFY);
+
 extern ConVar mp_chattime;
 
 extern CBaseEntity	 *g_pLastCombineSpawn;
@@ -1576,6 +1578,9 @@ void CHL2MPRules::DeathNotice( CBasePlayer *pVictim, const CTakeDamageInfo &info
 	CBaseEntity *pInflictor = info.GetInflictor();
 	CBaseEntity *pKiller = info.GetAttacker();
 	CBasePlayer *pScorer = GetDeathScorer( pKiller, pInflictor );
+
+	if (sv_friendlyfire_deathnotice.GetBool() && (pScorer->GetTeamNumber() == pVictim->GetTeamNumber()))
+		return;
 
 	// Custom kill type?
 	if ( info.GetDamageCustom() )
