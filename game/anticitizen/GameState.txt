@@ -4,15 +4,15 @@
 	{
 		"id"		"1"
 		"value"		"0"
-		"data"		"23"
+		"data"		"25"
 		"hud"		"0"
-		"msg"		"0"
+		"msg"		"1"
 	}
 	"2"
 	{
 		"id"		"2"
 		"value"		"0"
-		"data"		"125"
+		"data"		"149"
 		"hud"		"0"
 		"msg"		"1"
 	}
@@ -41,15 +41,15 @@
 	{
 		"id"		"1003"
 		"value"		"0"
-		"data"		"14"
+		"data"		"15"
 		"hud"		"0"
-		"msg"		"2"
+		"msg"		"3"
 	}
 	"7"
 	{
 		"id"		"1004"
 		"value"		"0"
-		"data"		"14"
+		"data"		"15"
 		"hud"		"0"
 		"msg"		"1"
 	}
@@ -57,7 +57,7 @@
 	{
 		"id"		"1005"
 		"value"		"0"
-		"data"		"14"
+		"data"		"15"
 		"hud"		"0"
 		"msg"		"0"
 	}
