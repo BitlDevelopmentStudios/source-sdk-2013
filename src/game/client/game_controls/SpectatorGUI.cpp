@@ -689,16 +689,8 @@ void CSpectatorGUI::Update()
 		memset( playerName, 0x0, sizeof( playerName ) );
 
 		g_pVGuiLocalize->ConvertANSIToUnicode( UTIL_SafeName(gr->GetPlayerName( playernum )), playerName, sizeof( playerName ) );
-		int iHealth = gr->GetHealth( playernum );
-		if ( iHealth > 0  && gr->IsAlive(playernum) )
-		{
-			_snwprintf( health, ARRAYSIZE( health ), L"%i", iHealth );
-			g_pVGuiLocalize->ConstructString_safe( playerText, g_pVGuiLocalize->Find( "#Spec_PlayerItem_Team" ), 2, playerName,  health );
-		}
-		else
-		{
-			g_pVGuiLocalize->ConstructString_safe( playerText, g_pVGuiLocalize->Find( "#Spec_PlayerItem" ), 1, playerName );
-		}
+		
+		g_pVGuiLocalize->ConstructString_safe(playerText, g_pVGuiLocalize->Find("#Spec_PlayerItem"), 1, playerName);
 
 		m_pPlayerLabel->SetText( playerText );
 	}
