@@ -12,6 +12,7 @@
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+#include <hl2mp_player.h>
 
 ConVar sk_dynamic_resupply_modifier( "sk_dynamic_resupply_modifier","1.0" );
 extern ConVar sk_battery;
@@ -470,6 +471,18 @@ void CItem_DynamicResupply::ComputeHealthRatios( CItem_DynamicResupply* pMaster,
 			// Health
 			flMax = pPlayer->GetMaxHealth();
 
+			CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
+
+			if (pHL2MPPlayer)
+			{
+				if (pHL2MPPlayer->GetPlayerClass() > CLS_INVALID)
+				{
+					const CAnticitizen_FilePlayerClassInfo_t& pPlayerClassInfo = pHL2MPPlayer->GetPlayerClassInfo();
+
+					flMax = pPlayerClassInfo.iHealth;
+				}
+			}
+
 			float flCurrentHealth = pPlayer->GetHealth() + (pSpawnInfo[i].m_iPotentialItems * sk_healthkit.GetFloat());
 			pSpawnInfo[i].m_flCurrentRatio = (flCurrentHealth / flMax);
 		}
@@ -518,7 +531,14 @@ void CItem_DynamicResupply::ComputeAmmoRatios( CItem_DynamicResupply* pMaster, C
 		Assert( iAmmoType != -1 );
 
 		// Ignore ammo types if we don't have a weapon that uses it (except for the grenade)
-		if ( (i != DS_GRENADE_INDEX) && !pPlayer->Weapon_GetWpnForAmmo( iAmmoType ) )
+
+		CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pPlayer);
+
+		bool bBehavior = (pHL2MPPlayer && pHL2MPPlayer->IsFreeman() ?
+			((i != DS_GRENADE_INDEX) && !pPlayer->Weapon_GetWpnForAmmo(iAmmoType)) : 
+			!pPlayer->Weapon_GetWpnForAmmo(iAmmoType));
+
+		if (bBehavior)
 		{
 			pSpawnInfo[i].m_flCurrentRatio = 1.0;
 		}

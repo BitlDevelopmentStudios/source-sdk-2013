@@ -1,6 +1,7 @@
 Alpha v4:
 - Altered the fan area in hunt_lockdown.
 - Improved crate item behavior.
+	- The game will now ignore grenades if the player does not have any grenades. Freeman is the only exception.
 
 Alpha v3:
 - Updated LUX shaders.
