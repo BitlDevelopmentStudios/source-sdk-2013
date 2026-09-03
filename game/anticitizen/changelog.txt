@@ -1,6 +1,6 @@
 Alpha v4:
 - Altered the fan area in hunt_lockdown.
-- Fixed some crate items respawning.
+- Improved crate item behavior.
 
 Alpha v3:
 - Updated LUX shaders.
