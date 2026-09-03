@@ -839,7 +839,7 @@ Scheme
 			{
 				// funny.
 				"name"		"GorDIN"
-				"tall"		"8"
+				"tall"		"9"
 				"weight"	"1000"
 				"additive"	"0"
 				"antialias" "1"
