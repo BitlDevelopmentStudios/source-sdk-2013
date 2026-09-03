@@ -1,0 +1,8 @@
+"ServerFinderConfig"
+{
+	"map"		"dm_steamlab"
+	"israndommap"		"1"
+	"maxplayers"		"7"
+	"MaxPing"		"0"
+	"RespawnTimes"		"0"
+}

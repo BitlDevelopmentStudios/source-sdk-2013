@@ -63,6 +63,8 @@ ConVar sv_spectatorlimit("sv_spectatorlimit", "2", FCVAR_GAMEDLL | FCVAR_NOTIFY)
 
 ConVar sv_friendlyfire_deathnotice("sv_friendlyfire_deathnotice", "0", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 
+ConVar sv_randomize_freeman_player("sv_randomize_freeman_player", "0", FCVAR_GAMEDLL | FCVAR_NOTIFY);
+
 extern ConVar mp_chattime;
 
 extern CBaseEntity	 *g_pLastCombineSpawn;
@@ -893,6 +895,16 @@ void CHL2MPRules::Announce(bool gameend)
 #endif
 }
 
+#ifndef CLIENT_DLL
+void CHL2MPRules::SetNextPlayerToBecomeFreeman(CHL2MP_Player* pPlayer)
+{
+	if (!sv_randomize_freeman_player.GetBool())
+	{
+		pNextPlayerToBecomeFreeman = pPlayer;
+	}
+}
+#endif
+
 void CHL2MPRules::AwardGameEndAchievements()
 {
 #ifndef CLIENT_DLL
@@ -1057,6 +1069,9 @@ void CHL2MPRules::Think( void )
 						if (!pPlayer)
 							continue;
 
+						if (pPlayer->GetTeamNumber() == TEAM_SPECTATOR)
+							continue;
+
 						pPlayer->RemoveFlag(FL_FROZEN);
 						pPlayer->RemoveFlag(FL_GODMODE);
 						pPlayer->RemoveFlag(FL_NOTARGET);
@@ -1087,6 +1102,9 @@ void CHL2MPRules::Think( void )
 					CBasePlayer* pPlayer = UTIL_PlayerByIndex(i);
 
 					if (!pPlayer)
+						continue;
+
+					if (pPlayer->GetTeamNumber() == TEAM_SPECTATOR)
 						continue;
 
 					pPlayer->AddFlag(FL_FROZEN);
@@ -1147,7 +1165,7 @@ void CHL2MPRules::Think( void )
 						{
 							CSteamID id;
 							pFreeman->GetSteamID(&id);
-							pNextPlayerToBecomeFreeman = ToHL2MPPlayer(UTIL_PlayerBySteamID(id));
+							SetNextPlayerToBecomeFreeman(ToHL2MPPlayer(UTIL_PlayerBySteamID(id)));
 						}
 					}
 
@@ -1235,7 +1253,7 @@ void CHL2MPRules::GoToIntermission(void)
 		if ( !pPlayer )
 			continue;
 
-		pPlayer->ShowViewPortPanel( PANEL_SCOREBOARD );
+		pPlayer->ShowViewPortPanel(PANEL_SCOREBOARD);
 		pPlayer->AddFlag( FL_FROZEN );
 		pPlayer->AddFlag(FL_GODMODE);
 		pPlayer->AddFlag(FL_NOTARGET);
@@ -1491,6 +1509,7 @@ convar_tags_t convars_to_check_for_tags[] =
 	{ "mp_fadetoblack", "fadetoblack", NULL },
 	{ "mp_disable_respawn_times", "norespawntime", NULL },
 	{ "hl2mp_bot_count", "bots", NULL },
+	{ "sv_randomize_freeman_player", "randomizedfreeman", NULL}
 };
 
 //-----------------------------------------------------------------------------

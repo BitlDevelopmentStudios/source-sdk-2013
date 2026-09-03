@@ -822,6 +822,29 @@ Scheme
 				"antialias"	"1"
 			}
 		}
+		"TeamHealthFont"
+		{
+			"1"
+			{
+				"name"		"Verdana"
+				"tall"		"8"
+				"weight"	"700"
+				"additive"	"0"
+				"antialias" "1"
+			}
+		}
+		"TeamHealthFreemanFont"
+		{
+			"1"
+			{
+				// funny.
+				"name"		"GorDIN"
+				"tall"		"8"
+				"weight"	"1000"
+				"additive"	"0"
+				"antialias" "1"
+			}
+		}
 		// this is the symbol font
 		"Marlett"
 		{

@@ -178,10 +178,7 @@ public:
 	void	ManageObjectRelocation( void );
 	const char *GetChatFormat( bool bTeamOnly, CBasePlayer *pPlayer );
 
-	void SetNextPlayerToBecomeFreeman(CHL2MP_Player* pPlayer) 
-	{ 
-		pNextPlayerToBecomeFreeman = pPlayer; 
-	}
+	void SetNextPlayerToBecomeFreeman(CHL2MP_Player* pPlayer);
 
 	CHL2MP_Player* GetNextPlayerToBecomeFreeman(void) 
 	{

@@ -125,6 +125,13 @@ DESCRIPTION SERVER_OPTIONS
 		{ "5" }
 	}
 	
+	"sv_randomize_freeman_player"
+	{
+		"#anticitizen_always_randomize_freeman"
+		{ BOOL }
+		{ "0" }
+	}
+	
 	"sv_freemanroundlimit"
 	{
 		"#anticitizen_max_rounds_freeman"

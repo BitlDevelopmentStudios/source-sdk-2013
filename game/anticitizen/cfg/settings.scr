@@ -32,7 +32,7 @@
 
 
 // Half-Life Server Configuration Layout Script (stores last settings chosen, too)
-// File generated:  Sun Aug 30 04:00:14 PM
+// File generated:  Wed Sep  2 08:32:59 PM
 //
 //
 // Cvar	-	Setting
@@ -116,6 +116,13 @@ DESCRIPTION SERVER_OPTIONS
 		"#anticitizen_max_rounds"
 		{ NUMBER 1 99 }
 		{ "5" }
+	}
+
+	"sv_randomize_freeman_player"
+	{
+		"#anticitizen_always_randomize_freeman"
+		{ BOOL }
+		{ "0" }
 	}
 
 	"sv_freemanroundlimit"

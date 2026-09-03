@@ -866,4 +866,15 @@
 		"BarChunkWidth" "2"
 		"BarChunkGap" "1"
 	}
+	
+	HudTeamHealth
+	{
+		"fieldName" "HudTeamHealth"
+		"visible" "1"
+		"enabled" "1"
+		"xpos"	"0"
+		"ypos"	"0"
+		"wide"	"f0"
+		"tall"	"f0"
+	}
 }
