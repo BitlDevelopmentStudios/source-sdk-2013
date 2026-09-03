@@ -312,6 +312,36 @@ void CItem_DynamicResupply::InputBecomeMaster( inputdata_t &data )
 	SetThink( NULL );
 }
 
+void SpawnItem(const char *pEntName, const Vector &origin, const QAngle &angles, CBaseEntity* pSpawner)
+{
+	CBaseEntity* pEnt = CBaseEntity::Create(pEntName, origin, angles, pSpawner);
+	pEnt->AddSpawnFlags(SF_NORESPAWN);
+
+	pEnt->SetAbsVelocity(pSpawner->GetAbsVelocity());
+	pEnt->SetLocalAngularVelocity(pSpawner->GetLocalAngularVelocity());
+
+	Vector newOrigin = origin;
+
+	// Move the entity up so that it doesn't go below the spawn origin
+	Vector vecWorldMins, vecWorldMaxs;
+	pEnt->CollisionProp()->WorldSpaceAABB(&vecWorldMins, &vecWorldMaxs);
+	if (vecWorldMins.z < newOrigin.z)
+	{
+		float dz = newOrigin.z - vecWorldMins.z;
+		newOrigin.z += dz;
+		vecWorldMaxs.z += dz;
+	}
+
+	// Update the spawn position to spawn them on top of each other
+	newOrigin.z = vecWorldMaxs.z + 6.0f;
+
+	newOrigin.x += random->RandomFloat(-6, 6);
+	newOrigin.y += random->RandomFloat(-6, 6);
+
+	pEnt->SetAbsOrigin(newOrigin);
+	pEnt->Spawn();
+}
+
 
 //-----------------------------------------------------------------------------
 // Chooses an item when the player is full
@@ -346,7 +376,7 @@ void CItem_DynamicResupply::SpawnFullItem( CItem_DynamicResupply *pMaster, CBase
 		// If we're supposed to fallback to just a health vial, do that and finish.
 		if ( pMaster->HasSpawnFlags(SF_DYNAMICRESUPPLY_FALLBACK_TO_VIAL) )
 		{
-			CBaseEntity::Create( "item_healthvial", GetAbsOrigin(), GetAbsAngles(), this );
+			SpawnItem("item_healthvial", GetAbsOrigin(), GetAbsAngles(), this);
 
 			if ( iDebug )
 			{
@@ -365,7 +395,7 @@ void CItem_DynamicResupply::SpawnFullItem( CItem_DynamicResupply *pMaster, CBase
 	{
 		if ( flChoice <= flRatio[i] )
 		{
-			CBaseEntity::Create( g_DynamicResupplyAmmoItems[i].sEntityName, GetAbsOrigin(), GetAbsAngles(), this );
+			SpawnItem(g_DynamicResupplyAmmoItems[i].sEntityName, GetAbsOrigin(), GetAbsAngles(), this);
 
 			if ( iDebug )
 			{
@@ -543,26 +573,7 @@ bool CItem_DynamicResupply::SpawnItemFromRatio( int nCount, DynamicResupplyItems
 		Msg("Chosen item: %s (had farthest delta, %.2f)\n", pItems[iSelectedIndex].sEntityName, pSpawnInfo[iSelectedIndex].m_flDelta );
 	}
 
-	CBaseEntity *pEnt = CBaseEntity::Create( pItems[iSelectedIndex].sEntityName, *pVecSpawnOrigin, GetAbsAngles(), this );
-	pEnt->SetAbsVelocity( GetAbsVelocity() );
-	pEnt->SetLocalAngularVelocity( GetLocalAngularVelocity() );
-
-	// Move the entity up so that it doesn't go below the spawn origin
-	Vector vecWorldMins, vecWorldMaxs;
-	pEnt->CollisionProp()->WorldSpaceAABB( &vecWorldMins, &vecWorldMaxs );
-	if ( vecWorldMins.z < pVecSpawnOrigin->z )
-	{
-		float dz = pVecSpawnOrigin->z - vecWorldMins.z;
-		pVecSpawnOrigin->z += dz;
-		vecWorldMaxs.z += dz;
-		pEnt->SetAbsOrigin( *pVecSpawnOrigin ); 
-	}
-
-	// Update the spawn position to spawn them on top of each other
-	pVecSpawnOrigin->z = vecWorldMaxs.z + 6.0f;
-
-	pVecSpawnOrigin->x += random->RandomFloat( -6, 6 );
-	pVecSpawnOrigin->y += random->RandomFloat( -6, 6 );
+	SpawnItem(pItems[iSelectedIndex].sEntityName, *pVecSpawnOrigin, GetAbsAngles(), this);
 
 	return true;
 }
