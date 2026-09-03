@@ -9,10 +9,10 @@
 #include "props.h"
 #include "items.h"
 #include "ammodef.h"
+#include "hl2mp_player.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
-#include <hl2mp_player.h>
 
 ConVar sk_dynamic_resupply_modifier( "sk_dynamic_resupply_modifier","1.0" );
 extern ConVar sk_battery;
