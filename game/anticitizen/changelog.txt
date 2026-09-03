@@ -34,7 +34,7 @@ Alpha v3:
 - Added team health bars in place of the "target id" system.
 	- These health bars also show up in spectator mode.
 	- These can be disabled with the cl_show_teamhealthbars command for non-spectator mode or cl_show_teamhealthbars_spec in spectator mode.
-- Added an option, sv_randomize_freeman_player, which enables the game to always randomize Freeman players before a round starts. This means that the latest player who kills Freeman doesn't instantly become Freeman in the next round. This replicates older versions of Anticitizen One that had this functionality.
+- Added an option, sv_randomize_freeman_player, which enables the game to always choose a random Freeman player before a round starts. This means that the latest player who kills Freeman doesn't instantly become Freeman in the next round. This replicates older versions of Anticitizen One that had this functionality.
 - Overwatch Female Assassin overhauls:
 	- Dual Pistols:
 		- Each pistol now has their own accuracy penalty that applies the next time the pistol is shot.
