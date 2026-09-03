@@ -547,6 +547,14 @@ void CHL2MPRules::SelectFreeman(void)
 
 	CHL2MP_Player* pPlayer = NULL;
 
+	if (sv_randomize_freeman_player.GetBool())
+	{
+		if (pNextPlayerToBecomeFreeman)
+		{
+			pNextPlayerToBecomeFreeman = NULL;
+		}
+	}
+
 	if (pNextPlayerToBecomeFreeman)
 	{
 		if (!pNextPlayerToBecomeFreeman->IsDisconnecting())
