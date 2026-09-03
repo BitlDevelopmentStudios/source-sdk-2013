@@ -32,7 +32,7 @@
 
 
 // Half-Life Server Configuration Layout Script (stores last settings chosen, too)
-// File generated:  Wed Sep  2 09:23:19 PM
+// File generated:  Thu Sep  3 10:06:50 AM
 //
 //
 // Cvar	-	Setting
@@ -122,7 +122,7 @@ DESCRIPTION SERVER_OPTIONS
 	{
 		"#anticitizen_always_randomize_freeman"
 		{ BOOL }
-		{ "0" }
+		{ "1" }
 	}
 
 	"sv_freemanroundlimit"

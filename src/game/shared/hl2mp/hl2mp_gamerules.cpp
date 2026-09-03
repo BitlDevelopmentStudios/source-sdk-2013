@@ -1606,7 +1606,7 @@ void CHL2MPRules::DeathNotice( CBasePlayer *pVictim, const CTakeDamageInfo &info
 	CBaseEntity *pKiller = info.GetAttacker();
 	CBasePlayer *pScorer = GetDeathScorer( pKiller, pInflictor );
 
-	if (!sv_friendlyfire_deathnotice.GetBool() && (pScorer->GetTeamNumber() == pVictim->GetTeamNumber()) && (pScorer != pVictim) )
+	if (!sv_friendlyfire_deathnotice.GetBool() && pScorer && pVictim && (pScorer->GetTeamNumber() == pVictim->GetTeamNumber()) && (pScorer != pVictim) )
 		return;
 
 	// Custom kill type?
