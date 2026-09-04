@@ -130,6 +130,16 @@ void TFPlayerClassData_t::Parse( const char *szName )
 		ParseData( pKV );
 		pKV->deleteThis();
 	}
+	else
+	{
+		// then we load it as an unencrypted file.
+		pKV = ReadEncryptedKVFile( filesystem, szName, NULL );
+		if ( pKV)
+		{
+			ParseData( pKV );
+			pKV->deleteThis();
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
