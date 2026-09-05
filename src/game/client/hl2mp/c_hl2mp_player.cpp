@@ -21,6 +21,8 @@
 #include "iviewrender.h"
 #include "in_main.h"
 #include "input.h"
+#include "fx_blood.h"
+#include "effect_color_tables.h"
 
 // Don't alias here
 #if defined( CHL2MP_Player )
@@ -37,6 +39,8 @@ ConVar sv_infinite_aux_power( "sv_infinite_aux_power", "0", FCVAR_CHEAT | FCVAR_
 
 ConVar cl_combineoverlay("cl_combineoverlay", "1", FCVAR_ARCHIVE);
 ConVar cl_freeman_hl2deathcamera("cl_freeman_hl2deathcamera", "1", FCVAR_ARCHIVE);
+ConVar cl_ragdollblood("cl_ragdollblood", "1", FCVAR_ARCHIVE);
+ConVar cl_ragdollblood_simulated_dmgamount("cl_ragdollblood_simulated_dmgamount", "15", FCVAR_ARCHIVE);
 
 LINK_ENTITY_TO_CLASS( player, C_HL2MP_Player );
 
@@ -1113,6 +1117,13 @@ void C_HL2MPRagdoll::ImpactTrace( trace_t *pTrace, int iDamageType, const char *
 
 		// Blood spray!
 //		FX_CS_BloodSpray( hitpos, dir, 10 );
+		
+		if (cl_ragdollblood.GetBool())
+		{
+			// color definition is hacky
+			SpawnBlood(hitpos, dir, BloodColor(), cl_ragdollblood_simulated_dmgamount.GetFloat());// a little surface blood.
+			TraceBleed(cl_ragdollblood_simulated_dmgamount.GetFloat(), dir, pTrace, iDamageType);
+		}
 	}
 
 	m_pRagdoll->ResetRagdollSleepAfterTime();

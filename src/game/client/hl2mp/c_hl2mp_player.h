@@ -227,6 +227,11 @@ public:
 	void UpdateOnRemove( void );
 	virtual void SetupWeights( const matrix3x4_t *pBoneToWorld, int nFlexWeightCount, float *pFlexWeights, float *pFlexDelayedWeights );
 	
+	int BloodColor() OVERRIDE
+	{
+		return BLOOD_COLOR_RED;
+	}
+
 private:
 	
 	C_HL2MPRagdoll( const C_HL2MPRagdoll & ) {}
