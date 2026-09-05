@@ -22,7 +22,6 @@
 #include "in_main.h"
 #include "input.h"
 #include "fx_blood.h"
-#include "effect_color_tables.h"
 
 // Don't alias here
 #if defined( CHL2MP_Player )
