@@ -7,6 +7,7 @@ Alpha v4:
 	- cl_ragdollblood_simulated_dmgamount < 10 = low blood
 	- cl_ragdollblood_simulated_dmgamount < 25 = medium blood
 	- cl_ragdollblood_simulated_dmgamount >= 25 = high blood
+- cl_ragdoll_collide is now a savable setting and is enabled by default.
 
 Alpha v3:
 - Updated LUX shaders.
