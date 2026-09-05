@@ -116,11 +116,15 @@ bool CBaseHL2MPCombatWeapon::Ready( void )
 	
 	CHL2MP_Player* pPlayer = assert_cast<CHL2MP_Player*>(GetOwner());
 	// Stomp the next attack time to fix the fact that the lower idles are long
-	float adjraise = gpGlobals->curtime + 0.1f;
-	pPlayer->SetNextAttack(adjraise);
-	m_flNextPrimaryAttack = adjraise;
-	m_flNextSecondaryAttack = adjraise;
-	return true;
+	if (pPlayer)
+	{
+		float adjraise = gpGlobals->curtime + 0.1f;
+		pPlayer->SetNextAttack(adjraise);
+		m_flNextPrimaryAttack = adjraise;
+		m_flNextSecondaryAttack = adjraise;
+		return true;
+	}
+	return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -134,7 +138,7 @@ bool CBaseHL2MPCombatWeapon::Deploy( void )
 	if ( GetOwner() && GetOwner()->IsPlayer() )
 	{
 		CHL2MP_Player *pPlayer = assert_cast<CHL2MP_Player*>( GetOwner() );
-		if ( pPlayer->IsWeaponLowered() )
+		if (pPlayer && pPlayer->IsWeaponLowered() )
 		{
 			if ( SelectWeightedSequence( ACT_VM_IDLE_LOWERED ) != ACTIVITY_NOT_AVAILABLE )
 			{
@@ -142,10 +146,11 @@ bool CBaseHL2MPCombatWeapon::Deploy( void )
 				{
 					m_bLowered = true;
 
+					float adjraise = gpGlobals->curtime + 1.0f;
 					// Stomp the next attack time to fix the fact that the lower idles are long
-					pPlayer->SetNextAttack( gpGlobals->curtime + 1.0 );
-					m_flNextPrimaryAttack = gpGlobals->curtime + 1.0;
-					m_flNextSecondaryAttack	= gpGlobals->curtime + 1.0;
+					pPlayer->SetNextAttack(adjraise);
+					m_flNextPrimaryAttack = adjraise;
+					m_flNextSecondaryAttack	= adjraise;
 					return true;
 				}
 			}
