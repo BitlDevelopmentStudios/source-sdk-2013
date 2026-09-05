@@ -113,6 +113,13 @@ bool CBaseHL2MPCombatWeapon::Ready( void )
 
 	m_bLowered = false;	
 	m_flRaiseTime = gpGlobals->curtime + 0.5f;
+	
+	CHL2MP_Player* pPlayer = assert_cast<CHL2MP_Player*>(GetOwner());
+	// Stomp the next attack time to fix the fact that the lower idles are long
+	float adjraise = gpGlobals->curtime + 0.1f;
+	pPlayer->SetNextAttack(adjraise);
+	m_flNextPrimaryAttack = adjraise;
+	m_flNextSecondaryAttack = adjraise;
 	return true;
 }
 

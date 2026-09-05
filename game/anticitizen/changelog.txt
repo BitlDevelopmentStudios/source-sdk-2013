@@ -8,6 +8,7 @@ Alpha v4:
 	- cl_ragdollblood_simulated_dmgamount < 25 = medium blood
 	- cl_ragdollblood_simulated_dmgamount >= 25 = high blood
 - cl_ragdoll_collide is now a savable setting and is enabled by default.
+- Fixed an exploit where you can queue shots from an automatic weapon when your weapon is lowered, making you be able to fire your entire magazine in one frame.
 
 Alpha v3:
 - Updated LUX shaders.
