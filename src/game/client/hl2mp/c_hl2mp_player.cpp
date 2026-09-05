@@ -1117,7 +1117,7 @@ void C_HL2MPRagdoll::ImpactTrace( trace_t *pTrace, int iDamageType, const char *
 		// Blood spray!
 //		FX_CS_BloodSpray( hitpos, dir, 10 );
 		
-		if (cl_ragdollblood.GetBool())
+		if (cl_ragdollblood.GetBool() && (g_Language.GetInt() != LANGUAGE_GERMAN) && (BloodColor() != DONT_BLEED))
 		{
 			// color definition is hacky
 			SpawnBlood(hitpos, dir, BloodColor(), cl_ragdollblood_simulated_dmgamount.GetFloat());// a little surface blood.
