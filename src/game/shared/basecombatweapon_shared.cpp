@@ -2008,9 +2008,6 @@ void CBaseCombatWeapon::ItemPostFrame( void )
 	// Secondary attack has priority
 	if ( ( pOwner->m_nButtons & IN_ATTACK2 ) )
 	{
-		if (HasLowered())
-			return;
-
 		if ( UsesSecondaryAmmo() && pOwner->GetAmmoCount(m_iSecondaryAmmoType) <= 0 )
 		{
 			if (m_flNextEmptySoundTime < gpGlobals->curtime)
@@ -2056,9 +2053,6 @@ void CBaseCombatWeapon::ItemPostFrame( void )
 	
 	if ( !bFired && (pOwner->m_nButtons & IN_ATTACK) && (m_flNextPrimaryAttack <= gpGlobals->curtime))
 	{
-		if (HasLowered())
-			return;
-
 		// Clip empty? Or out of ammo on a no-clip weapon?
 		if ( !IsMeleeWeapon() &&  
 			(( UsesClipsForAmmo1() && m_iClip1 <= 0) || ( !UsesClipsForAmmo1() && pOwner->GetAmmoCount(m_iPrimaryAmmoType)<=0 )) )

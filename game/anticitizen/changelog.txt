@@ -9,6 +9,7 @@ Alpha v4:
 	- cl_ragdollblood_simulated_dmgamount >= 25 = high blood
 - cl_ragdoll_collide is now a savable setting and is enabled by default.
 - Fixed an exploit where you can queue shots from an automatic weapon when your weapon is lowered, making you be able to fire your entire magazine in one frame.
+- Players can now shoot their weapon while sprinting while preserving the lower weapon animation. This replicates Combine Soldier NPC behavior, as they can be seen lowering their weapon when sprinting as well as firing their weapon when sprinting.
 
 Alpha v3:
 - Updated LUX shaders.

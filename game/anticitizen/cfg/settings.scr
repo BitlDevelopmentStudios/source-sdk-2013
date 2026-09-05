@@ -32,7 +32,7 @@
 
 
 // Half-Life Server Configuration Layout Script (stores last settings chosen, too)
-// File generated:  Fri Sep  4 08:18:01 PM
+// File generated:  Fri Sep  4 11:15:36 PM
 //
 //
 // Cvar	-	Setting
@@ -80,7 +80,7 @@ DESCRIPTION SERVER_OPTIONS
 	{
 		"#Cstrike_Bot_NumberOfBots"
 		{ NUMBER 0 6 }
-		{ "6" }
+		{ "0" }
 	}
 
 	"hl2mp_bot_difficulty"
@@ -101,7 +101,7 @@ DESCRIPTION SERVER_OPTIONS
 	{
 		"#anticitizen_waitime_round"
 		{ NUMBER 0 90 }
-		{ "9999" }
+		{ "30" }
 	}
 
 	"sv_startplaywaitime"

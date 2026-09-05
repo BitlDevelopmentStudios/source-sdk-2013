@@ -97,6 +97,15 @@ bool CBaseHL2MPCombatWeapon::Lower( void )
 	if ( SelectWeightedSequence( ACT_VM_IDLE_LOWERED ) == ACTIVITY_NOT_AVAILABLE )
 		return false;
 
+	// can't be lowered while reloading
+	if (m_bInReload)
+	{
+		m_bLowered = false;
+		// raised right now for a reload.
+		m_flRaiseTime = gpGlobals->curtime;
+		return false;
+	}
+
 	m_bLowered = true;
 	return true;
 }
@@ -111,8 +120,17 @@ bool CBaseHL2MPCombatWeapon::Ready( void )
 	if ( SelectWeightedSequence( ACT_VM_LOWERED_TO_IDLE ) == ACTIVITY_NOT_AVAILABLE )
 		return false;
 
-	m_bLowered = false;	
-	m_flRaiseTime = gpGlobals->curtime + 0.5f;
+	m_bLowered = false;
+
+	if (m_bInReload)
+	{
+		// raised right now for a reload.
+		m_flRaiseTime = gpGlobals->curtime;
+	}
+	else
+	{
+		m_flRaiseTime = gpGlobals->curtime + 0.5f;
+	}
 	
 	CHL2MP_Player* pPlayer = assert_cast<CHL2MP_Player*>(GetOwner());
 	// Stomp the next attack time to fix the fact that the lower idles are long
