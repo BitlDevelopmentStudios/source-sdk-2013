@@ -131,11 +131,21 @@ void CWeaponHL2MPBase::CreateMuzzleSmokeEffect()
 //Tony; override for animation purposes.
 bool CWeaponHL2MPBase::Reload(void)
 {
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
+
+	if (!pPlayer)
+		return false;
+
+	if (HasLowered())
+	{
+		Ready();
+	}
+
 	bool fRet = DefaultReload(GetMaxClip1(), GetMaxClip2(), ACT_VM_RELOAD);
 	if (fRet)
 	{
 		//		WeaponSound( RELOAD );
-		ToHL2MPPlayer(GetOwner())->DoAnimationEvent(PLAYERANIMEVENT_RELOAD);
+		pPlayer->DoAnimationEvent(PLAYERANIMEVENT_RELOAD);
 	}
 	return fRet;
 }
