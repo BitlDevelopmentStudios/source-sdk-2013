@@ -136,7 +136,7 @@ DESCRIPTION SERVER_OPTIONS
 	{
 		"#anticitizen_max_rounds_freeman"
 		{ NUMBER 1 99 }
-		{ "3" }
+		{ "2" }
 	}
 
 	"mp_footsteps"

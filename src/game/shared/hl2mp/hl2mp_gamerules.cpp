@@ -55,7 +55,7 @@ ConVar sv_minplayerstostart("sv_minplayerstostart", "2", FCVAR_GAMEDLL | FCVAR_N
 ConVar sv_startwaitime("sv_startwaitime", "30", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 ConVar sv_startplaywaitime("sv_startplaywaitime", "5", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 
-ConVar sv_freemanroundlimit("sv_freemanroundlimit", "3", FCVAR_GAMEDLL | FCVAR_NOTIFY);
+ConVar sv_freemanroundlimit("sv_freemanroundlimit", "2", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 
 ConVar sv_roundlimit("sv_roundlimit", "5", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 
