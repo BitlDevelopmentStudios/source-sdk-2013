@@ -523,13 +523,14 @@ void CHL2MPRules::CheckLastMemberLeft(void)
 			if (!pPlayer)
 				continue;
 
-			if (!pPlayer->IsAlive())
-				continue;
-
 			if (pPlayer->GetTeam() != pCombine)
 				continue;
 
-			pPlayer->SpeakSentence("LAST_OF_SQUAD", SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
+			if (pPlayer->IsAlive())
+			{
+				pPlayer->SpeakSentence("LAST_OF_SQUAD", SENTENCE_PRIORITY_INVALID, SENTENCE_CRITERIA_ALWAYS);
+			}
+
 			pPlayer->ToggleGlow(true);
 			Color teamColor = COLOR_RED;
 			pPlayer->SetGlowColor(teamColor.r(), teamColor.g(), teamColor.b(), teamColor.a());

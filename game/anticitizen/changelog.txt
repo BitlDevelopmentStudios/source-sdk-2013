@@ -12,6 +12,8 @@ Alpha v4:
 - Players can now shoot their weapon while sprinting while preserving the lower weapon animation. This replicates Combine Soldier NPC behavior, as they can be seen lowering their weapon when sprinting as well as firing their weapon when sprinting.
 - Changed default value of sv_freemanroundlimit from 3 to 2 so that the same person can play Freeman for 3 rounds instead of 4 rounds, which was the original intention.
 - Fixed animation jitter when reloading after aiming down sights.
+- Fixed the Combine visual overlay appearing in Spectator mode.
+- Fixed a rare bug where the final player's glow doesn't apply if the player is in the middle of the respawning.
 
 Alpha v3:
 - Updated LUX shaders.

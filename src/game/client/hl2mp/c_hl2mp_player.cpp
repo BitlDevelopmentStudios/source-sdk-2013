@@ -377,6 +377,12 @@ void C_HL2MP_Player::DrawOverlay(void)
 
 	if (IsLocalPlayer())
 	{
+		if (GetTeamNumber() == TEAM_SPECTATOR)
+		{
+			view->SetScreenOverlayMaterial(NULL);
+			return;
+		}
+
 		if ((GetPlayerClass() > CLS_INVALID) && IsAlive())
 		{
 			const CAnticitizen_FilePlayerClassInfo_t& info = GetPlayerClassInfo();
