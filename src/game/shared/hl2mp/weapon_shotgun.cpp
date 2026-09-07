@@ -267,9 +267,9 @@ bool CWeaponShotgun::StartReload( void )
 	if (j <= 0)
 		return false;
 
-	SendWeaponAnim( ACT_SHOTGUN_RELOAD_START );
-
 	DisableIronsights();
+
+	SendWeaponAnim( ACT_SHOTGUN_RELOAD_START );
 	
 	//Tony; BUG BUG BUG!!! shotgun does one shell at a time!!! -- player model only has a single reload!!! so I'm just going to dispatch the singular for now.
 	pOwner->DoAnimationEvent(PLAYERANIMEVENT_RELOAD);

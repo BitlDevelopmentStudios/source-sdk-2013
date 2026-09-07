@@ -2336,13 +2336,14 @@ bool CBaseCombatWeapon::DefaultReload( int iClipSize1, int iClipSize2, int iActi
 	if ( !bReload )
 		return false;
 
+	DisableIronsights();
+
 #ifdef CLIENT_DLL
 	// Play reload
 	WeaponSound( RELOAD );
 #endif
-	SendWeaponAnim( iActivity );
 
-	DisableIronsights();
+	SendWeaponAnim( iActivity );
 
 	// Play the player's reload animation
 	if ( pOwner->IsPlayer() )
