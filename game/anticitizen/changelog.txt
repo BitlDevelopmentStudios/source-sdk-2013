@@ -1,5 +1,4 @@
 Alpha v4:
-- Altered the fan area in hunt_lockdown.
 - Improved crate item behavior.
 	- The game will now ignore grenades if the player does not have any grenades. Freeman is the only exception.
 - Added working blood effects for ragdolls.
@@ -14,6 +13,10 @@ Alpha v4:
 - Fixed animation jitter when reloading after aiming down sights.
 - Fixed the Combine visual overlay appearing in Spectator mode.
 - Fixed a rare bug where the final player's glow doesn't apply if the player is in the middle of the respawning.
+- hunt_lockdown changes:
+	- Altered the fan area.
+	- Reduced the light brightness in HDR in the torture room.
+	- Improved luxel resolution with some aspects of the map.
 
 Alpha v3:
 - Updated LUX shaders.
