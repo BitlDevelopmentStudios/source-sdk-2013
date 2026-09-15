@@ -470,26 +470,28 @@ void CWeaponFrag::ItemPostFrame( void )
 	}
 #endif
 
+	CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(pOwner);
+
 	if( m_fDrawbackFinished )
 	{
-		if (pOwner)
+		if (pHL2MPPlayer)
 		{
 			switch( m_AttackPaused )
 			{
 			case GRENADE_PAUSED_PRIMARY:
-				if ( (!(pOwner->m_nButtons & IN_ATTACK)) )
+				if ( (!(pHL2MPPlayer->m_nButtons & IN_ATTACK)) )
 				{
 					SendWeaponAnim(ACT_VM_THROW);
-					pOwner->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
+					pHL2MPPlayer->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
 					m_fDrawbackFinished = false;
 				}
 				break;
 
 			case GRENADE_PAUSED_SECONDARY:
-				if( !(pOwner->m_nButtons & IN_ATTACK2) )
+				if( !(pHL2MPPlayer->m_nButtons & IN_ATTACK2) )
 				{
 					//See if we're ducking
-					if ( pOwner->m_nButtons & IN_DUCK )
+					if (pHL2MPPlayer->m_nButtons & IN_DUCK )
 					{
 						//Send the weapon animation
 						SendWeaponAnim( ACT_VM_SECONDARYATTACK );
@@ -501,7 +503,7 @@ void CWeaponFrag::ItemPostFrame( void )
 					}
 
 					//Tony; the grenade really should have a secondary anim. but it doesn't on the player.
-					pOwner->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
+					pHL2MPPlayer->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
 
 					m_fDrawbackFinished = false;
 				}
@@ -515,11 +517,11 @@ void CWeaponFrag::ItemPostFrame( void )
 
 	BaseClass::ItemPostFrame();
 
-	if (pOwner && (pOwner->GetPlayerClass() > CLS_INVALID) && (!pOwner->IsFreeman()))
+	if (pHL2MPPlayer && (pHL2MPPlayer->GetPlayerClass() > CLS_INVALID) && (!pHL2MPPlayer->IsFreeman()))
 	{
 		bool bFired = false;
 
-		if (!bFired && (pOwner->m_nButtons & IN_GRENADE1) && (m_flNextPrimaryAttack <= gpGlobals->curtime))
+		if (!bFired && (pHL2MPPlayer->m_nButtons & IN_GRENADE1) && (m_flNextPrimaryAttack <= gpGlobals->curtime))
 		{
 			//NOTENOTE: There is a bug with this code with regards to the way machine guns catch the leading edge trigger
 			//			on the player hitting the attack key.  It relies on the gun catching that case in the same frame.
@@ -528,7 +530,7 @@ void CWeaponFrag::ItemPostFrame( void )
 			//			first shot.  Right now that's too much of an architecture change -- jdw
 
 			// If the firing button was just pressed, or the alt-fire just released, reset the firing time
-			if ((pOwner->m_afButtonPressed & IN_GRENADE1))
+			if ((pHL2MPPlayer->m_afButtonPressed & IN_GRENADE1))
 			{
 				m_flNextPrimaryAttack = gpGlobals->curtime;
 			}
@@ -551,8 +553,6 @@ void CWeaponFrag::ItemPostFrame( void )
 		if ( IsViewModelSequenceFinished() )
 		{
 			Reload();
-
-			CHL2MP_Player* pHL2MPPlayer = ToHL2MPPlayer(GetOwner());
 
 			if (pHL2MPPlayer)
 			{
