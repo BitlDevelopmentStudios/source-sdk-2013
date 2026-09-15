@@ -436,11 +436,11 @@ void CWeaponFrag::DecrementAmmo( CBaseCombatCharacter *pOwner )
 //-----------------------------------------------------------------------------
 void CWeaponFrag::ItemPostFrame( void )
 {
-	CBasePlayer *pPlayer = ToBasePlayer( GetOwner() );
+	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
 	
 #ifdef CLIENT_DLL
-	CBaseViewModel *pViewModel = pPlayer ? pPlayer->GetViewModel( m_nViewModelIndex ) : NULL;
-	if ( pViewModel && pPlayer == CBasePlayer::GetLocalPlayer() && pViewModel->GetOwningWeapon() == this && gpGlobals->frametime > 0.0f )
+	CBaseViewModel *pViewModel = pOwner ? pOwner->GetViewModel( m_nViewModelIndex ) : NULL;
+	if ( pViewModel && pOwner == CBasePlayer::GetLocalPlayer() && pViewModel->GetOwningWeapon() == this && gpGlobals->frametime > 0.0f )
 	{
 		MDLCACHE_CRITICAL_SECTION();
 		CStudioHdr *pStudioHdr = pViewModel->GetModelPtr();
