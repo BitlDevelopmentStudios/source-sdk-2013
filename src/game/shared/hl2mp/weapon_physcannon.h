@@ -460,6 +460,7 @@ protected:
 	bool			m_bOldOpen;			// Used for parity checks
 
 	void			NotifyShouldTransmit( ShouldTransmitState_t state );
+	void			ResetPredictedObject( void );
 
 private:
 	virtual void ThirdPersonSwitch(bool bThirdPerson);
