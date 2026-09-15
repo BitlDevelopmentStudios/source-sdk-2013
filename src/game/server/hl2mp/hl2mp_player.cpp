@@ -335,10 +335,45 @@ void CHL2MP_Player::Precache( void )
 void CHL2MP_Player::GiveAllItems(void)
 {
 	if (IsFreeman())
-	{
 		EquipSuit();
-	}
 
+	CBasePlayer::GiveAmmo( 255,	"Pistol");
+	CBasePlayer::GiveAmmo( 255,	"AR2" );
+	CBasePlayer::GiveAmmo( 5,	"AR2AltFire" );
+	CBasePlayer::GiveAmmo( 255,	"SMG1");
+	CBasePlayer::GiveAmmo( 1,	"smg1_grenade");
+	CBasePlayer::GiveAmmo( 255,	"Buckshot");
+	CBasePlayer::GiveAmmo( 32,	"357" );
+	CBasePlayer::GiveAmmo( 3,	"rpg_round");
+	CBasePlayer::GiveAmmo( 16,	"XBowBolt");
+
+	CBasePlayer::GiveAmmo( 1,	"grenade" );
+	CBasePlayer::GiveAmmo( 2,	"slam" );
+
+	GiveNamedItem( "weapon_physcannon" );
+
+	GiveNamedItem( "weapon_crowbar" );
+	GiveNamedItem( "weapon_stunstick" );
+	GiveNamedItem( "weapon_pistol" );
+	GiveNamedItem( "weapon_357" );
+
+	GiveNamedItem( "weapon_smg1" );
+	GiveNamedItem( "weapon_ar2" );
+	
+	GiveNamedItem( "weapon_shotgun" );
+	GiveNamedItem( "weapon_frag" );
+	
+	GiveNamedItem( "weapon_crossbow" );
+	
+	GiveNamedItem( "weapon_rpg" );
+
+	GiveNamedItem( "weapon_slam" );
+	
+}
+
+void CHL2MP_Player::GiveDefaultItems( void )
+{
+	EquipSuit();
 	TakeHealth(GetMaxHealth(), DMG_GENERIC);
 
 	if (IsFreeman())
@@ -2379,9 +2414,19 @@ CBaseEntity* CHL2MP_Player::EntSelectSpawnPoint( void )
 		pLastSpawnPoint = g_pLastSpawn;
 	}
 
+	int nSpawnPointRange = 5;
+	if ( !pLastSpawnPoint )
+	{
+		nSpawnPointRange = 0;
+		while ( ( pSpot = gEntList.FindEntityByClassname( pSpot, pSpawnpointName ) ) != NULL )
+		{
+			++nSpawnPointRange;
+		}
+	}
+
 	pSpot = pLastSpawnPoint;
 	// Randomize the start spot
-	for ( int i = random->RandomInt(1,5); i > 0; i-- )
+	for ( int i = random->RandomInt( 1, MAX( nSpawnPointRange, 1 ) ); i > 0; i-- )
 		pSpot = gEntList.FindEntityByClassname( pSpot, pSpawnpointName );
 
 	if ( !pSpot )  // skip over the null point

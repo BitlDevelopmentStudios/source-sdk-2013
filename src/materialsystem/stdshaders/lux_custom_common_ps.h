@@ -11,6 +11,7 @@
 
 // Always available.
 const float4 cReg_00 				: register(REGISTER_FLOAT_000);
+const float4 cReg_01				: register(REGISTER_FLOAT_001);
 
 // c2...c13
 // These will be the Model, View and Proj Matrix,
@@ -114,28 +115,21 @@ const float4x4 cProjMatrix			: register(REGISTER_FLOAT_010); // c10, c11, c12, c
 	#endif
 #endif // !PROJTEX
 
-const float4 cReg_31						 : register(REGISTER_FLOAT_031);
+const float4 cReg_32						 : register(REGISTER_FLOAT_032);
 // Brushes and Models:
-#define g_rcpLightmapRes					(cReg_31.xy)
-#define g_LightmapScaleFactor				(cReg_31.z)
+#define g_rcpLightmapRes					(cReg_32.xy)
 
 // Particles:
-#define g_DepthRangeFactor					(cReg_31.x)
+#define g_DepthRangeFactor					(cReg_32.x)
 
 // Scale and Offset ( 1.0f / 3.0f ), requires custom Compilers.
 #define g_ModelLightmapBumpOffset			(cLightmapData.w)
 	
-// Only available with sm3.0
-// The ShaderCompiler will #define this when you compile the Shader as ps30
-#if defined(SHADER_MODEL_PS_3_0)
-	#if !AMBIENTCUBES
-		const float4 cReg_32				: register(REGISTER_FLOAT_032);
-		const float4 cReg_33				: register(REGISTER_FLOAT_033);
-		const float4 cReg_34				: register(REGISTER_FLOAT_034);
-		const float4 cReg_35				: register(REGISTER_FLOAT_035);
-		const float4 cReg_36				: register(REGISTER_FLOAT_036);
-		const float4 cReg_37				: register(REGISTER_FLOAT_037);
-	#endif
+	const float4 cReg_33				: register(REGISTER_FLOAT_033);
+	const float4 cReg_34				: register(REGISTER_FLOAT_034);
+	const float4 cReg_35				: register(REGISTER_FLOAT_035);
+	const float4 cReg_36				: register(REGISTER_FLOAT_036);
+	const float4 cReg_37				: register(REGISTER_FLOAT_037);
 	const float4 cReg_38				: register(REGISTER_FLOAT_038);
 	const float4 cReg_39				: register(REGISTER_FLOAT_039);
 	const float4 cReg_40				: register(REGISTER_FLOAT_040);
@@ -162,7 +156,6 @@ const float4 cReg_31						 : register(REGISTER_FLOAT_031);
 	const float4 cReg_61				: register(REGISTER_FLOAT_061);
 	const float4 cReg_62				: register(REGISTER_FLOAT_062);
 	const float4 cReg_63				: register(REGISTER_FLOAT_063);
-#endif
 
 // Feel free to rename these in your Shaders!
 #define		bReg_00				Bools[0]

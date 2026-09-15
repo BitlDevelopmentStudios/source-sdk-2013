@@ -534,13 +534,9 @@ SHADER_DRAW
 			else
 			{
 				if (GetBool(PhongDisableHalfLambert))
-				{
 					pContextData->m_bHalfLambert = false;
-				}
 				else if (lux_phong_defaulthalflambert.GetBool())
-				{
 					pContextData->m_bHalfLambert = true;
-				}
 			}
 		}
 		else

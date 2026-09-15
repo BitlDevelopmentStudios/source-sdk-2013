@@ -1676,9 +1676,7 @@ static ConCommand endattack3("-attack3", IN_Attack3Up);
 static ConCommand startironsight("+ironsight", IN_IronsightDown);
 static ConCommand endironsight("-ironsight", IN_IronsightUp);
 
-#ifdef TF_CLIENT_DLL
 static ConCommand toggle_duck( "toggle_duck", IN_DuckToggle );
-#endif
 
 // Xbox 360 stub commands
 static ConCommand xboxmove("xmove", IN_XboxStub);
