@@ -524,5 +524,3 @@ mapsrc/*/*.bsp
 vpksrc/*.privatekey.vdf
 *.vpk
 game/data/mod.zip
-game/ModInstaller.exe
-game/ModInstaller.exe.config
