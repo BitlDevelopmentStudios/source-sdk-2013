@@ -24,6 +24,7 @@ public:
 	void Precache(void);
 	void Think(void);
 	void DoImpactEffect(trace_t& tr, int nDamageType);
+	bool CanPenetrate(trace_t& tr);
 
 public:
 	Vector m_vecDir;
@@ -35,6 +36,10 @@ public:
 	LineTracerInfo_t m_LineTracerInfo;
 	bool m_Model;
 	const char* m_ModelName;
+	int m_AvailablePenetrationCount;
+	int m_NumSuccessfulPenetrations;
+	const char* m_TracerName;
+	bool m_Whiz;
 };
 
 extern ConVar debug_actual_bullet_path;
@@ -50,7 +55,9 @@ inline void FireActualBullet(FireBulletsInfo_t &info,
 								Color cLineColor = Color(255.0f, 255.0f, 255.0f),
 								float flLineSpeed = 0.05f, 
 								bool bModel = false, 
-								const char* szModelName = "" )
+								const char* szModelName = "", 
+								int iAvailablePenetrationCount = 0, 
+								int iNumSuccessfulPenetrations = 0)
 {
 	if (!info.m_pAttacker)
 	{
@@ -97,6 +104,11 @@ inline void FireActualBullet(FireBulletsInfo_t &info,
 			pBullet->m_ModelName = szModelName;
 		}
 
+		pBullet->m_AvailablePenetrationCount = iAvailablePenetrationCount;
+		// THIS SHOULD ONLY BE SET AFTER A SUCCESSFUL PENETRATION!!
+		pBullet->m_NumSuccessfulPenetrations = iNumSuccessfulPenetrations;
+		pBullet->m_TracerName = tracertype;
+		pBullet->m_Whiz = bWhiz;
 		pBullet->SetOwnerEntity(info.m_pAttacker);
 		pBullet->SetAbsOrigin(info.m_vecSrc);
 		pBullet->SetAbsAngles(info.m_pAttacker->EyeAngles());
