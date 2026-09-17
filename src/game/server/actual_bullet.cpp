@@ -83,6 +83,14 @@ void CActualBullet::Think(void)
 
 	if (tr.fraction != 1.0)
 	{
+		//Adrian: keep going through the glass.
+		if (tr.m_pEnt && tr.m_pEnt->GetCollisionGroup() == COLLISION_GROUP_BREAKABLE_GLASS)
+			return;
+
+		// go through grates
+		if (tr.contents & CONTENTS_GRATE)
+			return;
+
 		FireBulletsInfo_t info2;
 		info2.m_iShots = 1;
 		info2.m_vecSrc = vecStart;
