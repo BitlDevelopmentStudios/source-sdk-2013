@@ -41,19 +41,6 @@ void CActualBullet::Start(void)
 	SetOwnerEntity(info.m_pAttacker);
 }
 
-bool CActualBullet::CanPenetrate(trace_t& tr)
-{
-	if (m_AvailablePenetrationCount == 0)
-		return false;
-
-	bool hitAllowedMaterial = (tr.contents & CONTENTS_GRATE);
-
-	if (tr.DidHitWorld() && !hitAllowedMaterial)
-		return false;
-
-	return true;
-}
-
 void CActualBullet::Think(void)
 {
 	SetNextThink(gpGlobals->curtime + 0.05f);
@@ -106,29 +93,6 @@ void CActualBullet::Think(void)
 		info2.m_iTracerFreq = 0;
 		info2.m_pAttacker = GetOwnerEntity();
 		FireBullets(info2);
-
-		if (m_AvailablePenetrationCount > 0 && CanPenetrate(tr))
-		{
-			DevMsg("PENETRATING SURFACE!\n");
-			m_NumSuccessfulPenetrations++;
-
-			//create a new bullet in our current position.
-			// use the data from the new info.
-			FireActualBullet(info2,
-				(m_Speed/m_NumSuccessfulPenetrations),
-				m_TracerName,
-				m_Whiz,
-				m_ImpactEffect,
-				m_ImpactEffectName,
-				m_Line,
-				m_LineTracerInfo.color,
-				(m_LineTracerInfo.speed * m_NumSuccessfulPenetrations),
-				m_Model,
-				m_ModelName,
-				clamp((m_AvailablePenetrationCount - 1), 0, INT_MAX),
-				m_NumSuccessfulPenetrations);
-		}
-
 		SetThink(NULL);
 		UTIL_Remove(this);
 	}
