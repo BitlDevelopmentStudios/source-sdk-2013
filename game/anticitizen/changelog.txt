@@ -13,7 +13,7 @@ Alpha v4:
 - Fixed animation jitter when reloading after aiming down sights.
 - Fixed the Combine visual overlay appearing in Spectator mode.
 - Fixed a rare bug where the final player's glow doesn't apply if the player is in the middle of the respawning.
-- Added basic bullet penetration.
+- The Combine Sniper Rifle can now penetrate through glass and grates.
 - hunt_lockdown changes:
 	- Altered the fan area.
 	- Reduced the light brightness in HDR in the torture room.
