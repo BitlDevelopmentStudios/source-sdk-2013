@@ -180,6 +180,8 @@ public:
 
 	void SetNextPlayerToBecomeFreeman(CHL2MP_Player* pPlayer);
 
+	virtual bool AreAllPlayersLowPriority(void);
+
 	CHL2MP_Player* GetNextPlayerToBecomeFreeman(void) 
 	{
 		return pNextPlayerToBecomeFreeman;

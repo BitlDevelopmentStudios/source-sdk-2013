@@ -540,6 +540,28 @@ void CHL2MPRules::CheckLastMemberLeft(void)
 #endif
 }
 
+#ifndef CLIENT_DLL
+bool CHL2MPRules::AreAllPlayersLowPriority(void)
+{
+	int iNumLowPriorityPlayers = 0;
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		CHL2MP_Player* pLowPriorityCandidate = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+
+		if (!pLowPriorityCandidate)
+			continue;
+
+		if (pLowPriorityCandidate->m_iFreemanPriority == PLAYER_PRIORITY_LOW)
+		{
+			iNumLowPriorityPlayers++;
+		}
+	}
+
+	return (iNumLowPriorityPlayers == UTIL_GetPlayerCount());
+}
+#endif
+
 void CHL2MPRules::SelectFreeman(void)
 {
 #ifndef CLIENT_DLL
@@ -586,22 +608,8 @@ void CHL2MPRules::SelectFreeman(void)
 
 		// player is a valid candidate, let's check if they're high priority enough.
 		// ignore if all players are low priority.
-		int iNumLowPriorityPlayers = 0;
 
-		for (int i = 0; i < MAX_PLAYERS; i++)
-		{
-			CHL2MP_Player* pLowPriorityCandidate = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
-
-			if (!pLowPriorityCandidate)
-				continue;
-
-			if (pLowPriorityCandidate->m_iFreemanPriority == PLAYER_PRIORITY_LOW)
-			{
-				iNumLowPriorityPlayers++;
-			}
-		}
-
-		bool bCanIgnoreDueToLowPriority = ((iNumLowPriorityPlayers == UTIL_GetPlayerCount()) ? 
+		bool bCanIgnoreDueToLowPriority = (AreAllPlayersLowPriority() ?
 											false : 
 											(pPlayer->m_iFreemanPriority == PLAYER_PRIORITY_LOW));
 
