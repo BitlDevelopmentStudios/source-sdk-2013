@@ -33,6 +33,12 @@ enum assassinEyeState_t
 	PLAYER_ASSASSIN_EYE_DEAD,				//Completely invisible
 };
 
+enum freemanPriority_t
+{
+	PLAYER_PRIORITY_LOW,
+	PLAYER_PRIORITY_HIGH
+};
+
 //=============================================================================
 // >> HL2MP_Player
 //=============================================================================
@@ -302,6 +308,7 @@ public:
 	bool m_bInitialSpawn;
 	bool m_bFreemanAtLowHealth;
 	bool m_bChosenToSpectate;
+	int m_iFreemanPriority;
 
 private:
 	CPlayer_Sentence< CHL2MP_Player > m_Sentences;

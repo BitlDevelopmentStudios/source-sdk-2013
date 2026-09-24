@@ -41,6 +41,8 @@ ConVar cl_freeman_hl2deathcamera("cl_freeman_hl2deathcamera", "1", FCVAR_ARCHIVE
 ConVar cl_ragdollblood("cl_ragdollblood", "1", FCVAR_ARCHIVE);
 ConVar cl_ragdollblood_simulated_dmgamount("cl_ragdollblood_simulated_dmgamount", "15", FCVAR_ARCHIVE);
 
+ConVar cl_freeman_priority("cl_freeman_priority", "1", FCVAR_ARCHIVE);
+
 LINK_ENTITY_TO_CLASS( player, C_HL2MP_Player );
 
 BEGIN_RECV_TABLE_NOBASE(C_HL2MP_Player, DT_HL2MPLocalPlayerExclusive)

@@ -459,6 +459,29 @@ void CHL2MP_Player::Spawn(void)
 	m_flNextPainSoundTime = 0;
 	m_iSpawnCounter = !m_iSpawnCounter;
 
+	int priority = PLAYER_PRIORITY_HIGH;
+
+	if (!pBot)
+	{
+		const char* pPriorityMode = engine->GetClientConVarValue(engine->IndexOfEdict(edict()), "cl_freeman_priority");
+		if (pPriorityMode)
+		{
+			priority = atoi(pPriorityMode);
+
+			if (priority < PLAYER_PRIORITY_LOW)
+			{
+				priority = PLAYER_PRIORITY_LOW;
+			}
+
+			if (priority > PLAYER_PRIORITY_HIGH)
+			{
+				priority = PLAYER_PRIORITY_HIGH;
+			}
+		}
+	}
+
+	m_iFreemanPriority = priority;
+
 	m_Local.m_iHideHUD = 0;
 	
 	AddFlag(FL_ONGROUND); // set the player on the ground at the start of the round.

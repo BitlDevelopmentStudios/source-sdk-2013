@@ -583,6 +583,34 @@ void CHL2MPRules::SelectFreeman(void)
 			SelectFreeman();
 			return;
 		}
+
+		// player is a valid candidate, let's check if they're high priority enough.
+		// ignore if all players are low priority.
+		int iNumLowPriorityPlayers = 0;
+
+		for (int i = 0; i < MAX_PLAYERS; i++)
+		{
+			CHL2MP_Player* pLowPriorityCandidate = ToHL2MPPlayer(UTIL_PlayerByIndex(i));
+
+			if (!pLowPriorityCandidate)
+				continue;
+
+			if (pLowPriorityCandidate->m_iFreemanPriority == PLAYER_PRIORITY_LOW)
+			{
+				iNumLowPriorityPlayers++;
+			}
+		}
+
+		bool bCanIgnoreDueToLowPriority = ((iNumLowPriorityPlayers == UTIL_GetPlayerCount()) ? 
+											false : 
+											(pPlayer->m_iFreemanPriority == PLAYER_PRIORITY_LOW));
+
+		if (bCanIgnoreDueToLowPriority)
+		{
+			// reroll.
+			SelectFreeman();
+			return;
+		}
 	}
 
 	if (pPlayer)
