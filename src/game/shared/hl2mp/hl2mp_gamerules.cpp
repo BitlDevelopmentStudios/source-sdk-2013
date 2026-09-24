@@ -546,7 +546,7 @@ void CHL2MPRules::CheckLastMemberLeft(void)
 bool CHL2MPRules::AreAllPlayersLowPriority(void)
 {
 	// ignore if there's only 1 player.
-	if (sv_lowpriority_considermajority.GetBool() && (UTIL_GetPlayerCount() == 1))
+	if (UTIL_GetPlayerCount() == 1)
 	{
 		return true;
 	}
