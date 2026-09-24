@@ -34,6 +34,8 @@ ConVar hl2mp_bot_debug_tags( "hl2mp_bot_debug_tags", "0", FCVAR_CHEAT, "ent_text
 
 ConVar hl2mp_bot_ignore_real_players( "hl2mp_bot_ignore_real_players", "0", FCVAR_CHEAT );
 
+ConVar hl2mp_bot_freeman_priority("hl2mp_bot_freeman_priority", "1", FCVAR_CHEAT);
+
 ConVar hl2mp_bot_shotgunner_range( "hl2mp_bot_shotgunner_range", "320", FCVAR_NONE );
 ConVar hl2mp_bot_prop_freak_ratio( "hl2mp_bot_prop_freak_ratio", "0.3", FCVAR_NONE );
 ConVar hl2mp_bot_prop_hater_ratio( "hl2mp_bot_prop_hater_ratio", "0.3", FCVAR_NONE );

@@ -383,6 +383,28 @@ void CHL2MP_Player::GiveAllItems(void)
 	}
 }
 
+int CHL2MP_Player::ConsiderFreemanPriority(void)
+{
+	int priority = PLAYER_PRIORITY_HIGH;
+
+	CHL2MPBot* pBot = dynamic_cast<CHL2MPBot*>(this);
+
+	if (!pBot)
+	{
+		const char* pPriorityMode = engine->GetClientConVarValue(engine->IndexOfEdict(edict()), "cl_freeman_priority");
+		if (pPriorityMode)
+		{
+			priority = atoi(pPriorityMode);
+		}
+	}
+	else
+	{
+		priority = hl2mp_bot_freeman_priority.GetInt();
+	}
+
+	return clamp(priority, PLAYER_PRIORITY_LOW, PLAYER_PRIORITY_HIGH);
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Sets HL2 specific defaults.
 //-----------------------------------------------------------------------------
@@ -459,28 +481,7 @@ void CHL2MP_Player::Spawn(void)
 	m_flNextPainSoundTime = 0;
 	m_iSpawnCounter = !m_iSpawnCounter;
 
-	int priority = PLAYER_PRIORITY_HIGH;
-
-	if (!pBot)
-	{
-		const char* pPriorityMode = engine->GetClientConVarValue(engine->IndexOfEdict(edict()), "cl_freeman_priority");
-		if (pPriorityMode)
-		{
-			priority = atoi(pPriorityMode);
-
-			if (priority < PLAYER_PRIORITY_LOW)
-			{
-				priority = PLAYER_PRIORITY_LOW;
-			}
-
-			if (priority > PLAYER_PRIORITY_HIGH)
-			{
-				priority = PLAYER_PRIORITY_HIGH;
-			}
-		}
-	}
-
-	m_iFreemanPriority = priority;
+	m_iFreemanPriority = ConsiderFreemanPriority();
 
 	m_Local.m_iHideHUD = 0;
 	

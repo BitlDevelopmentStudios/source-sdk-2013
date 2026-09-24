@@ -16,10 +16,11 @@ Alpha v4:
 - The Combine Sniper Rifle can now penetrate through glass and grates.
 - Fixed RPG guiding getting suppressed when switching weapons.
 - Added the cl_freeman_priority convar. If disabled, you are considered "low priority" (upon next respawn) and you will not be randomly chosen as Freeman unless:
-	- You Kill Freeman (if sv_randomize_freeman_player is disabled)
+	- You kill Freeman (if sv_randomize_freeman_player is disabled)
 	- You were Freeman the last round (if sv_randomize_freeman_player is disabled)
-	- There are only the number of players in-game defined by sv_minplayerstostart.
-	- If all players have cl_freeman_priority disabled, in which case all players are treated equally.
+	- All players have cl_freeman_priority disabled, in which case all players are treated equally.
+	- All players but 1 have cl_freeman_priority disabled, in which case all players are treated equally. This is enabled by default to prevent potential biases in the system choosing 1 Freeman consistently out of a majority of players, especially with matches that consist of 2-4 players. This instance can be disabled by disabling sv_lowpriority_considermajority.
+	- The player is at the minimum amount of players set by sv_minplayerstostart (if sv_lowpriority_considermajority is disabled).
 - hunt_lockdown changes:
 	- Altered the fan area.
 	- Reduced the light brightness in HDR in the torture room.

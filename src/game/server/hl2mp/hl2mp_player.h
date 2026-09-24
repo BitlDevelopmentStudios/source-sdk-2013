@@ -81,6 +81,7 @@ public:
 	virtual void Spawn( void );
 	virtual void PostThink( void );
 	virtual void PreThink( void );
+	virtual int ConsiderFreemanPriority(void);
 	virtual void PlayerDeathThink( void );
 	virtual bool HandleCommand_JoinTeam( int team );
 	virtual bool HandleCommand_JoinClass(int iclass, bool brespawn = true);

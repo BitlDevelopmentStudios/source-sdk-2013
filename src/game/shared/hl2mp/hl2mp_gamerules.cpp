@@ -65,6 +65,8 @@ ConVar sv_friendlyfire_deathnotice("sv_friendlyfire_deathnotice", "0", FCVAR_GAM
 
 ConVar sv_randomize_freeman_player("sv_randomize_freeman_player", "0", FCVAR_GAMEDLL | FCVAR_NOTIFY);
 
+ConVar sv_lowpriority_considermajority("sv_lowpriority_considermajority", "1", FCVAR_GAMEDLL | FCVAR_NOTIFY);
+
 extern ConVar mp_chattime;
 
 extern CBaseEntity	 *g_pLastCombineSpawn;
@@ -543,10 +545,11 @@ void CHL2MPRules::CheckLastMemberLeft(void)
 #ifndef CLIENT_DLL
 bool CHL2MPRules::AreAllPlayersLowPriority(void)
 {
-	bool isAtMinPlayers = ((UTIL_GetPlayerCount() == sv_minplayerstostart.GetInt()));
-
-	if (isAtMinPlayers)
+	// if sv_lowpriority_considermajority is disabled and we only have the minimum amount of players on the server, ignore
+	if (!sv_lowpriority_considermajority.GetBool() && (UTIL_GetPlayerCount() <= sv_minplayerstostart.GetInt()))
+	{
 		return true;
+	}
 
 	int iNumLowPriorityPlayers = 0;
 
@@ -563,6 +566,14 @@ bool CHL2MPRules::AreAllPlayersLowPriority(void)
 		}
 	}
 
+	// if there is only one player that's not a low priority player in a server full of high priority players, 
+	// we ignore their low priority.
+	if (sv_lowpriority_considermajority.GetBool() && (iNumLowPriorityPlayers == (UTIL_GetPlayerCount() - 1)))
+	{
+		return true;
+	}
+
+	// else, check if all of the players are low priority.
 	return (iNumLowPriorityPlayers == UTIL_GetPlayerCount());
 }
 #endif

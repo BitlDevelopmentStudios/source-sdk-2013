@@ -47,6 +47,8 @@ inline int GetEnemyTeam( int team )
 
 #define HL2MPBOT_ALL_BEHAVIOR_FLAGS		0xFFFF
 
+extern ConVar hl2mp_bot_freeman_priority;
+
 //----------------------------------------------------------------------------
 class CHL2MPBot: public NextBotPlayer< CHL2MP_Player >, public CGameEventListener
 {
