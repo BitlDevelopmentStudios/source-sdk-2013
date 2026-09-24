@@ -543,6 +543,11 @@ void CHL2MPRules::CheckLastMemberLeft(void)
 #ifndef CLIENT_DLL
 bool CHL2MPRules::AreAllPlayersLowPriority(void)
 {
+	bool isAtMinPlayers = ((UTIL_GetPlayerCount() == sv_minplayerstostart.GetInt()));
+
+	if (isAtMinPlayers)
+		return true;
+
 	int iNumLowPriorityPlayers = 0;
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
