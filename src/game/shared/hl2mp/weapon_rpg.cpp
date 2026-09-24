@@ -1721,27 +1721,14 @@ void CWeaponRPG::SuppressGuiding( bool state )
 {
 	m_bHideGuiding = state;
 
-#ifndef CLIENT_DLL
-
-	if ( m_hLaserDot == NULL )
-	{
-		StartGuiding();
-
-		//STILL!?
-		if ( m_hLaserDot == NULL )
-			 return;
-	}
-
 	if ( state )
 	{
-		m_hLaserDot->TurnOff();
+		StopGuiding();
 	}
 	else
 	{
-		m_hLaserDot->TurnOn();
+		StartGuiding();
 	}
-#endif
-	
 }
 
 //-----------------------------------------------------------------------------
@@ -1795,14 +1782,10 @@ void CWeaponRPG::ItemPostFrame( void )
 	}
 
 	// Supress our guiding effects if we're lowered
-	if (GetIdealActivity() == ACT_VM_IDLE_LOWERED || GetIdealActivity() == ACT_VM_RELOAD)
-	{
-		SuppressGuiding();
-	}
-	else
-	{
-		SuppressGuiding( false );
-	}
+	bool shouldSupress = (GetIdealActivity() == ACT_VM_IDLE_LOWERED ||
+						  GetIdealActivity() == ACT_VM_RELOAD);
+
+	SuppressGuiding(shouldSupress);
 
 	//Move the laser
 	UpdateLaserPosition();
