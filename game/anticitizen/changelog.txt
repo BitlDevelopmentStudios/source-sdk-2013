@@ -15,10 +15,11 @@ Alpha v4:
 - Fixed a rare bug where the final player's glow doesn't apply if the player is in the middle of the respawning.
 - The Combine Sniper Rifle can now penetrate through glass and grates.
 - Fixed RPG guiding getting suppressed when switching weapons.
-- Added the cl_freeman_priority convar. If disabled, you are considered "low priority" and you will not be randomly chosen as Freeman unless you:
-	- Kill Freeman (if sv_randomize_freeman_player is disabled)
+- Added the cl_freeman_priority convar. If disabled, you are considered "low priority" (upon next respawn) and you will not be randomly chosen as Freeman unless:
+	- You Kill Freeman (if sv_randomize_freeman_player is disabled)
 	- You were Freeman the last round (if sv_randomize_freeman_player is disabled)
-	- If all players have priority mode disabled, in which case all players are treated equally.
+	- There are only the number of players in-game defined by sv_minplayerstostart.
+	- If all players have cl_freeman_priority disabled, in which case all players are treated equally.
 - hunt_lockdown changes:
 	- Altered the fan area.
 	- Reduced the light brightness in HDR in the torture room.
