@@ -219,12 +219,8 @@ void CC_GiveCurrentAmmo( void )
 					pPlayer->GiveAmmo( giveAmount, GetAmmoDef()->GetAmmoOfIndex(ammoIndex)->pName );
 				}
 			}
-			if( pWeapon->UsesSecondaryAmmo() && pWeapon->HasSecondaryAmmo() )
+			if( pWeapon->UsesSecondaryAmmo() )
 			{
-				// Give secondary ammo out, as long as the player already has some
-				// from a presumeably natural source. This prevents players on XBox
-				// having Combine Balls and so forth in areas of the game that
-				// were not tested with these items.
 				int ammoIndex = pWeapon->GetSecondaryAmmoType();
 
 				if( ammoIndex != -1 )
@@ -3937,7 +3933,7 @@ void CBasePlayer::HandleFuncTrain(void)
 	
 	if ( !pTrain )
 	{
-		if ( GetActiveWeapon()->ObjectCaps() & FCAP_DIRECTIONAL_USE )
+		if ( GetActiveWeapon() && ( GetActiveWeapon()->ObjectCaps() & FCAP_DIRECTIONAL_USE ) )
 		{
 			m_iTrain = TRAIN_ACTIVE | TRAIN_NEW;
 

@@ -6335,7 +6335,7 @@ void CC_Ent_Info( const CCommand& args )
 				}
 			}
 
-			delete ent;
+			UTIL_RemoveImmediate( ent );
 		}
 		else
 		{
