@@ -1,4 +1,4 @@
-Alpha v4:
+Early Access Build v1:
 - Improved crate item behavior.
 	- Crates will now ignore grenades if the player does not have any grenades. Freeman is the only exception.
 - Added working blood effects for ragdolls.
@@ -26,6 +26,10 @@ Alpha v4:
 	- Altered the fan area.
 	- Reduced the light brightness in HDR in the torture room.
 	- Improved luxel resolution with some aspects of the map.
+
+-----------------------------------------------------------------------------------------------------------------------
+MODDB EARLY ACCESS
+-----------------------------------------------------------------------------------------------------------------------
 
 Alpha v3:
 - Updated LUX shaders.
