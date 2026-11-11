@@ -94,7 +94,7 @@ void FormatViewModelAttachment( Vector &vOrigin, bool bInverse )
 	vOrigin = pViewSetup->origin + vOut;
 }
 
-bool TeamFortress_ShouldFlipClientViewModel( void )
+bool ShouldFlipClientViewModel( void )
 {
 #ifdef TF_CLIENT_DLL
 	if ( IsLocalPlayerSpectator() )
@@ -239,10 +239,10 @@ bool C_BaseViewModel::ShouldFlipViewModel()
 	CBaseCombatWeapon *pWeapon = m_hWeapon.Get();
 	if ( pWeapon )
 	{
-		return pWeapon->m_bFlipViewModel != TeamFortress_ShouldFlipClientViewModel();
+		return pWeapon->m_bFlipViewModel != ShouldFlipClientViewModel();
 	}
 
-	return TeamFortress_ShouldFlipClientViewModel();
+	return ShouldFlipClientViewModel();
 }
 
 
