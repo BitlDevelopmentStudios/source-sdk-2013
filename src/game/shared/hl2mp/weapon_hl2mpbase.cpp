@@ -25,6 +25,7 @@ extern IVModelInfo* modelinfo;
 	#include "vgui_controls/Controls.h"
 	#include "c_hl2mp_player.h"
 	#include "hud_crosshair.h"
+	#include "c_baseviewmodel.h"
 
 #else
 
@@ -104,6 +105,31 @@ CWeaponHL2MPBase::CWeaponHL2MPBase()
 bool CWeaponHL2MPBase::IsPredicted() const
 { 
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+bool CWeaponHL2MPBase::IsViewModelFlipped(void)
+{
+	CHL2MP_Player* pPlayer = ToHL2MPPlayer(GetOwner());
+
+	if (!pPlayer)
+		return false;
+
+#ifdef GAME_DLL
+	if (m_bFlipViewModel != pPlayer->m_bFlipViewModels)
+	{
+		return true;
+	}
+#else
+	if (m_bFlipViewModel != ShouldFlipClientViewModel())
+	{
+		return true;
+	}
+#endif
+
+	return false;
 }
 
 //Tony; override for animation purposes.

@@ -61,6 +61,7 @@ public:
 
 	virtual void FireBullets( const FireBulletsInfo_t &info );
 	virtual void FallInit( void );
+	virtual bool IsViewModelFlipped(void);
 	virtual bool Reload();
 	
 public:

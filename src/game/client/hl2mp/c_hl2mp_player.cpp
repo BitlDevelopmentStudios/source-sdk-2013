@@ -56,6 +56,8 @@ IMPLEMENT_CLIENTCLASS_DT(C_HL2MP_Player, DT_HL2MP_Player, CHL2MP_Player)
 	RecvPropInt(RECVINFO(m_iSpawnInterpCounter)),
 	RecvPropInt(RECVINFO(m_iPlayerSoundType)),
 
+	RecvPropBool(RECVINFO(m_bFlipViewModels)),
+
 	RecvPropBool(RECVINFO(m_fIsWalking)),
 	RecvPropInt(RECVINFO(m_iSpawnCounter)),
 END_RECV_TABLE()

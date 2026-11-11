@@ -132,6 +132,9 @@ public:
 	virtual float GetServerIntendedCycle() { return m_flServerCycle; }
 	virtual void SetServerIntendedCycle(float cycle) { m_flServerCycle = cycle; }
 
+public:
+		bool m_bFlipViewModels;
+		
 private:
 	
 	C_HL2MP_Player( const C_HL2MP_Player & );

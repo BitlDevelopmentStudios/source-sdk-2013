@@ -174,6 +174,10 @@ private:
     bool m_bEnterObserver;
 	bool m_bReady;
 
+public:
+	CNetworkVar(bool, m_bFlipViewModels);
+
+private:
 	CNetworkVar(int, m_cycleLatch); // Network the cycle to clients periodically
 	CountdownTimer m_cycleLatchTimer;
 };

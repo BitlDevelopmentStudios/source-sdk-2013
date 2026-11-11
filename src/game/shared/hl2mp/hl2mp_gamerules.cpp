@@ -860,7 +860,9 @@ void CHL2MPRules::ClientSettingsChanged( CBasePlayer *pPlayer )
 	int iFov = atoi(pszFov);
 	iFov = clamp(iFov, 75, MAX_FOV);
 
-	pPlayer->SetDefaultFOV(iFov);
+	pHL2Player->SetDefaultFOV(iFov);
+
+	pHL2Player->m_bFlipViewModels = Q_atoi(engine->GetClientConVarValue(pPlayer->entindex(), "cl_flipviewmodels")) > 0;
 
 	BaseClass::ClientSettingsChanged( pPlayer );
 #endif
