@@ -104,6 +104,71 @@ DESCRIPTION INFO_OPTIONS
 		{ BOOL }
 		{ "1" }
 	}
+	
+	"cl_show_teamhealthbars"
+	{
+		"#anticitizen_show_healthbars"
+		"#anticitizen_show_healthbars_tooltip"
+		{ BOOL }
+		{ "1" }
+	}
+	
+	"cl_show_teamhealthbars_spec"
+	{
+		"#anticitizen_show_healthbars_spec"
+		"#anticitizen_show_healthbars_spec_tooltip"
+		{ BOOL }
+		{ "1" }
+	}
+	
+	"cl_ragdollblood"
+	{
+		"#anticitizen_ragdoll_blood"
+		"#anticitizen_ragdoll_blood_tooltip"
+		{ BOOL }
+		{ "1" }
+	}
+	
+	"cl_ragdollblood_intensity"
+	{
+		"#anticitizen_ragdoll_blood_intensity"
+		"#anticitizen_ragdoll_blood_intensity_tooltip"
+		{
+			LIST
+			"#GameUI_Low" "0"
+			"#GameUI_Medium" "1"
+			"#GameUI_High" "2"
+		}
+		{ "1" }
+	}
+	
+	"cl_ragdoll_collide"
+	{
+		"#anticitizen_ragdoll_collisions"
+		"#anticitizen_ragdoll_collisions_tooltip"
+		{ BOOL }
+		{ "1" }
+	}
+	
+	"cl_freeman_priority"
+	{
+		"#anticitizen_freeman_priority"
+		"#anticitizen_freeman_priority_tooltip"
+		{
+			LIST
+			"#GameUI_Low" "0"
+			"#GameUI_High" "1"
+		}
+		{ "1" }
+	}
+	
+	"cl_freeman_hl2deathcamera"
+	{
+		"#anticitizen_freeman_hl2deathcamera"
+		"#anticitizen_freeman_hl2deathcamera_tooltip"
+		{ BOOL }
+		{ "1" }
+	}
 
 	"ds_enable"
 	{
@@ -112,11 +177,9 @@ DESCRIPTION INFO_OPTIONS
 		{
 			LIST
 			"#TF_DemoSupport_Manual" "0"
-			"#TF_DemoSupport_Comp" "1"
-			"#TF_DemoSupport_All" "2"
-			"#TF_DemoSupport_Tournament" "3"
+			"#TF_DemoSupport_All" "1"
 		}
-		{ "3" }
+		{ "0" }
 	}
 
 	"ds_dir"
@@ -132,65 +195,13 @@ DESCRIPTION INFO_OPTIONS
 		"#TF_DemoSupport_Prefix"
 		"#TF_DemoSupport_Prefix_ToolTip"
 		{ STRING }
-		{ "" }
+		{ "anticitizen_" }
 	}
 
 	"ds_sound"
 	{
 		"#TF_DemoSupport_Sound"
 		{ BOOL }
-		{ "0" }
-	}
-
-	"ds_log"
-	{
-		"#TF_DemoSupport_Log"
-		"#TF_DemoSupport_Log_ToolTip"
-		{ BOOL }
 		{ "1" }
 	}
-
-	"ds_notify"
-	{
-		"#TF_DemoSupport_Notify"
-		{
-			LIST
-			"#TF_DemoSupport_Notify_ConsoleOnly" "0"
-			"#TF_DemoSupport_Notify_Chat" "1"
-			"#TF_DemoSupport_Notify_HUD" "2"
-		}
-		{ "1" }
-	}
-
-	"ds_screens"
-	{
-		"#TF_DemoSupport_Screens"
-		{ BOOL }
-		{ "1" }
-	}
-
-	"ds_min_streak"
-	{
-		"#TF_DemoSupport_MinStreak"
-		"#TF_DemoSupport_MinStreak_ToolTip"
-		{ NUMBER 2 1000 }
-		{ "4" }
-	}
-
-	"ds_kill_delay"
-	{
-		"#TF_DemoSupport_KillDelay"
-		"#TF_DemoSupport_KillDelay_ToolTip"
-		{ NUMBER 5 1000 }
-		{ "15" }
-	}
-
-	"ds_autodelete"
-	{
-		"#TF_DemoSupport_AutoDelete"
-		"#TF_DemoSupport_AutoDelete_ToolTip"
-		{ BOOL }
-		{ "0" }
-	}
-
 }

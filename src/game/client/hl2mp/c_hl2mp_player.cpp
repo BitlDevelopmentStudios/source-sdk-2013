@@ -39,7 +39,7 @@ ConVar sv_infinite_aux_power( "sv_infinite_aux_power", "0", FCVAR_CHEAT | FCVAR_
 ConVar cl_combineoverlay("cl_combineoverlay", "1", FCVAR_ARCHIVE);
 ConVar cl_freeman_hl2deathcamera("cl_freeman_hl2deathcamera", "1", FCVAR_ARCHIVE);
 ConVar cl_ragdollblood("cl_ragdollblood", "1", FCVAR_ARCHIVE);
-ConVar cl_ragdollblood_simulated_dmgamount("cl_ragdollblood_simulated_dmgamount", "15", FCVAR_ARCHIVE);
+ConVar cl_ragdollblood_intensity("cl_ragdollblood_intensity", "1", FCVAR_ARCHIVE, "", true, 0, true, 2);
 
 ConVar cl_freeman_priority("cl_freeman_priority", "1", FCVAR_ARCHIVE);
 
@@ -1130,8 +1130,24 @@ void C_HL2MPRagdoll::ImpactTrace( trace_t *pTrace, int iDamageType, const char *
 		if (cl_ragdollblood.GetBool() && (g_Language.GetInt() != LANGUAGE_GERMAN) && (BloodColor() != DONT_BLEED))
 		{
 			// color definition is hacky
-			SpawnBlood(hitpos, dir, BloodColor(), cl_ragdollblood_simulated_dmgamount.GetFloat());// a little surface blood.
-			TraceBleed(cl_ragdollblood_simulated_dmgamount.GetFloat(), dir, pTrace, iDamageType);
+
+			float intensity = 0.0f;
+
+			if (cl_ragdollblood_intensity.GetInt() == 0)
+			{
+				intensity = 5.0f;
+			}
+			else if (cl_ragdollblood_intensity.GetInt() == 1)
+			{
+				intensity = 15.0f;
+			}
+			else if (cl_ragdollblood_intensity.GetInt() == 2)
+			{
+				intensity = 25.0f;
+			}
+
+			SpawnBlood(hitpos, dir, BloodColor(), intensity);// a little surface blood.
+			TraceBleed(intensity, dir, pTrace, iDamageType);
 		}
 	}
 

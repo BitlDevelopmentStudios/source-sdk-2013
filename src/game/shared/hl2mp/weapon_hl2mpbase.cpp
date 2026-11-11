@@ -127,6 +127,7 @@ void CWeaponHL2MPBase::CreateMuzzleSmokeEffect()
 	{
 		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", false);
 	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 
