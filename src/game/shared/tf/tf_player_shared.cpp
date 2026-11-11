@@ -10154,7 +10154,7 @@ void CTFPlayer::GetHorriblyHackedRailgunPosition( const Vector& vStart, Vector *
 
 #ifdef CLIENT_DLL
 	// Flips the horizontal position.
-	if ( TeamFortress_ShouldFlipClientViewModel() )
+	if ( ShouldFlipClientViewModel() )
 	{
 		vRight *= -1;
 	}

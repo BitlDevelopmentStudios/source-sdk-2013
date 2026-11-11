@@ -23,6 +23,10 @@
 	#include "tf_weaponbase.h"
 #endif
 
+#ifdef HL2MP
+	#include <c_hl2mp_player.h>
+#endif
+
 #if defined( REPLAY_ENABLED )
 #include "replay/replaycamera.h"
 #include "replay/ireplaysystem.h"
@@ -40,9 +44,7 @@
 	ConVar cl_righthand( "cl_righthand", "1", FCVAR_ARCHIVE, "Use right-handed view models." );
 #endif
 
-#ifdef TF_CLIENT_DLL
-	ConVar cl_flipviewmodels( "cl_flipviewmodels", "0", FCVAR_USERINFO | FCVAR_ARCHIVE | FCVAR_NOT_CONNECTED, "Flip view models." );
-#endif
+ConVar cl_flipviewmodels( "cl_flipviewmodels", "0", FCVAR_USERINFO | FCVAR_ARCHIVE | FCVAR_NOT_CONNECTED, "Flip view models." );
 
 void PostToolMessage( HTOOLHANDLE hEntity, KeyValues *msg );
 
@@ -92,9 +94,9 @@ void FormatViewModelAttachment( Vector &vOrigin, bool bInverse )
 	vOrigin = pViewSetup->origin + vOut;
 }
 
-#ifdef TF_CLIENT_DLL
-bool TeamFortress_ShouldFlipClientViewModel( void )
+bool ShouldFlipClientViewModel( void )
 {
+#ifdef TF_CLIENT_DLL
 	if ( IsLocalPlayerSpectator() )
 	{
 		// Use spectated client's handedness preference
@@ -104,10 +106,20 @@ bool TeamFortress_ShouldFlipClientViewModel( void )
 			return pSpecTarget->m_bFlipViewModels;
 		}
 	}
+#elif HL2MP
+	if (IsLocalPlayerSpectator())
+	{
+		// Use spectated client's handedness preference
+		C_HL2MP_Player* pSpecTarget = ToHL2MPPlayer(UTIL_PlayerByIndex(GetSpectatorTarget()));
+		if (pSpecTarget)
+		{
+			return pSpecTarget->m_bFlipViewModels;
+		}
+	}
+#endif //TF_CLIENT_DLL
 
 	return cl_flipviewmodels.GetBool();
 }
-#endif //TF_CLIENT_DLL
 
 void C_BaseViewModel::FormatViewModelAttachment( int nAttachment, matrix3x4_t &attachmentToWorld )
 {
@@ -224,15 +236,13 @@ bool C_BaseViewModel::ShouldFlipViewModel()
 	}
 #endif
 
-#ifdef TF_CLIENT_DLL
 	CBaseCombatWeapon *pWeapon = m_hWeapon.Get();
 	if ( pWeapon )
 	{
-		return pWeapon->m_bFlipViewModel != TeamFortress_ShouldFlipClientViewModel();
+		return pWeapon->m_bFlipViewModel != ShouldFlipClientViewModel();
 	}
-#endif
 
-	return false;
+	return ShouldFlipClientViewModel();
 }
 
 

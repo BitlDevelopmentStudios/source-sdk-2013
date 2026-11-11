@@ -142,6 +142,8 @@ IMPLEMENT_SERVERCLASS_ST(CHL2MP_Player, DT_HL2MP_Player)
 	SendPropInt(SENDINFO(m_iSpawnInterpCounter), 4),
 	SendPropInt(SENDINFO(m_iPlayerSoundType), 3),
 
+	SendPropBool(SENDINFO(m_bFlipViewModels)),
+
 	SendPropInt(SENDINFO(m_iSpawnCounter)),
 END_SEND_TABLE()
 
@@ -284,6 +286,7 @@ CHL2MP_Player::CHL2MP_Player()
 
 	m_cycleLatch = 0;
 	m_cycleLatchTimer.Invalidate();
+	m_bFlipViewModels = false;
 
 	m_grenadeReloadTimer.Invalidate();
 	m_ballReloadTimer.Invalidate();

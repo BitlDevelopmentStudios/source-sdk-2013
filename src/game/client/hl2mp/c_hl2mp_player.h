@@ -145,6 +145,9 @@ public:
 	// we should get the life count from the server....
 	float	GetLifeCount(void) { return m_iLives; }
 
+public:
+		bool m_bFlipViewModels;
+		
 private:
 	
 	C_HL2MP_Player( const C_HL2MP_Player & );

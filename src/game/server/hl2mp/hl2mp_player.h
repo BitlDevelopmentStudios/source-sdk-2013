@@ -351,6 +351,10 @@ private:
 	bool m_bAllowSpawnProtection;
 	CountdownTimer m_SpawnProtectTimer;
 
+public:
+	CNetworkVar(bool, m_bFlipViewModels);
+
+private:
 	CNetworkVar(int, m_cycleLatch); // Network the cycle to clients periodically
 	CountdownTimer m_cycleLatchTimer;
 	CountdownTimer m_grenadeReloadTimer;
