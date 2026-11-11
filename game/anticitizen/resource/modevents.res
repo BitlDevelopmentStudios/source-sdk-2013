@@ -68,11 +68,6 @@
 	{
 	}
 	
-	"ds_screenshot"
-	{
-		"delay"		"float"
-	}
-	
 	"localplayer_respawn"
 	{
 	}

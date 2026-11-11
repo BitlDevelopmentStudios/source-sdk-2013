@@ -26,6 +26,9 @@ Early Access Build v1:
 	- Altered the fan area.
 	- Reduced the light brightness in HDR in the torture room.
 	- Improved luxel resolution with some aspects of the map.
+- Added advanced multiplayer settings.
+- Added support for cl_righthand 1
+- Added automatic demo recording support.
 
 -----------------------------------------------------------------------------------------------------------------------
 MODDB EARLY ACCESS

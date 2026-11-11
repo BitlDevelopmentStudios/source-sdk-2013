@@ -170,6 +170,9 @@ $Project "Client (ANTICITIZEN)"
 			$File	"anticitizen\anticitizen_hud_teamhealth.cpp"
 			$File	"anticitizen\anticitizen_hud_teamhealth.h"
 			
+			$File	"anticitizen\demo_support\anticitizen_demo_support.cpp"
+			$File	"anticitizen\demo_support\anticitizen_demo_support.h"
+			
 			$Folder	"Weapons"
 			{
 				$File	"$SRCDIR\game\shared\anticitizen\weapon_manhack.cpp"
