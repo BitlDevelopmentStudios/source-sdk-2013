@@ -39,6 +39,7 @@ del sound\sound.cache
 del media\viewed.res
 del anticitizen_pak.vpk.sound.cache
 del bds_base_pak.vpk.sound.cache
+del bds_optional_assets_pak.vpk.sound.cache
 rmdir /S /Q sound_workshop\
 rmdir /S /Q download\user_custom\
 rmdir /S /Q download\sound\
