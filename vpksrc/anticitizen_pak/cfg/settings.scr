@@ -60,7 +60,6 @@ DESCRIPTION SERVER_OPTIONS
 		"#Pure_Server"
 		{
 			LIST	
-			"#Pure_Server_Disabled" "-1"
 			"#Pure_Server_Default" "0"
 			"#Pure_Server_Minimal" "1"
 			"#Pure_Server_Full" "2"
@@ -108,13 +107,12 @@ DESCRIPTION SERVER_OPTIONS
 		"#Cstrike_Bot_Difficulty"
 		{
 			LIST	
-			"#Cstrike_Bot_DifficultyMixed" "-1"
 			"#Cstrike_Bot_Difficulty0" "0"
 			"#Cstrike_Bot_Difficulty1" "1"
 			"#Cstrike_Bot_Difficulty2" "2"
 			"#Cstrike_Bot_Difficulty3" "3"
 		}
-		{ "-1" }
+		{ "1" }
 	}
 	
 	"sv_startwaitime"
