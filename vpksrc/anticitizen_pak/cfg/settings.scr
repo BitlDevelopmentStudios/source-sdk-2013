@@ -54,6 +54,19 @@ DESCRIPTION SERVER_OPTIONS
 		{ STRING }
 		{ "" }
 	}
+	
+	"sv_pure"
+	{
+		"#Pure_Server"
+		{
+			LIST	
+			"#Pure_Server_Disabled" "-1"
+			"#Pure_Server_Default" "0"
+			"#Pure_Server_Minimal" "1"
+			"#Pure_Server_Full" "2"
+		}
+		{ "0" }
+	}
 
 	"maxplayers"
 	{
