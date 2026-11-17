@@ -1,8 +1,4 @@
 @ECHO OFF
-pushd .
-call vpk_build_shaders.bat
-popd
-
 set vpk="D:\SteamLibrary\steamapps\common\Source SDK Base 2013 Multiplayer\bin\x64\vpk.exe"
 set name=bds_optional_assets_pak
 set publickey=bds_base_pak.publickey.vdf
