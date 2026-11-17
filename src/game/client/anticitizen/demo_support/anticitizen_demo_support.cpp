@@ -15,23 +15,23 @@
 // Global singleton
 static CAnticitizenDemoSupport g_DemoSupport;
 
-ConVar ds_enable( "ds_enable", "0", FCVAR_CLIENTDLL | FCVAR_DONTRECORD | FCVAR_ARCHIVE, "Demo support - enable automatic .dem file recording and features. 0 - Manual, 1 - Auto-record all matches", true, 0, true, 3 ); 
-ConVar ds_dir( "ds_dir", "demos", FCVAR_CLIENTDLL | FCVAR_DONTRECORD | FCVAR_ARCHIVE, "Demo support - will put all files into this folder under the gamedir. 24 characters max." );
-ConVar ds_prefix( "ds_prefix", "anticitizen_", FCVAR_CLIENTDLL | FCVAR_DONTRECORD | FCVAR_ARCHIVE, "Demo support - will prefix files with this string. 24 characters max." );
-ConVar ds_sound("ds_sound", "1", FCVAR_CLIENTDLL | FCVAR_DONTRECORD | FCVAR_ARCHIVE, "Demo support - play start sound for demo recording.", true, 0, true, 1);
-ConVar ds_sound_file("ds_sound_file", "buttons/button1.wav", FCVAR_CLIENTDLL | FCVAR_DONTRECORD | FCVAR_ARCHIVE, "Demo support - name of the sound to play when demo recording starts.");
+ConVar ds_enable( "ds_enable", "0", FCVAR_CLIENTDLL | FCVAR_DONTRECORD | FCVAR_ARCHIVE | FCVAR_ALLOWED_IN_COMPETITIVE, "Demo support - enable automatic .dem file recording and features. 0 - Manual, 1 - Auto-record all matches", true, 0, true, 3 );
+ConVar ds_dir( "ds_dir", "demos", FCVAR_CLIENTDLL | FCVAR_DONTRECORD | FCVAR_ARCHIVE | FCVAR_ALLOWED_IN_COMPETITIVE, "Demo support - will put all files into this folder under the gamedir. 24 characters max." );
+ConVar ds_prefix( "ds_prefix", "anticitizen_", FCVAR_CLIENTDLL | FCVAR_DONTRECORD | FCVAR_ARCHIVE | FCVAR_ALLOWED_IN_COMPETITIVE, "Demo support - will prefix files with this string. 24 characters max." );
+ConVar ds_sound("ds_sound", "1", FCVAR_CLIENTDLL | FCVAR_DONTRECORD | FCVAR_ARCHIVE | FCVAR_ALLOWED_IN_COMPETITIVE, "Demo support - play start sound for demo recording.", true, 0, true, 1);
+ConVar ds_sound_file("ds_sound_file", "buttons/button1.wav", FCVAR_CLIENTDLL | FCVAR_DONTRECORD | FCVAR_ARCHIVE | FCVAR_ALLOWED_IN_COMPETITIVE, "Demo support - name of the sound to play when demo recording starts.");
 
-CON_COMMAND_F( ds_record, "Demo support - start recording a demo.", FCVAR_CLIENTDLL | FCVAR_DONTRECORD )
+CON_COMMAND_F( ds_record, "Demo support - start recording a demo.", FCVAR_CLIENTDLL | FCVAR_DONTRECORD | FCVAR_ALLOWED_IN_COMPETITIVE)
 {
 	g_DemoSupport.StartRecording();
 }
 
-CON_COMMAND_F( ds_stop, "Demo support - stop recording a demo.", FCVAR_CLIENTDLL | FCVAR_DONTRECORD )
+CON_COMMAND_F( ds_stop, "Demo support - stop recording a demo.", FCVAR_CLIENTDLL | FCVAR_DONTRECORD | FCVAR_ALLOWED_IN_COMPETITIVE)
 {
 	g_DemoSupport.StopRecording();
 }
 
-CON_COMMAND_F( ds_status, "Demo support - show the current recording status.", FCVAR_CLIENTDLL | FCVAR_DONTRECORD )
+CON_COMMAND_F( ds_status, "Demo support - show the current recording status.", FCVAR_CLIENTDLL | FCVAR_DONTRECORD | FCVAR_ALLOWED_IN_COMPETITIVE)
 {
 	g_DemoSupport.Status();
 }
