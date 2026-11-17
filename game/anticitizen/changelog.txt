@@ -29,6 +29,7 @@ Early Access Build v1:
 - Added advanced multiplayer settings.
 - Added support for cl_righthand 1
 - Added automatic demo recording support.
+- Added sv_pure options for listen servers.
 
 -----------------------------------------------------------------------------------------------------------------------
 MODDB EARLY ACCESS
